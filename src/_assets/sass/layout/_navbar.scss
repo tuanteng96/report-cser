@@ -1,0 +1,37 @@
+.ezs-navbar {
+    display: flex;
+    list-style: none;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    >li {
+        padding-right: 0.25rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        &:last-child {
+            padding-right: 0;
+        }
+        >a {
+            text-decoration: none;
+            padding: 0.65rem 1.1rem;
+            display: block;
+            color: #6c7293;
+            font-weight: 500;
+            border-radius: 4px;
+            transform: all .3s ease;
+            &.active,
+            &:hover {
+                background-color: rgba(77, 89, 149, 0.06);
+                color: #3699FF;
+            }
+            i.icon {
+                padding-right: 5px;
+            }
+            i.icon-down {
+                padding-left: 7px;
+                font-size: 11px;
+            }
+        }
+    }
+}

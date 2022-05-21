@@ -1,0 +1,14 @@
+//
+// Main Styles
+//
+////////////////////////////////////////////////////////////////
+///////////// DO NOT MODIFY BELOW INCLUDE ORDER ////////////////
+////////////////////////////////////////////////////////////////
+// 1: Initialize
+@import 'init';
+// 2: Bootstrap framework includes
+@import '~bootstrap/scss/bootstrap';
+// 3: Component
+@import './components/utilities';
+// 4: Layout
+@import "./layout/init";
