@@ -9,6 +9,10 @@
 // 2: Bootstrap framework includes
 @import '~bootstrap/scss/bootstrap';
 // 3: Component
-@import './components/utilities';
-// 4: Layout
-@import "./layout/init";
+@import './components/utilities', './components/forms', './components/buttons',
+  './components/spinner';
+// 4: Plugins
+@import './vendors/plugins/perfect-scrollbar', './vendors/plugins/datepicker',
+  './vendors/plugins/react-select';
+// 5: Layout
+@import './layout/init';

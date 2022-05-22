@@ -1,0 +1,26 @@
+//
+@each $name, $size in $config-font-size {
+  // Base color
+  .font-#{$name} {
+    font-size: $size !important;
+  }
+}
+
+//
+@each $name, $config in $config-text {
+  // Base text
+  @include createClasses($config);
+}
+
+//
+@each $name, $config in $config-line-text {
+  // Base text
+  .line-height-#{$name} {
+    line-height: $config !important;
+  }
+}
+
+// Global More
+.cursor-pointer {
+  cursor: pointer;
+}

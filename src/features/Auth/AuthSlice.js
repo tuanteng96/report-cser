@@ -1,21 +1,33 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import persistReducer from 'redux-persist/es/persistReducer'
+import { createSlice } from '@reduxjs/toolkit'
 import storage from 'redux-persist/lib/storage'
-import authApi from 'src/api/auth.api'
 
-export const login = createAsyncThunk('/login', async (data, thunkAPI) => {
-  try {
-    const response = await authApi.login(data)
-    return response
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error)
-  }
-})
+const FakeInfo = {
+  User: {
+    UserName: 'admin',
+    ID: 1
+  },
+  Stocks: [
+    {
+      ID: 778,
+      Title: 'Quản lý cơ sở'
+    },
+    {
+      ID: 8975,
+      Title: 'Cser Hà Nội'
+    },
+    {
+      ID: 10053,
+      Title: 'Cser Hồ Chí Minh'
+    }
+  ],
+  CrStockID: 8975
+}
 
 const Auth = createSlice({
   name: 'auth',
   initialState: {
-    Token: ''
+    Info: window.top.Info || FakeInfo,
+    Token: window?.top?.token || 'adadad'
   },
   reducers: {
     setToken: (state, action) => {
@@ -25,22 +37,9 @@ const Auth = createSlice({
       }
     }
   },
-  extraReducers: {
-    [login.fulfilled]: (state, { payload }) => {
-      return {
-        ...state,
-        Token: payload.data.id
-      }
-    }
-  }
+  extraReducers: {}
 })
-
-const persistConfig = {
-  key: 'auth',
-  storage: storage
-  //blacklist: ['user']
-}
 
 const { reducer, actions } = Auth
 export const { setToken } = actions
-export default persistReducer(persistConfig, reducer)
+export default reducer

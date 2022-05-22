@@ -11,7 +11,7 @@ function AuthInit(props) {
 
   useEffect(() => {
     async function requestUser() {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      //await new Promise(resolve => setTimeout(resolve, 1000))
       setShowSplashScreen(false)
     }
 

@@ -1,10 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import './_assets/plugins/keenthemes-icons/font/ki.css'
 import './index.scss'
 import App from './app/App'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter } from 'react-router-dom'
-import store, { persistor } from './redux/store'
+import store from './redux/store'
 import * as _redux from './api/configs'
 import http from './api/configs/http'
 import { SplashScreenProvider } from './layout/_core/SplashScreen'
@@ -23,7 +24,7 @@ root.render(
   <React.StrictMode>
     <SplashScreenProvider>
       <BrowserRouter>
-        <App store={store} persistor={persistor} basename={PUBLIC_URL} />
+        <App store={store} basename={PUBLIC_URL} />
       </BrowserRouter>
     </SplashScreenProvider>
   </React.StrictMode>

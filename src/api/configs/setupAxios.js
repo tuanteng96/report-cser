@@ -22,7 +22,6 @@ export default function setupAxios(axios, store) {
         data: response.data,
         status: response.status
       }
-      console.log(result)
       return result
     },
     error => {
