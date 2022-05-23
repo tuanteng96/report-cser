@@ -55,10 +55,10 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                     <i className="fa-regular fa-xmark font-size-lg text-muted"></i>
                   </div>
                 </div>
-                <div className="p-20px filter-box__body">
+                <div className="filter-box__body">
                   <PerfectScrollbar
                     options={perfectScrollbarOptions}
-                    className="scroll h-100"
+                    className="scroll h-100 p-20px"
                     style={{ position: 'relative' }}
                   >
                     {values.Date && (
