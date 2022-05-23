@@ -4,7 +4,7 @@ import { useWindowSize } from 'src/hooks/useWindowSize'
 import { ToggleAside } from 'src/layout/LayoutSlice'
 
 function IconMenuMobile(props) {
-  const { width, height } = useWindowSize()
+  const { width } = useWindowSize()
   const dispatch = useDispatch()
 
   const openAsideMenu = () => {

@@ -16,6 +16,7 @@ $dark-50: $gray-600 !default; // Custom variable
 $dark-25: $gray-400 !default; // Custom variable
 //
 $font-family-base: 'Roboto', sans-serif;
+$font-family-number: 'Poppins', sans-serif;
 // Settings for the `<body>` element.
 $body-bg: $white !default;
 $body-color: $dark-75 !default;
@@ -202,8 +203,8 @@ $font-size-smm: $font-size-base * 0.905 !default;
 $font-size-md: $font-size-base * 1 !default;
 $font-size-lg: $font-size-base * 1.2 !default;
 $font-size-xl: $font-size-base * 1.4 !default;
-$h1-font-size: $font-size-base * 2.23 !default; // 26px
-$h2-font-size: $font-size-base * 1.75 !default; // 22.75px
+$h1-font-size: $font-size-base * 3.5 !default; // 26px
+$h2-font-size: $font-size-base * 2 !default; // 22.75px
 $h3-font-size: $font-size-base * 1.6 !default; // 19.5px
 $h4-font-size: $font-size-base * 1.5 !default; // 17.55px
 $h5-font-size: $font-size-base * 1.45 !default; // 16.25px
@@ -221,7 +222,8 @@ $config-font-size: (
   'size-h4': $h4-font-size,
   'size-h3': $h3-font-size,
   'size-h2': $h2-font-size,
-  'size-h1': $h1-font-size
+  'size-h1': $h1-font-size,
+  'size-50': 50px
 );
 // Transition
 $transition: all 0.15s ease !default; // Custom variable
@@ -235,7 +237,6 @@ $input-solid-bg: $gray-100; // Custom variable
 $input-solid-bg-focus: $gray-200; // Custom variable
 $input-solid-placeholder-color: $input-placeholder-color; // Custom variable
 $input-solid-color: $dark-75; // Custom variable
-
 // Forms
 $form-group-margin-bottom: 1.75rem !default;
 $form-label-font-size: 1rem !default; // Custom variable

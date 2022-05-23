@@ -11,7 +11,7 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
-function Filter({ show, onHide, filters, onSubmit, loading }) {
+function FilterList({ show, onHide, filters, onSubmit, loading }) {
   const { Stocks } = useSelector(({ auth }) => ({
     Stocks: auth.Info.Stocks
   }))
@@ -38,14 +38,8 @@ function Filter({ show, onHide, filters, onSubmit, loading }) {
         enableReinitialize={true}
       >
         {formikProps => {
-          const {
-            errors,
-            touched,
-            values,
-            handleChange,
-            handleBlur,
-            setFieldValue
-          } = formikProps
+          // errors, touched, handleChange, handleBlur
+          const { values, setFieldValue } = formikProps
 
           return (
             <Form>
@@ -124,4 +118,4 @@ function Filter({ show, onHide, filters, onSubmit, loading }) {
   )
 }
 
-export default Filter
+export default FilterList

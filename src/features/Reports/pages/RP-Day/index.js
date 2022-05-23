@@ -113,7 +113,7 @@ function RPDay(props) {
                 <div className="text-dark text-capitalize fw-500 font-size-lg d-flex justify-content-between">
                   <span>Khách hàng</span>
                   <div>
-                    <span className="text-success pr-5px">
+                    <span className="text-success pr-5px font-number">
                       +{dataDays?.KHMoi || 0}
                     </span>
                     <span className="font-size-smm fw-400 text-muted text-none">
@@ -124,19 +124,27 @@ function RPDay(props) {
                 <div className="mt-10px">
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
                     <div className="text-muted">Đến tại Spa</div>
-                    <div className="fw-600">{dataDays?.KHDenTaiSpa || 0}</div>
+                    <div className="fw-600 font-number">
+                      {dataDays?.KHDenTaiSpa || 0}
+                    </div>
                   </div>
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
                     <div className="text-muted">Web / App</div>
-                    <div className="fw-600">{dataDays?.KHWebApp || 0}</div>
+                    <div className="fw-600 font-number">
+                      {dataDays?.KHWebApp || 0}
+                    </div>
                   </div>
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
                     <div className="text-muted">Khách đang CheckIn</div>
-                    <div className="fw-600">{dataDays?.KHDangCheckIn || 0}</div>
+                    <div className="fw-600 font-number">
+                      {dataDays?.KHDangCheckIn || 0}
+                    </div>
                   </div>
                   <div className="d-flex justify-content-between pt-12px">
                     <div className="text-muted">Tổng khách CheckIn</div>
-                    <div className="fw-600">{dataDays?.KHCheckIn || 0}</div>
+                    <div className="fw-600 font-number">
+                      {dataDays?.KHCheckIn || 0}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -158,7 +166,7 @@ function RPDay(props) {
                 <div className="text-dark text-capitalize fw-500 font-size-lg d-flex justify-content-between">
                   <span>Bán hàng</span>
                   <div>
-                    <span className="text-success pr-5px">
+                    <span className="text-success pr-5px font-number">
                       +{dataDays?.DonHangMoi || 0}
                     </span>
                     <span className="font-size-smm fw-400 text-muted text-none">
@@ -169,19 +177,19 @@ function RPDay(props) {
                 <div className="mt-10px">
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
                     <div className="text-muted">Doanh số</div>
-                    <div className="fw-600">
+                    <div className="fw-600 font-number">
                       {PriceHelper.formatVND(dataDays?.DSo || 0)}
                     </div>
                   </div>
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
                     <div className="text-muted">Thanh toán</div>
-                    <div className="fw-600">
+                    <div className="fw-600 font-number">
                       {PriceHelper.formatVND(dataDays?.DSo_DaTT || 0)}
                     </div>
                   </div>
                   <div className="d-flex justify-content-between pt-12px">
                     <div className="text-muted">Thanh toán nợ</div>
-                    <div className="fw-600">
+                    <div className="fw-600 font-number">
                       {PriceHelper.formatVND(dataDays?.DSo_No || 0)}
                     </div>
                   </div>
@@ -205,7 +213,7 @@ function RPDay(props) {
                 <div className="text-dark text-capitalize fw-500 font-size-lg d-flex justify-content-between">
                   <span>Dịch vụ</span>
                   <div>
-                    <span className="text-success pr-5px">
+                    <span className="text-success pr-5px font-number">
                       +{dataDays?.DVu_DatLich || 0}
                     </span>
                     <span className="font-size-smm fw-400 text-muted text-none">
@@ -216,15 +224,21 @@ function RPDay(props) {
                 <div className="mt-10px">
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
                     <div className="text-muted">Đặt lịch</div>
-                    <div className="fw-600">{dataDays?.DVu_DatLich || 0}</div>
+                    <div className="fw-600 font-number">
+                      {dataDays?.DVu_DatLich || 0}
+                    </div>
                   </div>
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
                     <div className="text-muted">Dịch vụ đang làm</div>
-                    <div className="fw-600">{dataDays?.DVu_DangTHien || 0}</div>
+                    <div className="fw-600 font-number">
+                      {dataDays?.DVu_DangTHien || 0}
+                    </div>
                   </div>
                   <div className="d-flex justify-content-between pt-12px">
                     <div className="text-muted">Dịch vụ đã xong</div>
-                    <div className="fw-600">{dataDays?.DVu_DaXong || 0}</div>
+                    <div className="fw-600 font-number">
+                      {dataDays?.DVu_DaXong || 0}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -249,13 +263,13 @@ function RPDay(props) {
                 <div className="mt-10px">
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
                     <div className="text-muted">Tổng thu</div>
-                    <div className="fw-600 text-success font-size-lg">
+                    <div className="fw-600 text-success font-size-lg font-number">
                       {PriceHelper.formatVND(dataDays?.TgThu || 0)}
                     </div>
                   </div>
                   <div className="d-flex justify-content-between pt-12px">
                     <div className="text-muted">Tổng chi</div>
-                    <div className="fw-600 text-danger font-size-lg">
+                    <div className="fw-600 text-danger font-size-lg font-number">
                       {PriceHelper.formatVNDPositive(dataDays?.TgChi || 0)}
                     </div>
                   </div>

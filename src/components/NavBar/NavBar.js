@@ -15,13 +15,16 @@ function NavBar(props) {
   const { isShowMobile } = useSelector(({ layout }) => ({
     isShowMobile: layout.aside.isShowMobile
   }))
-  const { width, height } = useWindowSize()
+  const { width } = useWindowSize()
   const [IndexShow, setIndexShow] = useState('')
   let location = useLocation()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(ToggleAside(false))
+    if (width < 1200) {
+      dispatch(ToggleAside(false))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
   const OpenSubmenu = key => {

@@ -1,0 +1,77 @@
+.table {
+    &.table-bordered {
+        > :not(:first-child) {
+            border-top: 0;
+        }
+        thead {
+            tr {
+                th {
+                    text-transform: uppercase;
+                    font-size: 0.9rem;
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    color: #3f4254;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .table-responsive-attr {
+        table.table-bordered {
+            thead {
+                display: none;
+            }
+            tbody,
+            tr,
+            td {
+                display: block;
+            }
+            tr {
+                border: 1px solid $table-border-color;
+            }
+            tr {
+                position: relative;
+                margin-bottom: 15px;
+                td {
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    padding-left: 40%;
+                    padding-top: 1rem;
+                    padding-bottom: 1rem;
+                    padding-right: 1rem;
+                    min-height: 45px;
+                    border-width: 0;
+                    &:not(:last-child) {
+                        border-bottom: 1px solid $table-border-color;
+                    }
+                    &:before {
+                        content: attr(data-title);
+                        position: absolute;
+                        left: 12px;
+                        text-transform: uppercase;
+                        font-size: .9rem;
+                        font-weight: 600;
+                    }
+                    &[data-action="true"] {
+                        padding-left: 1rem;
+                        justify-content: center;
+                    }
+                    .font-number {
+                        font-weight: 600;
+                    }
+                }
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
