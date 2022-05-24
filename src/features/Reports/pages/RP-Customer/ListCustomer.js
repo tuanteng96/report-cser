@@ -239,7 +239,7 @@ function ListCustomer(props) {
               //headerAlign: "center",
               //style: { textAlign: "center" },
               formatter: (cell, row) => row.DistrictsName || 'Không có',
-              attrs: { 'data-title': 'Địa chỉ' },
+              attrs: { 'data-title': 'Quận huyện' },
               headerStyle: () => {
                 return { minWidth: '150px', width: '150px' }
               }
@@ -253,6 +253,17 @@ function ListCustomer(props) {
               attrs: { 'data-title': 'Tỉnh / TP' },
               headerStyle: () => {
                 return { minWidth: '150px', width: '150px' }
+              }
+            },
+            {
+              dataField: 'ByStockName',
+              text: 'Cơ sở',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => row.ByStockName || 'Chưa có',
+              attrs: { 'data-title': 'Cơ sở' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
               }
             },
             {
