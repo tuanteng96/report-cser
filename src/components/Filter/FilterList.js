@@ -10,6 +10,8 @@ import AsyncSelectDistrics from '../Selects/AsyncSelectDistrics'
 import AsyncSelectGroupsCustomer from '../Selects/AsyncSelectGroupsCustomer'
 import AsyncSelectSource from '../Selects/AsyncSelectSource'
 import AsyncSelectStaffs from '../Selects/AsyncSelectStaffs'
+import SelectWarranty from '../Selects/SelectWarranty'
+import SelectStatusService from '../Selects/SelectStatusService'
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
@@ -120,6 +122,30 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                           name="StaffID"
                           onChange={otp => {
                             setFieldValue('StaffID', otp, false)
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'Status' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Trạng thái</label>
+                        <SelectStatusService
+                          menuPosition="fixed"
+                          name="Status"
+                          onChange={otp => {
+                            setFieldValue('Status', otp, false)
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'Warranty' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Bảo hành</label>
+                        <SelectWarranty
+                          menuPosition="fixed"
+                          name="Warranty"
+                          onChange={otp => {
+                            setFieldValue('Warranty', otp, false)
                           }}
                         />
                       </div>

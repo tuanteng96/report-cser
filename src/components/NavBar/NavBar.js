@@ -113,7 +113,7 @@ function NavBar(props) {
                 </div>
               </li>
               <li>
-                <NavLink to="/3">
+                <NavLink to="/dich-vu">
                   <i className="fa-regular fa-chart-waterfall icon"></i>
                   <span>Dịch vụ</span>
                 </NavLink>
@@ -410,7 +410,7 @@ function NavBar(props) {
           </div>
         </li>
         <li>
-          <NavLink to="/3">
+          <NavLink to="/dich-vu">
             <i className="fa-regular fa-chart-waterfall icon"></i>
             <span>Dịch vụ</span>
           </NavLink>

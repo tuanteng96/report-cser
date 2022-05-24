@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import RPCustomer from 'src/features/Reports/pages/RP-Customer'
 import RPDay from 'src/features/Reports/pages/RP-Day'
+import RPServices from 'src/features/Reports/pages/RP-Services'
 import LayoutReport from 'src/layout/LayoutReport'
 
 function RouterPage(props) {
@@ -20,6 +21,14 @@ function RouterPage(props) {
         element={
           <LayoutReport>
             <RPCustomer />
+          </LayoutReport>
+        }
+      ></Route>
+      <Route
+        path="/dich-vu"
+        element={
+          <LayoutReport>
+            <RPServices />
           </LayoutReport>
         }
       ></Route>
