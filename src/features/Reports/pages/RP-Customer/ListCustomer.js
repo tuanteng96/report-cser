@@ -326,7 +326,7 @@ function ListCustomer(props) {
               text: 'Công nợ',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => row.cong_no,
+              formatter: (cell, row) => PriceHelper.formatVND(row.cong_no),
               attrs: { 'data-title': 'Công nợ' },
               headerStyle: () => {
                 return { minWidth: '100px', width: '100px' }
@@ -337,7 +337,7 @@ function ListCustomer(props) {
               text: 'Thẻ tiền',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => row.the_tien,
+              formatter: (cell, row) => PriceHelper.formatVND(row.the_tien),
               attrs: { 'data-title': 'Thẻ tiền' },
               headerStyle: () => {
                 return { minWidth: '100px', width: '100px' }

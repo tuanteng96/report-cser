@@ -7,7 +7,7 @@ AsyncSelectGroupsCustomer.propTypes = {
   onChange: PropTypes.func
 }
 
-function AsyncSelectGroupsCustomer({ value, onChange }) {
+function AsyncSelectGroupsCustomer({ value, onChange, ...props }) {
   const typingTimeoutRef = useRef(null)
   const getAllGroups = (inputValue, callback) => {
     if (typingTimeoutRef.current) {
@@ -35,7 +35,7 @@ function AsyncSelectGroupsCustomer({ value, onChange }) {
 
   return (
     <AsyncSelect
-      menuPosition="fixed"
+      {...props}
       className="select-control"
       classNamePrefix="select"
       cacheOptions

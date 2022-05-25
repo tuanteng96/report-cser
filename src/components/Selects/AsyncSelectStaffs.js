@@ -38,7 +38,6 @@ function AsyncSelectStaffs({ onChange, value, ...props }) {
       {...props}
       className="select-control"
       classNamePrefix="select"
-      isClearable={true}
       loadOptions={getAllStaffs}
       placeholder="Chọn nhân viên"
       value={value}

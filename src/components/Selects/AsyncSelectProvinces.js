@@ -38,7 +38,6 @@ function AsyncSelectProvinces({ onChange, value, ...props }) {
       {...props}
       className="select-control"
       classNamePrefix="select"
-      isClearable={true}
       loadOptions={getAllProvinces}
       placeholder="Chọn tỉnh thành"
       value={value}

@@ -118,6 +118,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                       <div className="form-group mb-20px">
                         <label>Nhân viên</label>
                         <AsyncSelectStaffs
+                          isClearable={true}
                           menuPosition="fixed"
                           name="StaffID"
                           onChange={otp => {
@@ -130,6 +131,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                       <div className="form-group mb-20px">
                         <label>Trạng thái</label>
                         <SelectStatusService
+                          isClearable={true}
                           menuPosition="fixed"
                           name="Status"
                           onChange={otp => {
@@ -142,6 +144,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                       <div className="form-group mb-20px">
                         <label>Bảo hành</label>
                         <SelectWarranty
+                          isClearable={true}
                           menuPosition="fixed"
                           name="Warranty"
                           onChange={otp => {
@@ -154,6 +157,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                       <div className="form-group mb-20px">
                         <label>Nhóm khách hàng</label>
                         <AsyncSelectGroupsCustomer
+                          isClearable={true}
                           menuPosition="fixed"
                           name="GroupCustomerID"
                           onChange={otp =>
@@ -166,6 +170,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                       <div className="form-group mb-20px">
                         <label>Nguồn khách hàng</label>
                         <AsyncSelectSource
+                          isClearable={true}
                           menuPosition="fixed"
                           name="SourceName"
                           onChange={otp => {
@@ -178,6 +183,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                       <div className="form-group mb-20px">
                         <label>Tỉnh / Thành Phố</label>
                         <AsyncSelectProvinces
+                          isClearable={true}
                           menuPosition="fixed"
                           name="ProvincesID"
                           value={values.ProvincesID}
@@ -191,6 +197,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                       <div className="form-group mb-20px">
                         <label>Quận / Huyện</label>
                         <AsyncSelectDistrics
+                          isClearable={true}
                           key={values.ProvincesID?.value}
                           ProvincesID={values.ProvincesID?.value}
                           menuPosition="fixed"

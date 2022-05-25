@@ -9,7 +9,6 @@ SelectWarranty.propTypes = {
 function SelectWarranty({ value, onChange }) {
   return (
     <Select
-      menuPosition="fixed"
       className="select-control"
       classNamePrefix="select"
       options={[

@@ -7,7 +7,7 @@ AsyncSelectSource.propTypes = {
   onChange: PropTypes.func
 }
 
-function AsyncSelectSource({ value, onChange }) {
+function AsyncSelectSource({ value, onChange, ...props }) {
   const typingTimeoutRef = useRef(null)
   const getAllSource = (inputValue, callback) => {
     if (typingTimeoutRef.current) {
@@ -35,7 +35,7 @@ function AsyncSelectSource({ value, onChange }) {
 
   return (
     <AsyncSelect
-      menuPosition="fixed"
+      {...props}
       className="select-control"
       classNamePrefix="select"
       cacheOptions

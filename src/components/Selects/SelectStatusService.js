@@ -9,7 +9,6 @@ SelectStatusService.propTypes = {
 function SelectStatusService({ value, onChange }) {
   return (
     <Select
-      menuPosition="fixed"
       className="select-control"
       classNamePrefix="select"
       options={[
