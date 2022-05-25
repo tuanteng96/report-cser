@@ -61,7 +61,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                     className="scroll h-100 p-20px"
                     style={{ position: 'relative' }}
                   >
-                    {values.Date && (
+                    {'Date' in values && (
                       <div className="mb-20px form-group">
                         <label>Ngày</label>
                         <DatePicker
@@ -75,7 +75,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                         />
                       </div>
                     )}
-                    {(values?.StockID || values?.StockID === '') && (
+                    {'StockID' in values && (
                       <div className="form-group mb-20px">
                         <label>Cơ sở của bạn</label>
                         <Select

@@ -84,7 +84,7 @@ function ListServices(props) {
   return (
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
-        <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
+        <div className="fw-500 font-size-lg">Danh sách dịch vụ</div>
         <button
           type="button"
           className="btn btn-primary p-0 w-35px h-30px"

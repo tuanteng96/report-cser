@@ -8,10 +8,11 @@ AsyncSelectDistrics.propTypes = {
 }
 
 function AsyncSelectDistrics({ onChange, value, ProvincesID, ...props }) {
-  const getAllProvinces = async (search, loadedOptions, { page }) => {
+  const getAllDistricts = async (search, loadedOptions, { page }) => {
     const newPost = {
       Key: search,
       Ps: 10,
+      Pi: 1,
       ProvincesID: ProvincesID
     }
     const { data } = await moreApi.getAllDistricts(newPost)
@@ -40,7 +41,7 @@ function AsyncSelectDistrics({ onChange, value, ProvincesID, ...props }) {
       className="select-control"
       classNamePrefix="select"
       isClearable={true}
-      loadOptions={getAllProvinces}
+      loadOptions={getAllDistricts}
       placeholder="Chọn quận huyện"
       value={value}
       onChange={onChange}
