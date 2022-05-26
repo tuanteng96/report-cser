@@ -122,26 +122,27 @@ function RPServices(props) {
     reportsApi
       .getOverviewServices(newFilters)
       .then(({ data }) => {
-        if (data.result && data.result.Items) {
-          setDataChart(prevState => ({
-            ...prevState,
-            labels: data.result.Items.map(
+        setDataChart(prevState => ({
+          ...prevState,
+          labels:
+            data.result?.Items?.map(
               sets =>
                 `${sets.ProServiceName} (${TextHelper.NumberFixed(
                   sets.CasesPercent,
                   2
                 )}%)`
-            ),
-            datasets: prevState.datasets.map(sets => ({
-              ...sets,
-              data: data.result.Items.map(item => item.CasesNum),
-              backgroundColor: ColorsHelpers.getColorSize(
-                data.result.Items.length
-              ),
-              borderColor: ColorsHelpers.getBorderSize(data.result.Items.length)
-            }))
+            ) || [],
+          datasets: prevState.datasets.map(sets => ({
+            ...sets,
+            data: data.result?.Items?.map(item => item.CasesNum) || [],
+            backgroundColor: data.result?.Items
+              ? ColorsHelpers.getColorSize(data.result.Items.length)
+              : [],
+            borderColor: data.result?.Items
+              ? ColorsHelpers.getBorderSize(data.result.Items.length)
+              : []
           }))
-        }
+        }))
         setOverviewData(data.result)
         setLoading(false)
         isFilter && setIsFilter(false)
@@ -169,6 +170,8 @@ function RPServices(props) {
   const onHideFilter = () => {
     setIsFilter(false)
   }
+
+  console.log(dataChart)
 
   return (
     <div className="py-main">

@@ -97,27 +97,21 @@ function RPCustomer() {
     reportsApi
       .getOverviewCustomer(newFilters)
       .then(({ data }) => {
-        if (
-          data.result &&
-          data.result.SoKHs_ByMonth_LastYear &&
-          data.result.SoKHs_ByMonth_ThisYear
-        ) {
-          setDataChart(prevState => ({
-            ...prevState,
-            datasets: [
-              {
-                label: `Năm ${moment().subtract(1, 'year').format('YYYY')}`,
-                data: data.result.SoKHs_ByMonth_LastYear || [],
-                backgroundColor: 'rgba(255, 99, 132, 0.5)'
-              },
-              {
-                label: `Năm ${moment().format('YYYY')}`,
-                data: data.result.SoKHs_ByMonth_ThisYear || [],
-                backgroundColor: 'rgba(53, 162, 235, 0.5)'
-              }
-            ]
-          }))
-        }
+        setDataChart(prevState => ({
+          ...prevState,
+          datasets: [
+            {
+              label: `Năm ${moment().subtract(1, 'year').format('YYYY')}`,
+              data: data?.result?.SoKHs_ByMonth_LastYear || [],
+              backgroundColor: 'rgba(255, 99, 132, 0.5)'
+            },
+            {
+              label: `Năm ${moment().format('YYYY')}`,
+              data: data?.result?.SoKHs_ByMonth_ThisYear || [],
+              backgroundColor: 'rgba(53, 162, 235, 0.5)'
+            }
+          ]
+        }))
         setOverviewData(data.result)
         setLoading(false)
         isFilter && setIsFilter(false)
