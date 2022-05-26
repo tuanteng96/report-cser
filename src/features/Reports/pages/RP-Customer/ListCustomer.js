@@ -111,6 +111,10 @@ function ListCustomer(props) {
         <BaseTablesCustom
           data={ListData}
           textDataNull="Không có dữ liệu."
+          optionsMoible={{
+            itemShow: 4,
+            CallModal: row => console.log(row)
+          }}
           options={{
             custom: true,
             totalSize: PageTotal,
@@ -312,7 +316,7 @@ function ListCustomer(props) {
               formatter: (cell, row) => row.ByUserName || 'Chưa có',
               attrs: { 'data-title': 'Nhân viên chăm sóc' },
               headerStyle: () => {
-                return { minWidth: '150px', width: '150px' }
+                return { minWidth: '250px', width: '250px' }
               }
             },
             {

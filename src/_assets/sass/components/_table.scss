@@ -24,6 +24,7 @@
 @media (max-width: 767px) {
   .table-responsive-attr {
     table.table-bordered {
+      display: block;
       thead {
         display: none;
       }
@@ -39,6 +40,14 @@
         position: relative;
         margin-bottom: 15px;
         td {
+          &.react-bs-table-no-data {
+            padding-left: 1rem;
+            justify-content: center;
+            .page-loaders--table {
+              left: 0;
+              transform: translateX(0%);
+            }
+          }
           display: flex;
           justify-content: flex-end;
           align-items: center;

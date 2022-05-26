@@ -92,7 +92,7 @@ function RPServices(props) {
     if (width > 767) {
       setHeightElm(elementRef?.current?.clientHeight || 0)
     } else {
-      setHeightElm(0)
+      setHeightElm(350)
     }
   }, [elementRef, width])
 
@@ -170,8 +170,6 @@ function RPServices(props) {
   const onHideFilter = () => {
     setIsFilter(false)
   }
-
-  console.log(dataChart)
 
   return (
     <div className="py-main">

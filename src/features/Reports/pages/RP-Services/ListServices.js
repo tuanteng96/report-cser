@@ -333,7 +333,6 @@ function ListServices(props) {
                 return { minWidth: '150px', width: '150px' }
               }
             },
-
             {
               dataField: 'RateNote',
               text: 'Nội dung đánh giá',

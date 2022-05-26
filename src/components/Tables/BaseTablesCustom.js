@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Pagination from '@material-ui/lab/Pagination'
 import BootstrapTable from 'react-bootstrap-table-next'
@@ -7,6 +7,9 @@ import paginationFactory, {
 } from 'react-bootstrap-table2-paginator'
 import { DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
 import LoadingTable from '../Loading/LoaderTable'
+import ElementEmpty from '../Empty/ElementEmpty'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { useWindowSize } from 'src/hooks/useWindowSize'
 
 BaseTablesCustom.propTypes = {
   data: PropTypes.array,
@@ -35,11 +38,55 @@ function BaseTablesCustom({
   className,
   classes,
   keyField,
+  optionsMoible,
   textDataNull
 }) {
   const onTableChange = (type, { page, sizePerPage }) => {
     //console.log(page);
     //console.log(sizePerPage);
+  }
+  const { width } = useWindowSize()
+  const [columnsTable, setColumnsTable] = useState([
+    { dataField: '', text: '' }
+  ])
+  const [dataTable, setDataTable] = useState([])
+
+  useEffect(() => {
+    if (width > 767) {
+      setColumnsTable(columns)
+    } else {
+      setColumnsTable([
+        ...ArrayHeplers.getItemSize(columns, optionsMoible.itemShow),
+        {
+          dataField: 'Active',
+          text: '#',
+          //headerAlign: "center",
+          //style: { textAlign: "center" },
+          formatter: (cell, row) => (
+            <button
+              type="button"
+              className="btn btn-primary btn-xs"
+              onClick={() => optionsMoible.CallModal(row)}
+            >
+              Xem chi tiết
+            </button>
+          ),
+          attrs: { 'data-title': '.....' },
+          headerStyle: () => {
+            return { minWidth: '150px', width: '150px' }
+          }
+        }
+      ])
+    }
+  }, [columns, width, optionsMoible])
+
+  useEffect(() => {
+    setDataTable(data)
+  }, [data])
+
+  const onView = row => {
+    console.log(row)
+    console.log(columns)
   }
 
   return (
@@ -50,19 +97,19 @@ function BaseTablesCustom({
             <>
               <BootstrapTable
                 wrapperClasses={`table-responsive ${className}`}
-                rowClasses="text-nowrap"
+                //rowClasses="text-nowrap"
                 classes={classes}
                 headerClasses="fw-500"
                 remote={true}
                 bordered={false}
-                data={data}
-                columns={columns}
+                data={dataTable}
+                columns={columnsTable}
                 onTableChange={onTableChange}
                 noDataIndication={() =>
                   loading ? (
                     <LoadingTable text="Đang tải dữ liệu ..." />
                   ) : (
-                    'Không có dữ liệu'
+                    <ElementEmpty />
                   )
                 }
                 {...paginationTableProps}
