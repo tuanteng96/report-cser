@@ -9,22 +9,24 @@ import reportsApi from 'src/api/reports.api'
 import LoadingSkeleton from './LoadingSkeleton'
 import ChartPie from '../../components/ChartPie'
 import { ColorsHelpers } from 'src/helpers/ColorsHelpers'
+import ElementEmpty from 'src/components/Empty/ElementEmpty'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import LoadingChart from 'src/components/Loading/LoadingChart'
+import { TextHelper } from 'src/helpers/TextHelpers'
+import { useWindowSize } from 'src/hooks/useWindowSize'
 moment.locale('vi')
-
-console.log(ColorsHelpers.getColorSize(5))
 
 const optionsObj = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'top'
+      position: 'right'
     },
     title: {
-      display: true,
+      display: false,
       text: 'Biểu đồ dịch vụ'
     }
   }
@@ -53,16 +55,46 @@ function RPServices(props) {
     Date: new Date() // Ngày,
   })
   const [dataChart, setDataChart] = useState(objData)
+  const [optionsChart, setOptionsChart] = useState(optionsObj)
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [OverviewData, setOverviewData] = useState(null)
   const [heightElm, setHeightElm] = useState(0)
   const elementRef = useRef(null)
+  const { width } = useWindowSize()
 
   useEffect(() => {
-    setHeightElm(elementRef?.current?.clientHeight || 0)
-  }, [elementRef])
+    if (width > 767) {
+      setOptionsChart(prevState => ({
+        ...prevState,
+        plugins: {
+          ...prevState.plugins,
+          legend: {
+            position: 'right'
+          }
+        }
+      }))
+    } else {
+      setOptionsChart(prevState => ({
+        ...prevState,
+        plugins: {
+          ...prevState.plugins,
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }))
+    }
+  }, [width])
+
+  useEffect(() => {
+    if (width > 767) {
+      setHeightElm(elementRef?.current?.clientHeight || 0)
+    } else {
+      setHeightElm(0)
+    }
+  }, [elementRef, width])
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -90,11 +122,16 @@ function RPServices(props) {
     reportsApi
       .getOverviewServices(newFilters)
       .then(({ data }) => {
-        console.log(data)
         if (data.result && data.result.Items) {
           setDataChart(prevState => ({
             ...prevState,
-            labels: data.result.Items.map(sets => sets.ProServiceName),
+            labels: data.result.Items.map(
+              sets =>
+                `${sets.ProServiceName} (${TextHelper.NumberFixed(
+                  sets.CasesPercent,
+                  2
+                )}%)`
+            ),
             datasets: prevState.datasets.map(sets => ({
               ...sets,
               data: data.result.Items.map(item => item.CasesNum),
@@ -115,10 +152,14 @@ function RPServices(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      // Call Api
+      getOverviewService()
     } else {
       setFilters(values)
     }
+  }
+
+  const onRefresh = () => {
+    getOverviewService()
   }
 
   const onOpenFilter = () => {
@@ -132,13 +173,15 @@ function RPServices(props) {
   return (
     <div className="py-main">
       <div className="mb-20px d-flex justify-content-between align-items-end">
-        <div>
+        <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
             Báo cáo dịch vụ
           </span>
-          <span className="pl-8px text-muted">{StockName}</span>
+          <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
+            {StockName}
+          </span>
         </div>
-        <div>
+        <div className="w-85px">
           <button
             type="button"
             className="btn btn-primary p-0 w-40px h-35px"
@@ -152,6 +195,7 @@ function RPServices(props) {
             filters={filters}
             onHide={onHideFilter}
             onSubmit={onFilter}
+            onRefresh={onRefresh}
             loading={loading}
           />
         </div>
@@ -190,10 +234,10 @@ function RPServices(props) {
               <div className="col-12 mb-20px">
                 <div
                   className="rounded p-20px"
-                  style={{ backgroundColor: '#8fbd56' }}
+                  style={{ backgroundColor: '#e7c354' }}
                 >
                   <div className="font-size-md fw-600 text-uppercase">
-                    Dịch vụ hoàn thành
+                    Dịch vụ đang thực hiện
                   </div>
                   <ChartWidget2
                     colors={{
@@ -216,10 +260,10 @@ function RPServices(props) {
               <div className="col-12">
                 <div
                   className="rounded p-20px"
-                  style={{ backgroundColor: '#e7c354' }}
+                  style={{ backgroundColor: '#8fbd56' }}
                 >
                   <div className="font-size-md fw-600 text-uppercase">
-                    Dịch vụ đang thực hiện
+                    Dịch vụ hoàn thành
                   </div>
                   <ChartWidget2
                     colors={{
@@ -246,14 +290,23 @@ function RPServices(props) {
           <div className="row">
             <div className="col-md-12">
               <div
-                className="bg-white rounded p-20px w-100"
-                style={{ height: `${heightElm}px` }}
+                className="bg-white rounded p-4 p-lg-5 w-100 mt-4 mt-lg-0"
+                style={{ height: heightElm > 0 ? `${heightElm}px` : 'auto' }}
               >
-                <ChartPie
-                  data={dataChart}
-                  options={optionsObj}
-                  height={`${heightElm}px`}
-                />
+                {loading && <LoadingChart />}
+                {!loading && (
+                  <>
+                    {dataChart.labels.length > 0 ? (
+                      <ChartPie
+                        data={dataChart}
+                        options={optionsChart}
+                        height={heightElm > 0 ? `${heightElm}px` : 'auto'}
+                      />
+                    ) : (
+                      <ElementEmpty />
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>

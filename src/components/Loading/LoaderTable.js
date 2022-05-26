@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-LoaderTable.propTypes = {
+LoadingTable.propTypes = {
   text: PropTypes.string,
   className: PropTypes.string
 }
-LoaderTable.defaultProps = {
+LoadingTable.defaultProps = {
   text: 'Đang tải ...',
   className: ''
 }
 
-function LoaderTable(props) {
+function LoadingTable(props) {
   const { text, className } = props
   return (
     <div className={`page-loaders--table table-message ${className}`}>
@@ -25,4 +25,4 @@ function LoaderTable(props) {
   )
 }
 
-export default LoaderTable
+export default LoadingTable

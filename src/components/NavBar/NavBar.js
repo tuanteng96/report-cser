@@ -60,6 +60,12 @@ function NavBar(props) {
                   <span>Khách hàng</span>
                 </NavLink>
               </li>
+              <li>
+                <NavLink to="/dich-vu">
+                  <i className="fa-regular fa-chart-waterfall icon"></i>
+                  <span>Dịch vụ</span>
+                </NavLink>
+              </li>
               <li
                 className={clsx(IndexShow === 'BAN_HANG' && 'menu-item-open')}
               >
@@ -111,12 +117,6 @@ function NavBar(props) {
                     </li>
                   </ul>
                 </div>
-              </li>
-              <li>
-                <NavLink to="/dich-vu">
-                  <i className="fa-regular fa-chart-waterfall icon"></i>
-                  <span>Dịch vụ</span>
-                </NavLink>
               </li>
               <li>
                 <NavLink to="/4">
@@ -387,6 +387,12 @@ function NavBar(props) {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/dich-vu">
+            <i className="fa-regular fa-chart-waterfall icon"></i>
+            <span>Dịch vụ</span>
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/2">
             <i className="fa-regular fa-cart-circle-check icon"></i>
             <span>Bán hàng</span>
@@ -408,12 +414,6 @@ function NavBar(props) {
               </li>
             </ul>
           </div>
-        </li>
-        <li>
-          <NavLink to="/dich-vu">
-            <i className="fa-regular fa-chart-waterfall icon"></i>
-            <span>Dịch vụ</span>
-          </NavLink>
         </li>
         <li>
           <NavLink to="/4">

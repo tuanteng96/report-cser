@@ -5,7 +5,7 @@ import Skeleton from 'react-loading-skeleton'
 function LoadingSkeleton(props) {
   return (
     <div className="row">
-      <div className="col-12 mb-20">
+      <div className="col-12 mb-20px">
         <div className="rounded p-20px" style={{ backgroundColor: '#ffbed3' }}>
           <div className="font-size-md fw-600 text-uppercase">
             Dịch vụ hôm nay
@@ -27,7 +27,7 @@ function LoadingSkeleton(props) {
           </div>
         </div>
       </div>
-      <div className="col-12 mb-20">
+      <div className="col-12 mb-20px">
         <div className="rounded p-20px" style={{ backgroundColor: '#8fbd56' }}>
           <div className="font-size-md fw-600 text-uppercase">
             Dịch vụ hoàn thành

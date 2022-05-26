@@ -6,9 +6,10 @@ SelectStatusService.propTypes = {
   onChange: PropTypes.func
 }
 
-function SelectStatusService({ value, onChange }) {
+function SelectStatusService({ value, onChange, ...props }) {
   return (
     <Select
+      {...props}
       className="select-control"
       classNamePrefix="select"
       options={[

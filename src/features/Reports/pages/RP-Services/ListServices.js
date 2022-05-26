@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import _ from 'lodash'
-
-import moment from 'moment'
-import 'moment/locale/vi'
 import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+
+import moment from 'moment'
+import 'moment/locale/vi'
 moment.locale('vi')
 
 function ListServices(props) {
@@ -30,11 +30,11 @@ function ListServices(props) {
   const [PageTotal, setPageTotal] = useState(0)
 
   useEffect(() => {
-    getListCustomer()
+    getListServices()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListCustomer = (isLoading = true, callback) => {
+  const getListServices = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
@@ -50,13 +50,15 @@ function ListServices(props) {
         : '',
       SourceName: filters.SourceName ? filters.SourceName.value : '',
       ProvincesID: filters.ProvincesID ? filters.ProvincesID.value : '',
-      DistrictsID: filters.DistrictsID ? filters.DistrictsID.value : ''
+      DistrictsID: filters.DistrictsID ? filters.DistrictsID.value : '',
+      Status: filters.Status ? filters.Status.value : '',
+      Warranty: filters.Warranty ? filters.Warranty.value : ''
     }
     reportsApi
-      .getListCustomer(newFilters)
+      .getListServices(newFilters)
       .then(({ data }) => {
-        const { Members, Total } = data.result
-        setListData(Members)
+        const { Items, Total } = data.result
+        setListData(Items)
         setLoading(false)
         setPageTotal(Total)
         isFilter && setIsFilter(false)
@@ -75,10 +77,14 @@ function ListServices(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      getListCustomer()
+      getListServices()
     } else {
       setFilters(values)
     }
+  }
+
+  const onRefresh = () => {
+    getListServices()
   }
 
   return (
@@ -98,6 +104,7 @@ function ListServices(props) {
         filters={filters}
         onHide={onHideFilter}
         onSubmit={onFilter}
+        onRefresh={onRefresh}
         loading={loading}
       />
       <div className="p-20px">
@@ -138,207 +145,204 @@ function ListServices(props) {
               attrs: { 'data-title': 'STT' }
             },
             {
-              dataField: 'CreateDate',
-              text: 'Ngày tạo',
+              dataField: 'FullName',
+              text: 'ID',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) =>
-                moment(row.CreateDate).format('DD/MM/YYYY'),
-              attrs: { 'data-title': 'Ngày tạo' },
+              formatter: (cell, row) => <div>#{row.Id}</div>,
+              attrs: { 'data-title': 'ID' },
               headerStyle: () => {
-                return { minWidth: '120px', width: '120px' }
+                return { minWidth: '100px', width: '100px' }
               }
             },
             {
-              dataField: 'FullName',
-              text: 'Tên khách hàng',
+              dataField: 'CreateDate',
+              text: 'Ngày đặt lịch',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => (
-                <div>
-                  <span className="font-number text-muted font-size-xs mr-5px">
-                    [#{row.Id}]
-                  </span>
-                  {row.FullName}
-                </div>
-              ),
-              attrs: { 'data-title': 'Tên' },
+              formatter: (cell, row) =>
+                moment(row.BookDate).format('DD/MM/YYYY'),
+              attrs: { 'data-title': 'Ngày đặt lịch' },
+              headerStyle: () => {
+                return { minWidth: '150px', width: '150px' }
+              }
+            },
+            {
+              dataField: 'StockName',
+              text: 'Cơ sở',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => row.StockName || 'Chưa có',
+              attrs: { 'data-title': 'Cơ sở' },
+              headerStyle: () => {
+                return { minWidth: '200px', width: '200px' }
+              }
+            },
+            {
+              dataField: 'MemberName',
+              text: 'Khách hàng',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => row.MemberName || 'Chưa có',
+              attrs: { 'data-title': 'Khách hàng' },
+              headerStyle: () => {
+                return { minWidth: '200px', width: '200px' }
+              }
+            },
+            {
+              dataField: 'MemberPhone',
+              text: 'Số điện thoại',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => row.MemberPhone || 'Chưa có',
+              attrs: { 'data-title': 'Số điện thoại' },
+              headerStyle: () => {
+                return { minWidth: '200px', width: '200px' }
+              }
+            },
+            {
+              dataField: 'ProServiceName',
+              text: 'Dịch vụ gốc',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) =>
+                row.ProServiceName || 'Không có dịch vụ gốc',
+              attrs: { 'data-title': 'Dịch vụ gốc' },
+              headerStyle: () => {
+                return { minWidth: '220px', width: '220px' }
+              }
+            },
+            {
+              dataField: 'Card',
+              text: 'Thẻ',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => row.Card || 'Không có thẻ',
+              attrs: { 'data-title': 'Thẻ' },
               headerStyle: () => {
                 return { minWidth: '250px', width: '250px' }
               }
             },
             {
-              dataField: 'MobilePhone',
-              text: 'Số điện thoại',
+              dataField: 'SessionCost',
+              text: 'Giá buổi',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) =>
-                row.MobilePhone || 'Không có số điện thoại',
-              attrs: { 'data-title': 'Số điện thoại' },
+              formatter: (cell, row) => PriceHelper.formatVND(row.SessionCost),
+              attrs: { 'data-title': 'Giá buổi' },
               headerStyle: () => {
-                return { minWidth: '150px', width: '150px' }
+                return { minWidth: '180px', width: '180px' }
               }
             },
             {
-              dataField: 'Email',
-              text: 'Email',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.Email || 'Không có Email',
-              attrs: { 'data-title': 'Email' },
-              headerStyle: () => {
-                return { minWidth: '150px', width: '150px' }
-              }
-            },
-            {
-              dataField: 'BirthDate',
-              text: 'Ngày sinh',
+              dataField: 'SessionCostExceptGift',
+              text: 'Giá buổi (Tặng)',
               //headerAlign: "center",
               //style: { textAlign: "center" },
               formatter: (cell, row) =>
-                row.BirthDate
-                  ? moment(row.BirthDate).format('DD/MM/YYYY')
-                  : 'Không có',
-              attrs: { 'data-title': 'Ngày sinh' },
+                PriceHelper.formatVND(row.SessionCostExceptGift),
+              attrs: { 'data-title': 'Giá buổi (Tặng)' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
+              }
+            },
+            {
+              dataField: 'SessionIndex',
+              text: 'Buổi',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) =>
+                row.Warranty ? row.SessionWarrantyIndex : row.SessionIndex,
+              attrs: { 'data-title': 'Buổi' },
+              headerStyle: () => {
+                return { minWidth: '100px', width: '100px' }
+              }
+            },
+            {
+              dataField: 'Warranty',
+              text: 'Bảo hành',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) =>
+                row.Warranty ? 'Bảo hành' : 'Không có',
+              attrs: { 'data-title': 'Bảo hành' },
               headerStyle: () => {
                 return { minWidth: '120px', width: '120px' }
               }
             },
             {
-              dataField: 'Gender',
-              text: 'Giới tính',
+              dataField: 'Nhân viên thực hiện',
+              text: 'Nhân viên thực hiện',
               //headerAlign: "center",
               //style: { textAlign: "center" },
               formatter: (cell, row) =>
                 row.Gender === 0 ? (
                   'Nam'
                 ) : (
-                  <>{row.Gender === 1 ? 'Nữ' : 'Chưa xác định'}</>
+                  <>
+                    {row.StaffSalaries && row.StaffSalaries.length > 0
+                      ? row.StaffSalaries.map(
+                          item =>
+                            `${item.FullName} (${PriceHelper.formatVND(
+                              item.Salary
+                            )})`
+                        ).join(', ')
+                      : 'Chưa xác định'}
+                  </>
                 ),
-              attrs: { 'data-title': 'Ngày sinh' },
-              headerStyle: () => {
-                return { minWidth: '100px', width: '100px' }
-              }
-            },
-            {
-              dataField: 'HomeAddress',
-              text: 'Địa chỉ',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.HomeAddress || 'Không có',
-              attrs: { 'data-title': 'Địa chỉ' },
+              attrs: { 'data-title': 'Nhân viên thực hiện' },
               headerStyle: () => {
                 return { minWidth: '200px', width: '200px' }
               }
             },
             {
-              dataField: 'DistrictsName',
-              text: 'Quận Huyện',
+              dataField: 'TotalSalary',
+              text: 'Tổng lương nhân viên',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => row.DistrictsName || 'Không có',
-              attrs: { 'data-title': 'Quận huyện' },
-              headerStyle: () => {
-                return { minWidth: '150px', width: '150px' }
-              }
-            },
-            {
-              dataField: 'ProvincesName',
-              text: 'Tỉnh / Thành phố',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.ProvincesName || 'Không có',
-              attrs: { 'data-title': 'Tỉnh / TP' },
-              headerStyle: () => {
-                return { minWidth: '150px', width: '150px' }
-              }
-            },
-            {
-              dataField: 'ByStockName',
-              text: 'Cơ sở',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.ByStockName || 'Chưa có',
-              attrs: { 'data-title': 'Cơ sở' },
+              formatter: (cell, row) => PriceHelper.formatVND(row.TotalSalary),
+              attrs: { 'data-title': 'Tổng lương NV' },
               headerStyle: () => {
                 return { minWidth: '180px', width: '180px' }
               }
             },
             {
-              dataField: 'GroupCustomerName',
-              text: 'Nhóm khách hàng',
+              dataField: 'Status',
+              text: 'Trạng thái',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => row.GroupCustomerName || 'Chưa có',
-              attrs: { 'data-title': 'Nhóm khách hàng' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'Source',
-              text: 'Nguồn',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.Source || 'Chưa có',
-              attrs: { 'data-title': 'Nguồn' },
-              headerStyle: () => {
-                return { minWidth: '100px', width: '100px' }
-              }
-            },
-            {
-              dataField: 'HandCardID',
-              text: 'Mã thẻ',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.HandCardID || 'Chưa có',
-              attrs: { 'data-title': 'Mã thẻ' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'ByUserName',
-              text: 'Nhân viên chăm sóc',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.ByUserName || 'Chưa có',
-              attrs: { 'data-title': 'Nhân viên chăm sóc' },
+              formatter: (cell, row) =>
+                row.Status === 'done' ? (
+                  <span className="badge bg-success">Hoàn thành</span>
+                ) : (
+                  <span className="badge bg-warning">Đang thực hiện</span>
+                ),
+              attrs: { 'data-title': 'Trạng thái' },
               headerStyle: () => {
                 return { minWidth: '150px', width: '150px' }
               }
             },
             {
-              dataField: 'vi_dien_tu',
-              text: 'Ví',
+              dataField: 'Rate',
+              text: 'Đánh giá sao',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.vi_dien_tu),
-              attrs: { 'data-title': 'Ví' },
+              formatter: (cell, row) => row.Rate || 'Chưa đánh giá',
+              attrs: { 'data-title': 'Đánh giá sao' },
               headerStyle: () => {
                 return { minWidth: '150px', width: '150px' }
               }
             },
+
             {
-              dataField: 'cong_no',
-              text: 'Công nợ',
+              dataField: 'RateNote',
+              text: 'Nội dung đánh giá',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => row.cong_no,
-              attrs: { 'data-title': 'Công nợ' },
+              formatter: (cell, row) => row.RateNote || 'Chưa có',
+              attrs: { 'data-title': 'Nội dung đánh giá' },
               headerStyle: () => {
-                return { minWidth: '100px', width: '100px' }
-              }
-            },
-            {
-              dataField: 'the_tien',
-              text: 'Thẻ tiền',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.the_tien,
-              attrs: { 'data-title': 'Thẻ tiền' },
-              headerStyle: () => {
-                return { minWidth: '100px', width: '100px' }
+                return { minWidth: '180px', width: '180px' }
               }
             }
           ]}

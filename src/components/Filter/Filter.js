@@ -11,7 +11,7 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
-function FilterList({ show, onHide, filters, onSubmit, loading }) {
+function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
   const { Stocks } = useSelector(({ auth }) => ({
     Stocks: auth.Info.Stocks
   }))
@@ -96,15 +96,28 @@ function FilterList({ show, onHide, filters, onSubmit, loading }) {
                     )}
                   </PerfectScrollbar>
                 </div>
-                <div className="filter-box__footer p-20px">
+                <div className="filter-box__footer p-20px d-flex justify-content-end">
+                  <button
+                    type="button"
+                    className={clsx(
+                      'btn btn-info',
+                      loading && 'spinner spinner-white spinner-right'
+                    )}
+                    disabled={loading}
+                    onClick={onRefresh}
+                  >
+                    <i className="fa-regular fa-arrows-rotate pr-5px"></i>
+                    Làm mới
+                  </button>
                   <button
                     type="submit"
                     className={clsx(
-                      'btn btn-success w-100',
+                      'btn btn-success ms-2',
                       loading && 'spinner spinner-white spinner-right'
                     )}
                     disabled={loading}
                   >
+                    <i className="fa-regular fa-magnifying-glass pr-5px"></i>
                     Lọc kết quả
                   </button>
                 </div>

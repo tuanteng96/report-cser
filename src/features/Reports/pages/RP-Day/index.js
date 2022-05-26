@@ -69,6 +69,10 @@ function RPDay(props) {
     }
   }
 
+  const onRefresh = () => {
+    getAllDays()
+  }
+
   const onOpenFilter = () => {
     setIsFilter(true)
   }
@@ -80,13 +84,15 @@ function RPDay(props) {
   return (
     <div className="py-main">
       <div className="mb-20px d-flex justify-content-between align-items-end">
-        <div>
+        <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
             Báo cáo ngày
           </span>
-          <span className="pl-8px text-muted">{StockName}</span>
+          <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
+            {StockName}
+          </span>
         </div>
-        <div>
+        <div className="w-85px">
           <button
             type="button"
             className="btn btn-primary p-0 w-40px h-35px"
@@ -100,6 +106,7 @@ function RPDay(props) {
             filters={filters}
             onHide={onHideFilter}
             onSubmit={onFilter}
+            onRefresh={onRefresh}
             loading={loading}
           />
         </div>

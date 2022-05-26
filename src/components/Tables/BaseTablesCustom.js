@@ -6,7 +6,7 @@ import paginationFactory, {
   PaginationProvider
 } from 'react-bootstrap-table2-paginator'
 import { DropdownButton, ButtonGroup, Dropdown } from 'react-bootstrap'
-import LoaderTable from '../Loading/LoaderTable'
+import LoadingTable from '../Loading/LoaderTable'
 
 BaseTablesCustom.propTypes = {
   data: PropTypes.array,
@@ -60,7 +60,7 @@ function BaseTablesCustom({
                 onTableChange={onTableChange}
                 noDataIndication={() =>
                   loading ? (
-                    <LoaderTable text="Đang tải dữ liệu ..." />
+                    <LoadingTable text="Đang tải dữ liệu ..." />
                   ) : (
                     'Không có dữ liệu'
                   )

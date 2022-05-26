@@ -12,7 +12,7 @@ const FakeInfo = {
     },
     {
       ID: 8975,
-      Title: 'Cser Hà Nội'
+      Title: 'Nhung Nguyễn Beauty Center'
     },
     {
       ID: 10053,

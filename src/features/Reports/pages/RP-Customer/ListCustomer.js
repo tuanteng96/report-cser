@@ -83,6 +83,10 @@ function ListCustomer(props) {
     }
   }
 
+  const onRefresh = () => {
+    getListCustomer()
+  }
+
   return (
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -100,6 +104,7 @@ function ListCustomer(props) {
         filters={filters}
         onHide={onHideFilter}
         onSubmit={onFilter}
+        onRefresh={onRefresh}
         loading={loading}
       />
       <div className="p-20px">
@@ -217,7 +222,7 @@ function ListCustomer(props) {
                 ) : (
                   <>{row.Gender === 1 ? 'Nữ' : 'Chưa xác định'}</>
                 ),
-              attrs: { 'data-title': 'Ngày sinh' },
+              attrs: { 'data-title': 'Giới tính' },
               headerStyle: () => {
                 return { minWidth: '100px', width: '100px' }
               }

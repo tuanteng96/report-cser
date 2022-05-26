@@ -6,9 +6,10 @@ SelectWarranty.propTypes = {
   onChange: PropTypes.func
 }
 
-function SelectWarranty({ value, onChange }) {
+function SelectWarranty({ value, onChange, ...props }) {
   return (
     <Select
+      {...props}
       className="select-control"
       classNamePrefix="select"
       options={[
