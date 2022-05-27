@@ -9,11 +9,19 @@
 // 2: Bootstrap framework includes
 @import '~bootstrap/scss/bootstrap';
 // 3: Component
-@import './components/utilities', './components/forms', './components/buttons',
-  './components/spinner', './components/page-loader', './components/table',
-  './components/dropdown', './components/pagination', './components/badge';
+@import './components/utilities',
+'./components/forms',
+'./components/buttons',
+'./components/spinner',
+'./components/page-loader',
+'./components/table',
+'./components/dropdown',
+'./components/pagination',
+'./components/badge';
 // 4: Plugins
-@import './vendors/plugins/perfect-scrollbar', './vendors/plugins/datepicker',
-  './vendors/plugins/react-select';
+@import './vendors/plugins/perfect-scrollbar',
+'./vendors/plugins/datepicker',
+'./vendors/plugins/react-select',
+'./vendors/plugins/react-apexcharts';
 // 5: Layout
 @import './layout/init';

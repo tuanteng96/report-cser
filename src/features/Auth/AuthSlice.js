@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const FakeInfo = {
+window.Info = {
   User: {
     UserName: 'admin',
     ID: 1
@@ -25,14 +25,15 @@ const FakeInfo = {
 const Auth = createSlice({
   name: 'auth',
   initialState: {
-    Info: window.top.Info || FakeInfo,
-    Token: window?.top?.token || 'adadad'
+    Info: null,
+    Token: null
   },
   reducers: {
-    setToken: (state, action) => {
+    setProfile: (state, { payload }) => {
       return {
         ...state,
-        Token: action.payload
+        Token: payload.token,
+        Info: payload.Info
       }
     }
   },
@@ -40,5 +41,5 @@ const Auth = createSlice({
 })
 
 const { reducer, actions } = Auth
-export const { setToken } = actions
+export const { setProfile } = actions
 export default reducer

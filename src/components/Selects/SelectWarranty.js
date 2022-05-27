@@ -16,10 +16,6 @@ function SelectWarranty({ value, onChange, ...props }) {
         {
           label: 'Bảo hành',
           value: 'BAO_HANH'
-        },
-        {
-          label: 'Buổi thường',
-          value: 'BUOI_THUONG'
         }
       ]}
       placeholder="Chọn bảo hành"

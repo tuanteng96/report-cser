@@ -56,7 +56,7 @@ function BaseTablesCustom({
       setColumnsTable(columns)
     } else {
       setColumnsTable([
-        ...ArrayHeplers.getItemSize(columns, optionsMoible.itemShow),
+        ...ArrayHeplers.getItemSize(columns, optionsMoible?.itemShow),
         {
           dataField: 'Active',
           text: '#',
@@ -66,7 +66,7 @@ function BaseTablesCustom({
             <button
               type="button"
               className="btn btn-primary btn-xs"
-              onClick={() => optionsMoible.CallModal(row)}
+              onClick={() => optionsMoible?.CallModal(row)}
             >
               Xem chi tiết
             </button>

@@ -111,6 +111,10 @@ function ListServices(props) {
         <BaseTablesCustom
           data={ListData}
           textDataNull="Không có dữ liệu."
+          optionsMoible={{
+            itemShow: 5,
+            CallModal: row => console.log(row)
+          }}
           options={{
             custom: true,
             totalSize: PageTotal,
