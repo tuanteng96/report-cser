@@ -49,7 +49,6 @@ function BaseTablesCustom({
   const [columnsTable, setColumnsTable] = useState([
     { dataField: '', text: '' }
   ])
-  const [dataTable, setDataTable] = useState([])
 
   useEffect(() => {
     if (width > 767) {
@@ -80,15 +79,6 @@ function BaseTablesCustom({
     }
   }, [columns, width, optionsMoible])
 
-  useEffect(() => {
-    setDataTable(data)
-  }, [data])
-
-  const onView = row => {
-    console.log(row)
-    console.log(columns)
-  }
-
   return (
     <Fragment>
       <PaginationProvider pagination={paginationFactory(options)}>
@@ -102,7 +92,7 @@ function BaseTablesCustom({
                 headerClasses="fw-500"
                 remote={true}
                 bordered={false}
-                data={dataTable}
+                data={data}
                 columns={columnsTable}
                 onTableChange={onTableChange}
                 noDataIndication={() =>

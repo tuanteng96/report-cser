@@ -5,6 +5,7 @@ import _ from 'lodash'
 import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import ModalViewMobile from './ModalViewMobile'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -28,6 +29,8 @@ function ListServices(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
+  const [initialValuesMobile, setInitialValuesMobile] = useState(null)
+  const [isModalMobile, setIsModalMobile] = useState(false)
 
   useEffect(() => {
     getListServices()
@@ -87,6 +90,16 @@ function ListServices(props) {
     getListServices()
   }
 
+  const OpenModalMobile = value => {
+    setInitialValuesMobile(value)
+    setIsModalMobile(true)
+  }
+
+  const HideModalMobile = () => {
+    setInitialValuesMobile(null)
+    setIsModalMobile(false)
+  }
+
   return (
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -113,7 +126,7 @@ function ListServices(props) {
           textDataNull="Không có dữ liệu."
           optionsMoible={{
             itemShow: 5,
-            CallModal: row => console.log(row)
+            CallModal: row => OpenModalMobile(row)
           }}
           options={{
             custom: true,
@@ -149,7 +162,7 @@ function ListServices(props) {
               attrs: { 'data-title': 'STT' }
             },
             {
-              dataField: 'FullName',
+              dataField: 'Id',
               text: 'ID',
               //headerAlign: "center",
               //style: { textAlign: "center" },
@@ -160,7 +173,7 @@ function ListServices(props) {
               }
             },
             {
-              dataField: 'CreateDate',
+              dataField: 'BookDate',
               text: 'Ngày đặt lịch',
               //headerAlign: "center",
               //style: { textAlign: "center" },
@@ -355,6 +368,11 @@ function ListServices(props) {
           classes="table-bordered"
         />
       </div>
+      <ModalViewMobile
+        show={isModalMobile}
+        onHide={HideModalMobile}
+        data={initialValuesMobile}
+      />
     </div>
   )
 }

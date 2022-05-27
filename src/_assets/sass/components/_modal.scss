@@ -1,0 +1,25 @@
+.modal {
+  &.modal-view-mobile {
+    height: 100vh;
+    .modal-dialog {
+      height: 100%;
+      margin: 0;
+      .modal-content {
+        height: 100%;
+        border-radius: 0;
+      }
+    }
+    .modal-view-head {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: space-between;
+      -webkit-box-shadow: 0px 10px 30px 0px rgb(82 63 105 / 8%);
+      box-shadow: 0px 10px 30px 0px rgb(82 63 105 / 8%);
+    }
+    .modal-view-body {
+      position: relative;
+      flex: 1 1 auto;
+    }
+  }
+}
