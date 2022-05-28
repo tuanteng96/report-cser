@@ -5,6 +5,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import clsx from 'clsx'
 import { useSelector, useDispatch } from 'react-redux'
 import { ToggleAside } from '../../layout/LayoutSlice'
+import { RouterHeplers } from 'src/helpers/RouterHelpers'
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
@@ -24,6 +25,7 @@ function NavBar(props) {
     if (width < 1200) {
       dispatch(ToggleAside(false))
     }
+    setIndexShow('')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
@@ -38,9 +40,9 @@ function NavBar(props) {
     dispatch(ToggleAside(false))
   }
 
-  const getMenuItemActive = (key, sub) => {
+  const getMenuItemActive = (key, subdomain) => {
     const { pathname } = location
-    const index = pathname && pathname.indexOf(sub)
+    const index = pathname && pathname.indexOf(subdomain)
     if (index > -1 && !IndexShow) {
       setIndexShow(key)
     }
@@ -77,7 +79,7 @@ function NavBar(props) {
               <li
                 className={clsx(
                   IndexShow === 'BAN_HANG' && 'menu-item-open',
-                  getMenuItemActive('BAN_HANG', '/ban-hang')
+                  getMenuItemActive('BAN_HANG','/ban-hang')
                 )}
               >
                 <NavLink to="/ban-hang">
@@ -101,7 +103,7 @@ function NavBar(props) {
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/">
+                      <NavLink to="/ban-hang/thanh-toan-tra-no">
                         <i className="menu-bullet menu-bullet-dot">
                           <span></span>
                         </i>

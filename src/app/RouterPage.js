@@ -43,7 +43,7 @@ function RouterPage(props) {
           </LayoutReport>
         }
       >
-        <Route index element={<Navigate to="doanh-soy" replace />} />
+        <Route index element={<Navigate to="doanh-so" replace />} />
         <Route path="doanh-so" element={<Sales />} />
         <Route path="tra-hang" element={<PayDebt />} />
       </Route>
