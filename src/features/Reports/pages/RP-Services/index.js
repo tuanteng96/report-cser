@@ -182,7 +182,7 @@ function RPServices(props) {
             {StockName}
           </span>
         </div>
-        <div className="w-85px">
+        <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
             className="btn btn-primary p-0 w-40px h-35px"

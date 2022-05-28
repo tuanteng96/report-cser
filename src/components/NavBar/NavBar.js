@@ -38,6 +38,14 @@ function NavBar(props) {
     dispatch(ToggleAside(false))
   }
 
+  const getMenuItemActive = (key, sub) => {
+    const { pathname } = location
+    const index = pathname && pathname.indexOf(sub)
+    if (index > -1 && !IndexShow) {
+      setIndexShow(key)
+    }
+  }
+
   if (width < 1200) {
     return (
       <div className={clsx('ezs-navbars-mobile', isShowMobile && 'show')}>
@@ -67,9 +75,12 @@ function NavBar(props) {
                 </NavLink>
               </li>
               <li
-                className={clsx(IndexShow === 'BAN_HANG' && 'menu-item-open')}
+                className={clsx(
+                  IndexShow === 'BAN_HANG' && 'menu-item-open',
+                  getMenuItemActive('BAN_HANG', '/ban-hang')
+                )}
               >
-                <NavLink to="/2">
+                <NavLink to="/ban-hang">
                   <i className="fa-regular fa-cart-circle-check icon"></i>
                   <span>Bán hàng</span>
                 </NavLink>
@@ -82,7 +93,7 @@ function NavBar(props) {
                 <div className="ezs-navbar__sub">
                   <ul>
                     <li>
-                      <NavLink to="/aa1">
+                      <NavLink to="/ban-hang/doanh-so">
                         <i className="menu-bullet menu-bullet-dot">
                           <span></span>
                         </i>
@@ -90,17 +101,7 @@ function NavBar(props) {
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/aa2">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Chi tiết SP / DV bán ra
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/aa3">
+                      <NavLink to="/">
                         <i className="menu-bullet menu-bullet-dot">
                           <span></span>
                         </i>
@@ -108,7 +109,7 @@ function NavBar(props) {
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/aa4">
+                      <NavLink to="/ban-hang/tra-hang">
                         <i className="menu-bullet menu-bullet-dot">
                           <span></span>
                         </i>
@@ -121,13 +122,7 @@ function NavBar(props) {
               <li>
                 <NavLink to="/4">
                   <i className="fa-regular fa-piggy-bank icon"></i>
-                  <span>Thu chi</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/5">
-                  <i className="fa-regular fa-circle-dollar-to-slot icon"></i>
-                  <span>Sổ quỹ</span>
+                  <span>Thu chi & Sổ quỹ</span>
                 </NavLink>
               </li>
               <li>
@@ -137,7 +132,10 @@ function NavBar(props) {
                 </NavLink>
               </li>
               <li
-                className={clsx(IndexShow === 'NHAN_VIEN' && 'menu-item-open')}
+                className={clsx(
+                  IndexShow === 'NHAN_VIEN' && 'menu-item-open',
+                  getMenuItemActive('NHAN_VIEN', '/nhan-vien')
+                )}
               >
                 <NavLink to="/7">
                   <i className="fa-regular fa-chart-candlestick icon"></i>
@@ -178,7 +176,12 @@ function NavBar(props) {
                   </ul>
                 </div>
               </li>
-              <li className={clsx(IndexShow === 'CONG_NO' && 'menu-item-open')}>
+              <li
+                className={clsx(
+                  IndexShow === 'CONG_NO' && 'menu-item-open',
+                  getMenuItemActive('CONG_NO', '/cong-no')
+                )}
+              >
                 <NavLink to="/8">
                   <i className="fa-regular fa-chart-mixed icon"></i>
                   <span>Công nợ</span>
@@ -210,7 +213,12 @@ function NavBar(props) {
                   </ul>
                 </div>
               </li>
-              <li className={clsx(IndexShow === 'CSKH' && 'menu-item-open')}>
+              <li
+                className={clsx(
+                  IndexShow === 'CSKH' && 'menu-item-open',
+                  getMenuItemActive('CSKH', '/cskh')
+                )}
+              >
                 <NavLink to="/9">
                   <i className="fa-regular fa-handshake icon"></i>
                   <span>CSKH</span>
@@ -299,7 +307,12 @@ function NavBar(props) {
                   </ul>
                 </div>
               </li>
-              <li className={clsx(IndexShow === 'KHAC' && 'menu-item-open')}>
+              <li
+                className={clsx(
+                  IndexShow === 'KHAC' && 'menu-item-open',
+                  getMenuItemActive('KHAC', '/khac')
+                )}
+              >
                 <NavLink to="/0">
                   <i className="fa-regular fa-chart-scatter-bubble icon"></i>
                   <span>Khác</span>
@@ -393,7 +406,7 @@ function NavBar(props) {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/2">
+          <NavLink to="/ban-hang">
             <i className="fa-regular fa-cart-circle-check icon"></i>
             <span>Bán hàng</span>
             <i className="fa-solid fa-chevron-down icon-down"></i>
@@ -401,16 +414,13 @@ function NavBar(props) {
           <div className="ezs-navbar__sub">
             <ul>
               <li>
-                <NavLink to="/">Doanh số</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Chi tiết SP / DV bán ra</NavLink>
+                <NavLink to="/ban-hang/doanh-so">Doanh số</NavLink>
               </li>
               <li>
                 <NavLink to="/">Thanh toán trả nợ</NavLink>
               </li>
               <li>
-                <NavLink to="/">Trả hàng</NavLink>
+                <NavLink to="/ban-hang/tra-hang">Trả hàng</NavLink>
               </li>
             </ul>
           </div>
@@ -418,13 +428,7 @@ function NavBar(props) {
         <li>
           <NavLink to="/4">
             <i className="fa-regular fa-piggy-bank icon"></i>
-            <span>Thu chi</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/5">
-            <i className="fa-regular fa-circle-dollar-to-slot icon"></i>
-            <span>Sổ quỹ</span>
+            <span>Thu chi & Sổ quỹ</span>
           </NavLink>
         </li>
         <li>

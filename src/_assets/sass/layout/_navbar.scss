@@ -81,7 +81,8 @@
             text-decoration: none;
             color: #3f4254;
             transition: all 0.3s ease;
-            &:hover {
+            &:hover,
+            &.active {
               background-color: #f3f6f9;
               color: #3699ff;
             }
@@ -167,7 +168,6 @@
               }
             }
           }
-
           span {
             color: #3f4254;
             font-weight: 400;
@@ -376,6 +376,7 @@
     opacity: 1;
   }
 }
+
 @keyframes header-menu-submenu-move-down {
   0% {
     margin-top: 10px;
