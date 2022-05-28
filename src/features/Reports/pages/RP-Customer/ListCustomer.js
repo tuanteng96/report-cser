@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import _ from 'lodash'
-
-import moment from 'moment'
-import 'moment/locale/vi'
 import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import ModalViewMobile from './ModalViewMobile'
+
+import moment from 'moment'
+import 'moment/locale/vi'
 moment.locale('vi')
 
 function ListCustomer(props) {
@@ -30,6 +31,8 @@ function ListCustomer(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
+  const [initialValuesMobile, setInitialValuesMobile] = useState(null)
+  const [isModalMobile, setIsModalMobile] = useState(false)
 
   useEffect(() => {
     getListCustomer()
@@ -87,6 +90,16 @@ function ListCustomer(props) {
     getListCustomer()
   }
 
+  const OpenModalMobile = value => {
+    setInitialValuesMobile(value)
+    setIsModalMobile(true)
+  }
+
+  const HideModalMobile = () => {
+    setInitialValuesMobile(null)
+    setIsModalMobile(false)
+  }
+
   return (
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -113,7 +126,7 @@ function ListCustomer(props) {
           textDataNull="Không có dữ liệu."
           optionsMoible={{
             itemShow: 4,
-            CallModal: row => console.log(row)
+            CallModal: row => OpenModalMobile(row)
           }}
           options={{
             custom: true,
@@ -208,7 +221,7 @@ function ListCustomer(props) {
               //style: { textAlign: "center" },
               formatter: (cell, row) =>
                 row.BirthDate
-                  ? moment(row.BirthDate).format('DD/MM/YYYY')
+                  ? moment(row.BirthDate).format('HH:mm DD/MM/YYYY')
                   : 'Không có',
               attrs: { 'data-title': 'Ngày sinh' },
               headerStyle: () => {
@@ -359,6 +372,11 @@ function ListCustomer(props) {
           classes="table-bordered"
         />
       </div>
+      <ModalViewMobile
+        show={isModalMobile}
+        onHide={HideModalMobile}
+        data={initialValuesMobile}
+      />
     </div>
   )
 }
