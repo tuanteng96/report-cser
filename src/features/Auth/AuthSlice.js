@@ -12,7 +12,7 @@ window.Info = {
     },
     {
       ID: 8975,
-      Title: 'Nhung Nguyễn Beauty Center'
+      Title: 'Cser Hà Nội'
     },
     {
       ID: 10053,

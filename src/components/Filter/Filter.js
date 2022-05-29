@@ -11,7 +11,7 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
-function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
+function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
   const { Stocks } = useSelector(({ auth }) => ({
     Stocks: auth.Info.Stocks
   }))
@@ -131,4 +131,4 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
   )
 }
 
-export default FilterList
+export default Filter

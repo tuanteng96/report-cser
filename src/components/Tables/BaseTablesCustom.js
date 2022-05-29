@@ -81,81 +81,81 @@ function BaseTablesCustom({
 
   return (
     <Fragment>
-      <PaginationProvider pagination={paginationFactory(options)}>
-        {({ paginationProps, paginationTableProps }) => {
-          return (
-            <>
-              <BootstrapTable
-                wrapperClasses={`table-responsive ${className}`}
-                //rowClasses="text-nowrap"
-                classes={classes}
-                headerClasses="fw-500"
-                remote={true}
-                bordered={false}
-                data={data}
-                columns={columnsTable}
-                onTableChange={onTableChange}
-                noDataIndication={() =>
-                  loading ? (
-                    <LoadingTable text="Đang tải dữ liệu ..." />
-                  ) : (
-                    <ElementEmpty />
-                  )
-                }
-                {...paginationTableProps}
-                keyField={keyField}
-              />
-              <div className="d-flex justify-content-between">
-                <Pagination
-                  className="my-3"
-                  count={Math.ceil(
-                    paginationProps.totalSize / paginationProps.sizePerPage
-                  )}
-                  page={paginationProps.page}
-                  siblingCount={1}
-                  boundaryCount={1}
-                  variant="outlined"
-                  shape="rounded"
-                  onChange={(event, value) => {
-                    paginationProps.onPageChange(value)
-                  }}
+      {data && data.length > 0 ? (
+        <PaginationProvider pagination={paginationFactory(options)}>
+          {({ paginationProps, paginationTableProps }) => {
+            return (
+              <>
+                <BootstrapTable
+                  wrapperClasses={`table-responsive ${className}`}
+                  //rowClasses="text-nowrap"
+                  classes={classes}
+                  headerClasses="fw-500"
+                  remote={true}
+                  bordered={false}
+                  data={data}
+                  columns={columnsTable}
+                  onTableChange={onTableChange}
+                  noDataIndication={() =>
+                    loading && <LoadingTable text="Đang tải dữ liệu ..." />
+                  }
+                  {...paginationTableProps}
+                  keyField={keyField}
                 />
-                <div className="d-flex align-items-center text-gray-500">
-                  Hiển thị
-                  <div className="px-8px">
-                    <DropdownButton
-                      as={ButtonGroup}
-                      key="secondary"
-                      id={`dropdown-variants-Secondary`}
-                      variant=" font-weight-boldest"
-                      title={paginationProps.sizePerPage}
-                    >
-                      {paginationProps.sizePerPageList.map((item, index) => (
-                        <Dropdown.Item
-                          key={index}
-                          eventKey={index}
-                          active={
-                            paginationProps.sizePerPageList[index] ===
-                            paginationProps.sizePerPage
-                          }
-                          onClick={() =>
-                            paginationProps.onSizePerPageChange(
-                              paginationProps.sizePerPageList[index]
-                            )
-                          }
-                        >
-                          {paginationProps.sizePerPageList[index]}
-                        </Dropdown.Item>
-                      ))}
-                    </DropdownButton>
+                <div className="d-flex justify-content-between">
+                  <Pagination
+                    className="my-3"
+                    count={Math.ceil(
+                      paginationProps.totalSize / paginationProps.sizePerPage
+                    )}
+                    page={paginationProps.page}
+                    siblingCount={1}
+                    boundaryCount={1}
+                    variant="outlined"
+                    shape="rounded"
+                    onChange={(event, value) => {
+                      paginationProps.onPageChange(value)
+                    }}
+                  />
+                  <div className="d-flex align-items-center text-gray-500">
+                    Hiển thị
+                    <div className="px-8px">
+                      <DropdownButton
+                        as={ButtonGroup}
+                        key="secondary"
+                        id={`dropdown-variants-Secondary`}
+                        variant=" font-weight-boldest"
+                        title={paginationProps.sizePerPage}
+                      >
+                        {paginationProps.sizePerPageList.map((item, index) => (
+                          <Dropdown.Item
+                            key={index}
+                            eventKey={index}
+                            active={
+                              paginationProps.sizePerPageList[index] ===
+                              paginationProps.sizePerPage
+                            }
+                            onClick={() =>
+                              paginationProps.onSizePerPageChange(
+                                paginationProps.sizePerPageList[index]
+                              )
+                            }
+                          >
+                            {paginationProps.sizePerPageList[index]}
+                          </Dropdown.Item>
+                        ))}
+                      </DropdownButton>
+                    </div>
+                    trên trang
                   </div>
-                  trên trang
                 </div>
-              </div>
-            </>
-          )
-        }}
-      </PaginationProvider>
+              </>
+            )
+          }}
+        </PaginationProvider>
+      ) : (
+        <ElementEmpty />
+      )}
     </Fragment>
   )
 }

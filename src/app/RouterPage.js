@@ -1,12 +1,14 @@
 import React from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
+import LayoutReport from 'src/layout/LayoutReport'
 import RPCustomer from 'src/features/Reports/pages/RP-Customer'
 import RPDay from 'src/features/Reports/pages/RP-Day'
 import RPSell from 'src/features/Reports/pages/RP-Sell'
 import RPServices from 'src/features/Reports/pages/RP-Services'
-import PayDebt from 'src/features/Reports/pages/RP-Services/pages/PayDebt'
-import Sales from 'src/features/Reports/pages/RP-Services/pages/Sales'
-import LayoutReport from 'src/layout/LayoutReport'
+import Returns from 'src/features/Reports/pages/RP-Sell/pages/Returns'
+import Sales from 'src/features/Reports/pages/RP-Sell/pages/Sales'
+import SaleDetails from 'src/features/Reports/pages/RP-Sell/pages/SaleDetails'
+import DebtPayment from 'src/features/Reports/pages/RP-Sell/pages/DebtPayment'
 
 function RouterPage(props) {
   return (
@@ -45,7 +47,9 @@ function RouterPage(props) {
       >
         <Route index element={<Navigate to="doanh-so" replace />} />
         <Route path="doanh-so" element={<Sales />} />
-        <Route path="tra-hang" element={<PayDebt />} />
+        <Route path="sp-dv-ban-ra" element={<SaleDetails />} />
+        <Route path="thanh-toan-tra-no" element={<DebtPayment />} />
+        <Route path="tra-hang" element={<Returns />} />
       </Route>
       <Route path="/app23/index.html" element={<Navigate to="/" replace />} />
     </Routes>

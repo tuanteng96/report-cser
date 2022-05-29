@@ -10,12 +10,12 @@ import LoadingSkeleton from './LoadingSkeleton'
 import ChartPie from '../../components/ChartPie'
 import { ColorsHelpers } from 'src/helpers/ColorsHelpers'
 import ElementEmpty from 'src/components/Empty/ElementEmpty'
-
-import moment from 'moment'
-import 'moment/locale/vi'
 import LoadingChart from 'src/components/Loading/LoadingChart'
 import { TextHelper } from 'src/helpers/TextHelpers'
 import { useWindowSize } from 'src/hooks/useWindowSize'
+
+import moment from 'moment'
+import 'moment/locale/vi'
 moment.locale('vi')
 
 const optionsObj = {

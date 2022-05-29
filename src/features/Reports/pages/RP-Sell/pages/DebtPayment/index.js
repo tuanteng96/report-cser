@@ -4,7 +4,7 @@ import Filter from 'src/components/Filter/Filter'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 
-function Sales(props) {
+function DebtPayment(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
@@ -54,7 +54,7 @@ function Sales(props) {
       <div className="mb-20px d-flex justify-content-between align-items-end">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Doanh số
+            Thanh toán trả nợ
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -83,4 +83,4 @@ function Sales(props) {
   )
 }
 
-export default Sales
+export default DebtPayment

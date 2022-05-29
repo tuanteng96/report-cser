@@ -79,7 +79,7 @@ function NavBar(props) {
               <li
                 className={clsx(
                   IndexShow === 'BAN_HANG' && 'menu-item-open',
-                  getMenuItemActive('BAN_HANG','/ban-hang')
+                  getMenuItemActive('BAN_HANG', '/ban-hang')
                 )}
               >
                 <NavLink to="/ban-hang">
@@ -100,6 +100,16 @@ function NavBar(props) {
                           <span></span>
                         </i>
                         <span className="menu-text">Doanh số</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/ban-hang/sp-dv-ban-ra">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span></span>
+                        </i>
+                        <span className="menu-text">
+                          Sản phẩm, dịch vụ bán ra
+                        </span>
                       </NavLink>
                     </li>
                     <li>
@@ -419,7 +429,14 @@ function NavBar(props) {
                 <NavLink to="/ban-hang/doanh-so">Doanh số</NavLink>
               </li>
               <li>
-                <NavLink to="/">Thanh toán trả nợ</NavLink>
+                <NavLink to="/ban-hang/sp-dv-ban-ra">
+                  Sản phẩm, dịch vụ bán ra
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/ban-hang/thanh-toan-tra-no">
+                  Thanh toán trả nợ
+                </NavLink>
               </li>
               <li>
                 <NavLink to="/ban-hang/tra-hang">Trả hàng</NavLink>
