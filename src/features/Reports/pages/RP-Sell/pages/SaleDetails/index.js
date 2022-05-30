@@ -1,8 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import Filter from 'src/components/Filter/Filter'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
+import LoadingSkeleton from './LoadingSkeleton'
+import reportsApi from 'src/api/reports.api'
+import FilterList from 'src/components/Filter/FilterList'
+
+import moment from 'moment'
+import 'moment/locale/vi'
+import ElementEmpty from 'src/components/Empty/ElementEmpty'
+moment.locale('vi')
 
 function SaleDetails(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -11,11 +18,20 @@ function SaleDetails(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    Date: new Date() // Ngày,
+    DateStart: new Date(), // Ngày,
+    DateEnd: new Date(), // Ngày,
+    Voucher: '',
+    Payment: '',
+    IsMember: ''
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
+  const [dataResult, setDataResult] = useState({
+    SP_NVL: [], //1
+    DV_PP: [], //2
+    TT: [] //3
+  })
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -29,16 +45,56 @@ function SaleDetails(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
+  useEffect(() => {
+    getSalesDetail()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
+
+  const getSalesDetail = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = {
+      ...filters,
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null,
+      Voucher: filters.Voucher ? filters.Voucher.value : '',
+      Payment: filters.Payment ? filters.Payment.value : '',
+      IsMember: filters.IsMember ? filters.IsMember.value : ''
+    }
+    reportsApi
+      .getListSalesDetail(newFilters)
+      .then(({ data }) => {
+        setDataResult({
+          SP_NVL:
+            (data?.result && data?.result.filter(item => item.Format === 1)) ||
+            [],
+          DV_PP:
+            (data?.result && data?.result.filter(item => item.Format === 2)) ||
+            [],
+          TT:
+            (data?.result && data?.result.filter(item => item.Format === 3)) ||
+            []
+        })
+        setLoading(false)
+        isFilter && setIsFilter(false)
+        callback && callback()
+      })
+      .catch(error => console.log(error))
+  }
+
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      //getAllDays()
+      getSalesDetail()
     } else {
       setFilters(values)
     }
   }
 
   const onRefresh = () => {
-    //getAllDays()
+    getSalesDetail()
   }
 
   const onOpenFilter = () => {
@@ -69,7 +125,7 @@ function SaleDetails(props) {
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
           </button>
           <IconMenuMobile />
-          <Filter
+          <FilterList
             show={isFilter}
             filters={filters}
             onHide={onHideFilter}
@@ -79,150 +135,145 @@ function SaleDetails(props) {
           />
         </div>
       </div>
-      <div className="row">
-        <div className="col-md-4">
-          <div className="p-20px bg-white rounded h-100">
-            <div>
-              <div className="fw-500 font-size-lg">Sản phẩm / NVL</div>
-              <div className="text-muted font-size-smm">
-                Tổng 18 sản phẩm, 22 NVL
+      {loading && <LoadingSkeleton />}
+
+      {!loading && (
+        <div className="row">
+          <div className="col-md-4">
+            <div className="p-20px bg-white rounded h-100">
+              <div>
+                <div className="fw-500 font-size-lg">Sản phẩm / NVL</div>
+                <div className="text-muted font-size-smm">
+                  Tổng {(dataResult.SP_NVL && dataResult.SP_NVL.length) || 0}{' '}
+                  sản phẩm, NVL
+                </div>
+              </div>
+              <div className="mt-12px">
+                {dataResult.SP_NVL && dataResult.SP_NVL.length > 0 ? (
+                  <Fragment>
+                    <div className="d-flex justify-content-between py-12px">
+                      <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-15px">
+                        Tên SP / NVL
+                      </div>
+                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px text-end">
+                        Số lượng
+                      </div>
+                    </div>
+
+                    {dataResult.SP_NVL.map((item, index) => (
+                      <div
+                        className={`d-flex justify-content-between ${
+                          dataResult.SP_NVL.length - 1 === index
+                            ? 'pt-12px'
+                            : 'py-12px'
+                        } border-top border-gray-200`}
+                        key={index}
+                      >
+                        <div className="font-size-md fw-500 flex-1 pr-15px">
+                          {item.ProdTitle}
+                        </div>
+                        <div className="font-number font-size-smm fw-500 w-70px text-end">
+                          {item.SumQTy}
+                        </div>
+                      </div>
+                    ))}
+                  </Fragment>
+                ) : (
+                  <ElementEmpty />
+                )}
               </div>
             </div>
-            <div className="mt-12px">
-              <div className="d-flex justify-content-between py-12px">
-                <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-15px">
-                  Tên SP / NVL
-                </div>
-                <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px text-end">
-                  Số lượng
-                </div>
-              </div>
-              <div className="d-flex justify-content-between py-12px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Kem dưỡng da
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  1
+          </div>
+          <div className="col-md-4">
+            <div className="p-20px bg-white rounded h-100">
+              <div>
+                <div className="fw-500 font-size-lg">Dịch vụ / Phụ phí</div>
+                <div className="text-muted font-size-smm">
+                  Tổng {(dataResult.DV_PP && dataResult.DV_PP.length) || 0} dịch
+                  vụ, Phụ phí
                 </div>
               </div>
-              <div className="d-flex justify-content-between py-12px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Serum dưỡng da
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  12
+              <div className="mt-12px">
+                {dataResult.DV_PP.length > 0 ? (
+                  <Fragment>
+                    <div className="d-flex justify-content-between py-12px">
+                      <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-15px">
+                        Tên SP / NVL
+                      </div>
+                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px text-end">
+                        Số lượng
+                      </div>
+                    </div>
+                    {dataResult.DV_PP &&
+                      dataResult.DV_PP.map((item, index) => (
+                        <div
+                          className={`d-flex justify-content-between ${
+                            dataResult.DV_PP.length - 1 === index
+                              ? 'pt-12px'
+                              : 'py-12px'
+                          } border-top border-gray-200`}
+                          key={index}
+                        >
+                          <div className="font-size-md fw-500 flex-1 pr-15px">
+                            {item.ProdTitle}
+                          </div>
+                          <div className="font-number font-size-smm fw-500 w-70px text-end">
+                            {item.SumQTy}
+                          </div>
+                        </div>
+                      ))}
+                  </Fragment>
+                ) : (
+                  <ElementEmpty />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="p-20px bg-white rounded h-100">
+              <div>
+                <div className="fw-500 font-size-lg">Thẻ tiền</div>
+                <div className="text-muted font-size-smm">
+                  Tổng {(dataResult.TT && dataResult.TT.length) || 0} thẻ tiền
                 </div>
               </div>
-              <div className="d-flex justify-content-between py-12px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">NVL 1</div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  8
-                </div>
-              </div>
-              <div className="d-flex justify-content-between pt-10px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">NVL 2</div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  15
-                </div>
+              <div className="mt-12px">
+                {dataResult.TT && dataResult.TT.length > 0 ? (
+                  <Fragment>
+                    <div className="d-flex justify-content-between py-12px">
+                      <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-15px">
+                        Tên Thẻ tiền
+                      </div>
+                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px text-end">
+                        Số lượng
+                      </div>
+                    </div>
+                    {dataResult.TT.map((item, index) => (
+                      <div
+                        className={`d-flex justify-content-between ${
+                          dataResult.TT.length - 1 === index
+                            ? 'pt-12px'
+                            : 'py-12px'
+                        } border-top border-gray-200`}
+                        key={index}
+                      >
+                        <div className="font-size-md fw-500 flex-1 pr-15px">
+                          {item.ProdTitle}
+                        </div>
+                        <div className="font-number font-size-smm fw-500 w-70px text-end">
+                          {item.SumQTy}
+                        </div>
+                      </div>
+                    ))}
+                  </Fragment>
+                ) : (
+                  <ElementEmpty />
+                )}
               </div>
             </div>
           </div>
         </div>
-        <div className="col-md-4">
-          <div className="p-20px bg-white rounded h-100">
-            <div>
-              <div className="fw-500 font-size-lg">Dịch vụ / Phụ phí</div>
-              <div className="text-muted font-size-smm">
-                Tổng 18 dịch vụ, 22 Phụ phí
-              </div>
-            </div>
-            <div className="mt-12px">
-              <div className="d-flex justify-content-between py-12px">
-                <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-15px">
-                  Tên SP / NVL
-                </div>
-                <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px text-end">
-                  Số lượng
-                </div>
-              </div>
-              <div className="d-flex justify-content-between py-12px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Thẻ 10 buổi chăm sóc da
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  1
-                </div>
-              </div>
-              <div className="d-flex justify-content-between py-12px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Thẻ 12 buổi trị mụn
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  12
-                </div>
-              </div>
-              <div className="d-flex justify-content-between py-12px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Phụ phí 1
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  8
-                </div>
-              </div>
-              <div className="d-flex justify-content-between pt-10px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Phụ phí 2
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  15
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="p-20px bg-white rounded h-100">
-            <div>
-              <div className="fw-500 font-size-lg">Thẻ tiền</div>
-              <div className="text-muted font-size-smm">Tổng 18 thẻ tiền</div>
-            </div>
-            <div className="mt-12px">
-              <div className="d-flex justify-content-between py-12px">
-                <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-15px">
-                  Tên SP / NVL
-                </div>
-                <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px text-end">
-                  Số lượng
-                </div>
-              </div>
-              <div className="d-flex justify-content-between py-12px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Thẻ 10r
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  1
-                </div>
-              </div>
-              <div className="d-flex justify-content-between py-12px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Thẻ 12tr
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  12
-                </div>
-              </div>
-              <div className="d-flex justify-content-between pt-10px border-top border-gray-200">
-                <div className="font-size-md fw-500 flex-1 pr-15px">
-                  Thẻ 2tr
-                </div>
-                <div className="font-number font-size-smm fw-500 w-70px text-end">
-                  15
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   )
 }

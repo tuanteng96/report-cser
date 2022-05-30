@@ -18,6 +18,39 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
+const VoucherList = [
+  {
+    value: 0,
+    label: 'Không có Voucher'
+  },
+  {
+    value: 1,
+    label: 'Có Voucher'
+  }
+]
+
+const PaymentList = [
+  {
+    value: 0,
+    label: 'Còn nợ'
+  },
+  {
+    value: 1,
+    label: 'Thanh toán hết'
+  }
+]
+
+const IsMemberList = [
+  {
+    value: 0,
+    label: 'Khách cũ'
+  },
+  {
+    value: 1,
+    label: 'Khách mới'
+  }
+]
+
 function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
   const { Stocks } = useSelector(({ auth }) => ({
     Stocks: auth.Info.Stocks
@@ -110,6 +143,66 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           )}
                           onChange={otp => {
                             setFieldValue('StockID', otp ? otp.value : '')
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'Voucher' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Voucher</label>
+                        <Select
+                          menuPosition="fixed"
+                          isClearable={true}
+                          name="Voucher"
+                          placeholder="Loại Voucher"
+                          classNamePrefix="select"
+                          options={VoucherList}
+                          className="select-control"
+                          value={VoucherList.filter(
+                            item => Number(item.value) === values?.Voucher
+                          )}
+                          onChange={otp => {
+                            setFieldValue('Voucher', otp ? otp.value : '')
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'Payment' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Thanh toán</label>
+                        <Select
+                          menuPosition="fixed"
+                          isClearable={true}
+                          name="Payment"
+                          placeholder="Loại thanh toán"
+                          classNamePrefix="select"
+                          options={PaymentList}
+                          className="select-control"
+                          value={PaymentList.filter(
+                            item => Number(item.value) === values?.Payment
+                          )}
+                          onChange={otp => {
+                            setFieldValue('Payment', otp ? otp.value : '')
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'IsMember' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Khách hàng</label>
+                        <Select
+                          menuPosition="fixed"
+                          isClearable={true}
+                          name="IsMember"
+                          placeholder="Loại khách hàng"
+                          classNamePrefix="select"
+                          options={IsMemberList}
+                          className="select-control"
+                          value={IsMemberList.filter(
+                            item => Number(item.value) === values?.IsMember
+                          )}
+                          onChange={otp => {
+                            setFieldValue('IsMember', otp ? otp.value : '')
                           }}
                         />
                       </div>

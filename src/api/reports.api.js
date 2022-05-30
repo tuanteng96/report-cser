@@ -17,6 +17,12 @@ const reportsApi = {
   },
   getListServices: data => {
     return http.post(`${SubApi}/dich-vu/danh-sach`, JSON.stringify(data))
+  },
+  getListSalesDetail: data => {
+    return http.post(
+      `${SubApi}/ban-hang/doanh-so-chi-tiet`,
+      JSON.stringify(data)
+    )
   }
 }
 export default reportsApi
