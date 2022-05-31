@@ -9,12 +9,15 @@ import ElementEmpty from 'src/components/Empty/ElementEmpty'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import { ColorsHelpers } from 'src/helpers/ColorsHelpers'
 import { Nav, OverlayTrigger, Popover, Tab } from 'react-bootstrap'
+import reportsApi from 'src/api/reports.api'
 import ListSell from './ListSell'
 import ChartYear from './ChartYear'
 import ChartWeek from './ChartWeek'
+import LoadingSkeleton from './LoadingSkeleton'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { PriceHelper } from 'src/helpers/PriceHelper'
 moment.locale('vi')
 
 const optionsObj = {
@@ -57,6 +60,7 @@ function Sales(props) {
   const [loading, setLoading] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
   const [dataChart, setDataChart] = useState(objData)
+  const [dataSell, setDataSell] = useState({})
   const [optionsChart, setOptionsChart] = useState(optionsObj)
   const [heightElm, setHeightElm] = useState(0)
   const [KeyTabs, setKeyTabs] = useState('Week')
@@ -118,29 +122,69 @@ function Sales(props) {
       ...filters,
       Date: moment(filters.Date).format('DD/MM/yyyy')
     }
+
+    reportsApi
+      .getOverviewSell(newFilters)
+      .then(({ data }) => {
+        console.log(data)
+        setDataSell({
+          ...data.result,
+          SellWeek: data?.result
+            ? [
+                data?.result?.DSo_ThisWeek,
+                data?.result?.DSo_ThisMonday,
+                data?.result?.DSo_ThisTuesday,
+                data?.result?.DSo_ThisThursday,
+                data?.result?.DSo_ThisFriday,
+                data?.result?.DSo_ThisSaturday,
+                data?.result?.DSo_ThisSunday
+              ]
+            : [],
+          SellYear: data?.result
+            ? [
+                data?.result?.DSo_ThisJanuary,
+                data?.result?.DSo_ThisFebruary,
+                data?.result?.DSo_ThisMarch,
+                data?.result?.DSo_ThisMay,
+                data?.result?.DSo_ThisJune,
+                data?.result?.DSo_ThisJuly,
+                data?.result?.DSo_ThisAugust,
+                data?.result?.DSo_ThisAugust,
+                data?.result?.DSo_ThisSeptember,
+                data?.result?.DSo_ThisOctober,
+                data?.result?.DSo_ThisNovember,
+                data?.result?.DSo_ThisDecember
+              ]
+            : []
+        })
+        setLoading(false)
+        isFilter && setIsFilter(false)
+        callback && callback()
+      })
+      .catch(error => console.log(error))
     //
-    const data = null
-    setDataChart(prevState => ({
-      ...prevState,
-      labels: data?.result?.Items?.map(sets => `${sets.ProServiceName})`) || [
-        'Chăm sóc da',
-        'Thuốc trị mụn'
-      ],
-      datasets: prevState.datasets.map(sets => ({
-        ...sets,
-        data: data?.result?.Items?.map(item => item.CasesNum) || [10, 20],
-        backgroundColor: data?.result?.Items
-          ? ColorsHelpers.getColorSize(data.result.Items.length)
-          : ColorsHelpers.getColorSize(2),
-        borderColor: data?.result?.Items
-          ? ColorsHelpers.getBorderSize(data.result.Items.length)
-          : ColorsHelpers.getBorderSize(2)
-      }))
-    }))
+    //const data = null
+    // setDataChart(prevState => ({
+    //   ...prevState,
+    //   labels: data?.result?.Items?.map(sets => `${sets.ProServiceName})`) || [
+    //     'Chăm sóc da',
+    //     'Thuốc trị mụn'
+    //   ],
+    //   datasets: prevState.datasets.map(sets => ({
+    //     ...sets,
+    //     data: data?.result?.Items?.map(item => item.CasesNum) || [10, 20],
+    //     backgroundColor: data?.result?.Items
+    //       ? ColorsHelpers.getColorSize(data.result.Items.length)
+    //       : ColorsHelpers.getColorSize(2),
+    //     borderColor: data?.result?.Items
+    //       ? ColorsHelpers.getBorderSize(data.result.Items.length)
+    //       : ColorsHelpers.getBorderSize(2)
+    //   }))
+    // }))
     //setOverviewData(data.result)
-    setLoading(false)
-    isFilter && setIsFilter(false)
-    callback && callback()
+    // setLoading(false)
+    // isFilter && setIsFilter(false)
+    // callback && callback()
   }
 
   const onFilter = values => {
@@ -162,6 +206,8 @@ function Sales(props) {
   const onHideFilter = () => {
     setIsFilter(false)
   }
+
+  console.log(dataSell)
 
   return (
     <div className="py-main">
@@ -195,106 +241,127 @@ function Sales(props) {
       </div>
       <div className="row">
         <div className="col-md-12 col-lg-5" ref={elementRef}>
-          <div className="bg-white rounded report-sell-overview">
-            <div
-              className="rounded text-white p-30px elm-top"
-              style={{ backgroundColor: '#f54e60' }}
-            >
-              <div className="mb-15px d-flex justify-content-between align-items-end">
-                <span className="text-uppercase fw-600 font-size-xl">
-                  Bán hàng trong ngày
-                </span>
-                <span className="date">CN, 29 Thg 05 2022</span>
+          {loading && <LoadingSkeleton filters={filters} />}
+          {!loading && (
+            <div className="bg-white rounded report-sell-overview">
+              <div
+                className="rounded text-white p-30px elm-top"
+                style={{ backgroundColor: '#f54e60' }}
+              >
+                <div className="mb-15px d-flex justify-content-between align-items-end">
+                  <span className="text-uppercase fw-600 font-size-xl">
+                    Bán hàng trong ngày
+                  </span>
+                  <span className="date">
+                    {moment(filters.date).format('ddd, ll')}
+                  </span>
+                </div>
+                <div className="font-number text-center py-3 py-md-5 fw-600 total">
+                  +{PriceHelper.formatVND(dataSell.DSo_Ngay)}
+                </div>
               </div>
-              <div className="font-number text-center py-3 py-md-5 fw-600 total">
-                +50,000,000
+              <div className="p-25px" style={{ marginTop: '-60px' }}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div
+                      className="rounded mb-20px p-4"
+                      style={{ backgroundColor: '#E1F0FF', color: '#3699FF' }}
+                    >
+                      <i className="fa-solid fa-money-bill-wave font-size-30"></i>
+                      <div className="font-number fw-600 mt-10px d-flex align-items-center">
+                        <span className="total-2">
+                          {PriceHelper.formatVND(dataSell.DSo_TToan)}
+                        </span>
+                        <OverlayTrigger
+                          rootClose
+                          trigger="click"
+                          key="top"
+                          placement="top"
+                          overlay={
+                            <Popover id={`popover-positioned-top`}>
+                              <Popover.Header
+                                className="py-10px text-uppercase fw-600"
+                                as="h3"
+                              >
+                                Chi tiết thanh toán
+                              </Popover.Header>
+                              <Popover.Body className="p-0">
+                                <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                  <span>Tiền mặt</span>
+                                  <span>
+                                    {PriceHelper.formatVND(
+                                      dataSell.DSo_TToan_TMat
+                                    )}
+                                  </span>
+                                </div>
+                                <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                  <span>Chuyển khoản</span>
+                                  <span>
+                                    {PriceHelper.formatVND(
+                                      dataSell.DSo_TToan_CKhoan
+                                    )}
+                                  </span>
+                                </div>
+                                <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                  <span>Quẹt thẻ</span>
+                                  <span>
+                                    {PriceHelper.formatVND(
+                                      dataSell.DSo_TToan_QThe
+                                    )}
+                                  </span>
+                                </div>
+                              </Popover.Body>
+                            </Popover>
+                          }
+                        >
+                          <i className="fa-solid fa-circle-exclamation font-size-xl pl-5px cursor-pointer"></i>
+                        </OverlayTrigger>
+                      </div>
+                      <div className="">Thanh toán</div>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div
+                      className="rounded mb-20px p-4"
+                      style={{ backgroundColor: '#FFF4DE', color: '#FFA800' }}
+                    >
+                      <i className="fa-solid fa-wallet font-size-30"></i>
+                      <div className="font-number total-2 fw-600 mt-10px">
+                        {PriceHelper.formatVND(dataSell.DSo_TToan_Vi)}
+                      </div>
+                      <div className="">Thanh toán từ ví</div>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div
+                      className="rounded p-4 mb-4 mb-md-0"
+                      style={{ backgroundColor: '#C9F7F5', color: '#1BC5BD' }}
+                    >
+                      <i className="fa-solid fa-id-card font-size-30"></i>
+                      <div className="font-number total-2 fw-600 mt-10px">
+                        {PriceHelper.formatVNDPositive(
+                          dataSell.DSo_TToan_ThTien
+                        )}
+                      </div>
+                      <div className="">Từ thẻ tiền</div>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div
+                      className="rounded p-4"
+                      style={{ backgroundColor: '#FFE2E5', color: '#F64E60' }}
+                    >
+                      <i className="fa-solid fa-credit-card-blank font-size-30"></i>
+                      <div className="font-number total-2 fw-600 mt-10px">
+                        {PriceHelper.formatVNDPositive(dataSell.DSo_No_PSinh)}
+                      </div>
+                      <div className="">Nợ phát sinh</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="p-25px" style={{ marginTop: '-60px' }}>
-              <div className="row">
-                <div className="col-md-6">
-                  <div
-                    className="rounded mb-20px p-4"
-                    style={{ backgroundColor: '#E1F0FF', color: '#3699FF' }}
-                  >
-                    <i className="fa-solid fa-money-bill-wave font-size-30"></i>
-                    <div className="font-number fw-600 mt-10px d-flex align-items-center">
-                      <span className="total-2">18,000,000</span>
-                      <OverlayTrigger
-                        rootClose
-                        trigger="click"
-                        key="top"
-                        placement="top"
-                        overlay={
-                          <Popover id={`popover-positioned-top`}>
-                            <Popover.Header
-                              className="py-10px text-uppercase fw-600"
-                              as="h3"
-                            >
-                              Chi tiết thanh toán
-                            </Popover.Header>
-                            <Popover.Body className="p-0">
-                              <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                                <span>Tiền mặt</span>
-                                <span>10,000,000</span>
-                              </div>
-                              <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                                <span>Chuyển khoản</span>
-                                <span>10,000,000</span>
-                              </div>
-                              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                                <span>Quẹt thẻ</span>
-                                <span>10,000,000</span>
-                              </div>
-                            </Popover.Body>
-                          </Popover>
-                        }
-                      >
-                        <i className="fa-solid fa-circle-exclamation font-size-xl pl-5px cursor-pointer"></i>
-                      </OverlayTrigger>
-                    </div>
-                    <div className="">Thanh toán</div>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div
-                    className="rounded mb-20px p-4"
-                    style={{ backgroundColor: '#FFF4DE', color: '#FFA800' }}
-                  >
-                    <i className="fa-solid fa-wallet font-size-30"></i>
-                    <div className="font-number total-2 fw-600 mt-10px">
-                      1,000,000
-                    </div>
-                    <div className="">Thanh toán từ ví</div>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div
-                    className="rounded p-4 mb-4 mb-md-0"
-                    style={{ backgroundColor: '#C9F7F5', color: '#1BC5BD' }}
-                  >
-                    <i className="fa-solid fa-id-card font-size-30"></i>
-                    <div className="font-number total-2 fw-600 mt-10px">
-                      12,000,000
-                    </div>
-                    <div className="">Từ thẻ tiền</div>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div
-                    className="rounded p-4"
-                    style={{ backgroundColor: '#FFE2E5', color: '#F64E60' }}
-                  >
-                    <i className="fa-solid fa-credit-card-blank font-size-30"></i>
-                    <div className="font-number total-2 fw-600 mt-10px">
-                      2,000,000
-                    </div>
-                    <div className="">Nợ phát sinh</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
         <div className="col-md-12 col-lg-7">
           <div className="row">
@@ -346,14 +413,10 @@ function Sales(props) {
                 </div>
                 <Tab.Content className="tab-content">
                   <Tab.Pane eventKey="Week" className="p-0">
-                    <ChartWeek data={[100, 80, 200, 150, 250, 65, 124]} />
+                    <ChartWeek loading={loading} data={dataSell.SellWeek} />
                   </Tab.Pane>
                   <Tab.Pane eventKey="Year" className="p-0">
-                    <ChartYear
-                      data={[
-                        100, 80, 200, 150, 250, 65, 100, 43, 99, 300, 250, 124
-                      ]}
-                    />
+                    <ChartYear loading={loading} data={dataSell.SellYear} />
                   </Tab.Pane>
                 </Tab.Content>
               </Tab.Container>

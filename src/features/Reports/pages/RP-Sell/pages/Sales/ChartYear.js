@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Chart2Column from 'src/features/Reports/components/Chart2Column'
+import LoadingChart from 'src/components/Loading/LoadingChart'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -45,7 +46,7 @@ const objData = {
   ]
 }
 
-function ChartYear({ data }) {
+function ChartYear({ data, loading }) {
   const [dataChart, setDataChart] = useState(objData)
 
   useEffect(() => {
@@ -60,6 +61,14 @@ function ChartYear({ data }) {
       ]
     }))
   }, [data])
+
+  if (loading) {
+    return (
+      <div className="h-250px">
+        <LoadingChart />
+      </div>
+    )
+  }
 
   return <Chart2Column options={optionsObj} data={dataChart} />
 }
