@@ -23,9 +23,9 @@ function ListSell(props) {
     DateEnd: null, // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
-    Status: '', // Trạng thái
-    Warranty: '', // Bảo hành
-    StaffID: '' // ID nhân viên
+    Voucher: '', // Trạng thái
+    Payment: '', // Bảo hành
+    IsMember: '' // ID nhân viên
   })
   const [ListData, setListData] = useState([])
   const [isFilter, setIsFilter] = useState(false)
@@ -198,109 +198,6 @@ function ListSell(props) {
               }
             },
             {
-              dataField: 'Value',
-              text: 'Thành tiền',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.Value),
-              attrs: { 'data-title': 'Thành tiền' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'VoucherCode',
-              text: 'Voucher',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.VoucherCode || 'Chưa có',
-              attrs: { 'data-title': 'Voucher' },
-              headerStyle: () => {
-                return { minWidth: '200px', width: '200px' }
-              }
-            },
-            {
-              dataField: 'ReducedValue',
-              text: 'Giảm giá',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) =>
-                PriceHelper.formatValueVoucher(row.ReducedValue),
-              attrs: { 'data-title': 'Giảm giá' },
-              headerStyle: () => {
-                return { minWidth: '200px', width: '200px' }
-              }
-            },
-            {
-              dataField: 'ToValue',
-              text: 'Tổng tiền',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.ToPay),
-              attrs: { 'data-title': 'Tổng tiền' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'ToPay',
-              text: 'Thanh toán',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => (
-                <OverlayTrigger
-                  rootClose
-                  trigger="click"
-                  key="top"
-                  placement="top"
-                  overlay={
-                    <Popover id={`popover-positioned-top`}>
-                      <Popover.Header
-                        className="py-10px text-uppercase fw-600"
-                        as="h3"
-                      >
-                        Chi tiết thanh toán
-                      </Popover.Header>
-                      <Popover.Body className="p-0">
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                          <span>Tiền mặt</span>
-                          <span>{PriceHelper.formatVND(row.DaThToan_TM)}</span>
-                        </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                          <span>Chuyển khoản</span>
-                          <span>{PriceHelper.formatVND(row.DaThToan_CK)}</span>
-                        </div>
-                        <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                          <span>Quẹt thẻ</span>
-                          <span>{PriceHelper.formatVND(row.DaThToan_QT)}</span>
-                        </div>
-                      </Popover.Body>
-                    </Popover>
-                  }
-                >
-                  <div className="d-flex justify-content-between align-items-center">
-                    {PriceHelper.formatVND(row.ToPay)}
-                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
-                  </div>
-                </OverlayTrigger>
-              ),
-              attrs: { 'data-title': 'Thanh toán' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'ConNo',
-              text: 'Còn nợ',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.ConNo),
-              attrs: { 'data-title': 'Còn nợ' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
               dataField: 'MemberName',
               text: 'Khách hàng',
               //headerAlign: "center",
@@ -320,6 +217,159 @@ function ListSell(props) {
               attrs: { 'data-title': 'Số điện thoại' },
               headerStyle: () => {
                 return { minWidth: '200px', width: '200px' }
+              }
+            },
+            {
+              dataField: 'ToPay2',
+              text: 'Nguyên giá',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => PriceHelper.formatVND(row.ToPay),
+              attrs: { 'data-title': 'Nguyên giá' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
+              }
+            },
+            {
+              dataField: 'ReducedValue',
+              text: 'Giảm giá',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) =>
+                PriceHelper.formatValueVoucher(row.ReducedValue),
+              attrs: { 'data-title': 'Giảm giá' },
+              headerStyle: () => {
+                return { minWidth: '200px', width: '200px' }
+              }
+            },
+            {
+              dataField: 'TotalValue',
+              text: 'Tổng tiền',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => PriceHelper.formatVND(row.TotalValue),
+              attrs: { 'data-title': 'Tổng tiền' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
+              }
+            },
+            {
+              dataField: 'VoucherCode',
+              text: 'Voucher',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => row.VoucherCode || 'Chưa có',
+              attrs: { 'data-title': 'Voucher' },
+              headerStyle: () => {
+                return { minWidth: '200px', width: '200px' }
+              }
+            },
+            {
+              dataField: 'ToPay',
+              text: 'Cần thanh toán',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => PriceHelper.formatVND(row.ToPay),
+              attrs: { 'data-title': 'Cần thanh toán' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
+              }
+            },
+            {
+              dataField: 'DaThToan',
+              text: 'Đã thanh toán',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => (
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={
+                    <Popover id={`popover-positioned-top`}>
+                      <Popover.Header
+                        className="py-10px text-uppercase fw-600"
+                        as="h3"
+                      >
+                        Chi tiết thanh toán #{row.Id}
+                      </Popover.Header>
+                      <Popover.Body className="p-0">
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>Tiền mặt</span>
+                          <span>{PriceHelper.formatVND(row.DaThToan_TM)}</span>
+                        </div>
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>Chuyển khoản</span>
+                          <span>{PriceHelper.formatVND(row.DaThToan_CK)}</span>
+                        </div>
+                        <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                          <span>Quẹt thẻ</span>
+                          <span>{PriceHelper.formatVND(row.DaThToan_QT)}</span>
+                        </div>
+                      </Popover.Body>
+                    </Popover>
+                  }
+                >
+                  <div className="d-flex justify-content-between align-items-center">
+                    {PriceHelper.formatVND(row.DaThToan)}
+                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+                  </div>
+                </OverlayTrigger>
+              ),
+              attrs: { 'data-title': 'Thanh toán' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
+              }
+            },
+            {
+              dataField: 'DaThToan_Vi',
+              text: 'Ví',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => PriceHelper.formatVND(row.DaThToan_Vi),
+              attrs: { 'data-title': 'Ví' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
+              }
+            },
+            {
+              dataField: 'DaThToan_ThTien',
+              text: 'Thẻ tiền',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) =>
+                PriceHelper.formatVNDPositive(row.DaThToan_ThTien),
+              attrs: { 'data-title': 'Thẻ tiền' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
+              }
+            },
+            {
+              dataField: 'ConNo',
+              text: 'Còn nợ',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) =>
+                PriceHelper.formatVNDPositive(row.ConNo),
+              attrs: { 'data-title': 'Còn nợ' },
+              headerStyle: () => {
+                return { minWidth: '180px', width: '180px' }
+              }
+            },
+            {
+              dataField: 'IsMember',
+              text: 'Loại',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) => (
+                <span className={clsx({ 'text-success': row.IsMember === 1 })}>
+                  Khách {row.IsMember === 0 ? 'Cũ' : 'Mới'}
+                </span>
+              ),
+              attrs: { 'data-title': 'Loại' },
+              headerStyle: () => {
+                return { minWidth: '150px', width: '150px' }
               }
             },
             {

@@ -5,7 +5,6 @@ import 'moment/locale/vi'
 moment.locale('vi')
 
 function LoadingSkeleton({ filters }) {
-  console.log(filters)
   return (
     <div className="bg-white rounded report-sell-overview">
       <div
@@ -16,7 +15,7 @@ function LoadingSkeleton({ filters }) {
           <span className="text-uppercase fw-600 font-size-xl">
             Bán hàng trong ngày
           </span>
-          <span className="date">{moment(filters.date).format('ddd, ll')}</span>
+          <span className="date">{moment(filters.Date).format('ddd, ll')}</span>
         </div>
         <div className="font-number text-center py-3 py-md-5 fw-600 total">
           <Skeleton className="mx-4px" width={180} height={40} />

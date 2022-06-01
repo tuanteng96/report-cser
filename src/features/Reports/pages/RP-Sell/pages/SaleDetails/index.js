@@ -5,10 +5,11 @@ import _ from 'lodash'
 import LoadingSkeleton from './LoadingSkeleton'
 import reportsApi from 'src/api/reports.api'
 import FilterList from 'src/components/Filter/FilterList'
+import ElementEmpty from 'src/components/Empty/ElementEmpty'
+import { PriceHelper } from 'src/helpers/PriceHelper'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import ElementEmpty from 'src/components/Empty/ElementEmpty'
 moment.locale('vi')
 
 function SaleDetails(props) {
@@ -19,10 +20,7 @@ function SaleDetails(props) {
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     DateStart: new Date(), // Ngày,
-    DateEnd: new Date(), // Ngày,
-    Voucher: '',
-    Payment: '',
-    IsMember: ''
+    DateEnd: new Date() // Ngày,
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -155,14 +153,14 @@ function SaleDetails(props) {
                       <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-15px">
                         Tên SP / NVL
                       </div>
-                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px text-end">
-                        Số lượng
+                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-125px text-end">
+                        Thành tiền
                       </div>
                     </div>
 
                     {dataResult.SP_NVL.map((item, index) => (
                       <div
-                        className={`d-flex justify-content-between ${
+                        className={`${
                           dataResult.SP_NVL.length - 1 === index
                             ? 'pt-12px'
                             : 'py-12px'
@@ -172,8 +170,13 @@ function SaleDetails(props) {
                         <div className="font-size-md fw-500 flex-1 pr-15px">
                           {item.ProdTitle}
                         </div>
-                        <div className="font-number font-size-smm fw-500 w-70px text-end">
-                          {item.SumQTy}
+                        <div className="d-flex justify-content-between">
+                          <div>
+                            SL <span className="fw-600">x{item.SumQTy}</span>
+                          </div>
+                          <div className="font-number font-size-smm fw-600 w-125px text-end">
+                            {PriceHelper.formatVND(item.SumTopay)}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -207,7 +210,7 @@ function SaleDetails(props) {
                     {dataResult.DV_PP &&
                       dataResult.DV_PP.map((item, index) => (
                         <div
-                          className={`d-flex justify-content-between ${
+                          className={`${
                             dataResult.DV_PP.length - 1 === index
                               ? 'pt-12px'
                               : 'py-12px'
@@ -217,8 +220,13 @@ function SaleDetails(props) {
                           <div className="font-size-md fw-500 flex-1 pr-15px">
                             {item.ProdTitle}
                           </div>
-                          <div className="font-number font-size-smm fw-500 w-70px text-end">
-                            {item.SumQTy}
+                          <div className="d-flex justify-content-between">
+                            <div>
+                              SL <span className="fw-600">x{item.SumQTy}</span>
+                            </div>
+                            <div className="font-number font-size-smm fw-600 w-125px text-end">
+                              {PriceHelper.formatVND(item.SumTopay)}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -250,7 +258,7 @@ function SaleDetails(props) {
                     </div>
                     {dataResult.TT.map((item, index) => (
                       <div
-                        className={`d-flex justify-content-between ${
+                        className={`${
                           dataResult.TT.length - 1 === index
                             ? 'pt-12px'
                             : 'py-12px'
@@ -260,8 +268,13 @@ function SaleDetails(props) {
                         <div className="font-size-md fw-500 flex-1 pr-15px">
                           {item.ProdTitle}
                         </div>
-                        <div className="font-number font-size-smm fw-500 w-70px text-end">
-                          {item.SumQTy}
+                        <div className="d-flex justify-content-between">
+                          <div>
+                            SL <span className="fw-600">x{item.SumQTy}</span>
+                          </div>
+                          <div className="font-number font-size-smm fw-600 w-125px text-end">
+                            {PriceHelper.formatVND(item.SumTopay)}
+                          </div>
                         </div>
                       </div>
                     ))}

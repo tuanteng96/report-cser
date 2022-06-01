@@ -100,6 +100,14 @@ function ListServices(props) {
     setIsModalMobile(false)
   }
 
+  const removeName = (name) => {
+    if (!name) return ""
+    const index = name.lastIndexOf('-')
+    if (index > -1) {
+        return name.slice(index + 1, name.length)
+    }
+  }
+
   return (
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -285,6 +293,22 @@ function ListServices(props) {
               attrs: { 'data-title': 'Bảo hành' },
               headerStyle: () => {
                 return { minWidth: '120px', width: '120px' }
+              }
+            },
+            {
+              dataField: 'AddFeeTitles',
+              text: 'Phụ phí',
+              //headerAlign: "center",
+              //style: { textAlign: "center" },
+              formatter: (cell, row) =>
+                row.AddFeeTitles && row.AddFeeTitles.length > 0
+                  ? row.AddFeeTitles.map((item, index) => (
+                      <div key={index}>{removeName(item)} </div>
+                    ))
+                  : 'Không có',
+              attrs: { 'data-title': 'Phụ phí' },
+              headerStyle: () => {
+                return { minWidth: '200px', width: '200px' }
               }
             },
             {

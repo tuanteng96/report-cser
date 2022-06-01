@@ -131,9 +131,9 @@ function Sales(props) {
           ...data.result,
           SellWeek: data?.result
             ? [
-                data?.result?.DSo_ThisWeek,
                 data?.result?.DSo_ThisMonday,
                 data?.result?.DSo_ThisTuesday,
+                data?.result?.DSo_ThisWednesday,
                 data?.result?.DSo_ThisThursday,
                 data?.result?.DSo_ThisFriday,
                 data?.result?.DSo_ThisSaturday,
@@ -145,10 +145,10 @@ function Sales(props) {
                 data?.result?.DSo_ThisJanuary,
                 data?.result?.DSo_ThisFebruary,
                 data?.result?.DSo_ThisMarch,
+                data?.result?.DSo_ThisApril,
                 data?.result?.DSo_ThisMay,
                 data?.result?.DSo_ThisJune,
                 data?.result?.DSo_ThisJuly,
-                data?.result?.DSo_ThisAugust,
                 data?.result?.DSo_ThisAugust,
                 data?.result?.DSo_ThisSeptember,
                 data?.result?.DSo_ThisOctober,
@@ -191,6 +191,7 @@ function Sales(props) {
     if (_.isEqual(values, filters)) {
       getOverviewSell()
     } else {
+      console.log(values)
       setFilters(values)
     }
   }
@@ -206,8 +207,6 @@ function Sales(props) {
   const onHideFilter = () => {
     setIsFilter(false)
   }
-
-  console.log(dataSell)
 
   return (
     <div className="py-main">
@@ -253,7 +252,7 @@ function Sales(props) {
                     Bán hàng trong ngày
                   </span>
                   <span className="date">
-                    {moment(filters.date).format('ddd, ll')}
+                    {moment(filters.Date).format('ddd, ll')}
                   </span>
                 </div>
                 <div className="font-number text-center py-3 py-md-5 fw-600 total">

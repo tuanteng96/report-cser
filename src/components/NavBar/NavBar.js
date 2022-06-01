@@ -488,7 +488,7 @@ function NavBar(props) {
                 <NavLink to="/">Công nợ</NavLink>
               </li>
               <li>
-                <NavLink to="/">Báo cáo</NavLink>
+                <NavLink to="/">Báo cáo khóa nợ</NavLink>
               </li>
             </ul>
           </div>
