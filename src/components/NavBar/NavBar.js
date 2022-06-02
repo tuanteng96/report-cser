@@ -390,7 +390,7 @@ function NavBar(props) {
     )
   }
   return (
-    <div className="position-absolute w-100 h-55px top-0 left-0 shadows px-30px bg-white">
+    <div className="position-fixed zindex-1001 w-100 h-55px top-0 left-0 shadows px-30px bg-white">
       <ul className="ezs-navbar">
         <li>
           <NavLink to="/">
