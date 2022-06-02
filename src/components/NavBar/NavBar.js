@@ -5,7 +5,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import clsx from 'clsx'
 import { useSelector, useDispatch } from 'react-redux'
 import { ToggleAside } from '../../layout/LayoutSlice'
-import { RouterHeplers } from 'src/helpers/RouterHelpers'
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
@@ -325,7 +324,7 @@ function NavBar(props) {
                   getMenuItemActive('KHAC', '/khac')
                 )}
               >
-                <NavLink to="/0">
+                <NavLink to="/khac">
                   <i className="fa-regular fa-chart-scatter-bubble icon"></i>
                   <span>Khác</span>
                 </NavLink>
@@ -335,19 +334,13 @@ function NavBar(props) {
                 <div className="ezs-navbar__sub only-right">
                   <ul>
                     <li>
-                      <NavLink to="/e1">
+                      <NavLink to="/khac/top-ban-hang-doanh-so">
                         <i className="menu-bullet menu-bullet-dot">
                           <span></span>
                         </i>
-                        <span className="menu-text">Top bán hàng</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/e2">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Top doanh số</span>
+                        <span className="menu-text">
+                          Top bán hàng, doanh số
+                        </span>
                       </NavLink>
                     </li>
                     <li>
@@ -528,8 +521,8 @@ function NavBar(props) {
             </ul>
           </div>
         </li>
-        <li>
-          <NavLink to="/0">
+        <li >
+          <NavLink to="/khac">
             <i className="fa-regular fa-chart-scatter-bubble icon"></i>
             <span>Khác</span>
             <i className="fa-solid fa-chevron-down icon-down"></i>
@@ -537,10 +530,9 @@ function NavBar(props) {
           <div className="ezs-navbar__sub only-right">
             <ul>
               <li>
-                <NavLink to="/">Top bán hàng</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Top doanh số</NavLink>
+                <NavLink to="/khac/top-ban-hang-doanh-so">
+                  Top bán hàng, doanh số
+                </NavLink>
               </li>
               <li>
                 <NavLink to="/">Dịch vụ đã bán chưa thực hiện</NavLink>

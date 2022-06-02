@@ -1,48 +1,54 @@
-@each $name, $value in $heights-and-widths {
-  .p-#{$name} {
-    padding: $value !important;
-  }
-  .px-#{$name} {
-    padding-left: $value !important;
-    padding-right: $value !important;
-  }
-  .py-#{$name} {
-    padding-top: $value !important;
-    padding-bottom: $value !important;
-  }
-  .pl-#{$name} {
-    padding-left: $value !important;
-  }
-  .pr-#{$name} {
-    padding-right: $value !important;
-  }
-  .pb-#{$name} {
-    padding-bottom: $value !important;
-  }
-  .pt-#{$name} {
-    padding-top: $value !important;
-  }
-  .m-#{$name} {
-    margin: $value !important;
-  }
-  .mx-#{$name} {
-    margin-left: $value !important;
-    margin-right: $value !important;
-  }
-  .my-#{$name} {
-    margin-top: $value !important;
-    margin-bottom: $value !important;
-  }
-  .ml-#{$name} {
-    margin-left: $value !important;
-  }
-  .mr-#{$name} {
-    margin-right: $value !important;
-  }
-  .mb-#{$name} {
-    margin-bottom: $value !important;
-  }
-  .mt-#{$name} {
-    margin-top: $value !important;
-  }
+@each $breakpoint in map-keys($grid-breakpoints) {
+    @include media-breakpoint-up($breakpoint) {
+        $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+        @each $name,
+        $value in $heights-and-widths {
+            .p#{$infix}-#{$name} {
+                padding: $value !important;
+            }
+            .px#{$infix}-#{$name} {
+                padding-left: $value !important;
+                padding-right: $value !important;
+            }
+            .py#{$infix}-#{$name} {
+                padding-top: $value !important;
+                padding-bottom: $value !important;
+            }
+            .pl#{$infix}-#{$name} {
+                padding-left: $value !important;
+            }
+            .pr#{$infix}-#{$name} {
+                padding-right: $value !important;
+            }
+            .pb#{$infix}-#{$name} {
+                padding-bottom: $value !important;
+            }
+            .pt#{$infix}-#{$name} {
+                padding-top: $value !important;
+            }
+            .m#{$infix}-#{$name} {
+                margin: $value !important;
+            }
+            .mx#{$infix}-#{$name} {
+                margin-left: $value !important;
+                margin-right: $value !important;
+            }
+            .my#{$infix}-#{$name} {
+                margin-top: $value !important;
+                margin-bottom: $value !important;
+            }
+            .ml#{$infix}-#{$name} {
+                margin-left: $value !important;
+            }
+            .mr#{$infix}-#{$name} {
+                margin-right: $value !important;
+            }
+            .mb#{$infix}-#{$name} {
+                margin-bottom: $value !important;
+            }
+            .mt#{$infix}-#{$name} {
+                margin-top: $value !important;
+            }
+        }
+    }
 }

@@ -19,8 +19,8 @@ function ListSell(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    DateStart: null, // Ngày bắt đầu
-    DateEnd: null, // Ngày kết thúc
+    DateStart: new Date(), // Ngày bắt đầu
+    DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
     Voucher: '', // Trạng thái

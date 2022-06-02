@@ -3,49 +3,19 @@ import { useSelector } from 'react-redux'
 import Filter from 'src/components/Filter/Filter'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
-import LoadingChart from 'src/components/Loading/LoadingChart'
-import ChartPie from 'src/features/Reports/components/ChartPie'
-import ElementEmpty from 'src/components/Empty/ElementEmpty'
-import { useWindowSize } from 'src/hooks/useWindowSize'
-import { ColorsHelpers } from 'src/helpers/ColorsHelpers'
 import { Nav, OverlayTrigger, Popover, Tab } from 'react-bootstrap'
 import reportsApi from 'src/api/reports.api'
 import ListSell from './ListSell'
 import ChartYear from './ChartYear'
 import ChartWeek from './ChartWeek'
 import LoadingSkeleton from './LoadingSkeleton'
+import { PriceHelper } from 'src/helpers/PriceHelper'
+import ChartCircle from './ChartCircle'
+import { useWindowSize } from 'src/hooks/useWindowSize'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import { PriceHelper } from 'src/helpers/PriceHelper'
 moment.locale('vi')
-
-const optionsObj = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'right'
-    },
-    title: {
-      display: false,
-      text: 'Biểu đồ dịch vụ'
-    }
-  }
-}
-
-const objData = {
-  labels: [],
-  datasets: [
-    {
-      label: '# of Votes',
-      data: [],
-      backgroundColor: [],
-      borderColor: [],
-      borderWidth: 1
-    }
-  ]
-}
 
 function Sales(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -59,37 +29,11 @@ function Sales(props) {
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
-  const [dataChart, setDataChart] = useState(objData)
   const [dataSell, setDataSell] = useState({})
-  const [optionsChart, setOptionsChart] = useState(optionsObj)
   const [heightElm, setHeightElm] = useState(0)
   const [KeyTabs, setKeyTabs] = useState('Week')
   const elementRef = useRef(null)
   const { width } = useWindowSize()
-
-  useEffect(() => {
-    if (width > 767) {
-      setOptionsChart(prevState => ({
-        ...prevState,
-        plugins: {
-          ...prevState.plugins,
-          legend: {
-            position: 'right'
-          }
-        }
-      }))
-    } else {
-      setOptionsChart(prevState => ({
-        ...prevState,
-        plugins: {
-          ...prevState.plugins,
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }))
-    }
-  }, [width])
 
   useEffect(() => {
     if (width > 767) {
@@ -126,7 +70,6 @@ function Sales(props) {
     reportsApi
       .getOverviewSell(newFilters)
       .then(({ data }) => {
-        console.log(data)
         setDataSell({
           ...data.result,
           SellWeek: data?.result
@@ -162,36 +105,12 @@ function Sales(props) {
         callback && callback()
       })
       .catch(error => console.log(error))
-    //
-    //const data = null
-    // setDataChart(prevState => ({
-    //   ...prevState,
-    //   labels: data?.result?.Items?.map(sets => `${sets.ProServiceName})`) || [
-    //     'Chăm sóc da',
-    //     'Thuốc trị mụn'
-    //   ],
-    //   datasets: prevState.datasets.map(sets => ({
-    //     ...sets,
-    //     data: data?.result?.Items?.map(item => item.CasesNum) || [10, 20],
-    //     backgroundColor: data?.result?.Items
-    //       ? ColorsHelpers.getColorSize(data.result.Items.length)
-    //       : ColorsHelpers.getColorSize(2),
-    //     borderColor: data?.result?.Items
-    //       ? ColorsHelpers.getBorderSize(data.result.Items.length)
-    //       : ColorsHelpers.getBorderSize(2)
-    //   }))
-    // }))
-    //setOverviewData(data.result)
-    // setLoading(false)
-    // isFilter && setIsFilter(false)
-    // callback && callback()
   }
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
       getOverviewSell()
     } else {
-      console.log(values)
       setFilters(values)
     }
   }
@@ -366,11 +285,15 @@ function Sales(props) {
           <div className="row">
             <div className="col-md-12">
               <div
-                className="bg-white rounded p-4 p-lg-5 w-100 mt-4 mt-lg-0"
+                className="bg-white rounded p-4 w-100 mt-4 mt-lg-0"
                 style={{ height: heightElm > 0 ? `${heightElm}px` : 'auto' }}
               >
-                {loading && <LoadingChart />}
-                {!loading && (
+                <ChartCircle
+                  loading={loading}
+                  height={heightElm > 0 ? `${heightElm}px` : 'auto'}
+                  data={dataSell.product1Days}
+                />
+                {/* {!loading && (
                   <>
                     {dataChart.labels.length > 0 ? (
                       <ChartPie
@@ -382,7 +305,7 @@ function Sales(props) {
                       <ElementEmpty />
                     )}
                   </>
-                )}
+                )} */}
               </div>
             </div>
           </div>

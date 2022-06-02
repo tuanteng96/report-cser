@@ -51,6 +51,21 @@ const IsMemberList = [
   }
 ]
 
+const TopTypeList = [
+  {
+    value: 1,
+    label: 'Sản phẩm, NVL'
+  },
+  {
+    value: 2,
+    label: 'Dịch vụ, Phụ phí'
+  },
+  {
+    value: 3,
+    label: 'Thẻ tiền'
+  }
+]
+
 function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
   const { Stocks } = useSelector(({ auth }) => ({
     Stocks: auth.Info.Stocks
@@ -143,6 +158,25 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           )}
                           onChange={otp => {
                             setFieldValue('StockID', otp ? otp.value : '')
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'TopType' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Loại</label>
+                        <Select
+                          name="TopType"
+                          placeholder="Chọn loại"
+                          classNamePrefix="select"
+                          options={TopTypeList}
+                          className="select-control"
+                          value={TopTypeList.filter(
+                            item =>
+                              Number(item.value) === Number(values?.TopType)
+                          )}
+                          onChange={otp => {
+                            setFieldValue('TopType', otp ? otp.value : '')
                           }}
                         />
                       </div>

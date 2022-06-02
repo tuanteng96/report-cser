@@ -9,6 +9,8 @@ import Returns from 'src/features/Reports/pages/RP-Sell/pages/Returns'
 import Sales from 'src/features/Reports/pages/RP-Sell/pages/Sales'
 import SaleDetails from 'src/features/Reports/pages/RP-Sell/pages/SaleDetails'
 import DebtPayment from 'src/features/Reports/pages/RP-Sell/pages/DebtPayment'
+import RPMore from 'src/features/Reports/pages/RP-More'
+import TopProducts from 'src/features/Reports/pages/RP-More/pages/TopProducts'
 
 function RouterPage(props) {
   return (
@@ -50,6 +52,20 @@ function RouterPage(props) {
         <Route path="sp-dv-ban-ra" element={<SaleDetails />} />
         <Route path="thanh-toan-tra-no" element={<DebtPayment />} />
         <Route path="tra-hang" element={<Returns />} />
+      </Route>
+      <Route
+        path="/khac"
+        element={
+          <LayoutReport>
+            <RPMore />
+          </LayoutReport>
+        }
+      >
+        <Route
+          index
+          element={<Navigate to="top-ban-hang-doanh-so" replace />}
+        />
+        <Route path="top-ban-hang-doanh-so" element={<TopProducts />} />
       </Route>
       <Route path="/app23/index.html" element={<Navigate to="/" replace />} />
     </Routes>

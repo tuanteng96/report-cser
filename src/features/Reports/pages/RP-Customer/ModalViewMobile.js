@@ -193,6 +193,8 @@ function ModalViewMobile({ show, onHide, data }) {
   )
 }
 
-ModalViewMobile.propTypes = {}
+ModalViewMobile.propTypes = {
+  show: PropTypes.bool
+}
 
 export default ModalViewMobile

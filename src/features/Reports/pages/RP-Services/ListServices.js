@@ -100,11 +100,11 @@ function ListServices(props) {
     setIsModalMobile(false)
   }
 
-  const removeName = (name) => {
-    if (!name) return ""
+  const removeName = name => {
+    if (!name) return ''
     const index = name.lastIndexOf('-')
     if (index > -1) {
-        return name.slice(index + 1, name.length)
+      return name.slice(index + 1, name.length)
     }
   }
 
