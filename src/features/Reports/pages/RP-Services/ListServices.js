@@ -186,7 +186,7 @@ function ListServices(props) {
               //headerAlign: "center",
               //style: { textAlign: "center" },
               formatter: (cell, row) =>
-                moment(row.BookDate).format('DD/MM/YYYY'),
+                moment(row.BookDate).format('HH:mm DD/MM/YYYY'),
               attrs: { 'data-title': 'Ngày đặt lịch' },
               headerStyle: () => {
                 return { minWidth: '150px', width: '150px' }

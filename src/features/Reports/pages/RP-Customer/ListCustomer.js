@@ -167,10 +167,10 @@ function ListCustomer(props) {
               //headerAlign: "center",
               //style: { textAlign: "center" },
               formatter: (cell, row) =>
-                moment(row.CreateDate).format('DD/MM/YYYY'),
+                moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
               attrs: { 'data-title': 'Ngày tạo' },
               headerStyle: () => {
-                return { minWidth: '120px', width: '120px' }
+                return { minWidth: '180px', width: '180px' }
               }
             },
             {
@@ -221,7 +221,7 @@ function ListCustomer(props) {
               //style: { textAlign: "center" },
               formatter: (cell, row) =>
                 row.BirthDate
-                  ? moment(row.BirthDate).format('HH:mm DD/MM/YYYY')
+                  ? moment(row.BirthDate).format('DD/MM/YYYY')
                   : 'Không có',
               attrs: { 'data-title': 'Ngày sinh' },
               headerStyle: () => {
