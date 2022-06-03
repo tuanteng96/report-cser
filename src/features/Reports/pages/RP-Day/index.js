@@ -29,7 +29,7 @@ function RPDay(props) {
 
   useEffect(() => {
     const index = Stocks.findIndex(
-      item => Number(item.ID) === Number(CrStockID)
+      item => Number(item.ID) === Number(filters.StockID)
     )
     if (index > -1) {
       setStockName(Stocks[index].Title)

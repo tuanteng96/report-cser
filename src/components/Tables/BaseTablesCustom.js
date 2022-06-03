@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import Pagination from '@material-ui/lab/Pagination'
 import BootstrapTable from 'react-bootstrap-table-next'
@@ -41,6 +41,8 @@ function BaseTablesCustom({
   optionsMoible,
   textDataNull
 }) {
+  const refElm = useRef(0)
+  const [widthElm, setWidthElm] = useState(0)
   const onTableChange = (type, { page, sizePerPage }) => {
     //console.log(page);
     //console.log(sizePerPage);
@@ -79,83 +81,91 @@ function BaseTablesCustom({
     }
   }, [columns, width, optionsMoible])
 
+  useEffect(() => {
+    setWidthElm(refElm?.current?.clientWidth)
+  }, [refElm, width])
+
   return (
     <Fragment>
-      {data && data.length > 0 ? (
-        <PaginationProvider pagination={paginationFactory(options)}>
-          {({ paginationProps, paginationTableProps }) => {
-            return (
-              <>
-                <BootstrapTable
-                  wrapperClasses={`table-responsive ${className}`}
-                  //rowClasses="text-nowrap"
-                  classes={classes}
-                  headerClasses="fw-500"
-                  remote={true}
-                  bordered={false}
-                  data={data}
-                  columns={columnsTable}
-                  onTableChange={onTableChange}
-                  noDataIndication={() =>
-                    loading && <LoadingTable text="Đang tải dữ liệu ..." />
-                  }
-                  {...paginationTableProps}
-                  keyField={keyField}
+      <div ref={refElm}></div>
+      <PaginationProvider pagination={paginationFactory(options)}>
+        {({ paginationProps, paginationTableProps }) => {
+          return (
+            <>
+              <BootstrapTable
+                wrapperClasses={`table-responsive ${className}`}
+                //rowClasses="text-nowrap"
+                classes={classes}
+                headerClasses="fw-500"
+                remote={true}
+                bordered={false}
+                data={data}
+                columns={columnsTable}
+                onTableChange={onTableChange}
+                noDataIndication={() =>
+                  loading ? (
+                    <LoadingTable
+                      text="Đang tải dữ liệu ..."
+                      width={`${widthElm}px`}
+                    />
+                  ) : (
+                    <ElementEmpty width={`${widthElm}px`} />
+                  )
+                }
+                {...paginationTableProps}
+                keyField={keyField}
+              />
+              <div className="d-flex justify-content-between">
+                <Pagination
+                  className="my-3"
+                  count={Math.ceil(
+                    paginationProps.totalSize / paginationProps.sizePerPage
+                  )}
+                  page={paginationProps.page}
+                  siblingCount={1}
+                  boundaryCount={1}
+                  variant="outlined"
+                  shape="rounded"
+                  onChange={(event, value) => {
+                    paginationProps.onPageChange(value)
+                  }}
                 />
-                <div className="d-flex justify-content-between">
-                  <Pagination
-                    className="my-3"
-                    count={Math.ceil(
-                      paginationProps.totalSize / paginationProps.sizePerPage
-                    )}
-                    page={paginationProps.page}
-                    siblingCount={1}
-                    boundaryCount={1}
-                    variant="outlined"
-                    shape="rounded"
-                    onChange={(event, value) => {
-                      paginationProps.onPageChange(value)
-                    }}
-                  />
-                  <div className="d-flex align-items-center text-gray-500">
-                    Hiển thị
-                    <div className="px-8px">
-                      <DropdownButton
-                        as={ButtonGroup}
-                        key="secondary"
-                        id={`dropdown-variants-Secondary`}
-                        variant=" font-weight-boldest"
-                        title={paginationProps.sizePerPage}
-                      >
-                        {paginationProps.sizePerPageList.map((item, index) => (
-                          <Dropdown.Item
-                            key={index}
-                            eventKey={index}
-                            active={
-                              paginationProps.sizePerPageList[index] ===
-                              paginationProps.sizePerPage
-                            }
-                            onClick={() =>
-                              paginationProps.onSizePerPageChange(
-                                paginationProps.sizePerPageList[index]
-                              )
-                            }
-                          >
-                            {paginationProps.sizePerPageList[index]}
-                          </Dropdown.Item>
-                        ))}
-                      </DropdownButton>
-                    </div>
-                    trên trang
+                <div className="d-flex align-items-center text-gray-500">
+                  Hiển thị
+                  <div className="px-8px">
+                    <DropdownButton
+                      as={ButtonGroup}
+                      key="secondary"
+                      id={`dropdown-variants-Secondary`}
+                      variant=" font-weight-boldest"
+                      title={paginationProps.sizePerPage}
+                    >
+                      {paginationProps.sizePerPageList.map((item, index) => (
+                        <Dropdown.Item
+                          key={index}
+                          eventKey={index}
+                          active={
+                            paginationProps.sizePerPageList[index] ===
+                            paginationProps.sizePerPage
+                          }
+                          onClick={() =>
+                            paginationProps.onSizePerPageChange(
+                              paginationProps.sizePerPageList[index]
+                            )
+                          }
+                        >
+                          {paginationProps.sizePerPageList[index]}
+                        </Dropdown.Item>
+                      ))}
+                    </DropdownButton>
                   </div>
+                  trên trang
                 </div>
-              </>
-            )
-          }}
-        </PaginationProvider>
-      ) : (
-        <ElementEmpty />
-      )}
+              </div>
+            </>
+          )
+        }}
+      </PaginationProvider>
     </Fragment>
   )
 }

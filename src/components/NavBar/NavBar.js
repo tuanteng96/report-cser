@@ -112,19 +112,19 @@ function NavBar(props) {
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/ban-hang/thanh-toan-tra-no">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Thanh toán trả nợ</span>
-                      </NavLink>
-                    </li>
-                    <li>
                       <NavLink to="/ban-hang/tra-hang">
                         <i className="menu-bullet menu-bullet-dot">
                           <span></span>
                         </i>
                         <span className="menu-text">Trả hàng</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/ban-hang/thanh-toan-tra-no">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span></span>
+                        </i>
+                        <span className="menu-text">Thanh toán trả nợ</span>
                       </NavLink>
                     </li>
                   </ul>
@@ -427,12 +427,12 @@ function NavBar(props) {
                 </NavLink>
               </li>
               <li>
+                <NavLink to="/ban-hang/tra-hang">Trả hàng</NavLink>
+              </li>
+              <li>
                 <NavLink to="/ban-hang/thanh-toan-tra-no">
                   Thanh toán trả nợ
                 </NavLink>
-              </li>
-              <li>
-                <NavLink to="/ban-hang/tra-hang">Trả hàng</NavLink>
               </li>
             </ul>
           </div>
@@ -521,7 +521,7 @@ function NavBar(props) {
             </ul>
           </div>
         </li>
-        <li >
+        <li>
           <NavLink to="/khac">
             <i className="fa-regular fa-chart-scatter-bubble icon"></i>
             <span>Khác</span>

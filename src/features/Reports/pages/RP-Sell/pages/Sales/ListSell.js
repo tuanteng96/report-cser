@@ -7,10 +7,10 @@ import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
 import clsx from 'clsx'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
 moment.locale('vi')
 
 function ListSell(props) {
@@ -191,7 +191,7 @@ function ListSell(props) {
               //headerAlign: "center",
               //style: { textAlign: "center" },
               formatter: (cell, row) =>
-                moment(row.CreateDate).format('DD/MM/YYYY'),
+                moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
               attrs: { 'data-title': 'Ngày' },
               headerStyle: () => {
                 return { minWidth: '150px', width: '150px' }
@@ -220,11 +220,11 @@ function ListSell(props) {
               }
             },
             {
-              dataField: 'ToPay2',
+              dataField: 'Value',
               text: 'Nguyên giá',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.ToPay),
+              formatter: (cell, row) => PriceHelper.formatVND(row.Value),
               attrs: { 'data-title': 'Nguyên giá' },
               headerStyle: () => {
                 return { minWidth: '180px', width: '180px' }
@@ -327,7 +327,8 @@ function ListSell(props) {
               text: 'Ví',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.DaThToan_Vi),
+              formatter: (cell, row) =>
+                PriceHelper.formatVNDPositive(row.DaThToan_Vi),
               attrs: { 'data-title': 'Ví' },
               headerStyle: () => {
                 return { minWidth: '180px', width: '180px' }
@@ -358,13 +359,17 @@ function ListSell(props) {
               }
             },
             {
-              dataField: 'IsMember',
+              dataField: 'IsNewMember',
               text: 'Loại',
               //headerAlign: "center",
               //style: { textAlign: "center" },
               formatter: (cell, row) => (
-                <span className={clsx({ 'text-success': row.IsMember === 1 })}>
-                  Khách {row.IsMember === 0 ? 'Cũ' : 'Mới'}
+                <span
+                  className={`${clsx({
+                    'text-success': row.IsNewMember === 1
+                  })} fw-500`}
+                >
+                  Khách {row.IsNewMember === 0 ? 'Cũ' : 'Mới'}
                 </span>
               ),
               attrs: { 'data-title': 'Loại' },

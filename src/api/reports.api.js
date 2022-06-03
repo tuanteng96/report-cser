@@ -35,6 +35,9 @@ const reportsApi = {
       `${SubApi}/ban-hang/doanh-so-chi-tiet`,
       JSON.stringify(data)
     )
+  },
+  getListReturns: data => {
+    return http.post(`${SubApi}/ban-hang/tra-hang`, JSON.stringify(data))
   }
 }
 export default reportsApi

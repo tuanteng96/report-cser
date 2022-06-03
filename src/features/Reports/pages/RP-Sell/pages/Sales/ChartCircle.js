@@ -92,6 +92,9 @@ function ChartCircle({ loading, data }) {
           borderColor: ColorsHelpers.getBorderSize(data.length)
         }))
       }))
+    } else {
+      setSLDataChart(objData)
+      setDSDataChart(objData)
     }
   }, [data])
 

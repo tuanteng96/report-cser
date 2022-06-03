@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal } from 'react-bootstrap'
+import { Modal, OverlayTrigger, Popover } from 'react-bootstrap'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import clsx from 'clsx'
 moment.locale('vi')
 
 const perfectScrollbarOptions = {
@@ -49,7 +50,7 @@ function ModalViewMobile({ show, onHide, data }) {
         <div className="py-5px">
           <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              ID
+              Mã đơn hàng
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
               #{data?.Id}
@@ -57,11 +58,11 @@ function ModalViewMobile({ show, onHide, data }) {
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Ngày đặt lịch
+              Ngày đặt
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.BookDate
-                ? moment(data.BookDate).format('DD/MM/YYYY')
+              {data?.CreateDate
+                ? moment(data.CreateDate).format('HH:mm DD/MM/YYYY')
                 : 'Không có'}
             </div>
           </div>
@@ -83,99 +84,149 @@ function ModalViewMobile({ show, onHide, data }) {
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Dịch vụ gốc
+              Nguyên giá
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.ProServiceName || 'Không có dịch vụ gốc'}
+              {PriceHelper.formatVND(data?.Value)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Thẻ
+              Giảm giá
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Card || 'Không có thẻ'}
+              {PriceHelper.formatVND(data?.ReducedValue)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Giá buổi
+              Tổng tiền
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.SessionCost)}
+              {PriceHelper.formatVND(data?.TotalValue)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Giá buổi (Tặng)
+              Voucher
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.SessionCostExceptGift)}
+              {data?.VoucherCode || 'Chưa có'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Buổi
+              Cần thanh toán
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Warranty ? data?.SessionWarrantyIndex : data?.SessionIndex}
+              {PriceHelper.formatVND(data?.ToPay)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Bảo hành
+              Đã thanh toán
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Warranty ? 'Bảo hành' : 'Không có'}
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Header
+                      className="py-10px text-uppercase fw-600"
+                      as="h3"
+                    >
+                      Chi tiết thanh toán #{data?.Id}
+                    </Popover.Header>
+                    <Popover.Body className="p-0">
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Tiền mặt</span>
+                        <span>{PriceHelper.formatVND(data?.DaThToan_TM)}</span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Chuyển khoản</span>
+                        <span>{PriceHelper.formatVND(data?.DaThToan_CK)}</span>
+                      </div>
+                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                        <span>Quẹt thẻ</span>
+                        <span>{PriceHelper.formatVND(data?.DaThToan_QT)}</span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-end align-items-center">
+                  {PriceHelper.formatVND(data?.DaThToan)}
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning pl-3px"></i>
+                </div>
+              </OverlayTrigger>
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Nhân viên thực hiện
+              Ví
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.StaffSalaries && data?.StaffSalaries.length > 0
-                ? data?.StaffSalaries.map(
-                    item =>
-                      `${item.FullName} (${PriceHelper.formatVND(item.Salary)})`
-                  ).join(', ')
-                : 'Chưa xác định'}
+              {PriceHelper.formatVNDPositive(data?.DaThToan_Vi)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Tổng lương nhân viên
+              Thẻ tiền
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.TotalSalary)}
+              {PriceHelper.formatVNDPositive(data?.DaThToan_ThTien)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Trạng thái
+              Còn nợ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Status === 'done' ? (
-                <span className="text-success">Hoàn thành</span>
-              ) : (
-                <span className="text-warning">Đang thực hiện</span>
-              )}
+              {PriceHelper.formatVNDPositive(data?.ConNo)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Đánh giá sao
+              Loại
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Rate || 'Chưa đánh giá'}
+              <span
+                className={`${clsx({
+                  'text-success': data?.IsNewMember === 1
+                })} fw-500`}
+              >
+                Khách {data?.IsNewMember === 0 ? 'Cũ' : 'Mới'}
+              </span>
             </div>
           </div>
-          <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
+          <div className="px-15px d-flex justify-content-between py-10px line-height-sm flex-column">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Nội dung đánh giá
+              Chi tiết đơn hàng
             </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.RateNote || 'Chưa có'}
+            <div className="fw-600 font-size-mdd w-100">
+              {data?.lines &&
+                data?.lines.map((item, index) => (
+                  <div
+                    className={clsx('py-12px', {
+                      'border-bottom': data?.lines.length - 1 !== index
+                    })}
+                    key={index}
+                  >
+                    <div className="fw-500 mb-2px">{item.ProdTitle}</div>
+                    <div className="d-flex justify-content-between">
+                      <div className="text-muted">
+                        SL{' '}
+                        <span className="fw-500 text-dark">x {item.QTy}</span>
+                      </div>
+                      <div className="fw-500">
+                        {PriceHelper.formatVND(item.Topay)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
             </div>
           </div>
         </div>

@@ -45,7 +45,7 @@ function Sales(props) {
 
   useEffect(() => {
     const index = Stocks.findIndex(
-      item => Number(item.ID) === Number(CrStockID)
+      item => Number(item.ID) === Number(filters.StockID)
     )
     if (index > -1) {
       setStockName(Stocks[index].Title)
@@ -245,7 +245,7 @@ function Sales(props) {
                     >
                       <i className="fa-solid fa-wallet font-size-30"></i>
                       <div className="font-number total-2 fw-600 mt-10px">
-                        {PriceHelper.formatVND(dataSell.DSo_TToan_Vi)}
+                        {PriceHelper.formatVNDPositive(dataSell.DSo_TToan_Vi)}
                       </div>
                       <div className="">Thanh toán từ ví</div>
                     </div>
