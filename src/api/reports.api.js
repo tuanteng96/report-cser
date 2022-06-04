@@ -38,6 +38,12 @@ const reportsApi = {
   },
   getListReturns: data => {
     return http.post(`${SubApi}/ban-hang/tra-hang`, JSON.stringify(data))
+  },
+  getListDebtPayment: data => {
+    return http.post(
+      `${SubApi}/ban-hang/thanh-toan-tra-no`,
+      JSON.stringify(data)
+    )
   }
 }
 export default reportsApi

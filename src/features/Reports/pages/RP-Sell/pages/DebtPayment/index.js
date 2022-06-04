@@ -4,183 +4,300 @@ import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import FilterList from 'src/components/Filter/FilterList'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import ChildrenTables from 'src/components/Tables/ChildrenTables'
+import reportsApi from 'src/api/reports.api'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
+import ModalViewMobile from './ModalViewMobile'
 
-const JsonData = [
-  {
-    CreateDate: '2022-06-03T14:11:39',
-    TTToanNo: 13000000,
-    ListCustomer: [
-      {
-        MemberName: 'Nguyễn Tài Tuấn',
-        MemberPhone: '0971021196',
-        TTToanNo: 13000000,
-        ListOrders: [
-          {
-            Id: 25897,
-            TTToanNo: 25000000,
-            OrderItems: [
-              {
-                Id: 12579,
-                ToPay: 800000,
-                TTToanNo: 25000000,
-                DaThToan: 0,
-                DaThToan_TM: 0,
-                DaThToan_CK: 0,
-                DaThToan_QT: 0,
-                DaThToan_Vi: 0,
-                DaThToan_ThTien: 0,
-                lines: [
-                  {
-                    ProdId: 12499,
-                    ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        MemberName: 'Lê Bảo Ngọc',
-        MemberPhone: '0981883338',
-        TTToanNo: 13000000,
-        ListOrders: [
-          {
-            Id: 25897,
-            TTToanNo: 25000000,
-            OrderItems: [
-              {
-                Id: 12579,
-                ToPay: 800000,
-                TTToanNo: 25000000,
-                DaThToan: 0,
-                DaThToan_TM: 0,
-                DaThToan_CK: 0,
-                DaThToan_QT: 0,
-                DaThToan_Vi: 0,
-                DaThToan_ThTien: 0,
-                lines: [
-                  {
-                    ProdId: 12499,
-                    ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                  }
-                ]
-              },
-              {
-                Id: 12579,
-                ToPay: 800000,
-                TTToanNo: 25000000,
-                DaThToan: 0,
-                DaThToan_TM: 100000,
-                DaThToan_CK: 200000,
-                DaThToan_QT: 150000,
-                DaThToan_Vi: 250000,
-                DaThToan_ThTien: 1000000,
-                lines: [
-                  {
-                    ProdId: 12419,
-                    ProdTitle: 'Mỹ phẩm trị nám'
-                  },
-                  {
-                    ProdId: 12420,
-                    ProdTitle: 'Chăm sóc da'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    CreateDate: '2022-06-03T14:11:39',
-    TTToanNo: 13000000,
-    ListCustomer: [
-      {
-        MemberName: 'Lê Bảo Ngọc',
-        MemberPhone: '0981883338',
-        TTToanNo: 13000000,
-        ListOrders: [
-          {
-            Id: 25897,
-            TTToanNo: 25000000,
-            OrderItems: [
-              {
-                Id: 12579,
-                ToPay: 800000,
-                TTToanNo: 25000000,
-                DaThToan: 0,
-                DaThToan_TM: 0,
-                DaThToan_CK: 0,
-                DaThToan_QT: 0,
-                DaThToan_Vi: 0,
-                DaThToan_ThTien: 0,
-                lines: [
-                  {
-                    ProdId: 12499,
-                    ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                  }
-                ]
-              },
-              {
-                Id: 12579,
-                ToPay: 800000,
-                TTToanNo: 25000000,
-                DaThToan: 0,
-                DaThToan_TM: 100000,
-                DaThToan_CK: 200000,
-                DaThToan_QT: 150000,
-                DaThToan_Vi: 250000,
-                DaThToan_ThTien: 1000000,
-                lines: [
-                  {
-                    ProdId: 12419,
-                    ProdTitle: 'Mỹ phẩm trị nám'
-                  },
-                  {
-                    ProdId: 12420,
-                    ProdTitle: 'Chăm sóc da'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        MemberName: 'Nguyễn Tài Tuấn',
-        MemberPhone: '0971021196',
-        TTToanNo: 13000000,
-        ListOrders: [
-          {
-            Id: 25897,
-            TTToanNo: 25000000,
-            OrderItems: [
-              {
-                Id: 12579,
-                ToPay: 800000,
-                TTToanNo: 25000000,
-                DaThToan: 0,
-                DaThToan_TM: 0,
-                DaThToan_CK: 0,
-                DaThToan_QT: 0,
-                DaThToan_Vi: 0,
-                DaThToan_ThTien: 0,
-                lines: [
-                  {
-                    ProdId: 12499,
-                    ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-]
+import moment from 'moment'
+import 'moment/locale/vi'
+moment.locale('vi')
+
+const JSONData = {
+  Total: 3,
+  PCount: 1,
+  TTToanNo: 130000000,
+  Items: [
+    {
+      CreateDate: '2022-06-03T14:11:39',
+      TTToanNo: 3000000,
+      ListCustomer: [
+        {
+          MemberName: 'Lê Bảo Ngọc',
+          MemberPhone: '0971021196',
+          TTToanNo: 13000000,
+          ListOrders: [
+            {
+              Id: 258911,
+              TTToanNo: 35000000,
+              OrderItems: [
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                },
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              Id: 258922,
+              TTToanNo: 45000000,
+              OrderItems: [
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          MemberName: 'Nguyễn Tài Tuấn',
+          MemberPhone: '0981883338',
+          TTToanNo: 13000000,
+          ListOrders: [
+            {
+              Id: 25897,
+              TTToanNo: 25000000,
+              OrderItems: [
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      CreateDate: '2022-06-03T14:11:39',
+      TTToanNo: 3000000,
+      ListCustomer: [
+        {
+          MemberName: 'Lê Bảo Ngọc',
+          MemberPhone: '0971021196',
+          TTToanNo: 13000000,
+          ListOrders: [
+            {
+              Id: 258911,
+              TTToanNo: 35000000,
+              OrderItems: [
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          MemberName: 'Nguyễn Tài Tuấn',
+          MemberPhone: '0981883338',
+          TTToanNo: 13000000,
+          ListOrders: [
+            {
+              Id: 25897,
+              TTToanNo: 25000000,
+              OrderItems: [
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      CreateDate: '2022-06-03T14:11:39',
+      TTToanNo: 3000000,
+      ListCustomer: [
+        {
+          MemberName: 'Lê Bảo Ngọc',
+          MemberPhone: '0971021196',
+          TTToanNo: 13000000,
+          ListOrders: [
+            {
+              Id: 258911,
+              TTToanNo: 35000000,
+              OrderItems: [
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          MemberName: 'Nguyễn Tài Tuấn',
+          MemberPhone: '0981883338',
+          TTToanNo: 13000000,
+          ListOrders: [
+            {
+              Id: 25897,
+              TTToanNo: 25000000,
+              OrderItems: [
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              Id: 25897,
+              TTToanNo: 25000000,
+              OrderItems: [
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                },
+                {
+                  Id: 12579,
+                  ToPay: 800000,
+                  TTToanNo: 25000000,
+                  DaThToan: 0,
+                  DaThToan_TM: 0,
+                  DaThToan_CK: 0,
+                  DaThToan_QT: 0,
+                  DaThToan_Vi: 0,
+                  DaThToan_ThTien: 0,
+                  lines: [
+                    {
+                      ProdId: 12499,
+                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
 
 function DebtPayment(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -189,11 +306,19 @@ function DebtPayment(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    Date: new Date() // Ngày,
+    Date: new Date(), // Ngày,
+    Pi: 1, // Trang hiện tại
+    Ps: 10, // Số lượng item
+    MemberID: ''
   })
+  const [ListData, setListData] = useState([])
+  const [TongTTNo, setTongTTNo] = useState(0)
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
+  const [PageTotal, setPageTotal] = useState(2)
+  const [initialValuesMobile, setInitialValuesMobile] = useState(null)
+  const [isModalMobile, setIsModalMobile] = useState(false)
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -207,16 +332,47 @@ function DebtPayment(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
+  useEffect(() => {
+    getListDebtPayment()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
+
+  const getListDebtPayment = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = {
+      ...filters,
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null,
+      MemberID: filters.MemberID ? filters.MemberID.value : ''
+    }
+    reportsApi
+      .getListDebtPayment(newFilters)
+      .then(({ data }) => {
+        const { Items, Total, TTToanNo } = data.result || JSONData
+        setListData(Items)
+        setTongTTNo(TTToanNo)
+        setLoading(false)
+        setPageTotal(Total)
+        isFilter && setIsFilter(false)
+        callback && callback()
+      })
+      .catch(error => console.log(error))
+  }
+
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      //getAllDays()
+      getListDebtPayment()
     } else {
       setFilters(values)
     }
   }
 
   const onRefresh = () => {
-    //getAllDays()
+    getListDebtPayment()
   }
 
   const onOpenFilter = () => {
@@ -226,14 +382,33 @@ function DebtPayment(props) {
   const onHideFilter = () => {
     setIsFilter(false)
   }
+
+  const OpenModalMobile = value => {
+    setInitialValuesMobile(value)
+    setIsModalMobile(true)
+  }
+
+  const HideModalMobile = () => {
+    setInitialValuesMobile(null)
+    setIsModalMobile(false)
+  }
+
   //
-  const AmountTR = item => {
+  const AmountMember = item => {
     var totalArray = 0
     if (!item) return totalArray
     for (let keyItem of item) {
       for (let keyOrder of keyItem.ListOrders) {
         totalArray += keyOrder?.OrderItems?.length || 0
       }
+    }
+    return totalArray
+  }
+  const AmountOrderItem = member => {
+    var totalArray = 0
+    if (!member) return totalArray
+    for (let keyOrders of member.ListOrders) {
+      totalArray += keyOrders?.OrderItems?.length || 0
     }
     return totalArray
   }
@@ -269,179 +444,276 @@ function DebtPayment(props) {
         </div>
       </div>
       <div className="bg-white rounded mt-25px">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách thanh toán nợ</div>
-        </div>
-        <div className="p-20px">
-          <div className="react-bootstrap-table table-responsive table-responsive-attr">
-            <table className="table table-bordered">
-              <thead>
-                <tr className="fw-500">
-                  <th>Ngày</th>
-                  <th>Khách hàng</th>
-                  <th>Số điện thoại</th>
-                  <th>Tổng Thanh toán nợ</th>
-                  <th>Đơn hàng</th>
-                  <th>Thanh toán nợ</th>
-                  <th>Chi tiết</th>
-                  <th>Thanh toán</th>
-                  <th>Ví</th>
-                  <th>Thẻ tiền</th>
-                  <th>Sản phẩm</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* <tr>
-                  <td className="vertical-align-middle" rowSpan="3">
-                    03/04/2022
-                  </td>
-                  <td className="vertical-align-middle" rowSpan="2">
-                    Nguyễn Tài Tuấn
-                  </td>
-                  <td className="vertical-align-middle" rowSpan="2">
-                    0971021196
-                  </td>
-                  <td className="vertical-align-middle" rowSpan="2">
-                    3,000,000
-                  </td>
-                  <td>#25975</td>
-                  <td>200,000</td>
-                  <td>300,000</td>
-                  <td>100,000</td>
-                  <td>0</td>
-                  <td>500,000</td>
-                  <td>Combo làm đẹp trọn vẹn</td>
-                </tr>
-                <tr>
-                  <td>#25975</td>
-                  <td>80,000</td>
-                  <td>120,000</td>
-                  <td>160,000</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>Mỹ phẩm trị nám</td>
-                </tr>
-                <tr>
-                  <td>Lê Bảo Ngọc</td>
-                  <td>0981883338</td>
-                  <td>3,500,000</td>
-                  <td>#25977</td>
-                  <td>250,000</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>Chăm sóc da</td>
-                </tr> */}
-                {JsonData.map((item, itemIndex) => (
-                  <Fragment key={itemIndex}>
-                    {item.ListCustomer.map((member, memberIndex) => (
-                      <Fragment key={memberIndex}>
-                        {member.ListOrders.map((orders, ordersIndex) => (
-                          <Fragment key={ordersIndex}>
-                            {orders.OrderItems.map(
-                              (orderItem, orderItemIndex) => (
-                                <tr key={orderItemIndex}>
-                                  {memberIndex === 0 &&
-                                    ordersIndex === 0 &&
-                                    orderItemIndex === 0 && (
-                                      <td
-                                        className="vertical-align-middle"
-                                        rowSpan={AmountTR(item.ListCustomer)}
-                                      >
-                                        {item.CreateDate}
-                                      </td>
-                                    )}
-                                  {orders.OrderItems.length > 0 &&
-                                    orderItemIndex === 0 && (
-                                      <Fragment>
-                                        <td
-                                          className="vertical-align-middle"
-                                          rowSpan={orders.OrderItems.length}
-                                        >
-                                          {member.MemberName}
-                                        </td>
-                                        <td
-                                          className="vertical-align-middle"
-                                          rowSpan={orders.OrderItems.length}
-                                        >
-                                          {member.MemberPhone}
-                                        </td>
-                                        <td
-                                          className="vertical-align-middle"
-                                          rowSpan={orders.OrderItems.length}
-                                        >
-                                          {PriceHelper.formatVND(
-                                            member.TTToanNo
-                                          )}
-                                        </td>
-                                      </Fragment>
-                                    )}
-                                  <td>#{orderItem.Id}</td>
-                                  <td>{orderItem.TTToanNo}</td>
-                                  <td>{orderItem.ToPay}</td>
-                                  <td>{orderItem.DaThToan}</td>
-                                  <td>{orderItem.DaThToan_Vi}</td>
-                                  <td>{orderItem.DaThToan_ThTien}</td>
-                                  <td>
-                                    {orderItem.lines
-                                      .map(line => line.ProdTitle)
-                                      .join(', ')}
-                                  </td>
-                                </tr>
-                              )
-                            )}
-                          </Fragment>
-                        ))}
-                      </Fragment>
-                    ))}
-                  </Fragment>
-                ))}
-
-                {/* {
-                  JsonData.map((item, index) => (
-                    <Fragment key={index}>
-                      {
-                        Array(AmountTR(item.ListCustomer)).fill().map((i, idx) => (
-                          <tr key={idx} >
-                            {
-                              idx === 0 && (
-                                <td rowSpan={AmountTR(item.ListCustomer)}>{item.CreateDate}</td>
-                              )
-                            }
-                            {
-                              item.ListCustomer.map((Member, MemberId) => (
-                                <Fragment key={MemberId}>
-                                  {
-                                    Member.ListOrders.map((Order, OrderId) => (
-                                      <Fragment key={OrderId}>
-                                        {
-                                          Order.OrderItems.map((OrderItem, OrderItemId) => (
-                                            <Fragment key={OrderItemId}>
-                                              <td>#{OrderItem.Id}</td>
-                                              <td>{OrderItem.TTToanNo}</td>
-                                              <td>{OrderItem.ToPay}</td>
-                                              <td>{OrderItem.DaThToan}</td>
-                                              <td>{OrderItem.lines.map(line => line.ProdTitle).join(", ")}</td>
-                                            </Fragment>
-                                          ))
-                                        }
-                                      </Fragment>
-                                    ))
-                                  }
-                                </Fragment>
-                              ))
-                            }
-                          </tr>
-                        ))
-                      }
-                    </Fragment>
-                  ))
-                } */}
-              </tbody>
-            </table>
+          <div className="fw-500">
+            Tổng thanh toán nợ{' '}
+            <span className="font-size-xl fw-600 text-success">
+              {PriceHelper.formatVND(TongTTNo)}
+            </span>
           </div>
         </div>
+        <div className="p-20px">
+          <ChildrenTables
+            data={ListData}
+            columns={[
+              {
+                text: 'Ngày',
+                headerStyle: {
+                  minWidth: '160px',
+                  width: '160px'
+                },
+                attrs: { 'data-title': 'Ngày' }
+              },
+              {
+                text: 'Khách hàng',
+                headerStyle: {
+                  minWidth: '200px',
+                  width: '200px'
+                }
+              },
+              {
+                text: 'Số điện thoại',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
+                text: 'Tổng thanh toán nợ',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
+                text: 'Đơn hàng',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
+                text: 'Thanh toán nợ',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
+                text: 'Chi tiết',
+                headerStyle: {
+                  minWidth: '120px',
+                  width: '120px'
+                }
+              },
+              {
+                text: 'Thanh toán',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
+                text: 'Ví',
+                headerStyle: {
+                  minWidth: '120px',
+                  width: '120px'
+                }
+              },
+              {
+                text: 'Thẻ tiền',
+                headerStyle: {
+                  minWidth: '120px',
+                  width: '120px'
+                }
+              },
+              {
+                text: 'Sản phẩm',
+                headerStyle: {
+                  minWidth: '220px',
+                  width: '220px'
+                }
+              }
+            ]}
+            options={{
+              totalSize: PageTotal,
+              page: filters.Pi,
+              sizePerPage: filters.Ps,
+              sizePerPageList: [10, 25, 30, 50],
+              onPageChange: page => {
+                setListData([])
+                const Pi = page
+                setFilters({ ...filters, Pi: Pi })
+              },
+              onSizePerPageChange: sizePerPage => {
+                setListData([])
+                const Ps = sizePerPage
+                setFilters({ ...filters, Ps: Ps })
+              }
+            }}
+            optionsMoible={{
+              itemShow: 1,
+              CallModal: row => OpenModalMobile(row),
+              columns: [
+                {
+                  attrs: { 'data-title': 'Tổng khách hàng' },
+                  formatter: row => row.ListCustomer.length
+                },
+                {
+                  attrs: { 'data-title': 'Tổng thanh toán nợ' },
+                  formatter: row => PriceHelper.formatVND(row.TTToanNo)
+                }
+              ]
+            }}
+            loading={loading}
+          >
+            {ListData &&
+              ListData.map((item, itemIndex) => (
+                <Fragment key={itemIndex}>
+                  {item.ListCustomer.map((member, memberIndex) => (
+                    <Fragment key={memberIndex}>
+                      {member.ListOrders.map((orders, ordersIndex) => (
+                        <Fragment key={ordersIndex}>
+                          {orders.OrderItems.map(
+                            (orderItem, orderItemIndex) => (
+                              <tr key={orderItemIndex}>
+                                {memberIndex === 0 &&
+                                  ordersIndex === 0 &&
+                                  orderItemIndex === 0 && (
+                                    <td
+                                      className="vertical-align-middle"
+                                      rowSpan={AmountMember(item.ListCustomer)}
+                                    >
+                                      {moment(item.CreateDate).format(
+                                        'DD-MM-YYYY'
+                                      )}
+                                    </td>
+                                  )}
+                                {ordersIndex === 0 && orderItemIndex === 0 && (
+                                  <Fragment>
+                                    <td
+                                      className="vertical-align-middle"
+                                      rowSpan={AmountOrderItem(member)}
+                                    >
+                                      {member.MemberName}
+                                    </td>
+                                    <td
+                                      className="vertical-align-middle"
+                                      rowSpan={AmountOrderItem(member)}
+                                    >
+                                      {member.MemberPhone}
+                                    </td>
+                                    <td
+                                      className="vertical-align-middle"
+                                      rowSpan={AmountOrderItem(member)}
+                                    >
+                                      {PriceHelper.formatVND(member.TTToanNo)}
+                                    </td>
+                                  </Fragment>
+                                )}
+                                {orders.OrderItems.length > 0 &&
+                                  orderItemIndex === 0 && (
+                                    <Fragment>
+                                      <td
+                                        className="vertical-align-middle"
+                                        rowSpan={orders.OrderItems.length}
+                                      >
+                                        #{orderItem.Id}
+                                      </td>
+                                      <td
+                                        className="vertical-align-middle"
+                                        rowSpan={orders.OrderItems.length}
+                                      >
+                                        {PriceHelper.formatVND(
+                                          orderItem.TTToanNo
+                                        )}
+                                      </td>
+                                    </Fragment>
+                                  )}
+                                <td>
+                                  {PriceHelper.formatVND(orderItem.ToPay)}
+                                </td>
+                                <td>
+                                  <OverlayTrigger
+                                    rootClose
+                                    trigger="click"
+                                    key="top"
+                                    placement="top"
+                                    overlay={
+                                      <Popover id={`popover-positioned-top`}>
+                                        <Popover.Header
+                                          className="py-10px text-uppercase fw-600"
+                                          as="h3"
+                                        >
+                                          Chi tiết thanh toán #{orderItem.Id}
+                                        </Popover.Header>
+                                        <Popover.Body className="p-0">
+                                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                            <span>Tiền mặt</span>
+                                            <span>
+                                              {PriceHelper.formatVND(
+                                                orderItem.DaThToan_TM
+                                              )}
+                                            </span>
+                                          </div>
+                                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                            <span>Chuyển khoản</span>
+                                            <span>
+                                              {PriceHelper.formatVND(
+                                                orderItem.DaThToan_CK
+                                              )}
+                                            </span>
+                                          </div>
+                                          <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                            <span>Quẹt thẻ</span>
+                                            <span>
+                                              {PriceHelper.formatVND(
+                                                orderItem.DaThToan
+                                              )}
+                                            </span>
+                                          </div>
+                                        </Popover.Body>
+                                      </Popover>
+                                    }
+                                  >
+                                    <div className="d-flex justify-content-between align-items-center">
+                                      {PriceHelper.formatVND(
+                                        orderItem.DaThToan
+                                      )}
+                                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+                                    </div>
+                                  </OverlayTrigger>
+                                </td>
+                                <td>
+                                  {PriceHelper.formatVND(orderItem.DaThToan_Vi)}
+                                </td>
+                                <td>
+                                  {PriceHelper.formatVND(
+                                    orderItem.DaThToan_ThTien
+                                  )}
+                                </td>
+                                <td>
+                                  {orderItem.lines
+                                    .map(line => line.ProdTitle)
+                                    .join(', ')}
+                                </td>
+                              </tr>
+                            )
+                          )}
+                        </Fragment>
+                      ))}
+                    </Fragment>
+                  ))}
+                </Fragment>
+              ))}
+          </ChildrenTables>
+        </div>
+        <ModalViewMobile
+          show={isModalMobile}
+          onHide={HideModalMobile}
+          data={initialValuesMobile}
+        />
       </div>
     </div>
   )
