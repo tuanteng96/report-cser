@@ -14,54 +14,53 @@ import 'moment/locale/vi'
 moment.locale('vi')
 
 const JSONData = {
-  Total: 3,
+  Total: 1,
   PCount: 1,
-  TTToanNo: 130000000,
+  TTToanNo: 5000000,
   Items: [
     {
       CreateDate: '2022-06-03T14:11:39',
-      TTToanNo: 3000000,
+      TTToanNo: 4000000,
       ListCustomer: [
         {
           MemberName: 'Lê Bảo Ngọc',
           MemberPhone: '0971021196',
-          TTToanNo: 13000000,
+          TTToanNo: 3000000,
           ListOrders: [
             {
               Id: 258911,
-              TTToanNo: 35000000,
+              TTToanNo: 2500000,
               OrderItems: [
                 {
                   Id: 12579,
                   ToPay: 800000,
-                  TTToanNo: 25000000,
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
+                  DaThToan: 500000,
+                  DaThToan_TM: 100000,
+                  DaThToan_CK: 400000,
                   DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
-                  DaThToan_ThTien: 0,
+
+                  DaThToan_Vi: 100000,
+                  DaThToan_ThTien: 200000,
                   lines: [
                     {
                       ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                      ProdTitle: 'combo lam dep tron goi'
                     }
                   ]
                 },
                 {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
+                  Id: 12580,
+                  ToPay: 1700000,
+                  DaThToan: 1700000,
+                  DaThToan_TM: 200000,
+                  DaThToan_CK: 500000,
+                  DaThToan_QT: 1000000,
                   DaThToan_Vi: 0,
                   DaThToan_ThTien: 0,
                   lines: [
                     {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                      ProdId: 12451,
+                      ProdTitle: 'my pham tri nam'
                     }
                   ]
                 }
@@ -69,22 +68,22 @@ const JSONData = {
             },
             {
               Id: 258922,
-              TTToanNo: 45000000,
+              TTToanNo: 500000,
               OrderItems: [
                 {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
+                  Id: 12592,
+                  ToPay: 500000,
+
                   DaThToan: 0,
                   DaThToan_TM: 0,
                   DaThToan_CK: 0,
                   DaThToan_QT: 0,
                   DaThToan_Vi: 0,
-                  DaThToan_ThTien: 0,
+                  DaThToan_ThTien: 50000,
                   lines: [
                     {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                      ProdId: 12522,
+                      ProdTitle: 'Kem duong da'
                     }
                   ]
                 }
@@ -94,27 +93,27 @@ const JSONData = {
         },
         {
           MemberName: 'Nguyễn Tài Tuấn',
-          MemberPhone: '0981883338',
-          TTToanNo: 13000000,
+          MemberPhone: '0971021196',
+          TTToanNo: 1000000,
           ListOrders: [
             {
-              Id: 25897,
-              TTToanNo: 25000000,
+              Id: 25900,
+              TTToanNo: 1000000,
               OrderItems: [
                 {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
+                  Id: 12679,
+                  ToPay: 1000000,
+
                   DaThToan: 0,
                   DaThToan_TM: 0,
                   DaThToan_CK: 0,
                   DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
+                  DaThToan_Vi: 1000000,
                   DaThToan_ThTien: 0,
                   lines: [
                     {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                      ProdId: 12755,
+                      ProdTitle: 'Chăm sóc da'
                     }
                   ]
                 }
@@ -125,168 +124,32 @@ const JSONData = {
       ]
     },
     {
-      CreateDate: '2022-06-03T14:11:39',
-      TTToanNo: 3000000,
+      CreateDate: '2022-06-04T14:11:39',
+      TTToanNo: 4000000,
       ListCustomer: [
         {
-          MemberName: 'Lê Bảo Ngọc',
-          MemberPhone: '0971021196',
-          TTToanNo: 13000000,
-          ListOrders: [
-            {
-              Id: 258911,
-              TTToanNo: 35000000,
-              OrderItems: [
-                {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
-                  DaThToan_ThTien: 0,
-                  lines: [
-                    {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
           MemberName: 'Nguyễn Tài Tuấn',
-          MemberPhone: '0981883338',
-          TTToanNo: 13000000,
-          ListOrders: [
-            {
-              Id: 25897,
-              TTToanNo: 25000000,
-              OrderItems: [
-                {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
-                  DaThToan_ThTien: 0,
-                  lines: [
-                    {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      CreateDate: '2022-06-03T14:11:39',
-      TTToanNo: 3000000,
-      ListCustomer: [
-        {
-          MemberName: 'Lê Bảo Ngọc',
           MemberPhone: '0971021196',
-          TTToanNo: 13000000,
+          TTToanNo: 1000000,
           ListOrders: [
             {
-              Id: 258911,
-              TTToanNo: 35000000,
+              Id: 25900,
+              TTToanNo: 1000000,
               OrderItems: [
                 {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
+                  Id: 12679,
+                  ToPay: 1000000,
+
                   DaThToan: 0,
                   DaThToan_TM: 0,
                   DaThToan_CK: 0,
                   DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
+                  DaThToan_Vi: 1000000,
                   DaThToan_ThTien: 0,
                   lines: [
                     {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          MemberName: 'Nguyễn Tài Tuấn',
-          MemberPhone: '0981883338',
-          TTToanNo: 13000000,
-          ListOrders: [
-            {
-              Id: 25897,
-              TTToanNo: 25000000,
-              OrderItems: [
-                {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
-                  DaThToan_ThTien: 0,
-                  lines: [
-                    {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              Id: 25897,
-              TTToanNo: 25000000,
-              OrderItems: [
-                {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
-                  DaThToan_ThTien: 0,
-                  lines: [
-                    {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
-                    }
-                  ]
-                },
-                {
-                  Id: 12579,
-                  ToPay: 800000,
-                  TTToanNo: 25000000,
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
-                  DaThToan_ThTien: 0,
-                  lines: [
-                    {
-                      ProdId: 12499,
-                      ProdTitle: 'Thẻ 10 buổi trang điểm dạ hội'
+                      ProdId: 12755,
+                      ProdTitle: 'Chăm sóc da'
                     }
                   ]
                 }
@@ -669,7 +532,7 @@ function DebtPayment(props) {
                                             <span>Quẹt thẻ</span>
                                             <span>
                                               {PriceHelper.formatVND(
-                                                orderItem.DaThToan
+                                                orderItem.DaThToan_QT
                                               )}
                                             </span>
                                           </div>

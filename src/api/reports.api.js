@@ -44,6 +44,18 @@ const reportsApi = {
       `${SubApi}/ban-hang/thanh-toan-tra-no`,
       JSON.stringify(data)
     )
+  },
+  getOverviewReEx: data => {
+    return http.post(
+      `${SubApi}/bao-cao-thu-chi/tong-quan`,
+      JSON.stringify(data)
+    )
+  },
+  getListReEx: data => {
+    return http.post(
+      `${SubApi}/bao-cao-thu-chi/danh-sach`,
+      JSON.stringify(data)
+    )
   }
 }
 export default reportsApi

@@ -11,6 +11,7 @@ import SaleDetails from 'src/features/Reports/pages/RP-Sell/pages/SaleDetails'
 import DebtPayment from 'src/features/Reports/pages/RP-Sell/pages/DebtPayment'
 import RPMore from 'src/features/Reports/pages/RP-More'
 import TopProducts from 'src/features/Reports/pages/RP-More/pages/TopProducts'
+import RPReEx from 'src/features/Reports/pages/RP-ReEx'
 
 function RouterPage(props) {
   return (
@@ -53,6 +54,14 @@ function RouterPage(props) {
         <Route path="thanh-toan-tra-no" element={<DebtPayment />} />
         <Route path="tra-hang" element={<Returns />} />
       </Route>
+      <Route
+        path="/thu-chi-va-so-quy"
+        element={
+          <LayoutReport>
+            <RPReEx />
+          </LayoutReport>
+        }
+      ></Route>
       <Route
         path="/khac"
         element={

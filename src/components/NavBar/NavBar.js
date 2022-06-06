@@ -131,7 +131,7 @@ function NavBar(props) {
                 </div>
               </li>
               <li>
-                <NavLink to="/4">
+                <NavLink to="/thu-chi-va-so-quy">
                   <i className="fa-regular fa-piggy-bank icon"></i>
                   <span>Thu chi & Sổ quỹ</span>
                 </NavLink>
@@ -438,7 +438,7 @@ function NavBar(props) {
           </div>
         </li>
         <li>
-          <NavLink to="/4">
+          <NavLink to="/thu-chi-va-so-quy">
             <i className="fa-regular fa-piggy-bank icon"></i>
             <span>Thu chi & Sổ quỹ</span>
           </NavLink>

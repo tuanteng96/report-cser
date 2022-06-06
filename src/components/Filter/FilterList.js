@@ -12,59 +12,22 @@ import AsyncSelectSource from '../Selects/AsyncSelectSource'
 import AsyncSelectStaffs from '../Selects/AsyncSelectStaffs'
 import SelectWarranty from '../Selects/SelectWarranty'
 import SelectStatusService from '../Selects/SelectStatusService'
+import { JsonFilter } from 'src/Json/JsonFIlter'
+
+const {
+  VoucherList,
+  PaymentList,
+  IsMemberList,
+  TopTypeList,
+  PaymentMethodsList,
+  TypeTCList,
+  TagsTCList
+} = JsonFilter
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
   wheelPropagation: false
 }
-
-const VoucherList = [
-  {
-    value: 0,
-    label: 'Không có Voucher'
-  },
-  {
-    value: 1,
-    label: 'Có Voucher'
-  }
-]
-
-const PaymentList = [
-  {
-    value: 0,
-    label: 'Còn nợ'
-  },
-  {
-    value: 1,
-    label: 'Thanh toán hết'
-  }
-]
-
-const IsMemberList = [
-  {
-    value: 0,
-    label: 'Khách cũ'
-  },
-  {
-    value: 1,
-    label: 'Khách mới'
-  }
-]
-
-const TopTypeList = [
-  {
-    value: 1,
-    label: 'Sản phẩm, NVL'
-  },
-  {
-    value: 2,
-    label: 'Dịch vụ, Phụ phí'
-  },
-  {
-    value: 3,
-    label: 'Thẻ tiền'
-  }
-]
 
 function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
   const { Stocks } = useSelector(({ auth }) => ({
@@ -162,10 +125,68 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         />
                       </div>
                     )}
+                    {'PaymentMethods' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Phương thức thanh toán</label>
+                        <Select
+                          isMulti
+                          menuPosition="fixed"
+                          isClearable={true}
+                          name="PaymentMethods"
+                          placeholder="Phương thức thanh toán"
+                          classNamePrefix="select"
+                          options={PaymentMethodsList}
+                          className="select-control"
+                          value={values.PaymentMethods}
+                          onChange={otp => {
+                            setFieldValue('PaymentMethods', otp)
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'TypeTC' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Loại</label>
+                        <Select
+                          isClearable={true}
+                          name="TypeTC"
+                          placeholder="Chọn loại"
+                          classNamePrefix="select"
+                          options={TypeTCList}
+                          className="select-control"
+                          value={TypeTCList.filter(
+                            item => Number(item.value) === values?.TypeTC
+                          )}
+                          onChange={otp => {
+                            setFieldValue('TypeTC', otp ? otp.value : '')
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'TagsTC' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Tags</label>
+                        <Select
+                          isMulti
+                          menuPosition="fixed"
+                          isClearable={true}
+                          name="TagsTC"
+                          placeholder="Chọn Tags"
+                          classNamePrefix="select"
+                          options={TagsTCList}
+                          className="select-control"
+                          value={values.TagsTC}
+                          onChange={otp => {
+                            setFieldValue('TagsTC', otp)
+                          }}
+                        />
+                      </div>
+                    )}
                     {'TopType' in values && (
                       <div className="form-group mb-20px">
                         <label>Loại</label>
                         <Select
+                          isClearable={true}
                           name="TopType"
                           placeholder="Chọn loại"
                           classNamePrefix="select"
