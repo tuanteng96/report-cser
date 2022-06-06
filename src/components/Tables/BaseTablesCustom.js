@@ -58,6 +58,7 @@ function BaseTablesCustom({
     } else {
       setColumnsTable([
         ...ArrayHeplers.getItemSize(columns, optionsMoible?.itemShow),
+        ...(optionsMoible?.columns || []),
         {
           dataField: 'Active',
           text: '#',

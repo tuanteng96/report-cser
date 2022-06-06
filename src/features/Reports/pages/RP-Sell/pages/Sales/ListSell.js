@@ -127,8 +127,44 @@ function ListSell(props) {
           data={ListData}
           textDataNull="Không có dữ liệu."
           optionsMoible={{
-            itemShow: 5,
-            CallModal: row => OpenModalMobile(row)
+            itemShow: 2,
+            CallModal: row => OpenModalMobile(row),
+            columns: [
+              {
+                dataField: 'CreateDate',
+                text: 'Ngày',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
+                attrs: { 'data-title': 'Ngày' },
+                headerStyle: () => {
+                  return { minWidth: '150px', width: '150px' }
+                }
+              },
+              {
+                dataField: 'MemberName',
+                text: 'Khách hàng',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => row.MemberName || 'Không có tên',
+                attrs: { 'data-title': 'Khách hàng' },
+                headerStyle: () => {
+                  return { minWidth: '200px', width: '200px' }
+                }
+              },
+              {
+                dataField: 'TotalValue',
+                text: 'Tổng tiền',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.TotalValue),
+                attrs: { 'data-title': 'Tổng tiền' },
+                headerStyle: () => {
+                  return { minWidth: '180px', width: '180px' }
+                }
+              }
+            ]
           }}
           options={{
             custom: true,
