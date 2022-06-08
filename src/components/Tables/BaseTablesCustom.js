@@ -85,7 +85,6 @@ function BaseTablesCustom({
   useEffect(() => {
     setWidthElm(refElm?.current?.clientWidth)
   }, [refElm, width])
-
   return (
     <Fragment>
       <div ref={refElm}></div>

@@ -60,7 +60,10 @@ function ListServices(props) {
     reportsApi
       .getListServices(newFilters)
       .then(({ data }) => {
-        const { Items, Total } = data.result
+        const { Items, Total } = {
+          Items: data.result?.Items || [],
+          Total: data.result?.Total || 0
+        }
         setListData(Items)
         setLoading(false)
         setPageTotal(Total)

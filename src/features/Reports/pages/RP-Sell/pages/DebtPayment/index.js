@@ -169,7 +169,8 @@ function DebtPayment(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    Date: new Date(), // Ngày,
+    DateStart: new Date(), // Ngày bắt đầu
+    DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
     MemberID: ''
@@ -179,7 +180,7 @@ function DebtPayment(props) {
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
-  const [PageTotal, setPageTotal] = useState(2)
+  const [PageTotal, setPageTotal] = useState(1)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
@@ -215,7 +216,11 @@ function DebtPayment(props) {
     reportsApi
       .getListDebtPayment(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TTToanNo } = data.result || JSONData
+        const { Items, Total, TTToanNo } = {
+          Items: data.result?.Items || [],
+          TTToanNo: data.result?.TTToanNo || 0,
+          Total: data.result?.Total || 0
+        }
         setListData(Items)
         setTongTTNo(TTToanNo)
         setLoading(false)

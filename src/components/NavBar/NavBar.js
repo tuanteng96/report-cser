@@ -193,7 +193,7 @@ function NavBar(props) {
                   getMenuItemActive('CONG_NO', '/cong-no')
                 )}
               >
-                <NavLink to="/8">
+                <NavLink to="/cong-no">
                   <i className="fa-regular fa-chart-mixed icon"></i>
                   <span>Công nợ</span>
                 </NavLink>
@@ -206,7 +206,7 @@ function NavBar(props) {
                 <div className="ezs-navbar__sub">
                   <ul>
                     <li>
-                      <NavLink to="/c1">
+                      <NavLink to="/cong-no/danh-sach">
                         <i className="menu-bullet menu-bullet-dot">
                           <span></span>
                         </i>
@@ -214,11 +214,19 @@ function NavBar(props) {
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/c2">
+                      <NavLink to="/cong-no/khoa-no">
                         <i className="menu-bullet menu-bullet-dot">
                           <span></span>
                         </i>
                         <span className="menu-text">Báo cáo khóa nợ</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/cong-no/tang">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span></span>
+                        </i>
+                        <span className="menu-text">Báo cáo tặng</span>
                       </NavLink>
                     </li>
                   </ul>
@@ -470,7 +478,7 @@ function NavBar(props) {
           </div>
         </li>
         <li>
-          <NavLink to="/8">
+          <NavLink to="/cong-no">
             <i className="fa-regular fa-chart-mixed icon"></i>
             <span>Công nợ</span>
             <i className="fa-solid fa-chevron-down icon-down"></i>
@@ -478,10 +486,13 @@ function NavBar(props) {
           <div className="ezs-navbar__sub">
             <ul>
               <li>
-                <NavLink to="/">Công nợ</NavLink>
+                <NavLink to="/cong-no/danh-sach">Công nợ</NavLink>
               </li>
               <li>
-                <NavLink to="/">Báo cáo khóa nợ</NavLink>
+                <NavLink to="/cong-no/khoa-no">Báo cáo khóa nợ</NavLink>
+              </li>
+              <li>
+                <NavLink to="/cong-no/tang">Báo cáo tặng</NavLink>
               </li>
             </ul>
           </div>

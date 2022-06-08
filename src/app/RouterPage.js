@@ -12,6 +12,10 @@ import DebtPayment from 'src/features/Reports/pages/RP-Sell/pages/DebtPayment'
 import RPMore from 'src/features/Reports/pages/RP-More'
 import TopProducts from 'src/features/Reports/pages/RP-More/pages/TopProducts'
 import RPReEx from 'src/features/Reports/pages/RP-ReEx'
+import RPDebt from 'src/features/Reports/pages/RP-Debt'
+import DebtLock from 'src/features/Reports/pages/RP-Debt/pages/DebtLock'
+import Gift from 'src/features/Reports/pages/RP-Debt/pages/Gift'
+import Home from 'src/features/Reports/pages/RP-Debt/pages/Home'
 
 function RouterPage(props) {
   return (
@@ -62,6 +66,19 @@ function RouterPage(props) {
           </LayoutReport>
         }
       ></Route>
+      <Route
+        path="/cong-no"
+        element={
+          <LayoutReport>
+            <RPDebt />
+          </LayoutReport>
+        }
+      >
+        <Route index element={<Navigate to="danh-sach" replace />} />
+        <Route path="danh-sach" element={<Home />} />
+        <Route path="khoa-no" element={<DebtLock />} />
+        <Route path="tang" element={<Gift />} />
+      </Route>
       <Route
         path="/khac"
         element={

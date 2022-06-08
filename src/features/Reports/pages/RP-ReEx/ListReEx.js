@@ -6,53 +6,11 @@ import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
+import { JsonFilter } from 'src/Json/JsonFilter'
 
 import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
-
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      Id: 1,
-      CreateDate: '2022-06-03T14:11:39',
-      TM: 4000000,
-      CK: 2000000,
-      QT: 1000000,
-      Tag: 'Thu',
-      Content: 'Tiền của chị',
-      StockName: 'Cser Hà Nội',
-      Staff: {
-        ID: 1,
-        FullName: 'Admin'
-      },
-      Member: {
-        ID: 2,
-        FullName: 'Nguyễn Tài Tuấn'
-      }
-    },
-    {
-      Id: 2,
-      CreateDate: '2022-06-03T14:11:39',
-      TM: 4000000,
-      CK: 2000000,
-      QT: 1000000,
-      Tag: 'Thu',
-      Content: 'Tiền của chị',
-      StockName: 'Cser Hà Nội',
-      Staff: {
-        ID: 1,
-        FullName: 'Admin'
-      },
-      Member: {
-        ID: 2,
-        FullName: 'Nguyễn Tài Tuấn'
-      }
-    }
-  ]
-}
 
 function ListReEx(props) {
   const { CrStockID } = useSelector(({ auth }) => ({
@@ -90,17 +48,22 @@ function ListReEx(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
-      StaffID: filters.StaffID ? filters.StaffID.value : '',
-      PaymentMethods: filters.GroupCustomerID
-        ? filters.GroupCustomerID.value
-        : '',
-      Type: filters.SourceName ? filters.SourceName.value : '',
-      Tags: filters.ProvincesID ? filters.ProvincesID.value : ''
+      PaymentMethods:
+        filters.PaymentMethods && filters.PaymentMethods.length > 0
+          ? filters.PaymentMethods.map(item => item.value).join(',')
+          : '',
+      TagsTC:
+        filters.TagsTC && filters.TagsTC.length > 0
+          ? filters.TagsTC.map(item => item.value).join(',')
+          : ''
     }
     reportsApi
-      .getOverviewReEx(newFilters)
+      .getListReEx(newFilters)
       .then(({ data }) => {
-        const { Items, Total } = data.result || JSONData
+        const { Items, Total } = {
+          Items: data.result?.Items || [],
+          Total: data.result?.Total || 0
+        }
         setListData(Items)
         setLoading(false)
         setPageTotal(Total)
@@ -138,6 +101,14 @@ function ListReEx(props) {
   const HideModalMobile = () => {
     setInitialValuesMobile(null)
     setIsModalMobile(false)
+  }
+
+  const TransferTags = value => {
+    const index = JsonFilter.TagsTCList.findIndex(item => item.value === value)
+    if (index > -1) {
+      return JsonFilter.TagsTCList[index].label
+    }
+    return 'Chưa xác định'
   }
 
   return (
@@ -251,7 +222,7 @@ function ListReEx(props) {
               text: 'Tag',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => row.Tag,
+              formatter: (cell, row) => TransferTags(row.Tag),
               attrs: { 'data-title': 'Tag' },
               headerStyle: () => {
                 return { minWidth: '180px', width: '180px' }
@@ -318,6 +289,7 @@ function ListReEx(props) {
         show={isModalMobile}
         onHide={HideModalMobile}
         data={initialValuesMobile}
+        TransferTags={TransferTags}
       />
     </div>
   )

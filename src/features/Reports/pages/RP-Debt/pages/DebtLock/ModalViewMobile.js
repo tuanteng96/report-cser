@@ -6,6 +6,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import clsx from 'clsx'
 moment.locale('vi')
 
 const perfectScrollbarOptions = {
@@ -13,7 +14,7 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
-function ModalViewMobile({ show, onHide, data, TransferTags }) {
+function ModalViewMobile({ show, onHide, data }) {
   return (
     <Modal
       className="modal-view-mobile"
@@ -23,9 +24,7 @@ function ModalViewMobile({ show, onHide, data, TransferTags }) {
     >
       <div className="modal-view-head align-items-baseline px-15px py-8px">
         <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
-          {data?.CreateDate
-            ? moment(data.CreateDate).format('HH:mm DD/MM/YYYY')
-            : 'Chưa có ngày'}
+          Đơn hàng #{data?.Id}
         </div>
         <div
           className="modal-view-close font-size-h3 w-20px text-center"
@@ -42,70 +41,72 @@ function ModalViewMobile({ show, onHide, data, TransferTags }) {
         <div className="py-5px">
           <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Tiền mặt
+              Mã đơn hàng
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.TM)}
+              #{data?.Id}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Chuyển khoản
+              Ngày bán
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.CK)}
+              {data?.NgayBanDH
+                ? moment(data.NgayBanDH).format('HH:mm DD/MM/YYYY')
+                : 'Không có'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Quẹt thẻ
+              Tên khách hàng
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.QT)}
+              {data?.Member ? data?.Member?.FullName : 'Chưa xác định'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Tag
+              Số điện thoại
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {TransferTags(data?.Tag)}
+              {data?.MemberPhone || 'Không có'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Nội dung
+              Ngày khóa nợ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Content || 'Không có nội dung'}
+              {data?.NgayKhoaNo
+                ? moment(data.NgayKhoaNo).format('HH:mm DD/MM/YYYY')
+                : 'Không có'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Cơ sở
+              Số tiền khóa nợ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.StockName || 'Tất cả cơ sở'}
+              {PriceHelper.formatVND(data?.SoTienKhoaNo)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Khách hàng
+              Người tạo khóa nợ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Member
-                ? `${data.Member.FullName} (#${data.Member.ID})`
-                : 'Chưa xác định'}
+              {data?.Staff ? data?.Staff?.FullName : 'Chưa xác định'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Nhân viên tạo
+              Thời gian khóa nợ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Staff
-                ? `${data.Staff.FullName} (#${data.Staff.ID})`
-                : 'Chưa xác định'}
+              {data?.ThoiGianKhoaNo
+                ? moment(data.ThoiGianKhoaNo).format('HH:mm DD/MM/YYYY')
+                : 'Không có'}
             </div>
           </div>
         </div>

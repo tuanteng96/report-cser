@@ -56,6 +56,15 @@ const reportsApi = {
       `${SubApi}/bao-cao-thu-chi/danh-sach`,
       JSON.stringify(data)
     )
+  },
+  getListDebt: data => {
+    return http.post(`${SubApi}/cong-no/danh-sach`, JSON.stringify(data))
+  },
+  getListDebtLock: data => {
+    return http.post(`${SubApi}/cong-no/khoa-no`, JSON.stringify(data))
+  },
+  getListDebtGift: data => {
+    return http.post(`${SubApi}/cong-no/tang`, JSON.stringify(data))
   }
 }
 export default reportsApi
