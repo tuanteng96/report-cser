@@ -18,16 +18,116 @@ const JSONData = {
   TongNo: 5000000,
   Items: [
     {
-      Id: 12344, // ID đơn hàng,
-      CreateDate: '2022-06-03T14:11:39',
-      TongNo: 2500000,
-      ListDebt: [
+      Member: {
+        ID: 1234,
+        FullName: 'Nguyễn Tài Tuấn 1',
+        Phone: '0971021196'
+      },
+      TongNo: 24000000,
+      ListOrders: [
         {
-          ProdTitle: 'Tên Sản phẩm',
-          ProdId: 1,
-          Qty: 1,
-          ToPay: 230000,
-          ConNo: 200000
+          Id: 12344, // ID đơn hàng,
+          CreateDate: '2022-06-03T14:11:39',
+          TongNo: 2500000,
+          ListDebt: [
+            {
+              ProdTitle: 'Tên Sản phẩm',
+              ProdId: 1,
+              Qty: 1,
+              ToPay: 230000,
+              ConNo: 200000
+            },
+            {
+              ProdTitle: 'Tên Sản phẩm 2',
+              ProdId: 1,
+              Qty: 1,
+              ToPay: 230000,
+              ConNo: 200000
+            }
+          ]
+        },
+        {
+          Id: 12345, // ID đơn hàng,
+          CreateDate: '2022-06-03T14:11:39',
+          TongNo: 2500000,
+          ListDebt: [
+            {
+              ProdTitle: 'Tên Sản phẩm',
+              ProdId: 1,
+              Qty: 1,
+              ToPay: 230000,
+              ConNo: 200000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      Member: {
+        ID: 1234,
+        FullName: 'Nguyễn Tài Tuấn 2',
+        Phone: '0971021196'
+      },
+      TongNo: 24000000,
+      ListOrders: [
+        {
+          Id: 12345, // ID đơn hàng,
+          CreateDate: '2022-06-03T14:11:39',
+          TongNo: 2500000,
+          ListDebt: [
+            {
+              ProdTitle: 'Tên Sản phẩm',
+              ProdId: 1,
+              Qty: 1,
+              ToPay: 230000,
+              ConNo: 200000
+            }
+          ]
+        },
+        {
+          Id: 12344, // ID đơn hàng,
+          CreateDate: '2022-06-03T14:11:39',
+          TongNo: 2500000,
+          ListDebt: [
+            {
+              ProdTitle: 'Tên Sản phẩm',
+              ProdId: 1,
+              Qty: 1,
+              ToPay: 230000,
+              ConNo: 200000
+            },
+            {
+              ProdTitle: 'Tên Sản phẩm 2',
+              ProdId: 1,
+              Qty: 1,
+              ToPay: 230000,
+              ConNo: 200000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      Member: {
+        ID: 1234,
+        FullName: 'Nguyễn Tài Tuấn 3',
+        Phone: '0971021196'
+      },
+      TongNo: 24000000,
+      ListOrders: [
+        {
+          Id: 12345, // ID đơn hàng,
+          CreateDate: '2022-06-03T14:11:39',
+          TongNo: 2500000,
+          ListDebt: [
+            {
+              ProdTitle: 'Tên Sản phẩm',
+              ProdId: 1,
+              Qty: 1,
+              ToPay: 230000,
+              ConNo: 200000
+            }
+          ]
         }
       ]
     }
@@ -133,6 +233,15 @@ function Home(props) {
     setIsModalMobile(false)
   }
 
+  const checkRowSpan = ListOrder => {
+    var totalArray = 0
+    if (!ListOrder) return totalArray
+    for (let keyItem of ListOrder) {
+      totalArray += keyItem?.ListDebt?.length || 0
+    }
+    return totalArray
+  }
+
   return (
     <div className="py-main">
       <div className="mb-20px d-flex justify-content-between align-items-end">
@@ -178,6 +287,30 @@ function Home(props) {
             data={ListData}
             columns={[
               {
+                text: 'Tên khách hàng',
+                headerStyle: {
+                  minWidth: '200px',
+                  width: '200px'
+                },
+                attrs: { 'data-title': 'Tên khách hàng' }
+              },
+              {
+                text: 'Số điện thoại',
+                headerStyle: {
+                  minWidth: '200px',
+                  width: '200px'
+                },
+                attrs: { 'data-title': 'Số điện thoại' }
+              },
+              {
+                text: 'Tổng nợ',
+                headerStyle: {
+                  minWidth: '200px',
+                  width: '200px'
+                },
+                attrs: { 'data-title': 'Tổng nợ' }
+              },
+              {
                 text: 'ID Đơn hàng',
                 headerStyle: {
                   minWidth: '160px',
@@ -204,29 +337,29 @@ function Home(props) {
               {
                 text: 'Tên sản phẩm',
                 headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
+                  minWidth: '250px',
+                  width: '250px'
                 }
               },
               {
                 text: 'Số lượng',
                 headerStyle: {
-                  minWidth: '80px',
-                  width: '80px'
+                  minWidth: '100px',
+                  width: '100px'
                 }
               },
               {
                 text: 'Thành tiền',
                 headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
+                  minWidth: '180px',
+                  width: '180px'
                 }
               },
               {
                 text: 'Còn nợ',
                 headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
+                  minWidth: '180px',
+                  width: '180px'
                 }
               }
             ]}
@@ -251,12 +384,12 @@ function Home(props) {
               CallModal: row => OpenModalMobile(row),
               columns: [
                 {
-                  attrs: { 'data-title': 'ID đơn hàng' },
-                  formatter: row => `#${row.Id}`
+                  attrs: { 'data-title': 'Tên khách hàng' },
+                  formatter: row => row?.Member?.FullName || 'Chưa xác định'
                 },
                 {
-                  attrs: { 'data-title': 'Ngày bán' },
-                  formatter: row => moment(row.CreateDate).format('DD-MM-YYYY')
+                  attrs: { 'data-title': 'Số điện thoại' },
+                  formatter: row => row?.Member?.Phone || 'Chưa xác định'
                 },
                 {
                   attrs: { 'data-title': 'Tổng số tiền nợ' },
@@ -269,36 +402,73 @@ function Home(props) {
             {ListData &&
               ListData.map((item, index) => (
                 <Fragment key={index}>
-                  {item?.ListDebt &&
-                    item?.ListDebt.map((order, orderIndex) => (
-                      <tr key={orderIndex}>
-                        {orderIndex === 0 && (
-                          <Fragment>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ListDebt.length}
-                            >
-                              #{item.Id}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ListDebt.length}
-                            >
-                              {moment(item.CreateDate).format('DD-MM-YYYY')}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ListDebt.length}
-                            >
-                              {PriceHelper.formatVND(item.TongNo)}
-                            </td>
-                          </Fragment>
-                        )}
-                        <td>{order.ProdTitle}</td>
-                        <td>{order.Qty}</td>
-                        <td>{PriceHelper.formatVND(order.ToPay)}</td>
-                        <td>{PriceHelper.formatVND(order.ConNo)}</td>
-                      </tr>
+                  {item?.ListOrders &&
+                    item?.ListOrders.map((order, orderIndex) => (
+                      <Fragment key={orderIndex}>
+                        {order?.ListDebt &&
+                          order?.ListDebt.map((itemDebt, debtIndex) => (
+                            <tr key={debtIndex}>
+                              {orderIndex === 0 && debtIndex === 0 && (
+                                <Fragment>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={checkRowSpan(
+                                      item?.ListOrders || []
+                                    )}
+                                  >
+                                    {item?.Member?.FullName || 'Chưa xác định'}
+                                  </td>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={checkRowSpan(
+                                      item?.ListOrders || []
+                                    )}
+                                  >
+                                    {item?.Member?.Phone || 'Chưa xác định'}
+                                  </td>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={checkRowSpan(
+                                      item?.ListOrders || []
+                                    )}
+                                  >
+                                    {PriceHelper.formatVND(item.TongNo)}
+                                  </td>
+                                </Fragment>
+                              )}
+
+                              {debtIndex === 0 && (
+                                <Fragment>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={order?.ListDebt.length}
+                                  >
+                                    #{order.Id}
+                                  </td>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={order?.ListDebt.length}
+                                  >
+                                    {moment(order.CreateDate).format(
+                                      'DD-MM-YYYY'
+                                    )}
+                                  </td>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={order?.ListDebt.length}
+                                  >
+                                    {PriceHelper.formatVND(order.TongNo)}
+                                  </td>
+                                </Fragment>
+                              )}
+
+                              <td>{itemDebt.ProdTitle}</td>
+                              <td>{itemDebt.Qty}</td>
+                              <td>{PriceHelper.formatVND(itemDebt.ToPay)}</td>
+                              <td>{PriceHelper.formatVND(itemDebt.ConNo)}</td>
+                            </tr>
+                          ))}
+                      </Fragment>
                     ))}
                 </Fragment>
               ))}
