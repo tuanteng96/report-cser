@@ -287,6 +287,15 @@ function Home(props) {
             data={ListData}
             columns={[
               {
+                text: 'STT',
+                headerStyle: {
+                  minWidth: '60px',
+                  width: '60px',
+                  textAlign: 'center'
+                },
+                attrs: { 'data-title': 'STT' }
+              },
+              {
                 text: 'Tên khách hàng',
                 headerStyle: {
                   minWidth: '200px',
@@ -384,6 +393,14 @@ function Home(props) {
               CallModal: row => OpenModalMobile(row),
               columns: [
                 {
+                  attrs: { 'data-title': 'STT' },
+                  formatter: (row, index) => (
+                    <span className="font-number">
+                      {filters.Ps * (filters.Pi - 1) + (index + 1)}
+                    </span>
+                  )
+                },
+                {
                   attrs: { 'data-title': 'Tên khách hàng' },
                   formatter: row => row?.Member?.FullName || 'Chưa xác định'
                 },
@@ -410,6 +427,17 @@ function Home(props) {
                             <tr key={debtIndex}>
                               {orderIndex === 0 && debtIndex === 0 && (
                                 <Fragment>
+                                  <td
+                                    className="vertical-align-middle text-center"
+                                    rowSpan={checkRowSpan(
+                                      item?.ListOrders || []
+                                    )}
+                                  >
+                                    <span className="font-number">
+                                      {filters.Ps * (filters.Pi - 1) +
+                                        (index + 1)}
+                                    </span>
+                                  </td>
                                   <td
                                     className="vertical-align-middle"
                                     rowSpan={checkRowSpan(

@@ -91,7 +91,8 @@ function ChildrenTables({
                           <tr key={objIndex}>
                             {columnsTable.map((item, index) => (
                               <td key={index} {...item?.attrs}>
-                                {item.formatter && item.formatter(obj)}
+                                {item.formatter &&
+                                  item.formatter(obj, objIndex)}
                               </td>
                             ))}
                           </tr>
