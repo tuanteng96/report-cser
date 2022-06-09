@@ -1,61 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
-import { JsonFilter } from 'src/Json/JsonFilter'
+import { JsonFilter } from 'src/Json/JsonFIlter'
 
 import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-function ListReEx({ filters, setFilters }) {
+function ListReEx({
+  filters,
+  onSizePerPageChange,
+  onPageChange,
+  loading,
+  DataResult
+}) {
   const [ListData, setListData] = useState([])
-  const [isFilter, setIsFilter] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
   useEffect(() => {
-    getListReEx()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
-
-  const getListReEx = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      PaymentMethods:
-        filters.PaymentMethods && filters.PaymentMethods.length > 0
-          ? filters.PaymentMethods.map(item => item.value).join(',')
-          : '',
-      TagsTC:
-        filters.TagsTC && filters.TagsTC.length > 0
-          ? filters.TagsTC.map(item => item.value).join(',')
-          : ''
+    if (DataResult) {
+      const { Items, Total } = DataResult
+      setListData(Items)
+      setPageTotal(Total)
+    } else {
+      setListData([])
+      setPageTotal(0)
     }
-    reportsApi
-      .getListReEx(newFilters)
-      .then(({ data }) => {
-        const { Items, Total } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0
-        }
-        setListData(Items)
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
-      })
-      .catch(error => console.log(error))
-  }
+  }, [DataResult])
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
@@ -97,12 +71,14 @@ function ListReEx({ filters, setFilters }) {
             onSizePerPageChange: sizePerPage => {
               setListData([])
               const Ps = sizePerPage
-              setFilters({ ...filters, Ps: Ps })
+              onSizePerPageChange(Ps)
+              //setFilters({ ...filters, Ps: Ps })
             },
             onPageChange: page => {
               setListData([])
               const Pi = page
-              setFilters({ ...filters, Pi: Pi })
+              onPageChange(Pi)
+              //setFilters({ ...filters, Pi: Pi })
             }
           }}
           columns={[

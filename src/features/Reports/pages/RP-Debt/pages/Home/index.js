@@ -12,6 +12,28 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
+const JSONData = {
+  Total: 1,
+  PCount: 1,
+  TongNo: 5000000,
+  Items: [
+    {
+      Id: 12344, // ID đơn hàng,
+      CreateDate: '2022-06-03T14:11:39',
+      TongNo: 2500000,
+      ListDebt: [
+        {
+          ProdTitle: 'Tên Sản phẩm',
+          ProdId: 1,
+          Qty: 1,
+          ToPay: 230000,
+          ConNo: 200000
+        }
+      ]
+    }
+  ]
+}
+
 function Home(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -67,9 +89,9 @@ function Home(props) {
       .getListDebt(newFilters)
       .then(({ data }) => {
         const { Items, Total, TongNo } = {
-          Items: data.result?.Items || [],
-          TongNo: data.result?.TongNo || 0,
-          Total: data.result?.Total || 0
+          Items: data.result?.Items || JSONData.Items,
+          TongNo: data.result?.TongNo || JSONData.TongNo,
+          Total: data.result?.Total || JSONData.Total
         }
         setListData(Items)
         setTongNo(TongNo)
@@ -189,8 +211,8 @@ function Home(props) {
               {
                 text: 'Số lượng',
                 headerStyle: {
-                  minWidth: '50px',
-                  width: '50px'
+                  minWidth: '80px',
+                  width: '80px'
                 }
               },
               {
