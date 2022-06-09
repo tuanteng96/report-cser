@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import IconMenuMobile from '../../components/IconMenuMobile'
 import _ from 'lodash'
 import ListReEx from './ListReEx'
-import Filter from 'src/components/Filter/Filter'
+import FilterList from 'src/components/Filter/FilterList'
 import Chart2Column from '../../components/Chart2Column'
 import reportsApi from 'src/api/reports.api'
 import { PriceHelper } from 'src/helpers/PriceHelper'
@@ -50,7 +50,13 @@ function RPReEx(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    Date: new Date() // Ngày
+    DateStart: new Date(), // Ngày bắt đầu
+    DateEnd: new Date(), // Ngày kết thúc
+    Pi: 1, // Trang hiện tại
+    Ps: 10, // Số lượng item
+    PaymentMethods: '', // TM, CK, QT
+    TypeTC: '', // Thu hay chi
+    TagsTC: '' // ID nhân viên
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -78,8 +84,9 @@ function RPReEx(props) {
   const getOverviewReEx = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
-      ...filters,
-      Date: moment(filters.Date).format('DD/MM/yyyy')
+      StockID: filters.StockID,
+      DateStart: moment(filters.Date).format('DD/MM/yyyy'),
+      DateEnd: moment(filters.Date).format('DD/MM/yyyy')
     }
     reportsApi
       .getOverviewReEx(newFilters)
@@ -152,7 +159,7 @@ function RPReEx(props) {
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
           </button>
           <IconMenuMobile />
-          <Filter
+          <FilterList
             show={isFilter}
             filters={filters}
             onHide={onHideFilter}
@@ -235,7 +242,7 @@ function RPReEx(props) {
       <div className="bg-white rounded p-20px mt-20px">
         <Chart2Column options={optionsObj} data={dataChart} />
       </div>
-      <ListReEx />
+      <ListReEx filters={filters} setFilters={setFilters} />
     </div>
   )
 }

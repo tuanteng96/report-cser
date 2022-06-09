@@ -5,55 +5,12 @@ import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ChildrenTables from 'src/components/Tables/ChildrenTables'
+import reportsApi from 'src/api/reports.api'
+import ModalViewMobile from './ModalViewMobile'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import reportsApi from 'src/api/reports.api'
-import ModalViewMobile from './ModalViewMobile'
 moment.locale('vi')
-
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  TongNo: 5000000,
-  Items: [
-    {
-      Id: 12344, // ID đơn hàng,
-      CreateDate: '2022-06-03T14:11:39',
-      TongNo: 2500000,
-      ListDebt: [
-        {
-          ProdTitle: 'Tên Sản phẩm',
-          ProdId: 1,
-          Qty: 1,
-          ToPay: 230000,
-          ConNo: 200000
-        }
-      ]
-    },
-    {
-      Id: 12344, // ID đơn hàng,
-      CreateDate: '2022-06-03T14:11:39',
-      TongNo: 2500000,
-      ListDebt: [
-        {
-          ProdTitle: 'Tên Sản phẩm',
-          ProdId: 1,
-          Qty: 1,
-          ToPay: 230000,
-          ConNo: 200000
-        },
-        {
-          ProdTitle: 'Tên Sản phẩm',
-          ProdId: 1,
-          Qty: 1,
-          ToPay: 230000,
-          ConNo: 200000
-        }
-      ]
-    }
-  ]
-}
 
 function Home(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({

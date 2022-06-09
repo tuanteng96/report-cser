@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import _ from 'lodash'
-import FilterList from 'src/components/Filter/FilterList'
 import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
@@ -12,20 +9,7 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-function ListReEx(props) {
-  const { CrStockID } = useSelector(({ auth }) => ({
-    CrStockID: auth?.Info?.CrStockID || ''
-  }))
-  const [filters, setFilters] = useState({
-    StockID: CrStockID || '', // ID Stock
-    DateStart: new Date(), // Ngày bắt đầu
-    DateEnd: new Date(), // Ngày kết thúc
-    Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
-    PaymentMethods: '', // TM, CK, QT
-    TypeTC: '', // Thu hay chi
-    TagsTC: '' // ID nhân viên
-  })
+function ListReEx({ filters, setFilters }) {
   const [ListData, setListData] = useState([])
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -73,26 +57,6 @@ function ListReEx(props) {
       .catch(error => console.log(error))
   }
 
-  const onOpenFilter = () => {
-    setIsFilter(true)
-  }
-
-  const onHideFilter = () => {
-    setIsFilter(false)
-  }
-
-  const onFilter = values => {
-    if (_.isEqual(values, filters)) {
-      getListReEx()
-    } else {
-      setFilters(values)
-    }
-  }
-
-  const onRefresh = () => {
-    getListReEx()
-  }
-
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
     setIsModalMobile(true)
@@ -115,22 +79,7 @@ function ListReEx(props) {
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
         <div className="fw-500 font-size-lg">Danh sách thu chi & sổ quỹ</div>
-        <button
-          type="button"
-          className="btn btn-primary p-0 w-35px h-30px"
-          onClick={onOpenFilter}
-        >
-          <i className="fa-regular fa-filter-list font-size-md mt-5px"></i>
-        </button>
       </div>
-      <FilterList
-        show={isFilter}
-        filters={filters}
-        onHide={onHideFilter}
-        onSubmit={onFilter}
-        onRefresh={onRefresh}
-        loading={loading}
-      />
       <div className="p-20px">
         <BaseTablesCustom
           data={ListData}

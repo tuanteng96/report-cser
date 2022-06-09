@@ -28,7 +28,7 @@ const JSONData = {
           TTToanNo: 3000000,
           ListOrders: [
             {
-              Id: 258911,
+              Id: 258911, // ID đơn hàng
               TTToanNo: 2500000,
               OrderItems: [
                 {
@@ -67,7 +67,7 @@ const JSONData = {
               ]
             },
             {
-              Id: 258922,
+              Id: 258922, // ID đơn hàng
               TTToanNo: 500000,
               OrderItems: [
                 {
@@ -97,7 +97,7 @@ const JSONData = {
           TTToanNo: 1000000,
           ListOrders: [
             {
-              Id: 25900,
+              Id: 25900, // ID đơn hàng
               TTToanNo: 1000000,
               OrderItems: [
                 {
@@ -133,7 +133,7 @@ const JSONData = {
           TTToanNo: 1000000,
           ListOrders: [
             {
-              Id: 25900,
+              Id: 25900, // Id đơn hàng
               TTToanNo: 1000000,
               OrderItems: [
                 {
@@ -217,9 +217,9 @@ function DebtPayment(props) {
       .getListDebtPayment(newFilters)
       .then(({ data }) => {
         const { Items, Total, TTToanNo } = {
-          Items: data.result?.Items || [],
-          TTToanNo: data.result?.TTToanNo || 0,
-          Total: data.result?.Total || 0
+          Items: data.result?.Items || JSONData.Items,
+          TTToanNo: data.result?.TTToanNo || JSONData.TTToanNo,
+          Total: data.result?.Total || JSONData.Total
         }
         setListData(Items)
         setTongTTNo(TTToanNo)
@@ -487,15 +487,13 @@ function DebtPayment(props) {
                                         className="vertical-align-middle"
                                         rowSpan={orders.OrderItems.length}
                                       >
-                                        #{orderItem.Id}
+                                        #{orders.Id}
                                       </td>
                                       <td
                                         className="vertical-align-middle"
                                         rowSpan={orders.OrderItems.length}
                                       >
-                                        {PriceHelper.formatVND(
-                                          orderItem.TTToanNo
-                                        )}
+                                        {PriceHelper.formatVND(orders.TTToanNo)}
                                       </td>
                                     </Fragment>
                                   )}
