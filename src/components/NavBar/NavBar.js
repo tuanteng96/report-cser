@@ -136,57 +136,6 @@ function NavBar(props) {
                   <span>Thu chi & Sổ quỹ</span>
                 </NavLink>
               </li>
-              <li>
-                <NavLink to="/6">
-                  <i className="fa-regular fa-chart-pie icon"></i>
-                  <span>Tồn kho</span>
-                </NavLink>
-              </li>
-              <li
-                className={clsx(
-                  IndexShow === 'NHAN_VIEN' && 'menu-item-open',
-                  getMenuItemActive('NHAN_VIEN', '/nhan-vien')
-                )}
-              >
-                <NavLink to="/7">
-                  <i className="fa-regular fa-chart-candlestick icon"></i>
-                  <span>Nhân viên</span>
-                </NavLink>
-                <div
-                  className="btn-down"
-                  onClick={() => OpenSubmenu('NHAN_VIEN')}
-                >
-                  <i className="fa-solid fa-chevron-down icon-down"></i>
-                </div>
-                <div className="ezs-navbar__sub">
-                  <ul>
-                    <li>
-                      <NavLink to="/b1">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Hoa hồng</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/b2">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Danh số</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/b3">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Bảng lương</span>
-                      </NavLink>
-                    </li>
-                  </ul>
-                </div>
-              </li>
               <li
                 className={clsx(
                   IndexShow === 'CONG_NO' && 'menu-item-open',
@@ -231,6 +180,65 @@ function NavBar(props) {
                     </li>
                   </ul>
                 </div>
+              </li>
+              <li
+                className={clsx(
+                  IndexShow === 'NHAN_VIEN' && 'menu-item-open',
+                  getMenuItemActive('NHAN_VIEN', '/nhan-vien')
+                )}
+              >
+                <NavLink to="/7">
+                  <i className="fa-regular fa-chart-candlestick icon"></i>
+                  <span>Nhân viên</span>
+                </NavLink>
+                <div
+                  className="btn-down"
+                  onClick={() => OpenSubmenu('NHAN_VIEN')}
+                >
+                  <i className="fa-solid fa-chevron-down icon-down"></i>
+                </div>
+                <div className="ezs-navbar__sub">
+                  <ul>
+                    <li>
+                      <NavLink to="/nhan-vien/luong-ca-dich-vu">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span></span>
+                        </i>
+                        <span className="menu-text">Lương ca dịch vụ</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/b1">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span></span>
+                        </i>
+                        <span className="menu-text">Hoa hồng</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/b2">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span></span>
+                        </i>
+                        <span className="menu-text">Danh số</span>
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/b3">
+                        <i className="menu-bullet menu-bullet-dot">
+                          <span></span>
+                        </i>
+                        <span className="menu-text">Bảng lương</span>
+                      </NavLink>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <NavLink to="/6">
+                  <i className="fa-regular fa-chart-pie icon"></i>
+                  <span>Tồn kho</span>
+                </NavLink>
               </li>
               <li
                 className={clsx(
@@ -452,32 +460,6 @@ function NavBar(props) {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/6">
-            <i className="fa-regular fa-chart-pie icon"></i>
-            <span>Tồn kho</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/7">
-            <i className="fa-regular fa-chart-candlestick icon"></i>
-            <span>Nhân viên</span>
-            <i className="fa-solid fa-chevron-down icon-down"></i>
-          </NavLink>
-          <div className="ezs-navbar__sub">
-            <ul>
-              <li>
-                <NavLink to="/">Hoa hồng</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Danh số</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Bảng lương</NavLink>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li>
           <NavLink to="/cong-no">
             <i className="fa-regular fa-chart-mixed icon"></i>
             <span>Công nợ</span>
@@ -496,6 +478,37 @@ function NavBar(props) {
               </li>
             </ul>
           </div>
+        </li>
+        <li>
+          <NavLink to="/nhan-vien">
+            <i className="fa-regular fa-chart-candlestick icon"></i>
+            <span>Nhân viên</span>
+            <i className="fa-solid fa-chevron-down icon-down"></i>
+          </NavLink>
+          <div className="ezs-navbar__sub">
+            <ul>
+              <li>
+                <NavLink to="/nhan-vien/luong-ca-dich-vu">
+                  Lương ca dịch vụ
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/">Hoa hồng</NavLink>
+              </li>
+              <li>
+                <NavLink to="/">Danh số</NavLink>
+              </li>
+              <li>
+                <NavLink to="/">Bảng lương</NavLink>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <NavLink to="/6">
+            <i className="fa-regular fa-chart-pie icon"></i>
+            <span>Tồn kho</span>
+          </NavLink>
         </li>
         <li>
           <NavLink to="/9">

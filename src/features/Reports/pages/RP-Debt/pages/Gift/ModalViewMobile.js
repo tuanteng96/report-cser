@@ -6,7 +6,6 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import clsx from 'clsx'
 moment.locale('vi')
 
 const perfectScrollbarOptions = {

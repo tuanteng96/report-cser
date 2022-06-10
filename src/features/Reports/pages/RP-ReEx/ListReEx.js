@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
-import { JsonFilter } from 'src/Json/JsonFIlter'
+import { JsonFilter } from 'src/Json/JsonFilter'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -46,7 +46,7 @@ function ListReEx({
     if (index > -1) {
       return JsonFilter.TagsTCList[index].label
     }
-    return 'Chưa xác định'
+    return value
   }
 
   return (
@@ -114,7 +114,7 @@ function ListReEx({
               text: 'Tiền mặt',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.TM),
+              formatter: (cell, row) => PriceHelper.formatVNDPositive(row.TM),
               attrs: { 'data-title': 'Tiền mặt' },
               headerStyle: () => {
                 return { minWidth: '180px', width: '180px' }
@@ -147,7 +147,7 @@ function ListReEx({
               text: 'Tag',
               //headerAlign: "center",
               //style: { textAlign: "center" },
-              formatter: (cell, row) => TransferTags(row.Tag),
+              formatter: (cell, row) => `${TransferTags(row.Tag)}`,
               attrs: { 'data-title': 'Tag' },
               headerStyle: () => {
                 return { minWidth: '180px', width: '180px' }

@@ -65,6 +65,12 @@ const reportsApi = {
   },
   getListDebtGift: data => {
     return http.post(`${SubApi}/cong-no/tang`, JSON.stringify(data))
+  },
+  getListStaffSalarySV: data => {
+    return http.post(
+      `${SubApi}/nhan-vien/luong-ca-dich-vu`,
+      JSON.stringify(data)
+    )
   }
 }
 export default reportsApi

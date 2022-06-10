@@ -17,6 +17,12 @@ const moreApi = {
   },
   getAllStaff: data => {
     return http.post(`${SubApi}/more/danh-sach-nhan-vien`, JSON.stringify(data))
+  },
+  getAllMember: data => {
+    return http.post(
+      `${SubApi}/more/danh-sach-khach-hang`,
+      JSON.stringify(data)
+    )
   }
 }
 export default moreApi

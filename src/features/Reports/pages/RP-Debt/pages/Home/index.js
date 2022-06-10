@@ -12,128 +12,6 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  TongNo: 5000000,
-  Items: [
-    {
-      Member: {
-        ID: 1234,
-        FullName: 'Nguyễn Tài Tuấn 1',
-        Phone: '0971021196'
-      },
-      TongNo: 24000000,
-      ListOrders: [
-        {
-          Id: 12344, // ID đơn hàng,
-          CreateDate: '2022-06-03T14:11:39',
-          TongNo: 2500000,
-          ListDebt: [
-            {
-              ProdTitle: 'Tên Sản phẩm',
-              ProdId: 1,
-              Qty: 1,
-              ToPay: 230000,
-              ConNo: 200000
-            },
-            {
-              ProdTitle: 'Tên Sản phẩm 2',
-              ProdId: 1,
-              Qty: 1,
-              ToPay: 230000,
-              ConNo: 200000
-            }
-          ]
-        },
-        {
-          Id: 12345, // ID đơn hàng,
-          CreateDate: '2022-06-03T14:11:39',
-          TongNo: 2500000,
-          ListDebt: [
-            {
-              ProdTitle: 'Tên Sản phẩm',
-              ProdId: 1,
-              Qty: 1,
-              ToPay: 230000,
-              ConNo: 200000
-            }
-          ]
-        }
-      ]
-    },
-    {
-      Member: {
-        ID: 1234,
-        FullName: 'Nguyễn Tài Tuấn 2',
-        Phone: '0971021196'
-      },
-      TongNo: 24000000,
-      ListOrders: [
-        {
-          Id: 12345, // ID đơn hàng,
-          CreateDate: '2022-06-03T14:11:39',
-          TongNo: 2500000,
-          ListDebt: [
-            {
-              ProdTitle: 'Tên Sản phẩm',
-              ProdId: 1,
-              Qty: 1,
-              ToPay: 230000,
-              ConNo: 200000
-            }
-          ]
-        },
-        {
-          Id: 12344, // ID đơn hàng,
-          CreateDate: '2022-06-03T14:11:39',
-          TongNo: 2500000,
-          ListDebt: [
-            {
-              ProdTitle: 'Tên Sản phẩm',
-              ProdId: 1,
-              Qty: 1,
-              ToPay: 230000,
-              ConNo: 200000
-            },
-            {
-              ProdTitle: 'Tên Sản phẩm 2',
-              ProdId: 1,
-              Qty: 1,
-              ToPay: 230000,
-              ConNo: 200000
-            }
-          ]
-        }
-      ]
-    },
-    {
-      Member: {
-        ID: 1234,
-        FullName: 'Nguyễn Tài Tuấn 3',
-        Phone: '0971021196'
-      },
-      TongNo: 24000000,
-      ListOrders: [
-        {
-          Id: 12345, // ID đơn hàng,
-          CreateDate: '2022-06-03T14:11:39',
-          TongNo: 2500000,
-          ListDebt: [
-            {
-              ProdTitle: 'Tên Sản phẩm',
-              ProdId: 1,
-              Qty: 1,
-              ToPay: 230000,
-              ConNo: 200000
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-
 function Home(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -183,15 +61,18 @@ function Home(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : ''
+      TypeCN:
+        filters.TypeCN && filters.TypeCN.length > 0
+          ? filters.TypeCN.map(item => item.value).join(',')
+          : ''
     }
     reportsApi
       .getListDebt(newFilters)
       .then(({ data }) => {
         const { Items, Total, TongNo } = {
-          Items: data.result?.Items || JSONData.Items,
-          TongNo: data.result?.TongNo || JSONData.TongNo,
-          Total: data.result?.Total || JSONData.Total
+          Items: data.result?.Items || [],
+          TongNo: data.result?.TongNo || 0,
+          Total: data.result?.Total || 0
         }
         setListData(Items)
         setTongNo(TongNo)

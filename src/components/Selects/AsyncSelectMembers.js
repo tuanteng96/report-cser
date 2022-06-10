@@ -3,18 +3,18 @@ import { AsyncPaginate } from 'react-select-async-paginate'
 import PropTypes from 'prop-types'
 import moreApi from 'src/api/more.api'
 
-AsyncSelectStaffs.propTypes = {
+AsyncSelectMembers.propTypes = {
   onChange: PropTypes.func
 }
 
-function AsyncSelectStaffs({ onChange, value, ...props }) {
-  const getAllStaffs = async (search, loadedOptions, { page }) => {
+function AsyncSelectMembers({ onChange, value, ...props }) {
+  const getAllMembers = async (search, loadedOptions, { page }) => {
     const newPost = {
       Key: search,
       Pi: 1,
       Ps: 10
     }
-    const { data } = await moreApi.getAllStaff(newPost)
+    const { data } = await moreApi.getAllMember(newPost)
     const { PCount, Items } = {
       PCount: data.result?.PCount || 0,
       Items: data.result?.Items || []
@@ -41,16 +41,16 @@ function AsyncSelectStaffs({ onChange, value, ...props }) {
       {...props}
       className="select-control"
       classNamePrefix="select"
-      loadOptions={getAllStaffs}
-      placeholder="Chọn nhân viên"
+      loadOptions={getAllMembers}
+      placeholder="Chọn khách hàng"
       value={value}
       onChange={onChange}
       additional={{
         page: 1
       }}
-      noOptionsMessage={({ inputValue }) => 'Không có nhân viên'}
+      noOptionsMessage={({ inputValue }) => 'Không có khách hàng'}
     />
   )
 }
 
-export default AsyncSelectStaffs
+export default AsyncSelectMembers

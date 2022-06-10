@@ -16,6 +16,8 @@ import RPDebt from 'src/features/Reports/pages/RP-Debt'
 import DebtLock from 'src/features/Reports/pages/RP-Debt/pages/DebtLock'
 import Gift from 'src/features/Reports/pages/RP-Debt/pages/Gift'
 import Home from 'src/features/Reports/pages/RP-Debt/pages/Home'
+import RPStaff from 'src/features/Reports/pages/RP-Staff'
+import SalaryServices from 'src/features/Reports/pages/RP-Staff/pages/SalaryServices'
 
 function RouterPage(props) {
   return (
@@ -78,6 +80,17 @@ function RouterPage(props) {
         <Route path="danh-sach" element={<Home />} />
         <Route path="khoa-no" element={<DebtLock />} />
         <Route path="tang" element={<Gift />} />
+      </Route>
+      <Route
+        path="/nhan-vien"
+        element={
+          <LayoutReport>
+            <RPStaff />
+          </LayoutReport>
+        }
+      >
+        <Route index element={<Navigate to="luong-ca-dich-vu" replace />} />
+        <Route path="luong-ca-dich-vu" element={<SalaryServices />} />
       </Route>
       <Route
         path="/khac"

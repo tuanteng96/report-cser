@@ -74,36 +74,76 @@ export const JsonFilter = {
 
   TagsTCList: [
     {
-      value: 'THU_NAP_VI',
-      label: 'Thu nạp ví'
+      value: 'THU',
+      label: 'Thu',
+      type: 0
     },
     {
-      value: 'THU_HOAN_VI',
-      label: 'Thu hoàn ví'
+      value: 'THU_NAP_VI',
+      label: 'Thu nạp ví',
+      type: 0
     },
     {
       value: 'THU_GIU_LUONG',
-      label: 'Thu giữ lương'
+      label: 'Thu giữ lương',
+      type: 0
+    },
+    {
+      value: 'THU_HOAN_UNG',
+      label: 'Thu hoàn ứng',
+      type: 0
     },
     {
       value: 'THU_BAN_HANG',
-      label: 'Thu bán hàng'
+      label: 'Thu bán hàng',
+      type: 0
     },
     {
-      value: 'CHI_TRA_LUONG',
-      label: 'Chi trả lương'
+      value: 'CHI',
+      label: 'Chi',
+      type: 1
+    },
+    {
+      value: 'CHI_TRA_VI',
+      label: 'Chi trả ví',
+      type: 1
     },
     {
       value: 'CHI_TAM_UNG',
-      label: 'Chi tạm ứng'
+      label: 'Chi tạm ứng',
+      type: 1
     },
     {
       value: 'CHI_GIU_LUONG',
-      label: 'Chi giữ lương'
+      label: 'Trả tiền giữ lương',
+      type: 1
     },
     {
       value: 'CHI_LUONG',
-      label: 'Chi lương'
+      label: 'Trả lương',
+      type: 1
+    }
+  ],
+  TypeCNList: [
+    {
+      value: 'SP',
+      label: 'Sản phẩm'
+    },
+    {
+      value: 'DV',
+      label: 'Dịch vụ'
+    },
+    {
+      value: 'NVL',
+      label: 'Nguyên vật liệu'
+    },
+    {
+      value: 'PP',
+      label: 'Phụ phí'
+    },
+    {
+      value: 'THE_TIEN',
+      label: 'Thẻ tiền'
     }
   ]
 }

@@ -12,7 +12,9 @@ import AsyncSelectSource from '../Selects/AsyncSelectSource'
 import AsyncSelectStaffs from '../Selects/AsyncSelectStaffs'
 import SelectWarranty from '../Selects/SelectWarranty'
 import SelectStatusService from '../Selects/SelectStatusService'
-import { JsonFilter } from 'src/Json/JsonFIlter'
+import { JsonFilter } from 'src/Json/JsonFilter'
+import AsyncSelect from 'react-select/async'
+import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 
 const {
   VoucherList,
@@ -21,7 +23,8 @@ const {
   TopTypeList,
   PaymentMethodsList,
   TypeTCList,
-  TagsTCList
+  TagsTCList,
+  TypeCNList
 } = JsonFilter
 
 const perfectScrollbarOptions = {
@@ -47,6 +50,30 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
         }))
     )
   }, [Stocks])
+
+  const filterTypeTC = (inputValue, optionFilter) => {
+    if (optionFilter !== '') {
+      return TagsTCList.filter(
+        i =>
+          i.type === optionFilter &&
+          i.label.toLowerCase().includes(inputValue.toLowerCase())
+      )
+    }
+    return TagsTCList.filter(i =>
+      i.label.toLowerCase().includes(inputValue.toLowerCase())
+    )
+  }
+
+  const handleInputChange = newValue => {
+    const inputValue = newValue.replace(/\W/g, '')
+    return inputValue
+  }
+
+  const loadOptionsTypeTC = (inputValue, callback, optionFilter) => {
+    setTimeout(() => {
+      callback(filterTypeTC(inputValue, optionFilter))
+    }, 500)
+  }
 
   return (
     <div className={clsx('filter-box', show && 'show')}>
@@ -125,6 +152,25 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         />
                       </div>
                     )}
+                    {'TypeCN' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Loại</label>
+                        <Select
+                          isMulti
+                          menuPosition="fixed"
+                          isClearable={true}
+                          name="TypeCN"
+                          placeholder="Chọn loại"
+                          classNamePrefix="select"
+                          options={TypeCNList}
+                          className="select-control"
+                          value={values.TypeCN}
+                          onChange={otp => {
+                            setFieldValue('TypeCN', otp)
+                          }}
+                        />
+                      </div>
+                    )}
                     {'PaymentMethods' in values && (
                       <div className="form-group mb-20px">
                         <label>Phương thức thanh toán</label>
@@ -159,6 +205,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           )}
                           onChange={otp => {
                             setFieldValue('TypeTC', otp ? otp.value : '')
+                            setFieldValue('TagsTC', null)
                           }}
                         />
                       </div>
@@ -166,19 +213,29 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                     {'TagsTC' in values && (
                       <div className="form-group mb-20px">
                         <label>Tags</label>
-                        <Select
+                        <AsyncSelect
+                          key={values?.TypeTC}
+                          cacheOptions
+                          defaultOptions
                           isMulti
+                          className="select-control"
                           menuPosition="fixed"
                           isClearable={true}
                           name="TagsTC"
                           placeholder="Chọn Tags"
                           classNamePrefix="select"
-                          options={TagsTCList}
-                          className="select-control"
+                          loadOptions={(inputValue, callback) =>
+                            loadOptionsTypeTC(
+                              inputValue,
+                              callback,
+                              values?.TypeTC
+                            )
+                          }
                           value={values.TagsTC}
                           onChange={otp => {
                             setFieldValue('TagsTC', otp)
                           }}
+                          onInputChange={handleInputChange}
                         />
                       </div>
                     )}
@@ -258,6 +315,19 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           )}
                           onChange={otp => {
                             setFieldValue('IsMember', otp ? otp.value : '')
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'MemberID' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Khách hàng</label>
+                        <AsyncSelectMembers
+                          isClearable={true}
+                          menuPosition="fixed"
+                          name="MemberID"
+                          onChange={otp => {
+                            setFieldValue('MemberID', otp, false)
                           }}
                         />
                       </div>

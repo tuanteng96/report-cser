@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, OverlayTrigger, Popover } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 
@@ -24,8 +24,7 @@ function ModalViewMobile({ show, onHide, data }) {
     >
       <div className="modal-view-head align-items-baseline px-15px py-8px">
         <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
-          Ngày{' '}
-          {data?.CreateDate && moment(data?.CreateDate).format('DD-MM-YYYY')}
+          {data?.Member?.FullName || 'Chưa có tên KH'}
         </div>
         <div
           className="modal-view-close font-size-h3 w-20px text-center"
@@ -40,42 +39,54 @@ function ModalViewMobile({ show, onHide, data }) {
         style={{ position: 'relative' }}
       >
         <div className="py-5px">
-          <div className="px-15px d-flex justify-content-between py-12px line-height-sm">
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Tổng thanh toán nợ
+              Số điện thoại
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.TTToanNo)}
+              {data?.Member?.Phone || 'Chưa có số điện thoại'}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+              Tổng nợ
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {PriceHelper.formatVND(data?.TongNo)}
             </div>
           </div>
         </div>
         <div className="px-15px">
           {data &&
-            data.ListCustomer &&
-            data.ListCustomer.map((item, index) => (
+            data.ListOrders &&
+            data.ListOrders.map((item, index) => (
               <div
                 className="border mb-15px shadows border-gray-200 rounded"
                 key={index}
               >
                 <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
-                  <div>Tên khách hàng</div>
-                  <div className="fw-600">{item.MemberName}</div>
+                  <div>ID đơn hàng</div>
+                  <div className="fw-600">#{item.Id}</div>
                 </div>
                 <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
-                  <div>Số điện thoại</div>
-                  <div className="fw-600">{item.MemberPhone}</div>
-                </div>
-                <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
-                  <div>Thanh toán nợ</div>
+                  <div>Ngày bán</div>
                   <div className="fw-600">
-                    {PriceHelper.formatVND(item.TTToanNo)}
+                    {item?.CreateDate
+                      ? moment(data.CreateDate).format('HH:mm DD/MM/YYYY')
+                      : 'Không có'}
+                  </div>
+                </div>
+                <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+                  <div>Tổng tiền nợ</div>
+                  <div className="fw-600">
+                    {PriceHelper.formatVND(item.TongNo)}
                   </div>
                 </div>
                 <div className="border-bottom border-gray-200 p-12px">
-                  <div>Đơn hàng</div>
+                  <div>Sản phẩm</div>
                   <div>
-                    {item.ListOrders &&
-                      item.ListOrders.map((order, orderIndex) => (
+                    {item.ListDebt &&
+                      item.ListDebt.map((order, orderIndex) => (
                         <div
                           className={`mt-10px ${clsx({
                             'pt-10px border-top-dashed': orderIndex !== 0
@@ -83,13 +94,23 @@ function ModalViewMobile({ show, onHide, data }) {
                           key={orderIndex}
                         >
                           <div className="d-flex py-3px">
-                            <div className="pr-5px">ID</div>
-                            <div className="fw-600">#{order.Id}</div>
+                            <div className="pr-5px">Tên Sản phẩm</div>
+                            <div className="fw-600">{order.ProdTitle}</div>
                           </div>
                           <div className="d-flex py-3px">
-                            <div className="pr-5px">Thanh toán nợ</div>
+                            <div className="pr-5px">Số lượng</div>
+                            <div className="fw-600">{order.Qty}</div>
+                          </div>
+                          <div className="d-flex py-3px">
+                            <div className="pr-5px">Thành tiền</div>
                             <div className="fw-600">
-                              {PriceHelper.formatVND(order.TTToanNo)}
+                              {PriceHelper.formatVND(order.ToPay)}
+                            </div>
+                          </div>
+                          <div className="d-flex py-3px">
+                            <div className="pr-5px">Còn nợ</div>
+                            <div className="fw-600">
+                              {PriceHelper.formatVND(order.ConNo)}
                             </div>
                           </div>
                         </div>
