@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -10,6 +10,199 @@ const perfectScrollbarOptions = {
   wheelSpeed: 2,
   wheelPropagation: false
 }
+
+const MenuList = [
+  {
+    Title: 'Báo cáo ngày',
+    TitleKey: 'BAO_CAO_NGAY',
+    IconClass: 'fa-regular fa-chart-pie icon',
+    Href: '/'
+  },
+  {
+    Title: 'Khách hàng',
+    TitleKey: 'KHACH_HANG',
+    IconClass: 'fa-regular fa-chart-user icon',
+    Href: '/khach-hang'
+  },
+  {
+    Title: 'Dịch vụ',
+    TitleKey: 'DICH_VU',
+    IconClass: 'fa-regular fa-chart-waterfall icon',
+    Href: '/dich-vu'
+  },
+  {
+    Title: 'Bán hàng',
+    TitleKey: 'BAN_HANG',
+    IconClass: 'fa-regular fa-cart-circle-check icon',
+    Href: '/ban-hang',
+    Children: [
+      {
+        Title: 'Doanh số',
+        Href: '/ban-hang/doanh-so'
+      },
+      {
+        Title: 'Sản phẩm, dịch vụ bán ra',
+        Href: '/ban-hang/sp-dv-ban-ra'
+      },
+      {
+        Title: 'Trả hàng',
+        Href: '/ban-hang/tra-hang'
+      },
+      {
+        Title: 'Thanh toán trả nợ',
+        Href: '/ban-hang/thanh-toan-tra-no'
+      }
+    ]
+  },
+  {
+    Title: 'Thu chi & Sổ quỹ',
+    TitleKey: 'THU_CHI_SO_QUY',
+    IconClass: 'fa-regular fa-piggy-bank icon',
+    Href: '/thu-chi-va-so-quy'
+  },
+  {
+    Title: 'Công nợ',
+    TitleKey: 'CONG_NO',
+    IconClass: 'fa-regular fa-chart-mixed icon',
+    Href: '/cong-no',
+    Children: [
+      {
+        Title: 'Công nợ',
+        Href: '/cong-no/danh-sach'
+      },
+      {
+        Title: 'Báo cáo khóa nợ',
+        Href: '/cong-no/khoa-no'
+      },
+      {
+        Title: 'Báo cáo tặng',
+        Href: '/cong-no/tang'
+      }
+    ]
+  },
+  {
+    Title: 'Nhân viên',
+    TitleKey: 'NHAN_VIEN',
+    IconClass: 'fa-regular fa-chart-candlestick icon',
+    Href: '/nhan-vien',
+    Children: [
+      {
+        Title: 'Lương ca dịch vụ',
+        Href: '/nhan-vien/luong-ca-dich-vu'
+      },
+      {
+        Title: 'Hoa hồng',
+        Href: '/nhan-vien/hoa-hong'
+      },
+      {
+        Title: 'Danh số',
+        Href: '/nhan-vien/doanh-so'
+      },
+      {
+        Title: 'Bảng lương',
+        Href: '/nhan-vien/bang-luong'
+      }
+    ]
+  },
+  {
+    Title: 'Tồn kho',
+    TitleKey: 'TON_KHO',
+    IconClass: 'fa-regular fa-chart-pie icon',
+    Href: '/ton-kho'
+  },
+  {
+    Title: 'CSKH',
+    TitleKey: 'CSKH',
+    IconClass: 'fa-regular fa-handshake icon',
+    Href: '/cskh',
+    Children: [
+      {
+        Title: 'Khách hàng sử dụng APP',
+        Href: '/cskh/khach-hang-su-dung-app'
+      },
+      {
+        Title: 'Khách hàng sinh nhật',
+        Href: '/cskh/khach-hang-sinh-nhat'
+      },
+      {
+        Title: 'Khách hàng sắp lên cấp',
+        Href: '/cskh/khach-hang-sap-len-cap'
+      },
+      {
+        Title: 'Khách hàng hết sản phẩm',
+        Href: '/cskh/khach-hang-het-san-pham'
+      },
+      {
+        Title: 'Khách lâu không sử dụng',
+        Href: '/cskh/khach-lau-khong-su-dung'
+      },
+      {
+        Title: 'Khách hết thẻ trong ngày',
+        Href: '/cskh/khach-het-the-trong-ngay'
+      },
+      {
+        Title: 'Thẻ sắp hết hạn',
+        Href: '/cskh/the-sap-het-han'
+      },
+      {
+        Title: 'Thời gian nghe Smart Call',
+        Href: '/cskh/thoi-gian-nghe-smart-call'
+      },
+      {
+        Title: 'Đánh giá dịch vụ',
+        Href: '/cskh/danh-gia-dich-vu'
+      },
+      {
+        Title: 'Chỉ sử dụng mã giảm giá',
+        Href: '/cskh/chi-su-dung-ma-giam-gia'
+      },
+      {
+        Title: 'Chỉ sử dụng buổi lẻ',
+        Href: '/cskh/chi-su-dung-buoi-le'
+      },
+      {
+        Title: 'Top ưu đãi sử dụng',
+        Href: '/cskh/top-uu-dai-su-dung'
+      },
+      {
+        Title: 'Tần suất sử dụng dịch vụ',
+        Href: '/cskh/tan-suat-su-dunng-dich-vu'
+      }
+    ]
+  },
+  {
+    Title: 'Khác',
+    TitleKey: 'KHAC',
+    IconClass: 'fa-regular fa-chart-scatter-bubble icon',
+    Href: '/khac',
+    Children: [
+      {
+        Title: 'Top đánh giá',
+        Href: '/khac/top-danh-gia'
+      },
+      {
+        Title: 'Top bán hàng, doanh số',
+        Href: '/khac/top-ban-hang-doanh-so'
+      },
+      {
+        Title: 'Dịch vụ đã bán chưa thực hiện',
+        Href: '/khac/dich-vu-da-ban-chua-thuc-hien'
+      },
+      {
+        Title: 'Tổng tiền ví khách hàng',
+        Href: '/khac/tong-tien-vi-khach-hang'
+      },
+      {
+        Title: 'Tổng tiền thẻ tiền',
+        Href: '/khac/tong-tien-the-tien'
+      },
+      {
+        Title: 'Lợi nhuận',
+        Href: '/khac/loi-nhuan'
+      }
+    ]
+  }
+]
 
 function NavBar(props) {
   const { isShowMobile } = useSelector(({ layout }) => ({
@@ -24,9 +217,20 @@ function NavBar(props) {
     if (width < 1200) {
       dispatch(ToggleAside(false))
     }
-    setIndexShow('')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
+
+  useEffect(() => {
+    const { pathname } = location
+    const index = MenuList.findIndex(item => {
+      if (item.Href === pathname) return item.Href === pathname
+      return item.Children && item.Children.some(sub => sub.Href === pathname)
+    })
+    if (index > -1) {
+      setIndexShow(MenuList[index].TitleKey)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [MenuList, location])
 
   const OpenSubmenu = key => {
     if (key === IndexShow) {
@@ -35,16 +239,9 @@ function NavBar(props) {
       setIndexShow(key)
     }
   }
+
   const onHideAside = () => {
     dispatch(ToggleAside(false))
-  }
-
-  const getMenuItemActive = (key, subdomain) => {
-    const { pathname } = location
-    const index = pathname && pathname.indexOf(subdomain)
-    if (index > -1 && !IndexShow) {
-      setIndexShow(key)
-    }
   }
 
   if (width < 1200) {
@@ -57,347 +254,44 @@ function NavBar(props) {
             style={{ position: 'relative' }}
           >
             <ul className="ezs-navbars">
-              <li>
-                <NavLink to="/">
-                  <i className="fa-regular fa-chart-pie icon"></i>
-                  <span>Báo cáo ngày</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/khach-hang">
-                  <i className="fa-regular fa-chart-user icon"></i>
-                  <span>Khách hàng</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/dich-vu">
-                  <i className="fa-regular fa-chart-waterfall icon"></i>
-                  <span>Dịch vụ</span>
-                </NavLink>
-              </li>
-              <li
-                className={clsx(
-                  IndexShow === 'BAN_HANG' && 'menu-item-open',
-                  getMenuItemActive('BAN_HANG', '/ban-hang')
-                )}
-              >
-                <NavLink to="/ban-hang">
-                  <i className="fa-regular fa-cart-circle-check icon"></i>
-                  <span>Bán hàng</span>
-                </NavLink>
-                <div
-                  className="btn-down"
-                  onClick={() => OpenSubmenu('BAN_HANG')}
-                >
-                  <i className="fa-solid fa-chevron-down icon-down"></i>
-                </div>
-                <div className="ezs-navbar__sub">
-                  <ul>
-                    <li>
-                      <NavLink to="/ban-hang/doanh-so">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Doanh số</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/ban-hang/sp-dv-ban-ra">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Sản phẩm, dịch vụ bán ra
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/ban-hang/tra-hang">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Trả hàng</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/ban-hang/thanh-toan-tra-no">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Thanh toán trả nợ</span>
-                      </NavLink>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <NavLink to="/thu-chi-va-so-quy">
-                  <i className="fa-regular fa-piggy-bank icon"></i>
-                  <span>Thu chi & Sổ quỹ</span>
-                </NavLink>
-              </li>
-              <li
-                className={clsx(
-                  IndexShow === 'CONG_NO' && 'menu-item-open',
-                  getMenuItemActive('CONG_NO', '/cong-no')
-                )}
-              >
-                <NavLink to="/cong-no">
-                  <i className="fa-regular fa-chart-mixed icon"></i>
-                  <span>Công nợ</span>
-                </NavLink>
-                <div
-                  className="btn-down"
-                  onClick={() => OpenSubmenu('CONG_NO')}
-                >
-                  <i className="fa-solid fa-chevron-down icon-down"></i>
-                </div>
-                <div className="ezs-navbar__sub">
-                  <ul>
-                    <li>
-                      <NavLink to="/cong-no/danh-sach">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Công nợ</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/cong-no/khoa-no">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Báo cáo khóa nợ</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/cong-no/tang">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Báo cáo tặng</span>
-                      </NavLink>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li
-                className={clsx(
-                  IndexShow === 'NHAN_VIEN' && 'menu-item-open',
-                  getMenuItemActive('NHAN_VIEN', '/nhan-vien')
-                )}
-              >
-                <NavLink to="/7">
-                  <i className="fa-regular fa-chart-candlestick icon"></i>
-                  <span>Nhân viên</span>
-                </NavLink>
-                <div
-                  className="btn-down"
-                  onClick={() => OpenSubmenu('NHAN_VIEN')}
-                >
-                  <i className="fa-solid fa-chevron-down icon-down"></i>
-                </div>
-                <div className="ezs-navbar__sub">
-                  <ul>
-                    <li>
-                      <NavLink to="/nhan-vien/luong-ca-dich-vu">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Lương ca dịch vụ</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/b1">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Hoa hồng</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/b2">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Danh số</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/b3">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Bảng lương</span>
-                      </NavLink>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <NavLink to="/6">
-                  <i className="fa-regular fa-chart-pie icon"></i>
-                  <span>Tồn kho</span>
-                </NavLink>
-              </li>
-              <li
-                className={clsx(
-                  IndexShow === 'CSKH' && 'menu-item-open',
-                  getMenuItemActive('CSKH', '/cskh')
-                )}
-              >
-                <NavLink to="/9">
-                  <i className="fa-regular fa-handshake icon"></i>
-                  <span>CSKH</span>
-                </NavLink>
-                <div className="btn-down" onClick={() => OpenSubmenu('CSKH')}>
-                  <i className="fa-solid fa-chevron-down icon-down"></i>
-                </div>
-                <div className="ezs-navbar__sub">
-                  <ul>
-                    <li>
-                      <NavLink to="/d1">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Khách hàng sử dụng APP
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/d2">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Khách hàng sinh nhật</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/d3">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Khách hàng sắp lên cấp
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/d4">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Khách hàng hết sản phẩm
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/d5">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Khách lâu không sử dụng
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/d6">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Khách hết thẻ trong ngày
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/d7">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Thời gian nghe Smart Call
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/d8">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Đánh giá dịch vụ</span>
-                      </NavLink>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li
-                className={clsx(
-                  IndexShow === 'KHAC' && 'menu-item-open',
-                  getMenuItemActive('KHAC', '/khac')
-                )}
-              >
-                <NavLink to="/khac">
-                  <i className="fa-regular fa-chart-scatter-bubble icon"></i>
-                  <span>Khác</span>
-                </NavLink>
-                <div className="btn-down" onClick={() => OpenSubmenu('KHAC')}>
-                  <i className="fa-solid fa-chevron-down icon-down"></i>
-                </div>
-                <div className="ezs-navbar__sub only-right">
-                  <ul>
-                    <li>
-                      <NavLink to="/khac/top-ban-hang-doanh-so">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Top bán hàng, doanh số
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/e3">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Dịch vụ đã bán chưa thực hiện
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/e4">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">
-                          Tổng tiền ví khách hàng
-                        </span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/e5">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Tổng tiền thẻ tiền</span>
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/e6">
-                        <i className="menu-bullet menu-bullet-dot">
-                          <span></span>
-                        </i>
-                        <span className="menu-text">Lợi nhuận</span>
-                      </NavLink>
-                    </li>
-                  </ul>
-                </div>
-              </li>
+              {MenuList &&
+                MenuList.map((item, index) => (
+                  <li
+                    className={clsx(
+                      IndexShow === item.TitleKey && 'menu-item-open'
+                    )}
+                    key={index}
+                  >
+                    <NavLink to={item.Href}>
+                      <i className={item.IconClass}></i>
+                      <span>{item.Title}</span>
+                    </NavLink>
+                    {item.Children && item.Children.length > 0 && (
+                      <div
+                        className="btn-down"
+                        onClick={() => OpenSubmenu(item.TitleKey)}
+                      >
+                        <i className="fa-solid fa-chevron-down icon-down"></i>
+                      </div>
+                    )}
+                    {item.Children && item.Children.length > 0 && (
+                      <div className="ezs-navbar__sub">
+                        <ul>
+                          {item.Children.map((sub, i) => (
+                            <li key={i}>
+                              <NavLink to={sub.Href}>
+                                <i className="menu-bullet menu-bullet-dot">
+                                  <span></span>
+                                </i>
+                                <span className="menu-text">{sub.Title}</span>
+                              </NavLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </li>
+                ))}
             </ul>
           </PerfectScrollbar>
         </div>
@@ -408,171 +302,29 @@ function NavBar(props) {
   return (
     <div className="position-fixed zindex-1001 w-100 h-55px top-0 left-0 shadows px-30px bg-white">
       <ul className="ezs-navbar">
-        <li>
-          <NavLink to="/">
-            <i className="fa-regular fa-chart-pie icon"></i>
-            <span>Báo cáo ngày</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/khach-hang">
-            <i className="fa-regular fa-chart-user icon"></i>
-            <span>Khách hàng</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/dich-vu">
-            <i className="fa-regular fa-chart-waterfall icon"></i>
-            <span>Dịch vụ</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/ban-hang">
-            <i className="fa-regular fa-cart-circle-check icon"></i>
-            <span>Bán hàng</span>
-            <i className="fa-solid fa-chevron-down icon-down"></i>
-          </NavLink>
-          <div className="ezs-navbar__sub">
-            <ul>
-              <li>
-                <NavLink to="/ban-hang/doanh-so">Doanh số</NavLink>
-              </li>
-              <li>
-                <NavLink to="/ban-hang/sp-dv-ban-ra">
-                  Sản phẩm, dịch vụ bán ra
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/ban-hang/tra-hang">Trả hàng</NavLink>
-              </li>
-              <li>
-                <NavLink to="/ban-hang/thanh-toan-tra-no">
-                  Thanh toán trả nợ
-                </NavLink>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li>
-          <NavLink to="/thu-chi-va-so-quy">
-            <i className="fa-regular fa-piggy-bank icon"></i>
-            <span>Thu chi & Sổ quỹ</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/cong-no">
-            <i className="fa-regular fa-chart-mixed icon"></i>
-            <span>Công nợ</span>
-            <i className="fa-solid fa-chevron-down icon-down"></i>
-          </NavLink>
-          <div className="ezs-navbar__sub">
-            <ul>
-              <li>
-                <NavLink to="/cong-no/danh-sach">Công nợ</NavLink>
-              </li>
-              <li>
-                <NavLink to="/cong-no/khoa-no">Báo cáo khóa nợ</NavLink>
-              </li>
-              <li>
-                <NavLink to="/cong-no/tang">Báo cáo tặng</NavLink>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li>
-          <NavLink to="/nhan-vien">
-            <i className="fa-regular fa-chart-candlestick icon"></i>
-            <span>Nhân viên</span>
-            <i className="fa-solid fa-chevron-down icon-down"></i>
-          </NavLink>
-          <div className="ezs-navbar__sub">
-            <ul>
-              <li>
-                <NavLink to="/nhan-vien/luong-ca-dich-vu">
-                  Lương ca dịch vụ
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Hoa hồng</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Danh số</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Bảng lương</NavLink>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li>
-          <NavLink to="/6">
-            <i className="fa-regular fa-chart-pie icon"></i>
-            <span>Tồn kho</span>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/9">
-            <i className="fa-regular fa-handshake icon"></i>
-            <span>CSKH</span>
-            <i className="fa-solid fa-chevron-down icon-down"></i>
-          </NavLink>
-          <div className="ezs-navbar__sub">
-            <ul>
-              <li>
-                <NavLink to="/">Khách hàng sử dụng APP</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Khách hàng sinh nhật</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Khách hàng sắp lên cấp</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Khách hàng hết sản phẩm</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Khách lâu không sử dụng</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Khách hết thẻ trong ngày</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Thời gian nghe Smart Call</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Đánh giá dịch vụ</NavLink>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li>
-          <NavLink to="/khac">
-            <i className="fa-regular fa-chart-scatter-bubble icon"></i>
-            <span>Khác</span>
-            <i className="fa-solid fa-chevron-down icon-down"></i>
-          </NavLink>
-          <div className="ezs-navbar__sub only-right">
-            <ul>
-              <li>
-                <NavLink to="/khac/top-ban-hang-doanh-so">
-                  Top bán hàng, doanh số
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Dịch vụ đã bán chưa thực hiện</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Tổng tiền ví khách hàng</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Tổng tiền thẻ tiền</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Lợi nhuận</NavLink>
-              </li>
-            </ul>
-          </div>
-        </li>
+        {MenuList &&
+          MenuList.map((item, index) => (
+            <li key={index}>
+              <NavLink to={item.Href}>
+                <i className={item.IconClass}></i>
+                <span>{item.Title}</span>
+                {item.Children && item.Children.length > 0 && (
+                  <i className="fa-solid fa-chevron-down icon-down"></i>
+                )}
+              </NavLink>
+              {item.Children && item.Children.length > 0 && (
+                <div className="ezs-navbar__sub">
+                  <ul>
+                    {item.Children.map((sub, i) => (
+                      <li key={i}>
+                        <NavLink to={sub.Href}>{sub.Title}</NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </li>
+          ))}
       </ul>
     </div>
   )

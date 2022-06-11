@@ -18,6 +18,8 @@ import Gift from 'src/features/Reports/pages/RP-Debt/pages/Gift'
 import Home from 'src/features/Reports/pages/RP-Debt/pages/Home'
 import RPStaff from 'src/features/Reports/pages/RP-Staff'
 import SalaryServices from 'src/features/Reports/pages/RP-Staff/pages/SalaryServices'
+import RoseStaff from 'src/features/Reports/pages/RP-Staff/pages/RoseStaff'
+import SalesStaff from 'src/features/Reports/pages/RP-Staff/pages/SalesStaff'
 
 function RouterPage(props) {
   return (
@@ -91,6 +93,8 @@ function RouterPage(props) {
       >
         <Route index element={<Navigate to="luong-ca-dich-vu" replace />} />
         <Route path="luong-ca-dich-vu" element={<SalaryServices />} />
+        <Route path="hoa-hong" element={<RoseStaff />} />
+        <Route path="doanh-so" element={<SalesStaff />} />
       </Route>
       <Route
         path="/khac"

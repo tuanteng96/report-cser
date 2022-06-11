@@ -1,25 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { DevHelpers } from 'src/helpers/DevHelpers'
 
-window.Info = {
-  User: {
-    UserName: 'admin',
-    ID: 1
-  },
-  Stocks: [
-    {
-      ID: 778,
-      Title: 'Quản lý cơ sở'
+if (DevHelpers.isDevelopment()) {
+  window.Info = {
+    User: {
+      UserName: 'admin',
+      ID: 1
     },
-    {
-      ID: 8975,
-      Title: 'Cser Hà Nội'
-    },
-    {
-      ID: 10053,
-      Title: 'Cser Hồ Chí Minh'
-    }
-  ],
-  CrStockID: 8975
+    Stocks: [
+      {
+        ID: 778,
+        Title: 'Quản lý cơ sở'
+      },
+      {
+        ID: 8975,
+        Title: 'Cser Hà Nội'
+      },
+      {
+        ID: 10053,
+        Title: 'Cser Hồ Chí Minh'
+      }
+    ],
+    CrStockID: 8975
+  }
 }
 
 const Auth = createSlice({
