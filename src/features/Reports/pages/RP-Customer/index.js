@@ -132,7 +132,7 @@ function RPCustomer() {
 
   return (
     <div className="py-main">
-      <div className="mb-20px d-flex justify-content-between align-items-end">
+      <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
             Khách hàng

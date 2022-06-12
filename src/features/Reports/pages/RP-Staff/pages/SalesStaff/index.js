@@ -164,7 +164,7 @@ function SalesStaff(props) {
   console.log(ListData)
   return (
     <div className="py-main">
-      <div className="mb-20px d-flex justify-content-between align-items-end">
+      <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
             Nhân viên doanh số
@@ -182,16 +182,16 @@ function SalesStaff(props) {
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
           </button>
           <IconMenuMobile />
-          <FilterList
-            show={isFilter}
-            filters={filters}
-            onHide={onHideFilter}
-            onSubmit={onFilter}
-            onRefresh={onRefresh}
-            loading={loading}
-          />
         </div>
       </div>
+      <FilterList
+        show={isFilter}
+        filters={filters}
+        onHide={onHideFilter}
+        onSubmit={onFilter}
+        onRefresh={onRefresh}
+        loading={loading}
+      />
       <div className="bg-white rounded mt-25px">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">

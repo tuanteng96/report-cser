@@ -283,7 +283,7 @@ function DebtPayment(props) {
 
   return (
     <div className="py-main">
-      <div className="mb-20px d-flex justify-content-between align-items-end">
+      <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
             Thanh toán trả nợ
@@ -301,16 +301,16 @@ function DebtPayment(props) {
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
           </button>
           <IconMenuMobile />
-          <FilterList
-            show={isFilter}
-            filters={filters}
-            onHide={onHideFilter}
-            onSubmit={onFilter}
-            onRefresh={onRefresh}
-            loading={loading}
-          />
         </div>
       </div>
+      <FilterList
+        show={isFilter}
+        filters={filters}
+        onHide={onHideFilter}
+        onSubmit={onFilter}
+        onRefresh={onRefresh}
+        loading={loading}
+      />
       <div className="bg-white rounded mt-25px">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách thanh toán nợ</div>

@@ -131,7 +131,7 @@ function TopProducts(props) {
 
   return (
     <div className="py-main py-main-100 d-flex flex-column">
-      <div className="mb-20px d-flex justify-content-between align-items-end">
+      <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
             TOP bán hàng, doanh số
@@ -149,16 +149,16 @@ function TopProducts(props) {
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
           </button>
           <IconMenuMobile />
-          <FilterList
-            show={isFilter}
-            filters={filters}
-            onHide={onHideFilter}
-            onSubmit={onFilter}
-            onRefresh={onRefresh}
-            loading={loading}
-          />
         </div>
       </div>
+      <FilterList
+        show={isFilter}
+        filters={filters}
+        onHide={onHideFilter}
+        onSubmit={onFilter}
+        onRefresh={onRefresh}
+        loading={loading}
+      />
       {loading && <LoadingSkeleton />}
       {!loading && (
         <div className="flex-1-1-auto" style={{ height: heighElm.Content }}>
