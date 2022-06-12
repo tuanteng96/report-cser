@@ -1,39 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import Filter from 'src/components/Filter/Filter'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
+import FilterList from 'src/components/Filter/FilterList'
 
 import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
-
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      Id: 132222, // Id đơn hàng
-      NgayBanDH: '2022-06-03T14:11:39',
-      Member: {
-        ID: 2,
-        FullName: 'Nguyễn Tài Tuấn',
-        Phone: '0971021196'
-      },
-      NgayKhoaNo: '2022-06-03T14:11:39',
-      SoTienKhoaNo: 200000,
-      Staff: {
-        ID: 1,
-        FullName: 'Admin'
-      },
-      ThoiGianKhoaNo: '2022-06-03T14:11:39'
-    }
-  ]
-}
 
 function DebtLock(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -42,14 +19,20 @@ function DebtLock(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
+    DateStart: new Date(), // Ngày bắt đầu
+    DateEnd: new Date(), // Ngày kết thúc
     Pi: 1,
     Ps: 10
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [PageTotal, setPageTotal] = useState(1)
+  const [PageTotal, setPageTotal] = useState(0)
   const [ListData, setListData] = useState([])
+  const [Total, setTotal] = useState({
+    TONG_DH_KHOA_NO: 0,
+    TONG_TIEN_KHOA_NO: 0
+  })
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
@@ -72,14 +55,29 @@ function DebtLock(props) {
 
   const getListDebtLook = (isLoading = true, callback) => {
     isLoading && setLoading(true)
+    const newFilters = {
+      ...filters,
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null
+    }
     reportsApi
-      .getListDebtLock(filters)
+      .getListDebtLock(newFilters)
       .then(({ data }) => {
-        const { Items, Total } = {
+        const { Items, Total, TONG_DH_KHOA_NO, TONG_TIEN_KHOA_NO } = {
           Items: data.result?.Items || [],
-          Total: data.result?.Total || 0
+          Total: data.result?.Total || 0,
+          TONG_DH_KHOA_NO: data.result?.TONG_DH_KHOA_NO || 0,
+          TONG_TIEN_KHOA_NO: data.result?.TONG_TIEN_KHOA_NO || 0
         }
-        setListData(Items || [])
+        setListData(Items)
+        setTotal({
+          TONG_DH_KHOA_NO: TONG_DH_KHOA_NO,
+          TONG_TIEN_KHOA_NO: TONG_TIEN_KHOA_NO
+        })
         setLoading(false)
         setPageTotal(Total)
         isFilter && setIsFilter(false)
@@ -100,7 +98,7 @@ function DebtLock(props) {
     if (_.isEqual(values, filters)) {
       getListDebtLook()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 
@@ -138,7 +136,7 @@ function DebtLock(props) {
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
           </button>
           <IconMenuMobile />
-          <Filter
+          <FilterList
             show={isFilter}
             filters={filters}
             onHide={onHideFilter}
@@ -151,6 +149,20 @@ function DebtLock(props) {
       <div className="bg-white rounded mt-25px">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách khóa nợ</div>
+          <div className="d-flex">
+            <div className="fw-500">
+              Tổng đơn khóa nợ{' '}
+              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                {Total.TONG_DH_KHOA_NO}
+              </span>
+            </div>
+            <div className="fw-500 pl-20px">
+              Tổng tiền khóa nợ{' '}
+              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                {PriceHelper.formatVND(Total.TONG_TIEN_KHOA_NO)}
+              </span>
+            </div>
+          </div>
         </div>
         <div className="p-20px">
           <BaseTablesCustom

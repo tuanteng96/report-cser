@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from '../../components/IconMenuMobile'
-import Filter from 'src/components/Filter/Filter'
 import _ from 'lodash'
 import ListServices from './ListServices'
 import ChartWidget2 from '../../components/ChartWidget2'
@@ -13,6 +12,7 @@ import ElementEmpty from 'src/components/Empty/ElementEmpty'
 import LoadingChart from 'src/components/Loading/LoadingChart'
 import { TextHelper } from 'src/helpers/TextHelpers'
 import { useWindowSize } from 'src/hooks/useWindowSize'
+import FilterList from 'src/components/Filter/FilterList'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -52,7 +52,13 @@ function RPServices(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    Date: new Date() // Ngày,
+    DateStart: new Date(), // Ngày bắt đầu
+    DateEnd: new Date(), // Ngày kết thúc
+    Pi: 1, // Trang hiện tại
+    Ps: 10, // Số lượng item
+    Status: '', // Trạng thái
+    Warranty: '', // Bảo hành
+    StaffID: '' // ID nhân viên
   })
   const [dataChart, setDataChart] = useState(objData)
   const [optionsChart, setOptionsChart] = useState(optionsObj)
@@ -62,6 +68,7 @@ function RPServices(props) {
   const [OverviewData, setOverviewData] = useState(null)
   const [heightElm, setHeightElm] = useState(0)
   const elementRef = useRef(null)
+  const elementListRef = useRef()
   const { width } = useWindowSize()
 
   useEffect(() => {
@@ -116,8 +123,9 @@ function RPServices(props) {
   const getOverviewService = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
-      ...filters,
-      Date: moment(filters.Date).format('DD/MM/yyyy')
+      StockID: filters.StockID,
+      DateStart: moment(filters.DateStart).format('DD/MM/yyyy'),
+      DateEnd: moment(filters.DateEnd).format('DD/MM/yyyy')
     }
     reportsApi
       .getOverviewServices(newFilters)
@@ -153,14 +161,14 @@ function RPServices(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      getOverviewService()
+      elementListRef?.current?.onRefresh(() => getOverviewService())
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    getOverviewService()
+    elementListRef?.current?.onRefresh(() => getOverviewService())
   }
 
   const onOpenFilter = () => {
@@ -169,6 +177,14 @@ function RPServices(props) {
 
   const onHideFilter = () => {
     setIsFilter(false)
+  }
+
+  const onPageChange = Pi => {
+    setFilters({ ...filters, Pi: Pi })
+  }
+
+  const onSizePerPageChange = Ps => {
+    setFilters({ ...filters, Ps: Ps })
   }
 
   return (
@@ -191,7 +207,7 @@ function RPServices(props) {
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
           </button>
           <IconMenuMobile />
-          <Filter
+          <FilterList
             show={isFilter}
             filters={filters}
             onHide={onHideFilter}
@@ -212,7 +228,7 @@ function RPServices(props) {
                   style={{ backgroundColor: '#ffbed3' }}
                 >
                   <div className="font-size-md fw-600 text-uppercase">
-                    Dịch vụ hôm nay
+                    Tổng dịch vụ
                   </div>
                   <ChartWidget2
                     colors={{
@@ -221,7 +237,7 @@ function RPServices(props) {
                       color: '#0d6efd',
                       borderColor: '#f1fafe'
                     }}
-                    height={100}
+                    height={30}
                     data={[15, 25, 15, 40, 20, 50]}
                   />
                   <div className="mt-30px d-flex align-items-baseline">
@@ -247,7 +263,7 @@ function RPServices(props) {
                       color: '#8fbd56',
                       borderColor: '#f1fafe'
                     }}
-                    height={100}
+                    height={30}
                     data={[15, 25, 15, 40, 20, 50]}
                   />
                   <div className="mt-30px d-flex align-items-baseline">
@@ -273,7 +289,7 @@ function RPServices(props) {
                       color: '#8fbd56',
                       borderColor: '#f1fafe'
                     }}
-                    height={100}
+                    height={30}
                     data={[15, 25, 15, 40, 20, 50]}
                   />
                   <div className="mt-30px d-flex align-items-baseline">
@@ -313,7 +329,12 @@ function RPServices(props) {
           </div>
         </div>
       </div>
-      <ListServices />
+      <ListServices
+        onPageChange={onPageChange}
+        onSizePerPageChange={onSizePerPageChange}
+        filters={filters}
+        ref={elementListRef}
+      />
     </div>
   )
 }

@@ -18,7 +18,8 @@ BaseTablesCustom.propTypes = {
   loading: PropTypes.bool,
   className: PropTypes.string,
   classes: PropTypes.string,
-  selectRow: PropTypes.object
+  selectRow: PropTypes.object,
+  rowStyle: PropTypes.func
 }
 BaseTablesCustom.defaultProps = {
   data: null,
@@ -27,8 +28,11 @@ BaseTablesCustom.defaultProps = {
   loading: false,
   options: null,
   classes: 'table-head-custom table-vertical-center overflow-hidden',
-  selectRow: null
+  selectRow: null,
+  rowStyle: null
 }
+
+const sizePerPageLists = [10, 25, 50, 100, 500, 1000]
 
 function BaseTablesCustom({
   data,
@@ -39,7 +43,8 @@ function BaseTablesCustom({
   classes,
   keyField,
   optionsMoible,
-  textDataNull
+  textDataNull,
+  rowStyle
 }) {
   const refElm = useRef(0)
   const [widthElm, setWidthElm] = useState(0)
@@ -93,6 +98,7 @@ function BaseTablesCustom({
           return (
             <>
               <BootstrapTable
+                rowStyle={rowStyle}
                 wrapperClasses={`table-responsive ${className}`}
                 //rowClasses="text-nowrap"
                 classes={classes}
@@ -140,21 +146,21 @@ function BaseTablesCustom({
                       variant=" font-weight-boldest"
                       title={paginationProps.sizePerPage}
                     >
-                      {paginationProps.sizePerPageList.map((item, index) => (
+                      {sizePerPageLists.map((item, index) => (
                         <Dropdown.Item
                           key={index}
                           eventKey={index}
                           active={
-                            paginationProps.sizePerPageList[index] ===
+                            sizePerPageLists[index] ===
                             paginationProps.sizePerPage
                           }
                           onClick={() =>
                             paginationProps.onSizePerPageChange(
-                              paginationProps.sizePerPageList[index]
+                              sizePerPageLists[index]
                             )
                           }
                         >
-                          {paginationProps.sizePerPageList[index]}
+                          {sizePerPageLists[index]}
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>

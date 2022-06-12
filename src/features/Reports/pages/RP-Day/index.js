@@ -65,7 +65,7 @@ function RPDay(props) {
     if (_.isEqual(values, filters)) {
       getAllDays()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 

@@ -144,7 +144,7 @@ function SalesStaff(props) {
     if (_.isEqual(values, filters)) {
       getListSalarys()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 
@@ -194,7 +194,9 @@ function SalesStaff(props) {
       </div>
       <div className="bg-white rounded mt-25px">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
-          <div className="fw-500 font-size-lg">Danh sách doanh số nhân viên</div>
+          <div className="fw-500 font-size-lg">
+            Danh sách doanh số nhân viên
+          </div>
         </div>
         <FilterList
           show={isFilter}

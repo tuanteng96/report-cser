@@ -7,9 +7,7 @@ function LoadingSkeleton(props) {
     <div className="row">
       <div className="col-12 mb-20px">
         <div className="rounded p-20px" style={{ backgroundColor: '#ffbed3' }}>
-          <div className="font-size-md fw-600 text-uppercase">
-            Dịch vụ hôm nay
-          </div>
+          <div className="font-size-md fw-600 text-uppercase">Tổng dịch vụ</div>
           <ChartWidget2
             colors={{
               labelColor: '#343a40',
@@ -17,7 +15,7 @@ function LoadingSkeleton(props) {
               color: '#0d6efd',
               borderColor: '#f1fafe'
             }}
-            height={100}
+            height={50}
             data={[15, 25, 15, 40, 20, 50]}
           />
           <div className="mt-30px d-flex align-items-baseline">
@@ -39,7 +37,7 @@ function LoadingSkeleton(props) {
               color: '#8fbd56',
               borderColor: '#f1fafe'
             }}
-            height={100}
+            height={50}
             data={[15, 25, 15, 40, 20, 50]}
           />
           <div className="mt-30px d-flex align-items-baseline">
@@ -61,7 +59,7 @@ function LoadingSkeleton(props) {
               color: '#8fbd56',
               borderColor: '#f1fafe'
             }}
-            height={100}
+            height={50}
             data={[15, 25, 15, 40, 20, 50]}
           />
           <div className="mt-30px d-flex align-items-baseline">

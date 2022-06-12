@@ -235,7 +235,7 @@ function DebtPayment(props) {
     if (_.isEqual(values, filters)) {
       getListDebtPayment()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 

@@ -87,7 +87,7 @@ function ListSell(props) {
     if (_.isEqual(values, filters)) {
       getListServices()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 

@@ -177,7 +177,7 @@ function RPReEx(props) {
     if (_.isEqual(values, filters)) {
       onRefresh()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 
@@ -217,80 +217,86 @@ function RPReEx(props) {
         </div>
       </div>
       {loading && <LoadingSkeleton />}
-      {!loading && (
-        <div className="row">
-          <div className="col-md-6 order-1">
-            <div
-              className="bg-white rounded px-20px py-30px text-center"
-              style={{
-                backgroundPosition: 'right top',
-                backgroundSize: '30% auto',
-                backgroundRepeat: 'no-repeat',
-                backgroundImage: `url(${AssetsHelpers.toAbsoluteUrl(
-                  '/assets/media/svg/shapes/abstract-4.svg'
-                )})`
-              }}
-            >
-              <div className="font-number font-size-35 fw-600 line-height-xxl text-primary">
-                {PriceHelper.formatVND(OverviewData?.TonTienDauKy)}
+      <div className="row">
+        <div className="col-lg-5 col-xl-6">
+          {!loading && (
+            <div className="row">
+              <div className="col-md-12">
+                <div
+                  className="bg-white rounded px-20px py-30px text-center"
+                  style={{
+                    backgroundPosition: 'right top',
+                    backgroundSize: '30% auto',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundImage: `url(${AssetsHelpers.toAbsoluteUrl(
+                      '/assets/media/svg/shapes/abstract-4.svg'
+                    )})`
+                  }}
+                >
+                  <div className="font-number font-size-35 fw-600 line-height-xxl text-primary">
+                    {PriceHelper.formatVND(OverviewData?.TonTienDauKy)}
+                  </div>
+                  <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
+                    Tồn tiền đầu kỳ
+                  </div>
+                </div>
               </div>
-              <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
-                Tồn tiền đầu kỳ
+              <div className="col-md-12">
+                <div className="bg-white rounded px-20px py-30px d-flex my-20px flex-column flex-xl-row">
+                  <div className="flex-1 text-center">
+                    <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl">
+                      {PriceHelper.formatVND(OverviewData?.ThuTrongKy)}
+                    </div>
+                    <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
+                      Thu trong kỳ
+                    </div>
+                  </div>
+                  <div className="flex-1 text-center border-left border-left-0 border-xl-left-1  border-right border-right-0 border-xl-right-1 border-gray-200 border-bottom border-xl-bottom-0 border-top border-xl-top-0 py-20px my-20px py-xl-0 my-xl-0">
+                    <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl text-danger">
+                      {PriceHelper.formatVNDPositive(OverviewData?.ChiTrongKy)}
+                    </div>
+                    <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
+                      Chi trong kỳ
+                    </div>
+                  </div>
+                  <div className="flex-1 text-center">
+                    <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl">
+                      {PriceHelper.formatVND(OverviewData?.ThuChiTrongKy)}
+                    </div>
+                    <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
+                      Tồn kỳ
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div
+                  className="bg-white rounded px-20px py-30px mb-20px mb-md-0 text-center"
+                  style={{
+                    backgroundPosition: 'right top',
+                    backgroundSize: '30% auto',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundImage: `url(${AssetsHelpers.toAbsoluteUrl(
+                      '/assets/media/svg/shapes/abstract-4.svg'
+                    )})`
+                  }}
+                >
+                  <div className="font-number font-size-35 fw-600 line-height-xxl text-success">
+                    {PriceHelper.formatVND(OverviewData?.ThuChiHienTai)}
+                  </div>
+                  <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
+                    Tồn tiền hiện tại
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="col-md-6 order-3 order-md-2">
-            <div
-              className="bg-white rounded px-20px py-30px mt-20px mt-md-0 text-center"
-              style={{
-                backgroundPosition: 'right top',
-                backgroundSize: '30% auto',
-                backgroundRepeat: 'no-repeat',
-                backgroundImage: `url(${AssetsHelpers.toAbsoluteUrl(
-                  '/assets/media/svg/shapes/abstract-4.svg'
-                )})`
-              }}
-            >
-              <div className="font-number font-size-35 fw-600 line-height-xxl text-success">
-                {PriceHelper.formatVND(OverviewData?.ThuChiHienTai)}
-              </div>
-              <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
-                Tồn tiền hiện tại
-              </div>
-            </div>
-          </div>
-          <div className="col-md-12 order-2 order-md-3">
-            <div className="bg-white rounded px-20px py-30px d-flex mt-20px flex-column flex-md-row">
-              <div className="flex-1 text-center">
-                <div className="font-number font-size-30 fw-600 line-height-xxl">
-                  {PriceHelper.formatVND(OverviewData?.ThuTrongKy)}
-                </div>
-                <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
-                  Thu trong kỳ
-                </div>
-              </div>
-              <div className="flex-1 text-center border-left border-left-0 border-md-left-1  border-right border-right-0 border-md-right-1 border-gray-200 border-bottom border-md-bottom-0 border-top border-md-top-0 py-20px my-20px py-md-0 my-md-0">
-                <div className="font-number font-size-30 fw-600 line-height-xxl text-danger">
-                  {PriceHelper.formatVNDPositive(OverviewData?.ChiTrongKy)}
-                </div>
-                <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
-                  Chi trong kỳ
-                </div>
-              </div>
-              <div className="flex-1 text-center">
-                <div className="font-number font-size-30 fw-600 line-height-xxl">
-                  {PriceHelper.formatVND(OverviewData?.ThuChiTrongKy)}
-                </div>
-                <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
-                  Tồn kỳ
-                </div>
-              </div>
-            </div>
+          )}
+        </div>
+        <div className="col-lg-7 col-xl-6">
+          <div className="bg-white rounded p-20px h-100 d-flex align-items-center justify-content-center">
+            <Chart2Column options={optionsObj} data={dataChart} />
           </div>
         </div>
-      )}
-      <div className="bg-white rounded p-20px mt-20px">
-        <Chart2Column options={optionsObj} data={dataChart} />
       </div>
       <ListReEx
         filters={filters}

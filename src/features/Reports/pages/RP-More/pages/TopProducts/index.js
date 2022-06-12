@@ -113,7 +113,7 @@ function TopProducts(props) {
     if (_.isEqual(values, filters)) {
       getSalesDetail()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 

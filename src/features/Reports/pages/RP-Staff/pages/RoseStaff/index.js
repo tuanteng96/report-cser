@@ -7,7 +7,6 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -182,7 +181,7 @@ function RoseStaff(props) {
     if (_.isEqual(values, filters)) {
       getListRose()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 
@@ -204,9 +203,7 @@ function RoseStaff(props) {
     var totalArray = 0
     if (!item) return totalArray
     for (let keyItem of item) {
-      for (let keyOrder of keyItem.ListOrders) {
-        totalArray += keyOrder?.OrderItems?.length || 0
-      }
+      totalArray += keyItem.OrdersList.length
     }
     return totalArray
   }
@@ -365,9 +362,34 @@ function RoseStaff(props) {
                         staff.OrdersList.map((order, orderIndex) => (
                           <Fragment key={orderIndex}>
                             <tr>
-                              <td>{moment(item.CreateDate).format("HH:mm DD-MM-YYYY")}</td>
-                              <td>{staff.Staff?.FullName || 'Chưa có'}</td>
-                              <td>{PriceHelper.formatVND(staff.RoseMoney)}</td>
+                              {index === 0 &&
+                                staffIndex === 0 &&
+                                orderIndex === 0 && (
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={AmountMember(item.StaffsList)}
+                                  >
+                                    {moment(item.CreateDate).format(
+                                      'HH:mm DD-MM-YYYY'
+                                    )}
+                                  </td>
+                                )}
+                              {orderIndex === 0 && (
+                                <Fragment>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={staff.OrdersList.length}
+                                  >
+                                    {staff.Staff?.FullName || 'Chưa có'}
+                                  </td>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={staff.OrdersList.length}
+                                  >
+                                    {PriceHelper.formatVND(staff.RoseMoney)}
+                                  </td>
+                                </Fragment>
+                              )}
                               <td>#{order.ID}</td>
                               <td>{order?.Member?.FullName || 'Chưa có'}</td>
                               <td>{order?.Member?.Phone || 'Chưa có'}</td>
@@ -383,86 +405,6 @@ function RoseStaff(props) {
                             </tr>
                           </Fragment>
                         ))}
-                      {/* {member.ListOrders.map((orders, ordersIndex) => (
-                        <Fragment key={ordersIndex}>
-                          {orders.OrderItems.map(
-                            (orderItem, orderItemIndex) => (
-                              <tr key={orderItemIndex}>
-                                {memberIndex === 0 &&
-                                  ordersIndex === 0 &&
-                                  orderItemIndex === 0 && (
-                                    <td
-                                      className="vertical-align-middle"
-                                      rowSpan={AmountMember(item.ListCustomer)}
-                                    >
-                                      {moment(item.CreateDate).format(
-                                        'DD-MM-YYYY'
-                                      )}
-                                    </td>
-                                  )}
-                                {ordersIndex === 0 && orderItemIndex === 0 && (
-                                  <Fragment>
-                                    <td
-                                      className="vertical-align-middle"
-                                      rowSpan={AmountOrderItem(member)}
-                                    >
-                                      {member.MemberName}
-                                    </td>
-                                    <td
-                                      className="vertical-align-middle"
-                                      rowSpan={AmountOrderItem(member)}
-                                    >
-                                      {member.MemberPhone}
-                                    </td>
-                                    <td
-                                      className="vertical-align-middle"
-                                      rowSpan={AmountOrderItem(member)}
-                                    >
-                                      {PriceHelper.formatVND(member.TTToanNo)}
-                                    </td>
-                                  </Fragment>
-                                )}
-                                {orders.OrderItems.length > 0 &&
-                                  orderItemIndex === 0 && (
-                                    <Fragment>
-                                      <td
-                                        className="vertical-align-middle"
-                                        rowSpan={orders.OrderItems.length}
-                                      >
-                                        #{orders.Id}
-                                      </td>
-                                      <td
-                                        className="vertical-align-middle"
-                                        rowSpan={orders.OrderItems.length}
-                                      >
-                                        {PriceHelper.formatVND(orders.TTToanNo)}
-                                      </td>
-                                    </Fragment>
-                                  )}
-                                <td>
-                                  {PriceHelper.formatVND(orderItem.ToPay)}
-                                </td>
-                                <td>
-                                  
-                                </td>
-                                <td>
-                                  {PriceHelper.formatVND(orderItem.DaThToan_Vi)}
-                                </td>
-                                <td>
-                                  {PriceHelper.formatVND(
-                                    orderItem.DaThToan_ThTien
-                                  )}
-                                </td>
-                                <td>
-                                  {orderItem.lines
-                                    .map(line => line.ProdTitle)
-                                    .join(', ')}
-                                </td>
-                              </tr>
-                            )
-                          )}
-                        </Fragment>
-                      ))} */}
                     </Fragment>
                   ))}
                 </Fragment>

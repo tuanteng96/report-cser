@@ -12,6 +12,8 @@ ChildrenTables.propTypes = {
   columns: PropTypes.array
 }
 
+const sizePerPageLists = [10, 25, 50, 100, 500, 1000]
+
 function ChildrenTables({
   children,
   data,
@@ -135,18 +137,16 @@ function ChildrenTables({
               variant=" font-weight-boldest"
               title={options.sizePerPage}
             >
-              {options.sizePerPageList.map((item, index) => (
+              {sizePerPageLists.map((item, index) => (
                 <Dropdown.Item
                   key={index}
                   eventKey={index}
-                  active={
-                    options.sizePerPageList[index] === options.sizePerPage
-                  }
+                  active={sizePerPageLists[index] === options.sizePerPage}
                   onClick={() =>
-                    options.onSizePerPageChange(options.sizePerPageList[index])
+                    options.onSizePerPageChange(sizePerPageLists[index])
                   }
                 >
-                  {options.sizePerPageList[index]}
+                  {sizePerPageLists[index]}
                 </Dropdown.Item>
               ))}
             </DropdownButton>

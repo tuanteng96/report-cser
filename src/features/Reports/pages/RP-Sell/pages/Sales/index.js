@@ -111,7 +111,7 @@ function Sales(props) {
     if (_.isEqual(values, filters)) {
       getOverviewSell()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 

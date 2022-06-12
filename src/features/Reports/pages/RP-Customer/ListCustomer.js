@@ -11,7 +11,7 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-function ListCustomer(props) {
+function ListCustomer({ onHideFilter, isFilter, onRefreshParent }) {
   const { CrStockID } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || ''
   }))
@@ -28,7 +28,6 @@ function ListCustomer(props) {
     StaffID: ''
   })
   const [ListData, setListData] = useState([])
-  const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
@@ -39,7 +38,11 @@ function ListCustomer(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListCustomer = (isLoading = true, callback) => {
+  const getListCustomer = (
+    options = { isLoading: true, isRefresh: false },
+    callback
+  ) => {
+    const { isLoading, isRefresh } = options
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
@@ -64,30 +67,24 @@ function ListCustomer(props) {
         setListData(Members)
         setLoading(false)
         setPageTotal(Total)
-        isFilter && setIsFilter(false)
+        isFilter && !isRefresh && onHideFilter()
         callback && callback()
       })
       .catch(error => console.log(error))
-  }
-
-  const onOpenFilter = () => {
-    setIsFilter(true)
-  }
-
-  const onHideFilter = () => {
-    setIsFilter(false)
   }
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
       getListCustomer()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    getListCustomer()
+    getListCustomer({ isLoading: true, isRefresh: true }, () =>
+      onRefreshParent()
+    )
   }
 
   const OpenModalMobile = value => {
@@ -104,13 +101,20 @@ function ListCustomer(props) {
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
         <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
-        <button
-          type="button"
-          className="btn btn-primary p-0 w-35px h-30px"
-          onClick={onOpenFilter}
-        >
-          <i className="fa-regular fa-filter-list font-size-md mt-5px"></i>
-        </button>
+        <div className="d-flex">
+          <div className="fw-500">
+            Tổng KH
+            <span className="font-size-xl fw-600 text-success pl-5px font-number">
+              {PageTotal}
+            </span>
+          </div>
+          <div className="fw-500 pl-20px">
+            KH đến từ Online
+            <span className="font-size-xl fw-600 text-success pl-5px font-number">
+              0
+            </span>
+          </div>
+        </div>
       </div>
       <FilterList
         show={isFilter}

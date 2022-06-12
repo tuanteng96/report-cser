@@ -144,7 +144,7 @@ function SalaryServices(props) {
     if (_.isEqual(values, filters)) {
       getListSalarys()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 

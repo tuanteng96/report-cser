@@ -82,7 +82,7 @@ function Returns(props) {
     if (_.isEqual(values, filters)) {
       getListReturns()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 

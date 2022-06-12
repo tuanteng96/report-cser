@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import Filter from 'src/components/Filter/Filter'
 import ChartWidget2 from '../../components/ChartWidget2'
 import IconMenuMobile from '../../components/IconMenuMobile'
 import Chart2Column from '../../components/Chart2Column'
-import _ from 'lodash'
 import LoadingSkeleton from './LoadingSkeleton'
 import reportsApi from 'src/api/reports.api'
 import ListCustomer from './ListCustomer'
@@ -61,7 +59,7 @@ function RPCustomer() {
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
   }))
-  const [filters, setFilters] = useState({
+  const [filters] = useState({
     StockID: CrStockID || '', // ID Stock
     Date: new Date() // Ngày,
   })
@@ -120,16 +118,8 @@ function RPCustomer() {
       .catch(error => console.log(error))
   }
 
-  const onFilter = values => {
-    if (_.isEqual(values, filters)) {
-      getOverviewCustomer()
-    } else {
-      setFilters(values)
-    }
-  }
-
   const onRefresh = () => {
-    getOverviewCustomer()
+    getOverviewCustomer(() => onHideFilter())
   }
 
   const onOpenFilter = () => {
@@ -160,141 +150,139 @@ function RPCustomer() {
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
           </button>
           <IconMenuMobile />
-          <Filter
-            show={isFilter}
-            filters={filters}
-            onHide={onHideFilter}
-            onSubmit={onFilter}
-            onRefresh={onRefresh}
-            loading={loading}
-          />
         </div>
       </div>
       {loading && <LoadingSkeleton />}
       {!loading && (
         <div className="row">
-          <div className="col-md-6 col-lg-6 col-xl-3 mb-xl-0 mb-4">
-            <div
-              className="rounded p-20px"
-              style={{ backgroundColor: '#ffbed3' }}
-            >
-              <div className="font-size-md fw-600 text-uppercase">
-                Tổng khách hàng
-              </div>
-              <ChartWidget2
-                colors={{
-                  labelColor: '#343a40',
-                  strokeColor: '#fff',
-                  color: '#0d6efd',
-                  borderColor: '#f1fafe'
-                }}
-                height={100}
-                data={[15, 25, 15, 40, 20, 50]}
-              />
-              <div className="mt-30px d-flex align-items-baseline">
-                <div className="font-size-50 line-height-xxl fw-500 font-number">
-                  {OverviewData?.TSo || 0}
+          <div className="col-lg-7 col-xl-6">
+            <div className="row">
+              <div className="col-md-6 col-lg-6">
+                <div
+                  className="rounded p-20px mb-20px"
+                  style={{ backgroundColor: '#ffbed3' }}
+                >
+                  <div className="font-size-md fw-600 text-uppercase">
+                    Tổng khách hàng
+                  </div>
+                  <ChartWidget2
+                    colors={{
+                      labelColor: '#343a40',
+                      strokeColor: '#fff',
+                      color: '#0d6efd',
+                      borderColor: '#f1fafe'
+                    }}
+                    height={100}
+                    data={[15, 25, 15, 40, 20, 50]}
+                  />
+                  <div className="mt-30px d-flex align-items-baseline">
+                    <div className="font-size-50 line-height-xxl fw-500 font-number">
+                      {OverviewData?.TSo || 0}
+                    </div>
+                    <div className="fw-500 ml-10px font-size-md">
+                      + {OverviewData?.TSo_Onl || 0} Khách từ Online
+                    </div>
+                  </div>
                 </div>
-                <div className="fw-500 ml-10px font-size-md">
-                  + {OverviewData?.TSo_Onl || 0} Khách từ Online
+              </div>
+              <div className="col-md-6 col-lg-6">
+                <div
+                  className="rounded p-20px mb-20px"
+                  style={{ backgroundColor: '#b9eff5' }}
+                >
+                  <div className="font-size-md fw-600 text-uppercase">
+                    Mới trong ngày
+                  </div>
+                  <ChartWidget2
+                    colors={{
+                      labelColor: '#343a40',
+                      strokeColor: '#fff',
+                      color: '#0d6efd',
+                      borderColor: '#f1fafe'
+                    }}
+                    height={100}
+                    data={[10, 10, 45, 10, 40, 50]}
+                  />
+                  <div className="mt-30px d-flex align-items-baseline">
+                    <div className="font-size-50 line-height-xxl fw-500 font-number">
+                      +{OverviewData?.Today || 0}
+                    </div>
+                    <div className="fw-500 ml-10px font-size-md">
+                      {OverviewData?.Today_Onl || 0} Khách từ Online
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-lg-6">
+                <div
+                  className="rounded p-20px mb-20px mb-md-0"
+                  style={{ backgroundColor: '#bbc8f5' }}
+                >
+                  <div className="font-size-md fw-600 text-uppercase">
+                    Mới trong tuần
+                  </div>
+                  <ChartWidget2
+                    colors={{
+                      labelColor: '#343a40',
+                      strokeColor: '#fff',
+                      color: '#0d6efd',
+                      borderColor: '#f1fafe'
+                    }}
+                    height={100}
+                    data={[45, 15, 15, 40, 10, 50]}
+                  />
+                  <div className="mt-30px d-flex align-items-baseline">
+                    <div className="font-size-50 line-height-xxl fw-500 font-number">
+                      +{OverviewData?.ThisWeek || 0}
+                    </div>
+                    <div className="fw-500 ml-10px font-size-md">
+                      {OverviewData?.ThisWeek_Onl || 0} Khách từ Online
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-lg-6">
+                <div
+                  className="rounded p-20px"
+                  style={{ backgroundColor: '#9abef1' }}
+                >
+                  <div className="font-size-md fw-600 text-uppercase">
+                    Mới trong tháng
+                  </div>
+                  <ChartWidget2
+                    colors={{
+                      labelColor: '#343a40',
+                      strokeColor: '#fff',
+                      color: '#0d6efd',
+                      borderColor: '#f1fafe'
+                    }}
+                    height={100}
+                    data={[15, 45, 25, 10, 40, 30]}
+                  />
+                  <div className="mt-30px d-flex align-items-baseline">
+                    <div className="font-size-50 line-height-xxl fw-500 font-number">
+                      +{OverviewData?.ThisMonth || 0}
+                    </div>
+                    <div className="fw-500 ml-10px font-size-md">
+                      {OverviewData?.ThisMonth_Onl || 0} Khách từ Online
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-lg-6 col-xl-3 mb-xl-0 mb-4">
-            <div
-              className="rounded p-20px"
-              style={{ backgroundColor: '#b9eff5' }}
-            >
-              <div className="font-size-md fw-600 text-uppercase">
-                Mới trong ngày
-              </div>
-              <ChartWidget2
-                colors={{
-                  labelColor: '#343a40',
-                  strokeColor: '#fff',
-                  color: '#0d6efd',
-                  borderColor: '#f1fafe'
-                }}
-                height={100}
-                data={[10, 10, 45, 10, 40, 50]}
-              />
-              <div className="mt-30px d-flex align-items-baseline">
-                <div className="font-size-50 line-height-xxl fw-500 font-number">
-                  +{OverviewData?.Today || 0}
-                </div>
-                <div className="fw-500 ml-10px font-size-md">
-                  {OverviewData?.Today_Onl || 0} Khách từ Online
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 col-lg-6 col-xl-3 mb-4 mb-md-0">
-            <div
-              className="rounded p-20px"
-              style={{ backgroundColor: '#bbc8f5' }}
-            >
-              <div className="font-size-md fw-600 text-uppercase">
-                Mới trong tuần
-              </div>
-              <ChartWidget2
-                colors={{
-                  labelColor: '#343a40',
-                  strokeColor: '#fff',
-                  color: '#0d6efd',
-                  borderColor: '#f1fafe'
-                }}
-                height={100}
-                data={[45, 15, 15, 40, 10, 50]}
-              />
-              <div className="mt-30px d-flex align-items-baseline">
-                <div className="font-size-50 line-height-xxl fw-500 font-number">
-                  +{OverviewData?.ThisWeek || 0}
-                </div>
-                <div className="fw-500 ml-10px font-size-md">
-                  {OverviewData?.ThisWeek_Onl || 0} Khách từ Online
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 col-lg-6 col-xl-3">
-            <div
-              className="rounded p-20px"
-              style={{ backgroundColor: '#9abef1' }}
-            >
-              <div className="font-size-md fw-600 text-uppercase">
-                Mới trong tháng
-              </div>
-              <ChartWidget2
-                colors={{
-                  labelColor: '#343a40',
-                  strokeColor: '#fff',
-                  color: '#0d6efd',
-                  borderColor: '#f1fafe'
-                }}
-                height={100}
-                data={[15, 45, 25, 10, 40, 30]}
-              />
-              <div className="mt-30px d-flex align-items-baseline">
-                <div className="font-size-50 line-height-xxl fw-500 font-number">
-                  +{OverviewData?.ThisMonth || 0}
-                </div>
-                <div className="fw-500 ml-10px font-size-md">
-                  {OverviewData?.ThisMonth_Onl || 0} Khách từ Online
-                </div>
-              </div>
+          <div className="col-lg-5 col-xl-6">
+            <div className="bg-white rounded p-20px h-100 d-flex align-items-center justify-content-center mt-20px mt-lg-0">
+              <Chart2Column options={optionsObj} data={dataChart} />
             </div>
           </div>
         </div>
       )}
-      <div className="row">
-        <div className="col-md-12">
-          <div className="bg-white rounded p-20px mt-25px">
-            <Chart2Column options={optionsObj} data={dataChart} />
-          </div>
-        </div>
-      </div>
-      <ListCustomer />
+      <ListCustomer
+        onHideFilter={onHideFilter}
+        isFilter={isFilter}
+        onRefreshParent={onRefresh}
+      />
     </div>
   )
 }

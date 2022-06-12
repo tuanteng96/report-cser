@@ -3,6 +3,7 @@ import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
 import { JsonFilter } from 'src/Json/JsonFilter'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -17,13 +18,55 @@ function ListReEx({
 }) {
   const [ListData, setListData] = useState([])
   const [PageTotal, setPageTotal] = useState(0)
+  const [Total, setTotal] = useState({
+    TONG_CHI: 0,
+    CHI_CKL: 0,
+    CHI_QT: 0,
+    CHI_TM: 0,
+    TONG_THU: 0,
+    THU_TM: 0,
+    THU_QT: 0,
+    THU_CK: 0
+  })
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
   useEffect(() => {
     if (DataResult) {
-      const { Items, Total } = DataResult
+      const {
+        Items,
+        Total,
+        TONG_CHI,
+        CHI_CK,
+        CHI_QT,
+        CHI_TM,
+        TONG_THU,
+        THU_TM,
+        THU_QT,
+        THU_CK
+      } = {
+        Items: DataResult?.Items || [],
+        Total: DataResult?.Total || 0,
+        TONG_CHI: DataResult?.TONG_CHI || 0,
+        CHI_CK: DataResult?.CHI_CK || 0,
+        CHI_QT: DataResult?.CHI_QT || 0,
+        CHI_TM: DataResult?.CHI_TM || 0,
+        TONG_THU: DataResult?.TONG_THU || 0,
+        THU_TM: DataResult?.THU_TM || 0,
+        THU_QT: DataResult?.THU_QT || 0,
+        THU_CK: DataResult?.THU_CK || 0
+      }
       setListData(Items)
+      setTotal({
+        TONG_CHI,
+        CHI_CK,
+        CHI_QT,
+        CHI_TM,
+        TONG_THU,
+        THU_TM,
+        THU_QT,
+        THU_CK
+      })
       setPageTotal(Total)
     } else {
       setListData([])
@@ -53,6 +96,88 @@ function ListReEx({
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
         <div className="fw-500 font-size-lg">Danh sách thu chi & sổ quỹ</div>
+        <div className="d-flex">
+          <div className="fw-500 d-flex align-items-center">
+            Tổng thu
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="top"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Header
+                    className="py-10px text-uppercase fw-600"
+                    as="h3"
+                  >
+                    Chi tiết tổng thu
+                  </Popover.Header>
+                  <Popover.Body className="p-0">
+                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <span>Tiền mặt</span>
+                      <span>{PriceHelper.formatVNDPositive(Total.THU_TM)}</span>
+                    </div>
+                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <span>Chuyển khoản</span>
+                      <span>{PriceHelper.formatVNDPositive(Total.THU_CK)}</span>
+                    </div>
+                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                      <span>Quẹt thẻ</span>
+                      <span>{PriceHelper.formatVNDPositive(Total.THU_QT)}</span>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                  {PriceHelper.formatVNDPositive(Total.TONG_THU)}
+                </span>
+                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+              </div>
+            </OverlayTrigger>
+          </div>
+          <div className="fw-500 d-flex align-items-center ml-25px">
+            Tổng chi
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="top"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Header
+                    className="py-10px text-uppercase fw-600"
+                    as="h3"
+                  >
+                    Chi tiết tổng chi
+                  </Popover.Header>
+                  <Popover.Body className="p-0">
+                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <span>Tiền mặt</span>
+                      <span>{PriceHelper.formatVNDPositive(Total.CHI_TM)}</span>
+                    </div>
+                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <span>Chuyển khoản</span>
+                      <span>{PriceHelper.formatVNDPositive(Total.CHI_CK)}</span>
+                    </div>
+                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                      <span>Quẹt thẻ</span>
+                      <span>{PriceHelper.formatVNDPositive(Total.CHI_QT)}</span>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                  {PriceHelper.formatVNDPositive(Total.TONG_CHI)}
+                </span>
+                <i className="fa-solid fa-circle-exclamation cursor-pointer text-danger ml-5px"></i>
+              </div>
+            </OverlayTrigger>
+          </div>
+        </div>
       </div>
       <div className="p-20px">
         <BaseTablesCustom
@@ -95,7 +220,8 @@ function ListReEx({
               },
               headerAlign: 'center',
               style: { textAlign: 'center' },
-              attrs: { 'data-title': 'STT' }
+              attrs: { 'data-title': 'STT' },
+              classes: 'id-custom-cell'
             },
             {
               dataField: 'CreateDate',
@@ -208,6 +334,17 @@ function ListReEx({
           keyField="Id"
           className="table-responsive-attr"
           classes="table-bordered"
+          rowStyle={(row, rowIndex) => {
+            const style = {}
+            if (!row.Tag) return style
+            const index = JsonFilter.TagsTCList.findIndex(
+              item => item.value === row.Tag
+            )
+            if (index > -1 && JsonFilter.TagsTCList[index].type === 1) {
+              style.backgroundColor = '#ffb2c1'
+            }
+            return style
+          }}
         />
       </div>
       <ModalViewMobile

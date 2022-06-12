@@ -29,7 +29,11 @@ function Home(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
-  const [TongNo, setTongNo] = useState(0)
+  const [Total, setTotal] = useState({
+    DH_NO: 0,
+    KH_NO: 0,
+    TongNo: 0
+  })
   const [PageTotal, setPageTotal] = useState(1)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -69,13 +73,15 @@ function Home(props) {
     reportsApi
       .getListDebt(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TongNo } = {
+        const { Items, Total, TongNo, DH_NO, KH_NO } = {
           Items: data.result?.Items || [],
           TongNo: data.result?.TongNo || 0,
+          DH_NO: (data.result?.DH_NO && data.result?.DH_NO.length) || 0,
+          KH_NO: (data.result?.KH_NO && data.result?.KH_NO.length) || 0,
           Total: data.result?.Total || 0
         }
         setListData(Items)
-        setTongNo(TongNo)
+        setTotal({ TongNo, DH_NO, KH_NO })
         setLoading(false)
         setPageTotal(Total)
         isFilter && setIsFilter(false)
@@ -88,7 +94,7 @@ function Home(props) {
     if (_.isEqual(values, filters)) {
       getListDebt()
     } else {
-      setFilters(values)
+      setFilters({ ...values, Pi: 1 })
     }
   }
 
@@ -156,11 +162,25 @@ function Home(props) {
       <div className="bg-white rounded mt-25px">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách công nợ</div>
-          <div className="fw-500">
-            Tổng nợ
-            <span className="font-size-xl fw-600 text-danger pl-6px">
-              {PriceHelper.formatVND(TongNo)}
-            </span>
+          <div className="d-flex">
+            <div className="fw-500">
+              Tổng KH nợ{' '}
+              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                {Total.KH_NO}
+              </span>
+            </div>
+            <div className="fw-500 pl-20px">
+              Tổng ĐH nợ{' '}
+              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                {Total.DH_NO}
+              </span>
+            </div>
+            <div className="fw-500 pl-20px">
+              Tổng tiền nợ{' '}
+              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                {PriceHelper.formatVND(Total.TongNo)}
+              </span>
+            </div>
           </div>
         </div>
         <div className="p-20px">
