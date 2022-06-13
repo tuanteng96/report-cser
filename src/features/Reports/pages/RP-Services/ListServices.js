@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  Fragment,
   useEffect,
   useImperativeHandle,
   useState
@@ -8,6 +9,8 @@ import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
+import { OverlayTrigger, Popover, Tooltip } from 'react-bootstrap'
+import { useWindowSize } from 'src/hooks/useWindowSize'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -20,6 +23,13 @@ const ListServices = forwardRef(
     const [PageTotal, setPageTotal] = useState(0)
     const [initialValuesMobile, setInitialValuesMobile] = useState(null)
     const [isModalMobile, setIsModalMobile] = useState(false)
+    const [Total, setTotal] = useState({
+      Totalbuoicuoi: 0,
+      Totalbuoidau: 0,
+      Totalisfirst: 0,
+      Totalrequest: 0
+    })
+    const { width } = useWindowSize()
 
     useEffect(() => {
       getListServices()
@@ -55,11 +65,23 @@ const ListServices = forwardRef(
       reportsApi
         .getListServices(newFilters)
         .then(({ data }) => {
-          const { Items, Total } = {
+          const {
+            Items,
+            Total,
+            Totalbuoicuoi,
+            Totalbuoidau,
+            Totalisfirst,
+            Totalrequest
+          } = {
             Items: data.result?.Items || [],
-            Total: data.result?.Total || 0
+            Total: data.result?.Total || 0,
+            Totalbuoicuoi: data.result?.Totalbuoicuoi || 0,
+            Totalbuoidau: data.result?.Totalbuoidau || 0,
+            Totalisfirst: data.result?.Totalisfirst || 0,
+            Totalrequest: data.result?.Totalrequest || 0
           }
           setListData(Items)
+          setTotal({ Totalbuoicuoi, Totalbuoidau, Totalisfirst, Totalrequest })
           setLoading(false)
           setPageTotal(Total)
           callback && callback()
@@ -85,18 +107,200 @@ const ListServices = forwardRef(
       }
     }
 
+    const renderStatusColor = row => {
+      const colors = []
+      const { SessionCost, SessionIndex, isfirst, Warranty, payment } = row
+      if (isfirst) {
+        colors.push('rgb(144 189 86)')
+      }
+      if (SessionIndex) {
+        const { CurentIndex, TotalIndex } = {
+          CurentIndex: Number(SessionIndex.split('/')[0]),
+          TotalIndex: Number(SessionIndex.split('/')[1])
+        }
+        if (Number(payment) < CurentIndex * SessionCost) {
+          colors.push('rgb(231, 195, 84)')
+        }
+        if (CurentIndex === 1 && TotalIndex > 1) {
+          colors.push('rgb(146 224 224)')
+        }
+        if (CurentIndex === TotalIndex && TotalIndex > 1 && Warranty === '') {
+          colors.push('rgb(255, 190, 211)')
+        }
+      }
+      return colors.map((item, index) => (
+        <div
+          className="flex-grow-1"
+          style={{ backgroundColor: item }}
+          key={index}
+        ></div>
+      ))
+    }
+
     return (
       <div className="bg-white rounded mt-25px">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách dịch vụ</div>
-          <div className="fw-500">
-            Tổng dịch vụ{' '}
-            <span className="font-size-xl fw-600 text-success pl-5px font-number">
-              {PageTotal}
-            </span>
+          <div className="d-flex">
+            <div className="fw-500 pr-15px">
+              Tổng dịch vụ{' '}
+              <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                {PageTotal}
+              </span>
+              {width < 1200 && (
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={
+                    <Popover id={`popover-positioned-top`}>
+                      <Popover.Header
+                        className="py-10px text-uppercase fw-600"
+                        as="h3"
+                      >
+                        Chi tiết dịch vụ
+                      </Popover.Header>
+                      <Popover.Body className="p-0">
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>KH buổi đầu thẻ</span>
+                          <span>{Total.Totalbuoidau}</span>
+                        </div>
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>KH buổi cuối thẻ</span>
+                          <span>{Total.Totalbuoicuoi}</span>
+                        </div>
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>KH buổi đầu</span>
+                          <span>{Total.Totalisfirst}</span>
+                        </div>
+                        <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                          <span>KH cần thanh toán</span>
+                          <span>{Total.Totalrequest}</span>
+                        </div>
+                      </Popover.Body>
+                    </Popover>
+                  }
+                >
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h5"></i>
+                </OverlayTrigger>
+              )}
+            </div>
+            {width >= 1200 && (
+              <Fragment>
+                <div className="fw-500 pr-15px">
+                  KH buổi đầu thẻ{' '}
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {Total.Totalbuoidau}
+                  </span>
+                </div>
+                <div className="fw-500 pr-15px">
+                  KH buổi cuối thẻ{' '}
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {Total.Totalbuoicuoi}
+                  </span>
+                </div>
+                <div className="fw-500 pr-15px">
+                  KH buổi đầu{' '}
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {Total.Totalisfirst}
+                  </span>
+                </div>
+                <div className="fw-500">
+                  KH cần thanh toán{' '}
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {Total.Totalrequest}
+                  </span>
+                </div>
+              </Fragment>
+            )}
           </div>
         </div>
         <div className="p-20px">
+          <div className="d-flex mb-15px">
+            <div className="d-flex mr-20px">
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={<Tooltip id={`tooltip-top`}>Khách buổi đầu</Tooltip>}
+              >
+                <div
+                  className="w-40px h-15px"
+                  style={{ backgroundColor: 'rgb(144 189 86)' }}
+                ></div>
+              </OverlayTrigger>
+              {width > 992 && (
+                <div className="fw-500 pl-8px line-height-xs">
+                  Khách buổi đầu
+                </div>
+              )}
+            </div>
+            <div className="d-flex mr-20px">
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Tooltip id={`tooltip-top`}>Cần thanh toán thêm</Tooltip>
+                }
+              >
+                <div
+                  className="w-40px h-15px"
+                  style={{ backgroundColor: 'rgb(231, 195, 84)' }}
+                ></div>
+              </OverlayTrigger>
+              {width > 992 && (
+                <div className="fw-500 pl-8px line-height-xs">
+                  Cần thanh toán thêm
+                </div>
+              )}
+            </div>
+            <div className="d-flex mr-20px">
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Tooltip id={`tooltip-top`}>Khách thẻ buổi đầu</Tooltip>
+                }
+              >
+                <div
+                  className="w-40px h-15px"
+                  style={{ backgroundColor: 'rgb(146 224 224)' }}
+                ></div>
+              </OverlayTrigger>
+              {width > 992 && (
+                <div className="fw-500 pl-8px line-height-xs">
+                  Khách thẻ buổi đầu
+                </div>
+              )}
+            </div>
+            <div className="d-flex">
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Tooltip id={`tooltip-top`}>Khách thẻ buổi cuối</Tooltip>
+                }
+              >
+                <div
+                  className="w-40px h-15px"
+                  style={{ backgroundColor: 'rgb(255, 190, 211)' }}
+                ></div>
+              </OverlayTrigger>
+              {width > 992 && (
+                <div className="fw-500 pl-8px line-height-xs">
+                  Khách thẻ buổi cuối
+                </div>
+              )}
+            </div>
+          </div>
           <BaseTablesCustom
             data={ListData}
             textDataNull="Không có dữ liệu."
@@ -126,15 +330,20 @@ const ListServices = forwardRef(
                 dataField: '',
                 text: 'STT',
                 formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
+                  <Fragment>
+                    <span className="font-number position-relative zindex-10">
+                      {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
+                    </span>
+                    <div className="position-absolute top-0 left-0 w-100 h-100 d-flex">
+                      {renderStatusColor(row)}
+                    </div>
+                  </Fragment>
                 ),
                 headerStyle: () => {
                   return { width: '60px' }
                 },
                 headerAlign: 'center',
-                style: { textAlign: 'center' },
+                style: { textAlign: 'center', position: 'relative' },
                 attrs: { 'data-title': 'STT' }
               },
               {
@@ -354,17 +563,23 @@ const ListServices = forwardRef(
                 headerStyle: () => {
                   return { minWidth: '180px', width: '180px' }
                 }
+              },
+              {
+                dataField: 'Desc',
+                text: 'Mô tả',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => row.Desc || 'Chưa có',
+                attrs: { 'data-title': 'Mô tả' },
+                headerStyle: () => {
+                  return { minWidth: '220px', width: '220px' }
+                }
               }
             ]}
             loading={loading}
             keyField="Id"
             className="table-responsive-attr"
             classes="table-bordered"
-            rowStyle={(row, rowIndex) => {
-              const style = {}
-              //style.backgroundColor = '#ffb2c1'
-              return style
-            }}
           />
         </div>
         <ModalViewMobile

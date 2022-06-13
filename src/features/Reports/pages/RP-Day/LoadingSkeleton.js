@@ -5,7 +5,7 @@ import ChartWidget from '../../components/ChartWidget'
 function LoadingSkeleton() {
   return (
     <div className="row">
-      <div className="col-md-6 col-lg-6 col-xl-3 mb-xl-0 mb-4">
+      <div className="col-md-6 col-lg-6 col-xl-6 mb-4">
         <div className="bg-white rounded">
           <div className="p-20px">
             <div className="text-dark text-capitalize fw-500 font-size-lg d-flex justify-content-between">
@@ -50,7 +50,7 @@ function LoadingSkeleton() {
           />
         </div>
       </div>
-      <div className="col-md-6 col-lg-6 col-xl-3 mb-xl-0 mb-4">
+      <div className="col-md-6 col-lg-6 col-xl-6 mb-4">
         <div className="bg-white rounded h-100 d-flex flex-column justify-content-between">
           <div className="p-20px">
             <div className="text-dark text-capitalize fw-500 font-size-lg d-flex justify-content-between">
@@ -89,7 +89,7 @@ function LoadingSkeleton() {
           />
         </div>
       </div>
-      <div className="col-md-6 col-lg-6 col-xl-3 mb-4 mb-md-0">
+      <div className="col-md-6 col-lg-6 col-xl-6 mb-4 mb-md-0">
         <div className="bg-white rounded h-100 d-flex flex-column justify-content-between">
           <div className="p-20px">
             <div className="text-dark text-capitalize fw-500 font-size-lg d-flex justify-content-between">
@@ -128,7 +128,7 @@ function LoadingSkeleton() {
           />
         </div>
       </div>
-      <div className="col-md-6 col-lg-6 col-xl-3">
+      <div className="col-md-6 col-lg-6 col-xl-6">
         <div className="bg-white rounded h-100 d-flex flex-column justify-content-between">
           <div className="p-20px">
             <div className="text-dark text-capitalize fw-500 font-size-lg d-flex justify-content-between">

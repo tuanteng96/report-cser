@@ -82,7 +82,7 @@ function RPCustomer() {
   const [heightChart, setHeightChart] = useState(100)
   const elementListRef = useRef()
   const { width } = useWindowSize()
-  
+
   useEffect(() => {
     if (width < 1430) {
       setHeightChart(50)

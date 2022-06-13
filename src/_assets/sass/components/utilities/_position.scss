@@ -24,6 +24,12 @@ $positon-key: (top, left, right, bottom) !default;
 .position-absolute {
   position: absolute !important;
 }
+// z index
+@for $index from 0 through 100 {
+  .zindex-#{$index} {
+    z-index: $index !important;
+  }
+}
 
 .zindex-1001 {
   z-index: 1001 !important;
