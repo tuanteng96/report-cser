@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'react-bootstrap'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -21,18 +22,11 @@ function ModalViewMobile({ show, onHide, data }) {
       onHide={onHide}
       scrollable={true}
     >
-      {/* <Modal.Header>
-                <Modal.Title>Modal title</Modal.Title>
-            </Modal.Header>
-
-            <Modal.Body>One fine body...
-                <div style={{ height: `${1000}px` }}>
-                    a
-                </div>
-            </Modal.Body> */}
       <div className="modal-view-head align-items-baseline px-15px py-8px">
         <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
-          {data?.MemberName || 'Chưa có tên'}
+          {(data?.Staffs &&
+            data?.Staffs.map(item => item.FullName).join(', ')) ||
+            'Chưa có tên'}
         </div>
         <div
           className="modal-view-close font-size-h3 w-20px text-center"
@@ -49,19 +43,70 @@ function ModalViewMobile({ show, onHide, data }) {
         <div className="py-5px">
           <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              ID
+              Lương ca và phụ phí
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              #{data?.Id}
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="bottom"
+                placement="bottom"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Header
+                      className="py-10px text-uppercase fw-600"
+                      as="h3"
+                    >
+                      Chi tiết lương ca & phụ phí
+                    </Popover.Header>
+                    <Popover.Body className="p-0">
+                      {(data?.LuongCa_PPhi?.DS_DV &&
+                        data?.LuongCa_PPhi?.DS_DV.length > 0) ||
+                      (data?.LuongCa_PPhi?.DS_PP &&
+                        data?.LuongCa_PPhi?.DS_PP.length > 0) ? (
+                        <Fragment>
+                          {data?.LuongCa_PPhi?.DS_DV.map((item, index) => (
+                            <div
+                              className="py-10px px-15px fw-600 font-size-md border-top border-gray-200 d-flex justify-content-between"
+                              key={index}
+                            >
+                              <span>{item.Title}</span>
+                              <span>{PriceHelper.formatVND(item.ToPay)}</span>
+                            </div>
+                          ))}
+                          {data?.LuongCa_PPhi?.DS_PP.map((item, index) => (
+                            <div
+                              className="py-10px px-15px fw-600 font-size-md border-top border-gray-200 d-flex justify-content-between"
+                              key={index}
+                            >
+                              <span>{item.Title}</span>
+                              <span>{PriceHelper.formatVND(item.ToPay)}</span>
+                            </div>
+                          ))}
+                        </Fragment>
+                      ) : (
+                        <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                          <span>Không có dữ liệu</span>
+                        </div>
+                      )}
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div>
+                  {PriceHelper.formatVND(data?.LuongCa_PPhi.Tong_Luong)}
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning pl-5px"></i>
+                </div>
+              </OverlayTrigger>
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Ngày đặt lịch
+              Ngày làm
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.BookDate
-                ? moment(data.BookDate).format('DD/MM/YYYY')
+              {data?.Ngay_Lam
+                ? moment(data.Ngay_Lam).format('HH:mm DD-MM-YYYY')
                 : 'Không có'}
             </div>
           </div>
@@ -75,10 +120,18 @@ function ModalViewMobile({ show, onHide, data }) {
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+              Khách hàng
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.Member?.FullName || 'Chưa có'}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
               Số điện thoại
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.MemberPhone || 'Không có'}
+              {data?.Member?.Phone || 'Chưa có'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -86,96 +139,41 @@ function ModalViewMobile({ show, onHide, data }) {
               Dịch vụ gốc
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.ProServiceName || 'Không có dịch vụ gốc'}
+              {data?.DV_Goc?.ProdTitle || 'Không có dịch vụ gốc'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Thẻ
+              Thẻ dịch vụ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Card || 'Không có thẻ'}
+              {data?.The_DV?.CardTitle || 'Không có thẻ'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Giá buổi
+              ID Buổi Dịch vụ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.SessionCost)}
+              {data?.ID_Buoi_Dv}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Giá buổi (Tặng)
+              Phụ phí
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.SessionCostExceptGift)}
-            </div>
-          </div>
-          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Buổi
-            </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Warranty ? data?.SessionWarrantyIndex : data?.SessionIndex}
-            </div>
-          </div>
-          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Bảo hành
-            </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Warranty ? 'Bảo hành' : 'Không có'}
-            </div>
-          </div>
-          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Nhân viên thực hiện
-            </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.StaffSalaries && data?.StaffSalaries.length > 0
-                ? data?.StaffSalaries.map(
-                    item =>
-                      `${item.FullName} (${PriceHelper.formatVND(item.Salary)})`
-                  ).join(', ')
-                : 'Chưa xác định'}
-            </div>
-          </div>
-          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Tổng lương nhân viên
-            </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.TotalSalary)}
-            </div>
-          </div>
-          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Trạng thái
-            </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Status === 'done' ? (
-                <span className="text-success">Hoàn thành</span>
-              ) : (
-                <span className="text-warning">Đang thực hiện</span>
-              )}
-            </div>
-          </div>
-          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Đánh giá sao
-            </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Rate || 'Chưa đánh giá'}
+              {data?.LuongCa_PPhi?.DS_PP && data?.LuongCa_PPhi?.DS_PP.length > 0
+                ? data?.LuongCa_PPhi?.DS_PP.map(item => item.Title).join(', ')
+                : 'Không có'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Nội dung đánh giá
+              Cơ sở
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.RateNote || 'Chưa có'}
+              {data?.StockName || 'Chưa có'}
             </div>
           </div>
         </div>

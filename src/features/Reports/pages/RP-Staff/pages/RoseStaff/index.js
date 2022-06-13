@@ -109,7 +109,7 @@ function RoseStaff(props) {
     Ps: 10, // Số lượng item
     MemberID: '', // ID khách hàng
     StaffID: '', // ID nhân viên
-    ServiceCardID: ''
+    OrderID: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -148,11 +148,10 @@ function RoseStaff(props) {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
       StaffID: filters.StaffID ? filters.StaffID.value : '',
-      MemberID: filters.MemberID ? filters.MemberID.value : '',
-      ServiceCardID: filters.ServiceCardID ? filters.ServiceCardID.value : ''
+      MemberID: filters.MemberID ? filters.MemberID.value : ''
     }
     reportsApi
-      .getListStaffSalarySV(newFilters)
+      .getListStaffRose(newFilters)
       .then(({ data }) => {
         const { Items, Total, TongHoaHong } = {
           Items: data.result?.Items || JSONData.Items,
@@ -207,16 +206,7 @@ function RoseStaff(props) {
     }
     return totalArray
   }
-  const AmountOrderItem = member => {
-    var totalArray = 0
-    if (!member) return totalArray
-    for (let keyOrders of member.ListOrders) {
-      totalArray += keyOrders?.OrderItems?.length || 0
-    }
-    return totalArray
-  }
 
-  console.log(ListData)
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">

@@ -16,6 +16,13 @@
       border-top-color: #fff !important;
     }
   }
+  &.bs-popover-bottom {
+    .popover-arrow {
+      &:before {
+        border-bottom-color: #fff !important;
+      }
+    }
+  }
   &.popover-md {
     max-width: 300px;
   }

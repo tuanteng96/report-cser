@@ -18,10 +18,12 @@ const moreApi = {
   getAllStaff: data => {
     return http.post(`${SubApi}/more/danh-sach-nhan-vien`, JSON.stringify(data))
   },
-  getAllMember: data => {
-    return http.post(
-      `${SubApi}/more/danh-sach-khach-hang`,
-      JSON.stringify(data)
+  getAllMember: key => {
+    return http.get(`/api/gl/select2?cmd=member&q=${key}`)
+  },
+  getAllServicePP: key => {
+    return http.get(
+      `/api/gl/select2?cmd=prod&combo=0&fee=0&ignore_all=1&srv=1&q=${key}`
     )
   }
 }

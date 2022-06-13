@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import PerfectScrollbar from 'react-perfect-scrollbar'

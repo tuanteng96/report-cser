@@ -49,6 +49,7 @@ function AsyncSelectDistrics({ onChange, value, ProvincesID, ...props }) {
         page: 1
       }}
       isDisabled={!ProvincesID}
+      noOptionsMessage={() => 'Không có dữ liệu'}
     />
   )
 }

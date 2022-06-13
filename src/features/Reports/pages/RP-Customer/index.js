@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import ChartWidget2 from '../../components/ChartWidget2'
 import IconMenuMobile from '../../components/IconMenuMobile'
@@ -6,9 +6,12 @@ import Chart2Column from '../../components/Chart2Column'
 import LoadingSkeleton from './LoadingSkeleton'
 import reportsApi from 'src/api/reports.api'
 import ListCustomer from './ListCustomer'
+import _ from 'lodash'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import FilterList from 'src/components/Filter/FilterList'
+import { useWindowSize } from 'src/hooks/useWindowSize'
 moment.locale('vi')
 
 const optionsObj = {
@@ -59,15 +62,35 @@ function RPCustomer() {
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
   }))
-  const [filters] = useState({
+  const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    Date: new Date() // Ngày,
+    DateStart: new Date(), // Ngày bắt đầu
+    DateEnd: new Date(), // Ngày kết thúc
+    Pi: 1, // Trang hiện tại
+    Ps: 10, // Số lượng item
+    GroupCustomerID: '', // ID Nhóm khách hàng
+    ProvincesID: '', // ID Thành phố
+    DistrictsID: '', //ID Huyện
+    SourceName: '', // ID Nguồn
+    StaffID: ''
   })
   const [StockName, setStockName] = useState('')
   const [OverviewData, setOverviewData] = useState(null)
   const [dataChart, setDataChart] = useState(objData)
   const [loading, setLoading] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
+  const [heightChart, setHeightChart] = useState(100)
+  const elementListRef = useRef()
+  const { width } = useWindowSize()
+  
+  useEffect(() => {
+    if (width < 1430) {
+      setHeightChart(50)
+    } else {
+      setHeightChart(100)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width])
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -89,8 +112,8 @@ function RPCustomer() {
   const getOverviewCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
-      ...filters,
-      Date: moment(filters.Date).format('DD/MM/yyyy')
+      StockID: filters.StockID,
+      Date: moment().format('DD/MM/yyyy')
     }
     reportsApi
       .getOverviewCustomer(newFilters)
@@ -118,8 +141,16 @@ function RPCustomer() {
       .catch(error => console.log(error))
   }
 
+  const onFilter = values => {
+    if (_.isEqual(values, filters)) {
+      elementListRef?.current?.onRefresh(() => getOverviewCustomer())
+    } else {
+      setFilters({ ...values, Pi: 1 })
+    }
+  }
+
   const onRefresh = () => {
-    getOverviewCustomer(() => onHideFilter())
+    elementListRef?.current?.onRefresh(() => getOverviewCustomer())
   }
 
   const onOpenFilter = () => {
@@ -128,6 +159,14 @@ function RPCustomer() {
 
   const onHideFilter = () => {
     setIsFilter(false)
+  }
+
+  const onPageChange = Pi => {
+    setFilters({ ...filters, Pi: Pi })
+  }
+
+  const onSizePerPageChange = Ps => {
+    setFilters({ ...filters, Ps: Ps })
   }
 
   return (
@@ -152,6 +191,14 @@ function RPCustomer() {
           <IconMenuMobile />
         </div>
       </div>
+      <FilterList
+        show={isFilter}
+        filters={filters}
+        onHide={onHideFilter}
+        onSubmit={onFilter}
+        onRefresh={onRefresh}
+        loading={loading}
+      />
       {loading && <LoadingSkeleton />}
       {!loading && (
         <div className="row">
@@ -172,7 +219,7 @@ function RPCustomer() {
                       color: '#0d6efd',
                       borderColor: '#f1fafe'
                     }}
-                    height={100}
+                    height={heightChart}
                     data={[15, 25, 15, 40, 20, 50]}
                   />
                   <div className="mt-30px d-flex align-items-baseline">
@@ -200,7 +247,7 @@ function RPCustomer() {
                       color: '#0d6efd',
                       borderColor: '#f1fafe'
                     }}
-                    height={100}
+                    height={heightChart}
                     data={[10, 10, 45, 10, 40, 50]}
                   />
                   <div className="mt-30px d-flex align-items-baseline">
@@ -228,7 +275,7 @@ function RPCustomer() {
                       color: '#0d6efd',
                       borderColor: '#f1fafe'
                     }}
-                    height={100}
+                    height={heightChart}
                     data={[45, 15, 15, 40, 10, 50]}
                   />
                   <div className="mt-30px d-flex align-items-baseline">
@@ -256,7 +303,7 @@ function RPCustomer() {
                       color: '#0d6efd',
                       borderColor: '#f1fafe'
                     }}
-                    height={100}
+                    height={heightChart}
                     data={[15, 45, 25, 10, 40, 30]}
                   />
                   <div className="mt-30px d-flex align-items-baseline">
@@ -279,9 +326,10 @@ function RPCustomer() {
         </div>
       )}
       <ListCustomer
-        onHideFilter={onHideFilter}
-        isFilter={isFilter}
-        onRefreshParent={onRefresh}
+        onPageChange={onPageChange}
+        onSizePerPageChange={onSizePerPageChange}
+        filters={filters}
+        ref={elementListRef}
       />
     </div>
   )

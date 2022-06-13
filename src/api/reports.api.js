@@ -71,6 +71,9 @@ const reportsApi = {
       `${SubApi}/nhan-vien/luong-ca-dich-vu`,
       JSON.stringify(data)
     )
+  },
+  getListStaffRose: data => {
+    return http.post(`${SubApi}/nhan-vien/hoa-hong`, JSON.stringify(data))
   }
 }
 export default reportsApi

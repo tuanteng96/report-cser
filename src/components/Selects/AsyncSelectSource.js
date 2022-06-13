@@ -44,6 +44,7 @@ function AsyncSelectSource({ value, onChange, ...props }) {
       placeholder="Chọn nguồn khách hàng"
       value={value}
       onChange={onChange}
+      noOptionsMessage={() => 'Không có dữ liệu'}
     />
   )
 }

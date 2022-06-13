@@ -360,6 +360,11 @@ const ListServices = forwardRef(
             keyField="Id"
             className="table-responsive-attr"
             classes="table-bordered"
+            rowStyle={(row, rowIndex) => {
+              const style = {}
+              //style.backgroundColor = '#ffb2c1'
+              return style
+            }}
           />
         </div>
         <ModalViewMobile

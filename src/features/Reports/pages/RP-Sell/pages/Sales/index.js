@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import Filter from 'src/components/Filter/Filter'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
-import { Nav, OverlayTrigger, Popover, Tab } from 'react-bootstrap'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 import reportsApi from 'src/api/reports.api'
 import ListSell from './ListSell'
 import ChartYear from './ChartYear'
@@ -31,7 +31,6 @@ function Sales(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [dataSell, setDataSell] = useState({})
   const [heightElm, setHeightElm] = useState(0)
-  const [KeyTabs, setKeyTabs] = useState('Week')
   const elementRef = useRef(null)
   const { width } = useWindowSize()
 
@@ -168,11 +167,11 @@ function Sales(props) {
               >
                 <div className="mb-15px d-flex justify-content-between align-items-end">
                   <span className="text-uppercase fw-600 font-size-xl">
-                    Bán hàng trong ngày
+                    Doanh số bán hàng
                   </span>
-                  <span className="date">
+                  {/* <span className="date">
                     {moment(filters.Date).format('ddd, ll')}
-                  </span>
+                  </span> */}
                 </div>
                 <div className="font-number text-center py-3 py-md-5 fw-600 total">
                   +{PriceHelper.formatVND(dataSell.DSo_Ngay)}
@@ -293,60 +292,34 @@ function Sales(props) {
                   height={heightElm > 0 ? `${heightElm}px` : 'auto'}
                   data={dataSell.product1Days}
                 />
-                {/* {!loading && (
-                  <>
-                    {dataChart.labels.length > 0 ? (
-                      <ChartPie
-                        data={dataChart}
-                        options={optionsChart}
-                        height={heightElm > 0 ? `${heightElm}px` : 'auto'}
-                      />
-                    ) : (
-                      <ElementEmpty />
-                    )}
-                  </>
-                )} */}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-white rounded mt-25px p-20px">
-        <div className="mb-25px">
-          <div className="row">
-            <div className="col-md-12">
-              <Tab.Container defaultActiveKey={KeyTabs}>
-                <div className="d-flex justify-content-between align-items-center mb-20px">
-                  <div className="fw-500 font-size-lg">
-                    Biểu đồ doanh số bán hàng
-                  </div>
-                  <Nav
-                    as="ul"
-                    className="nav nav-pills nav-pills-sm"
-                    onSelect={_key => setKeyTabs(_key)}
-                  >
-                    <Nav.Item className="nav-item" as="li">
-                      <Nav.Link eventKey="Week">Theo Tuần</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item as="li">
-                      <Nav.Link eventKey="Year">Theo Năm</Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-                </div>
-                <Tab.Content className="tab-content">
-                  <Tab.Pane eventKey="Week" className="p-0">
-                    <ChartWeek loading={loading} data={dataSell.SellWeek} />
-                  </Tab.Pane>
-                  <Tab.Pane eventKey="Year" className="p-0">
-                    <ChartYear loading={loading} data={dataSell.SellYear} />
-                  </Tab.Pane>
-                </Tab.Content>
-              </Tab.Container>
+      <ListSell />
+      <div className="row">
+        <div className="col-md-6">
+          <div className="bg-white rounded mt-20px">
+            <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+              <div className="fw-500 font-size-lg">Doanh số theo tuần</div>
+            </div>
+            <div className="p-20px">
+              <ChartWeek loading={loading} data={dataSell.SellWeek} />
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="bg-white rounded mt-20px">
+            <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+              <div className="fw-500 font-size-lg">Doanh số theo năm</div>
+            </div>
+            <div className="p-20px">
+              <ChartYear loading={loading} data={dataSell.SellYear} />
             </div>
           </div>
         </div>
       </div>
-      <ListSell />
     </div>
   )
 }

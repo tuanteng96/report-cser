@@ -45,6 +45,7 @@ function AsyncSelectProvinces({ onChange, value, ...props }) {
       additional={{
         page: 1
       }}
+      noOptionsMessage={() => 'Không có dữ liệu'}
     />
   )
 }

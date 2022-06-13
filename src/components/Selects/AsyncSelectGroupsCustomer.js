@@ -44,6 +44,7 @@ function AsyncSelectGroupsCustomer({ value, onChange, ...props }) {
       placeholder="Chọn nhóm khách hàng"
       value={value}
       onChange={onChange}
+      noOptionsMessage={() => 'Không có dữ liệu'}
     />
   )
 }
