@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import Filter from 'src/components/Filter/Filter'
+import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
@@ -24,7 +24,13 @@ function Sales(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    Date: new Date() // Ngày,
+    DateStart: new Date(), // Ngày bắt đầu
+    DateEnd: new Date(), // Ngày kết thúc
+    Pi: 1, // Trang hiện tại
+    Ps: 10, // Số lượng item
+    Voucher: '', // Trạng thái
+    Payment: '', // Bảo hành
+    IsMember: '' // ID nhân viên
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -33,6 +39,7 @@ function Sales(props) {
   const [heightElm, setHeightElm] = useState(0)
   const elementRef = useRef(null)
   const { width } = useWindowSize()
+  const elementListRef = useRef()
 
   useEffect(() => {
     if (width > 767) {
@@ -62,8 +69,13 @@ function Sales(props) {
   const getOverviewSell = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
-      ...filters,
-      Date: moment(filters.Date).format('DD/MM/yyyy')
+      StockID: filters.StockID,
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null
     }
 
     reportsApi
@@ -108,14 +120,14 @@ function Sales(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      getOverviewSell()
+      elementListRef?.current?.onRefresh(() => getOverviewSell())
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    getOverviewSell()
+    elementListRef?.current?.onRefresh(() => getOverviewSell())
   }
 
   const onOpenFilter = () => {
@@ -124,6 +136,14 @@ function Sales(props) {
 
   const onHideFilter = () => {
     setIsFilter(false)
+  }
+
+  const onPageChange = Pi => {
+    setFilters({ ...filters, Pi: Pi })
+  }
+
+  const onSizePerPageChange = Ps => {
+    setFilters({ ...filters, Ps: Ps })
   }
 
   return (
@@ -148,7 +168,7 @@ function Sales(props) {
           <IconMenuMobile />
         </div>
       </div>
-      <Filter
+      <FilterList
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}
@@ -297,7 +317,12 @@ function Sales(props) {
           </div>
         </div>
       </div>
-      <ListSell />
+      <ListSell
+        onPageChange={onPageChange}
+        onSizePerPageChange={onSizePerPageChange}
+        filters={filters}
+        ref={elementListRef}
+      />
       <div className="row">
         <div className="col-md-6">
           <div className="bg-white rounded mt-20px">

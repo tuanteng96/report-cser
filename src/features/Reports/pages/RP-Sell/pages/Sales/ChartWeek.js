@@ -26,7 +26,7 @@ const objData = {
   labels,
   datasets: [
     {
-      label: `Năm ${moment().subtract(1, 'year').format('YYYY')}`,
+      label: `Năm ${moment().subtract(0, 'year').format('YYYY')}`,
       data: [],
       backgroundColor: 'rgba(255, 99, 132, 0.5)'
     }
@@ -41,7 +41,7 @@ function ChartWeek({ data, loading }) {
       ...prevState,
       datasets: [
         {
-          label: `Năm ${moment().subtract(1, 'year').format('YYYY')}`,
+          label: `Năm ${moment().subtract(0, 'year').format('YYYY')}`,
           data: data || [],
           backgroundColor: 'rgba(255, 99, 132, 0.5)'
         }

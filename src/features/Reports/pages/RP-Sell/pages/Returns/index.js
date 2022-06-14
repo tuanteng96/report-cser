@@ -30,6 +30,7 @@ function Returns(props) {
   const [loading, setLoading] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
+  const [Total, setTotal] = useState({ ToPay : 0})
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -65,11 +66,13 @@ function Returns(props) {
     reportsApi
       .getListReturns(newFilters)
       .then(({ data }) => {
-        const { Items, Total } = {
+        const { Items, Total, ToPay } = {
           Items: data.result?.Items || [],
-          Total: data.result?.Total || 0
+          Total: data.result?.Total || 0,
+          ToPay: data.result?.ToPay || 0
         }
         setListData(Items)
+        setTotal({ ToPay })
         setLoading(false)
         setPageTotal(Total)
         isFilter && setIsFilter(false)
@@ -141,6 +144,38 @@ function Returns(props) {
       <div className="bg-white rounded mt-25px">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách trả hàng</div>
+          <div className="d-flex align-items-center">
+            <div className="fw-500 pr-5px pr-md-15px">
+              Tổng đơn trả
+              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                {PriceHelper.formatVND(PageTotal)}
+              </span>
+            </div>
+            <div className="fw-500 d-none d-md-block">
+              Tổng giá trị
+              <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                {PriceHelper.formatVND(Total.ToPay)}
+              </span>
+            </div>
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="top"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Body className="p-0">
+                    <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
+                      <span>Tổng giá trị</span>
+                      <span>{PriceHelper.formatVND(Total.ToPay)}</span>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h5 d-md-none"></i>
+            </OverlayTrigger>
+          </div>
         </div>
         <div className="p-20px">
           <BaseTablesCustom

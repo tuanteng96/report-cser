@@ -39,9 +39,9 @@ const objData = {
   labels,
   datasets: [
     {
-      label: `Năm ${moment().subtract(1, 'year').format('YYYY')}`,
+      label: `Năm ${moment().subtract(0, 'year').format('YYYY')}`,
       data: [],
-      backgroundColor: 'rgba(255, 99, 132, 0.5)'
+      backgroundColor: 'rgba(54, 162, 235, 0.6)'
     }
   ]
 }
@@ -54,9 +54,9 @@ function ChartYear({ data, loading }) {
       ...prevState,
       datasets: [
         {
-          label: `Năm ${moment().subtract(1, 'year').format('YYYY')}`,
+          label: `Năm ${moment().subtract(0, 'year').format('YYYY')}`,
           data: data || [],
-          backgroundColor: 'rgba(255, 99, 132, 0.5)'
+          backgroundColor: 'rgba(54, 162, 235, 0.6)'
         }
       ]
     }))

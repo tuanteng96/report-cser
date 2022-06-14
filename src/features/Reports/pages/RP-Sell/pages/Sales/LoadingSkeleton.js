@@ -13,9 +13,8 @@ function LoadingSkeleton({ filters }) {
       >
         <div className="mb-15px d-flex justify-content-between align-items-end">
           <span className="text-uppercase fw-600 font-size-xl">
-            Bán hàng trong ngày
+            Doanh số bán hàng
           </span>
-          <span className="date">{moment(filters.Date).format('ddd, ll')}</span>
         </div>
         <div className="font-number text-center py-3 py-md-5 fw-600 total">
           <Skeleton className="mx-4px" width={180} height={40} />
