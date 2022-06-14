@@ -2,7 +2,7 @@
     "name": "react-teamplate",
     "version": "0.1.0",
     "private": true,
-    "homepage": "/App23/",
+    "_homepage": "/App23/",
     "dependencies": {
         "@material-ui/lab": "^4.0.0-alpha.61",
         "@reduxjs/toolkit": "^1.8.1",
@@ -24,6 +24,7 @@
         "react": "^18.1.0",
         "react-apexcharts": "^1.4.0",
         "react-bootstrap": "^2.3.1",
+        "react-bootstrap-table": "^4.3.1",
         "react-bootstrap-table-next": "^4.0.3",
         "react-bootstrap-table2-paginator": "^2.1.2",
         "react-chartjs-2": "^4.1.0",

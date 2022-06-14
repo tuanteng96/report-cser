@@ -20,6 +20,7 @@ import RPStaff from 'src/features/Reports/pages/RP-Staff'
 import SalaryServices from 'src/features/Reports/pages/RP-Staff/pages/SalaryServices'
 import RoseStaff from 'src/features/Reports/pages/RP-Staff/pages/RoseStaff'
 import SalesStaff from 'src/features/Reports/pages/RP-Staff/pages/SalesStaff'
+import PayrollStaff from 'src/features/Reports/pages/RP-Staff/pages/PayrollStaff'
 
 function RouterPage(props) {
   return (
@@ -95,6 +96,7 @@ function RouterPage(props) {
         <Route path="luong-ca-dich-vu" element={<SalaryServices />} />
         <Route path="hoa-hong" element={<RoseStaff />} />
         <Route path="doanh-so" element={<SalesStaff />} />
+        <Route path="bang-luong" element={<PayrollStaff />} />
       </Route>
       <Route
         path="/khac"

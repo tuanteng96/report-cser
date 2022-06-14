@@ -141,7 +141,7 @@ function Returns(props) {
         onRefresh={onRefresh}
         loading={loading}
       />
-      <div className="bg-white rounded mt-25px">
+      <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách trả hàng</div>
           <div className="d-flex align-items-center">

@@ -5,9 +5,10 @@ import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
-import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
+import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -62,7 +63,7 @@ const JSONData = {
   ]
 }
 
-function SalesStaff(props) {
+function PayrollStaff(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
@@ -73,9 +74,6 @@ function SalesStaff(props) {
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
-    MemberID: '', // ID khách hàng
-    StaffID: '', // ID nhân viên
-    ServiceCardID: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -161,13 +159,13 @@ function SalesStaff(props) {
     setInitialValuesMobile(null)
     setIsModalMobile(false)
   }
-  console.log(ListData)
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Nhân viên doanh số
+            Bảng lương nhân viên
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -195,19 +193,26 @@ function SalesStaff(props) {
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">
-            Danh sách doanh số nhân viên
+            Danh sách nhân viên
           </div>
         </div>
-        <FilterList
-          show={isFilter}
-          filters={filters}
-          onHide={onHideFilter}
-          onSubmit={onFilter}
-          onRefresh={onRefresh}
-          loading={loading}
-        />
         <div className="p-20px">
-          <BaseTablesCustom
+          <BootstrapTable data={[{ value1: 432, value2: 984, id: "ii0" },
+          { value1: 432, value2: 984, id: 10 },
+          { id: 2, value1: 432, value2: 984 },
+          { id: 3, value1: 432, value2: 984 },
+          { id: 4, value1: 432, value2: 984 },
+          { id: 5, value1: 432, value2: 984 },
+          { id: 6, value1: 432, value2: 984 },
+          { value1: 432, value2: 984, id: 17 },
+          { id: 8, value1: 432, value2: 984 }]}>
+            <TableHeaderColumn dataField="id">Col A</TableHeaderColumn>
+            <TableHeaderColumn dataField="value1" isKey>
+              Col B
+            </TableHeaderColumn>
+            <TableHeaderColumn dataField="value2">Col C</TableHeaderColumn>
+          </BootstrapTable>
+          {/* <BaseTablesCustom
             data={ListData}
             textDataNull="Không có dữ liệu."
             optionsMoible={{
@@ -281,8 +286,8 @@ function SalesStaff(props) {
                         <Popover.Body className="p-0">
                           {(row.LuongCa_PPhi?.DS_DV &&
                             row.LuongCa_PPhi?.DS_DV.length > 0) ||
-                          (row.LuongCa_PPhi?.DS_PP &&
-                            row.LuongCa_PPhi?.DS_PP.length > 0) ? (
+                            (row.LuongCa_PPhi?.DS_PP &&
+                              row.LuongCa_PPhi?.DS_PP.length > 0) ? (
                             <Fragment>
                               {row.LuongCa_PPhi?.DS_DV.map((item, index) => (
                                 <div
@@ -428,16 +433,11 @@ function SalesStaff(props) {
             keyField="Id"
             className="table-responsive-attr"
             classes="table-bordered"
-          />
+          /> */}
         </div>
-        <ModalViewMobile
-          show={isModalMobile}
-          onHide={HideModalMobile}
-          data={initialValuesMobile}
-        />
       </div>
     </div>
   )
 }
 
-export default SalesStaff
+export default PayrollStaff

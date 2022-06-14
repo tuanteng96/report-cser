@@ -237,7 +237,7 @@ function RoseStaff(props) {
         onRefresh={onRefresh}
         loading={loading}
       />
-      <div className="bg-white rounded mt-25px">
+      <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">
             Danh sách hoa hồng nhân viên
