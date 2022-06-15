@@ -95,7 +95,7 @@ const MenuList = [
         Href: '/nhan-vien/hoa-hong'
       },
       {
-        Title: 'Danh số',
+        Title: 'Doanh số',
         Href: '/nhan-vien/doanh-so'
       },
       {
