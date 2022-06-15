@@ -43,7 +43,7 @@ function BaseTablesCustom({
   classes,
   keyField,
   optionsMoible,
-  textDataNull,
+  footerClasses,
   rowStyle
 }) {
   const refElm = useRef(0)
@@ -90,6 +90,7 @@ function BaseTablesCustom({
   useEffect(() => {
     setWidthElm(refElm?.current?.clientWidth)
   }, [refElm, width])
+
   return (
     <Fragment>
       <div ref={refElm}></div>
@@ -98,6 +99,7 @@ function BaseTablesCustom({
           return (
             <>
               <BootstrapTable
+                footerClasses={footerClasses}
                 rowStyle={rowStyle}
                 wrapperClasses={`table-responsive ${className}`}
                 //rowClasses="text-nowrap"

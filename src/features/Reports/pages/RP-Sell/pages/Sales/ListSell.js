@@ -19,7 +19,6 @@ moment.locale('vi')
 
 const ListSell = forwardRef(
   ({ filters, onSizePerPageChange, onPageChange }, ref) => {
-
     const [ListData, setListData] = useState([])
     const [isFilter, setIsFilter] = useState(false)
     const [loading, setLoading] = useState(false)

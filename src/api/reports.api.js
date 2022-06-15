@@ -74,6 +74,12 @@ const reportsApi = {
   },
   getListStaffRose: data => {
     return http.post(`${SubApi}/nhan-vien/hoa-hong`, JSON.stringify(data))
+  },
+  getListStaffSales: data => {
+    return http.post(`${SubApi}/nhan-vien/doanh-so`, JSON.stringify(data))
+  },
+  getListStaffPayroll: data => {
+    return http.post(`${SubApi}/nhan-vien/bang-luong`, JSON.stringify(data))
   }
 }
 export default reportsApi

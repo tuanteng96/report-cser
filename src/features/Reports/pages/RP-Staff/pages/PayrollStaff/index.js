@@ -7,8 +7,6 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import reportsApi from 'src/api/reports.api'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
-
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -19,48 +17,43 @@ const JSONData = {
   PCount: 1,
   Items: [
     {
-      Id: 1, // tự sinh Id Key
-      LuongCa_PPhi: {
-        Tong_Luong: 5000000,
-        DS_DV: [
-          {
-            Title: 'Chăm sóc da',
-            ToPay: 100000
-          }
-        ],
-        DS_PP: [
-          {
-            Title: 'Phụ phí 1',
-            ToPay: 100000
-          },
-          {
-            Title: 'Phụ phí 2',
-            ToPay: 100000
-          }
-        ]
-      },
-      Staff: {
-        ID: 2122,
-        FullName: 'Nguyễn Tài Tuấn'
-      },
-      Member: {
-        ID: 2456,
-        FullName: 'Chu bá thông',
-        Phone: '0971021196'
-      },
-      Ngay_Lam: '2022-06-03T14:11:39',
-      DV_Goc: {
-        ProdTitle: 'Dv tắm trắng',
-        ProdId: 5462
-      },
-      The_DV: {
-        CardTitle: 'Tắm trắng 10 buổi',
-        CardId: 8754
-      },
-      ID_Buoi_Dv: 1252,
-      StockName: 'Cser Hà Nội'
+      Id: 13597, // Id nhân viên
+      StaffName: 'Nguyễn Tài Tuấn',
+      StockName: 'Cser Hà Nội',
+      Luong_Chinh_Sach: 10000000,
+      Phu_Cap: 500000,
+      Ngay_Nghi: -200000,
+      Thuong: 200000,
+      Phat: 300000,
+      Luong_Ca: 4000000,
+      Hoa_Hong: 600000,
+      KPI_DoanhSo: 120000,
+      Luong_Du_Kien: 9070000,
+      Giu_Luong: 907000,
+      Thuc_Tra_Du_Kien: 8163000,
+      Tam_Ung: 0,
+      Phai_Tra_Nhan_Vien: 8163000,
+      Da_Tra: 8163000,
+      Ton_Giu_luong: 0
     }
-  ]
+  ],
+  SumTotal: {
+    Luong_Chinh_Sach: 1000000,
+    Phu_Cap: 1000000,
+    Ngay_Nghi: 1000000,
+    Thuong: 1000000,
+    Phat: 1000000,
+    Luong_Ca: 1000000,
+    Hoa_Hong: 1000000,
+    KPI_DoanhSo: 1000000,
+    Luong_Du_Kien: 1000000,
+    Giu_Luong: 1000000,
+    Thuc_Tra_Du_Kien: 1000000,
+    Tam_Ung: 1000000,
+    Phai_Tra_Nhan_Vien: 1000000,
+    Da_Tra: 1000000,
+    Ton_Giu_Luong: 1000000
+  }
 }
 
 function PayrollStaff(props) {
@@ -70,15 +63,15 @@ function PayrollStaff(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    DateStart: new Date(), // Ngày bắt đầu
-    DateEnd: new Date(), // Ngày kết thúc
+    MonthDate: new Date(), // Ngày bắt đầu
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 10 // Số lượng item
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
+  const [Total, setTotal] = useState({})
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -96,32 +89,28 @@ function PayrollStaff(props) {
   }, [filters])
 
   useEffect(() => {
-    getListSalarys()
+    getListPayroll()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListSalarys = (isLoading = true, callback) => {
+  const getListPayroll = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      StaffID: filters.StaffID ? filters.StaffID.value : '',
-      MemberID: filters.MemberID ? filters.MemberID.value : '',
-      ServiceCardID: filters.ServiceCardID ? filters.ServiceCardID.value : ''
+      MonthDate: filters.MonthDate
+        ? moment(filters.MonthDate).format('MM/yyyy')
+        : null
     }
     reportsApi
-      .getListStaffSalarySV(newFilters)
+      .getListStaffPayroll(newFilters)
       .then(({ data }) => {
-        const { Items, Total } = {
+        const { Items, Total, SumTotal } = {
           Items: data.result?.Items || JSONData.Items,
-          Total: data.result?.Total || JSONData.Total
+          Total: data.result?.Total || JSONData.Total,
+          SumTotal: data.result?.SumTotal || JSONData.SumTotal
         }
         setListData(Items)
+        setTotal(SumTotal)
         setLoading(false)
         setPageTotal(Total)
         isFilter && setIsFilter(false)
@@ -140,14 +129,14 @@ function PayrollStaff(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      getListSalarys()
+      getListPayroll()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    getListSalarys()
+    getListPayroll()
   }
 
   const OpenModalMobile = value => {
@@ -192,27 +181,10 @@ function PayrollStaff(props) {
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
-          <div className="fw-500 font-size-lg">
-            Danh sách nhân viên
-          </div>
+          <div className="fw-500 font-size-lg">Danh sách nhân viên</div>
         </div>
         <div className="p-20px">
-          <BootstrapTable data={[{ value1: 432, value2: 984, id: "ii0" },
-          { value1: 432, value2: 984, id: 10 },
-          { id: 2, value1: 432, value2: 984 },
-          { id: 3, value1: 432, value2: 984 },
-          { id: 4, value1: 432, value2: 984 },
-          { id: 5, value1: 432, value2: 984 },
-          { id: 6, value1: 432, value2: 984 },
-          { value1: 432, value2: 984, id: 17 },
-          { id: 8, value1: 432, value2: 984 }]}>
-            <TableHeaderColumn dataField="id">Col A</TableHeaderColumn>
-            <TableHeaderColumn dataField="value1" isKey>
-              Col B
-            </TableHeaderColumn>
-            <TableHeaderColumn dataField="value2">Col C</TableHeaderColumn>
-          </BootstrapTable>
-          {/* <BaseTablesCustom
+          <BaseTablesCustom
             data={ListData}
             textDataNull="Không có dữ liệu."
             optionsMoible={{
@@ -250,171 +222,35 @@ function PayrollStaff(props) {
                 },
                 headerAlign: 'center',
                 style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
+                attrs: { 'data-title': 'STT' },
+                footer: 'Tổng',
+                footerAttrs: (column, colIndex) => ({
+                  colSpan: 4
+                }),
+                footerStyle: {
+                  textAlign: 'center'
+                }
               },
               {
-                dataField: 'Staff',
+                dataField: 'Id',
+                text: 'ID',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => `#${row.Id}`,
+                attrs: { 'data-title': 'ID' },
+                headerStyle: () => {
+                  return { minWidth: '100px', width: '100px' }
+                }
+              },
+              {
+                dataField: 'StaffName',
                 text: 'Tên nhân viên',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.Staff?.FullName ? row.Staff.FullName : 'Chưa xác định',
+                formatter: (cell, row) => row?.StaffName || 'Chưa xác định',
                 attrs: { 'data-title': 'Tên nhân viên' },
                 headerStyle: () => {
                   return { minWidth: '220px', width: '220px' }
-                }
-              },
-              {
-                dataField: 'LuongCa_PPhi',
-                text: 'Lương ca và phụ phí',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => (
-                  <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    key="top"
-                    placement="top"
-                    overlay={
-                      <Popover id={`popover-positioned-top`}>
-                        <Popover.Header
-                          className="py-10px text-uppercase fw-600"
-                          as="h3"
-                        >
-                          Chi tiết lương ca & phụ phí
-                        </Popover.Header>
-                        <Popover.Body className="p-0">
-                          {(row.LuongCa_PPhi?.DS_DV &&
-                            row.LuongCa_PPhi?.DS_DV.length > 0) ||
-                            (row.LuongCa_PPhi?.DS_PP &&
-                              row.LuongCa_PPhi?.DS_PP.length > 0) ? (
-                            <Fragment>
-                              {row.LuongCa_PPhi?.DS_DV.map((item, index) => (
-                                <div
-                                  className="py-10px px-15px fw-600 font-size-md border-top border-gray-200 d-flex justify-content-between"
-                                  key={index}
-                                >
-                                  <span>{item.Title}</span>
-                                  <span>
-                                    {PriceHelper.formatVND(item.ToPay)}
-                                  </span>
-                                </div>
-                              ))}
-                              {row.LuongCa_PPhi?.DS_PP.map((item, index) => (
-                                <div
-                                  className="py-10px px-15px fw-600 font-size-md border-top border-gray-200 d-flex justify-content-between"
-                                  key={index}
-                                >
-                                  <span>{item.Title}</span>
-                                  <span>
-                                    {PriceHelper.formatVND(item.ToPay)}
-                                  </span>
-                                </div>
-                              ))}
-                            </Fragment>
-                          ) : (
-                            <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                              <span>Không có dữ liệu</span>
-                            </div>
-                          )}
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <div className="d-flex justify-content-between align-items-center">
-                      {PriceHelper.formatVND(row.LuongCa_PPhi.Tong_Luong)}
-                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
-                    </div>
-                  </OverlayTrigger>
-                ),
-                attrs: { 'data-title': 'Lương ca và phụ phí' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
-                }
-              },
-              {
-                dataField: 'Ngay_Lam',
-                text: 'Ngày làm',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.Ngay_Lam
-                    ? moment(row.Ngay_Lam).format('HH:mm DD-MM-YYYY')
-                    : 'Chưa có',
-                attrs: { 'data-title': 'Ngày làm' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'MemberName',
-                text: 'Khách hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.FullName || 'Chưa có',
-                attrs: { 'data-title': 'Khách hàng' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
-                }
-              },
-              {
-                dataField: 'MemberPhone',
-                text: 'Số điện thoại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.Phone || 'Chưa có',
-                attrs: { 'data-title': 'Số điện thoại' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'DV_Goc',
-                text: 'Dịch vụ gốc',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.DV_Goc?.ProdTitle || 'Không có dịch vụ gốc',
-                attrs: { 'data-title': 'Dịch vụ gốc' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
-                }
-              },
-              {
-                dataField: 'The_DV',
-                text: 'Thẻ dịch vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.The_DV?.CardTitle || 'Không có thẻ',
-                attrs: { 'data-title': 'Thẻ dịch vụ' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'ID_Buoi_Dv',
-                text: 'ID Buổi dịch vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.ID_Buoi_Dv,
-                attrs: { 'data-title': 'ID Buổi dịch vụ' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'PP',
-                text: 'Phụ phí',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.LuongCa_PPhi?.DS_PP && row.LuongCa_PPhi?.DS_PP.length > 0
-                    ? row.LuongCa_PPhi?.DS_PP.map(item => item.Title).join(', ')
-                    : 'Không có phụ phí',
-                attrs: { 'data-title': 'Phụ phí' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
                 }
               },
               {
@@ -422,18 +258,279 @@ function PayrollStaff(props) {
                 text: 'Cơ sở',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => row.StockName || 'Chưa có',
                 attrs: { 'data-title': 'Cơ sở' },
                 headerStyle: () => {
                   return { minWidth: '220px', width: '220px' }
                 }
+              },
+              {
+                dataField: 'Luong_Chinh_Sach',
+                text: 'Lương chính sách',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.Luong_Chinh_Sach),
+                attrs: { 'data-title': 'Lương chính sách' },
+                headerStyle: () => {
+                  return { minWidth: '160px', width: '160px' }
+                },
+                footer: 'Lương chính sách',
+                footerFormatter: () => (
+                  <span className="text-success font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Luong_Chinh_Sach)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Phu_Cap',
+                text: 'Phụ cấp',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Phu_Cap),
+                attrs: { 'data-title': 'Phụ cấp' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Phụ cấp',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Phu_Cap)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Ngay_Nghi',
+                text: 'Ngày nghỉ',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Ngay_Nghi),
+                attrs: { 'data-title': 'Ngày nghỉ' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Ngày nghỉ',
+                footerFormatter: () => (
+                  <span className="font-size-md text-danger font-number">
+                    {PriceHelper.formatVND(Total?.Ngay_Nghi)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Thuong',
+                text: 'Thưởng',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Thuong),
+                attrs: { 'data-title': 'Thưởng' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Thưởng',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Thuong)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Phat',
+                text: 'Phạt',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Phat),
+                attrs: { 'data-title': 'Phạt' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Phạt',
+                footerFormatter: () => (
+                  <span className="font-size-md text-danger font-number">
+                    {PriceHelper.formatVND(Total?.Phat)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Luong_Ca',
+                text: 'Lương Ca',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Luong_Ca),
+                attrs: { 'data-title': 'Lương Ca' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Lương ca',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Luong_Ca)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Hoa_Hong',
+                text: 'Hoa Hồng',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Hoa_Hong),
+                attrs: { 'data-title': 'Hoa Hồng' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Hoa hồng',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Hoa_Hong)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'KPI_DoanhSo',
+                text: 'KPI Doanh số',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.KPI_DoanhSo),
+                attrs: { 'data-title': 'KPI Doanh số' },
+                headerStyle: () => {
+                  return { minWidth: '160px', width: '160px' }
+                },
+                footer: 'KPI Doanh số',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.KPI_DoanhSo)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Luong_Du_Kien',
+                text: 'Thu nhập dự kiến',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.Luong_Du_Kien),
+                attrs: { 'data-title': 'Thu nhập dự kiến' },
+                headerStyle: () => {
+                  return { minWidth: '160px', width: '160px' }
+                },
+                footer: 'Thu nhập dự kiến',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Luong_Du_Kien)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Giu_Luong',
+                text: 'Giữ lương',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Giu_Luong),
+                attrs: { 'data-title': 'Giữ lương' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Giữ lương',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Giu_Luong)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Thuc_Tra_Du_Kien',
+                text: 'Thực trả dự kiến',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.Thuc_Tra_Du_Kien),
+                attrs: { 'data-title': 'Thực trả dự kiến' },
+                headerStyle: () => {
+                  return { minWidth: '180px', width: '180px' }
+                },
+                footer: 'Thực trả dự kiến',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Thuc_Tra_Du_Kien)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Tam_Ung',
+                text: 'Tạm ứng',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Tam_Ung),
+                attrs: { 'data-title': 'Tạm ứng' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Tạm ứng',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Tam_Ung)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Phai_Tra_Nhan_Vien',
+                text: 'Phải trả nhân viên',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.Phai_Tra_Nhan_Vien),
+                attrs: { 'data-title': 'Phải trả nhân viên' },
+                headerStyle: () => {
+                  return { minWidth: '180px', width: '180px' }
+                },
+                footer: 'Phải trả nhân viên',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number text-success">
+                    {PriceHelper.formatVND(Total?.Phai_Tra_Nhan_Vien)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Da_Tra',
+                text: 'Đã trả',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row.Da_Tra),
+                attrs: { 'data-title': 'Đã trả' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Đã trả',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Da_Tra)}
+                  </span>
+                )
+              },
+              {
+                dataField: 'Ton_Giu_Luong',
+                text: 'Tồn giữ lương',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.Ton_Giu_Luong),
+                attrs: { 'data-title': 'Tồn giữ lương' },
+                headerStyle: () => {
+                  return { minWidth: '145px', width: '145px' }
+                },
+                footer: 'Tồn giữ lương',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(Total?.Ton_Giu_Luong)}
+                  </span>
+                )
               }
             ]}
             loading={loading}
             keyField="Id"
             className="table-responsive-attr"
             classes="table-bordered"
-          /> */}
+            footerClasses="bg-light"
+          />
         </div>
       </div>
     </div>

@@ -27,6 +27,9 @@
         background-color: rgba(77, 89, 149, 0.06);
         color: #3699ff;
       }
+      &:focus-visible {
+        outline: none !important;
+      }
       i.icon {
         padding-right: 5px;
         display: none;

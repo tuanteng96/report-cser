@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
-import DatePicker from 'react-datepicker'
+import DatePicker, { registerLocale } from 'react-datepicker'
 import Select from 'react-select'
 import { Formik, Form } from 'formik'
 import { useSelector } from 'react-redux'
@@ -15,6 +15,9 @@ import { JsonFilter } from 'src/Json/JsonFilter'
 import AsyncSelect from 'react-select/async'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 import AsyncSelectSVPP from '../Selects/AsyncSelectSVPP'
+
+import vi from 'date-fns/locale/vi' // the locale you want
+registerLocale('vi', vi) // register it with the name you want
 
 const {
   VoucherList,
@@ -121,6 +124,24 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  )}
+                  {'MonthDate' in values && (
+                    <div className="mb-20px form-group">
+                      <label>Chọn tháng</label>
+                      <DatePicker
+                        locale="vi"
+                        onChange={date => {
+                          setFieldValue('MonthDate', date, false)
+                        }}
+                        selected={values.MonthDate}
+                        placeholderText="Chọn tháng"
+                        className="form-control"
+                        dateFormat="MM/yyyy"
+                        showMonthYearPicker
+                        showFullMonthYearPicker
+                        showTwoColumnMonthYearPicker
                       />
                     </div>
                   )}

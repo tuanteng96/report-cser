@@ -30,7 +30,7 @@ function Returns(props) {
   const [loading, setLoading] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
-  const [Total, setTotal] = useState({ ToPay : 0})
+  const [Total, setTotal] = useState({ ToPay: 0 })
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
