@@ -127,15 +127,15 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       />
                     </div>
                   )}
-                  {'MonthDate' in values && (
+                  {'Mon' in values && (
                     <div className="mb-20px form-group">
                       <label>Chọn tháng</label>
                       <DatePicker
                         locale="vi"
                         onChange={date => {
-                          setFieldValue('MonthDate', date, false)
+                          setFieldValue('Mon', date, false)
                         }}
-                        selected={values.MonthDate}
+                        selected={values.Mon}
                         placeholderText="Chọn tháng"
                         className="form-control"
                         dateFormat="MM/yyyy"

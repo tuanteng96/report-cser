@@ -217,9 +217,9 @@ function DebtPayment(props) {
       .getListDebtPayment(newFilters)
       .then(({ data }) => {
         const { Items, Total, TTToanNo } = {
-          Items: data.result?.Items || JSONData.Items,
-          TTToanNo: data.result?.TTToanNo || JSONData.TTToanNo,
-          Total: data.result?.Total || JSONData.Total
+          Items: JSONData.Items,
+          TTToanNo: JSONData.TTToanNo,
+          Total: JSONData.Total
         }
         setListData(Items)
         setTongTTNo(TTToanNo)
