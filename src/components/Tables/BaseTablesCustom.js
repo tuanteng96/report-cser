@@ -123,6 +123,21 @@ function BaseTablesCustom({
                 {...paginationTableProps}
                 keyField={keyField}
               />
+              {width < 768 && optionsMoible.tfoot && (
+                <div className="bg-light d-flex align-items-center justify-content-between p-10px mb-15px">
+                  <div className="text-uppercase fw-600">
+                    {optionsMoible.tfoot.Title}
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-xs"
+                    onClick={() => optionsMoible.tfoot.CallModal()}
+                  >
+                    Xem chi tiết
+                  </button>
+                </div>
+              )}
+
               <div className="d-flex justify-content-between">
                 <Pagination
                   className="my-3"

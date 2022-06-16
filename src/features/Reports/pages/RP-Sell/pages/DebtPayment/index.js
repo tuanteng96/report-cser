@@ -13,155 +13,6 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  TTToanNo: 5000000,
-  Items: [
-    {
-      CreateDate: '2022-06-03T14:11:39',
-      TTToanNo: 4000000,
-      ListCustomer: [
-        {
-          MemberName: 'Lê Bảo Ngọc',
-          MemberPhone: '0971021196',
-          TTToanNo: 3000000,
-          ListOrders: [
-            {
-              Id: 258911, // ID đơn hàng
-              TTToanNo: 2500000,
-              OrderItems: [
-                {
-                  Id: 12579,
-                  ToPay: 800000,
-                  DaThToan: 500000,
-                  DaThToan_TM: 100000,
-                  DaThToan_CK: 400000,
-                  DaThToan_QT: 0,
-
-                  DaThToan_Vi: 100000,
-                  DaThToan_ThTien: 200000,
-                  lines: [
-                    {
-                      ProdId: 12499,
-                      ProdTitle: 'combo lam dep tron goi'
-                    }
-                  ]
-                },
-                {
-                  Id: 12580,
-                  ToPay: 1700000,
-                  DaThToan: 1700000,
-                  DaThToan_TM: 200000,
-                  DaThToan_CK: 500000,
-                  DaThToan_QT: 1000000,
-                  DaThToan_Vi: 0,
-                  DaThToan_ThTien: 0,
-                  lines: [
-                    {
-                      ProdId: 12451,
-                      ProdTitle: 'my pham tri nam'
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              Id: 258922, // ID đơn hàng
-              TTToanNo: 500000,
-              OrderItems: [
-                {
-                  Id: 12592,
-                  ToPay: 500000,
-
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
-                  DaThToan_Vi: 0,
-                  DaThToan_ThTien: 50000,
-                  lines: [
-                    {
-                      ProdId: 12522,
-                      ProdTitle: 'Kem duong da'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          MemberName: 'Nguyễn Tài Tuấn',
-          MemberPhone: '0971021196',
-          TTToanNo: 1000000,
-          ListOrders: [
-            {
-              Id: 25900, // ID đơn hàng
-              TTToanNo: 1000000,
-              OrderItems: [
-                {
-                  Id: 12679,
-                  ToPay: 1000000,
-
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
-                  DaThToan_Vi: 1000000,
-                  DaThToan_ThTien: 0,
-                  lines: [
-                    {
-                      ProdId: 12755,
-                      ProdTitle: 'Chăm sóc da'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      CreateDate: '2022-06-04T14:11:39',
-      TTToanNo: 4000000,
-      ListCustomer: [
-        {
-          MemberName: 'Nguyễn Tài Tuấn',
-          MemberPhone: '0971021196',
-          TTToanNo: 1000000,
-          ListOrders: [
-            {
-              Id: 25900, // Id đơn hàng
-              TTToanNo: 1000000,
-              OrderItems: [
-                {
-                  Id: 12679,
-                  ToPay: 1000000,
-
-                  DaThToan: 0,
-                  DaThToan_TM: 0,
-                  DaThToan_CK: 0,
-                  DaThToan_QT: 0,
-                  DaThToan_Vi: 1000000,
-                  DaThToan_ThTien: 0,
-                  lines: [
-                    {
-                      ProdId: 12755,
-                      ProdTitle: 'Chăm sóc da'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-
 function DebtPayment(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -217,9 +68,9 @@ function DebtPayment(props) {
       .getListDebtPayment(newFilters)
       .then(({ data }) => {
         const { Items, Total, TTToanNo } = {
-          Items: JSONData.Items,
-          TTToanNo: JSONData.TTToanNo,
-          Total: JSONData.Total
+          Items: data.result?.Items || [],
+          TTToanNo: data.result?.TTToanNo || 0,
+          Total: data.result?.Total || 0
         }
         setListData(Items)
         setTongTTNo(TTToanNo)
@@ -421,9 +272,13 @@ function DebtPayment(props) {
               }
             }}
             optionsMoible={{
-              itemShow: 1,
+              itemShow: 0,
               CallModal: row => OpenModalMobile(row),
               columns: [
+                {
+                  attrs: { 'data-title': 'Ngày' },
+                  formatter: row => moment(row.CreateDate).format('DD-MM-YYYY')
+                },
                 {
                   attrs: { 'data-title': 'Tổng khách hàng' },
                   formatter: row => row.ListCustomer.length

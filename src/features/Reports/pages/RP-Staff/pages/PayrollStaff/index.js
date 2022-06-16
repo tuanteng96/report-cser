@@ -10,6 +10,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import ModalViewMobile from './ModalViewMobile'
 moment.locale('vi')
 
 function PayrollStaff(props) {
@@ -143,7 +144,11 @@ function PayrollStaff(props) {
             textDataNull="Không có dữ liệu."
             optionsMoible={{
               itemShow: 5,
-              CallModal: row => OpenModalMobile(row)
+              CallModal: row => OpenModalMobile(row),
+              tfoot: {
+                Title: 'Tổng lương',
+                CallModal: () => OpenModalMobile({ ...Total, TypeOf: true })
+              }
             }}
             options={{
               custom: true,
@@ -439,7 +444,7 @@ function PayrollStaff(props) {
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
                   PriceHelper.formatVND(
-                    row.THUC_TRA_DU_KIEN - (row.TAM_UNG - row.HOAN_UNG )
+                    row.THUC_TRA_DU_KIEN - (row.TAM_UNG - row.HOAN_UNG)
                   ),
                 attrs: { 'data-title': 'Phải trả nhân viên' },
                 headerStyle: () => {
@@ -449,7 +454,8 @@ function PayrollStaff(props) {
                 footerFormatter: () => (
                   <span className="font-size-md font-number text-success">
                     {PriceHelper.formatVND(
-                      Total?.THUC_TRA_DU_KIEN - (Total?.TAM_UNG - Total?.HOAN_UNG)
+                      Total?.THUC_TRA_DU_KIEN -
+                        (Total?.TAM_UNG - Total?.HOAN_UNG)
                     )}
                   </span>
                 )
@@ -497,6 +503,11 @@ function PayrollStaff(props) {
             footerClasses="bg-light"
           />
         </div>
+        <ModalViewMobile
+          show={isModalMobile}
+          onHide={HideModalMobile}
+          data={initialValuesMobile}
+        />
       </div>
     </div>
   )
