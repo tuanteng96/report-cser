@@ -108,7 +108,17 @@ const MenuList = [
     Title: 'Tồn kho',
     TitleKey: 'TON_KHO',
     IconClass: 'fa-regular fa-chart-pie icon',
-    Href: '/ton-kho'
+    Href: '/ton-kho',
+    Children: [
+      {
+        Title: 'Tồn kho',
+        Href: '/ton-kho/danh-sach'
+      },
+      {
+        Title: 'Tiêu hao',
+        Href: '/ton-kho/tieu-hao'
+      }
+    ]
   },
   {
     Title: 'CSKH',

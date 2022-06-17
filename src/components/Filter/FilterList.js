@@ -27,7 +27,9 @@ const {
   PaymentMethodsList,
   TypeTCList,
   TagsTCList,
-  TypeCNList
+  TypeCNList,
+  CategoriesTKList,
+  TypeTHList
 } = JsonFilter
 
 function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
@@ -178,6 +180,56 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         value={values.TypeCN}
                         onChange={otp => {
                           setFieldValue('TypeCN', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'CategoriesTK' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="CategoriesTK"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={CategoriesTKList}
+                        className="select-control"
+                        value={values.CategoriesTK}
+                        onChange={otp => {
+                          setFieldValue('CategoriesTK', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'ProdIDs' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Sản phẩm, Nguyên vật liệu</label>
+                      <AsyncSelectMembers
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="ProdIDs"
+                        value={values.ProdIDs}
+                        onChange={otp => {
+                          setFieldValue('ProdIDs', otp, false)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'TypeTH' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Tình trạng</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="TypeTH"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={TypeTHList}
+                        className="select-control"
+                        value={values.TypeTH}
+                        onChange={otp => {
+                          setFieldValue('TypeTH', otp)
                         }}
                       />
                     </div>
@@ -336,6 +388,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         isClearable={true}
                         menuPosition="fixed"
                         name="MemberID"
+                        value={values.MemberID}
                         onChange={otp => {
                           setFieldValue('MemberID', otp, false)
                         }}
@@ -352,6 +405,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('StaffID', otp, false)
                         }}
+                        value={values.StaffID}
                       />
                     </div>
                   )}

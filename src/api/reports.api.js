@@ -80,6 +80,12 @@ const reportsApi = {
   },
   getListStaffPayroll: data => {
     return http.post(`${SubApi}/nhan-vien/bang-luong`, JSON.stringify(data))
+  },
+  getListInventory: data => {
+    return http.post(`${SubApi}/ton-kho/danh-sach`, JSON.stringify(data))
+  },
+  getInventoryAttrition: data => {
+    return http.post(`${SubApi}/ton-kho/tieu-hao`, JSON.stringify(data))
   }
 }
 export default reportsApi

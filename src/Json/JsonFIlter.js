@@ -145,5 +145,25 @@ export const JsonFilter = {
       value: 'THE_TIEN',
       label: 'Thẻ tiền'
     }
+  ],
+  CategoriesTKList: [
+    {
+      value: 0,
+      label: 'Sản phẩm'
+    },
+    {
+      value: 1,
+      label: 'Nguyên vật liệu'
+    }
+  ],
+  TypeTHList: [
+    {
+      value: 0,
+      label: 'Đã dùng'
+    },
+    {
+      value: 1,
+      label: 'Dự kiến'
+    }
   ]
 }

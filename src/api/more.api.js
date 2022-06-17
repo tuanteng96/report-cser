@@ -25,6 +25,9 @@ const moreApi = {
     return http.get(
       `/api/gl/select2?cmd=prod&combo=0&fee=0&ignore_all=1&srv=1&q=${key}`
     )
+  },
+  getAllProductNVL: data => {
+    return http.post(`${SubApi}/more/danh-sach-sp-nvl`, JSON.stringify(data))
   }
 }
 export default moreApi

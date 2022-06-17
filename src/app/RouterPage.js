@@ -14,13 +14,16 @@ import TopProducts from 'src/features/Reports/pages/RP-More/pages/TopProducts'
 import RPReEx from 'src/features/Reports/pages/RP-ReEx'
 import RPDebt from 'src/features/Reports/pages/RP-Debt'
 import DebtLock from 'src/features/Reports/pages/RP-Debt/pages/DebtLock'
-import Gift from 'src/features/Reports/pages/RP-Debt/pages/Gift'
-import Home from 'src/features/Reports/pages/RP-Debt/pages/Home'
+import DebtGift from 'src/features/Reports/pages/RP-Debt/pages/Gift'
+import DebtHome from 'src/features/Reports/pages/RP-Debt/pages/Home'
 import RPStaff from 'src/features/Reports/pages/RP-Staff'
 import SalaryServices from 'src/features/Reports/pages/RP-Staff/pages/SalaryServices'
 import RoseStaff from 'src/features/Reports/pages/RP-Staff/pages/RoseStaff'
 import SalesStaff from 'src/features/Reports/pages/RP-Staff/pages/SalesStaff'
 import PayrollStaff from 'src/features/Reports/pages/RP-Staff/pages/PayrollStaff'
+import RPInventory from 'src/features/Reports/pages/RP-Inventory'
+import InventoryHome from 'src/features/Reports/pages/RP-Inventory/pages/Home'
+import InventoryAttrition from 'src/features/Reports/pages/RP-Inventory/pages/Attrition'
 
 function RouterPage(props) {
   return (
@@ -80,9 +83,9 @@ function RouterPage(props) {
         }
       >
         <Route index element={<Navigate to="danh-sach" replace />} />
-        <Route path="danh-sach" element={<Home />} />
+        <Route path="danh-sach" element={<DebtHome />} />
         <Route path="khoa-no" element={<DebtLock />} />
-        <Route path="tang" element={<Gift />} />
+        <Route path="tang" element={<DebtGift />} />
       </Route>
       <Route
         path="/nhan-vien"
@@ -97,6 +100,18 @@ function RouterPage(props) {
         <Route path="hoa-hong" element={<RoseStaff />} />
         <Route path="doanh-so" element={<SalesStaff />} />
         <Route path="bang-luong" element={<PayrollStaff />} />
+      </Route>
+      <Route
+        path="/ton-kho"
+        element={
+          <LayoutReport>
+            <RPInventory />
+          </LayoutReport>
+        }
+      >
+        <Route index element={<Navigate to="danh-sach" replace />} />
+        <Route path="danh-sach" element={<InventoryHome />} />
+        <Route path="tieu-hao" element={<InventoryAttrition />} />
       </Route>
       <Route
         path="/khac"

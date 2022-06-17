@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
@@ -6,11 +6,11 @@ import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import reportsApi from 'src/api/reports.api'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
+// import { OverlayTrigger, Popover } from 'react-bootstrap'
+import ModalViewMobile from './ModalViewMobile'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import ModalViewMobile from './ModalViewMobile'
 moment.locale('vi')
 
 function PayrollStaff(props) {
