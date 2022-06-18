@@ -4,63 +4,13 @@ import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import ChildrenTables from 'src/components/Tables/ChildrenTables'
 moment.locale('vi')
-
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      Id: 1, // tự sinh Id Key
-      LuongCa_PPhi: {
-        Tong_Luong: 5000000,
-        DS_DV: [
-          {
-            Title: 'Chăm sóc da',
-            ToPay: 100000
-          }
-        ],
-        DS_PP: [
-          {
-            Title: 'Phụ phí 1',
-            ToPay: 100000
-          },
-          {
-            Title: 'Phụ phí 2',
-            ToPay: 100000
-          }
-        ]
-      },
-      Staff: {
-        ID: 2122,
-        FullName: 'Nguyễn Tài Tuấn'
-      },
-      Member: {
-        ID: 2456,
-        FullName: 'Chu bá thông',
-        Phone: '0971021196'
-      },
-      Ngay_Lam: '2022-06-03T14:11:39',
-      DV_Goc: {
-        ProdTitle: 'Dv tắm trắng',
-        ProdId: 5462
-      },
-      The_DV: {
-        CardTitle: 'Tắm trắng 10 buổi',
-        CardId: 8754
-      },
-      ID_Buoi_Dv: 1252,
-      StockName: 'Cser Hà Nội'
-    }
-  ]
-}
 
 function SalesStaff(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -81,6 +31,7 @@ function SalesStaff(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
+  const [TotalSales, setTotalSales] = useState(0)
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -117,13 +68,15 @@ function SalesStaff(props) {
       ServiceCardID: filters.ServiceCardID ? filters.ServiceCardID.value : ''
     }
     reportsApi
-      .getListStaffSalarySV(newFilters)
+      .getListStaffSales(newFilters)
       .then(({ data }) => {
-        const { Items, Total } = {
-          Items: data.result?.Items || JSONData.Items,
-          Total: data.result?.Total || JSONData.Total
+        const { Items, Total, TongDoanhSo } = {
+          Items: data.result?.Items || [],
+          Total: data.result?.Total || 0,
+          TongDoanhSo: data.result?.TongDoanhSo || 0
         }
         setListData(Items)
+        setTotalSales(TongDoanhSo)
         setLoading(false)
         setPageTotal(Total)
         isFilter && setIsFilter(false)
@@ -161,6 +114,15 @@ function SalesStaff(props) {
     setInitialValuesMobile(null)
     setIsModalMobile(false)
   }
+
+  const AmountMember = item => {
+    var totalArray = 0
+    if (!item) return totalArray
+    for (let keyItem of item) {
+      totalArray += keyItem.OrdersList.length
+    }
+    return totalArray
+  }
   console.log(ListData)
   return (
     <div className="py-main">
@@ -197,6 +159,12 @@ function SalesStaff(props) {
           <div className="fw-500 font-size-lg">
             Danh sách doanh số nhân viên
           </div>
+          <div className="fw-500">
+            Tổng doanh số{' '}
+            <span className="font-size-xl fw-600 text-success">
+              {PriceHelper.formatVND(TotalSales)}
+            </span>
+          </div>
         </div>
         <FilterList
           show={isFilter}
@@ -207,228 +175,177 @@ function SalesStaff(props) {
           loading={loading}
         />
         <div className="p-20px">
-          <BaseTablesCustom
+          <ChildrenTables
             data={ListData}
-            textDataNull="Không có dữ liệu."
-            optionsMoible={{
-              itemShow: 5,
-              CallModal: row => OpenModalMobile(row)
-            }}
+            columns={[
+              {
+                text: 'Ngày',
+                headerStyle: {
+                  minWidth: '160px',
+                  width: '160px'
+                },
+                attrs: { 'data-title': 'Ngày' }
+              },
+              {
+                text: 'Tổng doanh số',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
+                text: 'Nhân viên',
+                headerStyle: {
+                  minWidth: '200px',
+                  width: '200px'
+                }
+              },
+              {
+                text: 'Doanh số',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
+                text: 'Đơn hàng',
+                headerStyle: {
+                  minWidth: '120px',
+                  width: '120px'
+                }
+              },
+              {
+                text: 'Khách hàng',
+                headerStyle: {
+                  minWidth: '200px',
+                  width: '200px'
+                }
+              },
+              {
+                text: 'Số điện thoại',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
+                text: 'Doanh số',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
+                text: 'Chi tiết',
+                headerStyle: {
+                  minWidth: '350px',
+                  width: '350px'
+                }
+              }
+            ]}
             options={{
-              custom: true,
               totalSize: PageTotal,
               page: filters.Pi,
               sizePerPage: filters.Ps,
-              alwaysShowAllBtns: true,
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
-              },
+              sizePerPageList: [10, 25, 30, 50],
               onPageChange: page => {
                 setListData([])
                 const Pi = page
                 setFilters({ ...filters, Pi: Pi })
+              },
+              onSizePerPageChange: sizePerPage => {
+                setListData([])
+                const Ps = sizePerPage
+                setFilters({ ...filters, Ps: Ps })
               }
             }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
+            optionsMoible={{
+              itemShow: 1,
+              CallModal: row => OpenModalMobile(row),
+              columns: [
+                {
+                  attrs: { 'data-title': 'Tổng khách hàng' },
+                  formatter: row => row.StaffsList.length
                 },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'Staff',
-                text: 'Tên nhân viên',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.Staff?.FullName ? row.Staff.FullName : 'Chưa xác định',
-                attrs: { 'data-title': 'Tên nhân viên' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
+                {
+                  attrs: { 'data-title': 'Tổng doanh số' },
+                  formatter: row => PriceHelper.formatVND(row.Tong)
                 }
-              },
-              {
-                dataField: 'LuongCa_PPhi',
-                text: 'Lương ca và phụ phí',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => (
-                  <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    key="top"
-                    placement="top"
-                    overlay={
-                      <Popover id={`popover-positioned-top`}>
-                        <Popover.Header
-                          className="py-10px text-uppercase fw-600"
-                          as="h3"
-                        >
-                          Chi tiết lương ca & phụ phí
-                        </Popover.Header>
-                        <Popover.Body className="p-0">
-                          {(row.LuongCa_PPhi?.DS_DV &&
-                            row.LuongCa_PPhi?.DS_DV.length > 0) ||
-                          (row.LuongCa_PPhi?.DS_PP &&
-                            row.LuongCa_PPhi?.DS_PP.length > 0) ? (
-                            <Fragment>
-                              {row.LuongCa_PPhi?.DS_DV.map((item, index) => (
-                                <div
-                                  className="py-10px px-15px fw-600 font-size-md border-top border-gray-200 d-flex justify-content-between"
-                                  key={index}
-                                >
-                                  <span>{item.Title}</span>
-                                  <span>
-                                    {PriceHelper.formatVND(item.ToPay)}
-                                  </span>
-                                </div>
-                              ))}
-                              {row.LuongCa_PPhi?.DS_PP.map((item, index) => (
-                                <div
-                                  className="py-10px px-15px fw-600 font-size-md border-top border-gray-200 d-flex justify-content-between"
-                                  key={index}
-                                >
-                                  <span>{item.Title}</span>
-                                  <span>
-                                    {PriceHelper.formatVND(item.ToPay)}
-                                  </span>
-                                </div>
-                              ))}
-                            </Fragment>
-                          ) : (
-                            <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                              <span>Không có dữ liệu</span>
-                            </div>
-                          )}
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <div className="d-flex justify-content-between align-items-center">
-                      {PriceHelper.formatVND(row.LuongCa_PPhi.Tong_Luong)}
-                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
-                    </div>
-                  </OverlayTrigger>
-                ),
-                attrs: { 'data-title': 'Lương ca và phụ phí' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
-                }
-              },
-              {
-                dataField: 'Ngay_Lam',
-                text: 'Ngày làm',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.Ngay_Lam
-                    ? moment(row.Ngay_Lam).format('HH:mm DD-MM-YYYY')
-                    : 'Chưa có',
-                attrs: { 'data-title': 'Ngày làm' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'MemberName',
-                text: 'Khách hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.FullName || 'Chưa có',
-                attrs: { 'data-title': 'Khách hàng' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
-                }
-              },
-              {
-                dataField: 'MemberPhone',
-                text: 'Số điện thoại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.Phone || 'Chưa có',
-                attrs: { 'data-title': 'Số điện thoại' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'DV_Goc',
-                text: 'Dịch vụ gốc',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.DV_Goc?.ProdTitle || 'Không có dịch vụ gốc',
-                attrs: { 'data-title': 'Dịch vụ gốc' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
-                }
-              },
-              {
-                dataField: 'The_DV',
-                text: 'Thẻ dịch vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.The_DV?.CardTitle || 'Không có thẻ',
-                attrs: { 'data-title': 'Thẻ dịch vụ' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'ID_Buoi_Dv',
-                text: 'ID Buổi dịch vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.ID_Buoi_Dv,
-                attrs: { 'data-title': 'ID Buổi dịch vụ' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'PP',
-                text: 'Phụ phí',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.LuongCa_PPhi?.DS_PP && row.LuongCa_PPhi?.DS_PP.length > 0
-                    ? row.LuongCa_PPhi?.DS_PP.map(item => item.Title).join(', ')
-                    : 'Không có phụ phí',
-                attrs: { 'data-title': 'Phụ phí' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'StockName',
-                text: 'Cơ sở',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.StockName || 'Chưa có',
-                attrs: { 'data-title': 'Cơ sở' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
-                }
-              }
-            ]}
+              ]
+            }}
             loading={loading}
-            keyField="Id"
-            className="table-responsive-attr"
-            classes="table-bordered"
-          />
+          >
+            {ListData &&
+              ListData.map((item, index) => (
+                <Fragment key={index}>
+                  {item.StaffsList.map((staff, staffIndex) => (
+                    <Fragment key={staffIndex}>
+                      {staff.OrdersList &&
+                        staff.OrdersList.map((order, orderIndex) => (
+                          <Fragment key={orderIndex}>
+                            <tr>
+                              {staffIndex === 0 && orderIndex === 0 && (
+                                <Fragment>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={AmountMember(item.StaffsList)}
+                                  >
+                                    {moment(item.CreateDate).format(
+                                      'DD-MM-YYYY'
+                                    )}
+                                  </td>
+                                  <td
+                                    className="vertical-align-middle fw-600"
+                                    rowSpan={AmountMember(item.StaffsList)}
+                                  >
+                                    {PriceHelper.formatVND(item.Tong)}
+                                  </td>
+                                </Fragment>
+                              )}
+                              {orderIndex === 0 && (
+                                <Fragment>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={staff.OrdersList.length}
+                                  >
+                                    {staff.Staff?.FullName || 'Chưa có'}
+                                  </td>
+                                  <td
+                                    className="vertical-align-middle"
+                                    rowSpan={staff.OrdersList.length}
+                                  >
+                                    {PriceHelper.formatVND(staff.Value)}
+                                  </td>
+                                </Fragment>
+                              )}
+                              <td className="vertical-align-middle">
+                                #{order.ID}
+                              </td>
+                              <td className="vertical-align-middle">
+                                {order?.Member?.FullName || 'Chưa có'}
+                              </td>
+                              <td className="vertical-align-middle">
+                                {order?.Member?.Phone || 'Chưa có'}
+                              </td>
+                              <td className="vertical-align-middle">
+                                {PriceHelper.formatVND(order.Value)}
+                              </td>
+                              <td>
+                                {order.Lines.map(
+                                  line =>
+                                    `${
+                                      line.ProdTitle
+                                    } - ${PriceHelper.formatVND(line.ToPay)}`
+                                ).join(', ')}
+                              </td>
+                            </tr>
+                          </Fragment>
+                        ))}
+                    </Fragment>
+                  ))}
+                </Fragment>
+              ))}
+          </ChildrenTables>
         </div>
         <ModalViewMobile
           show={isModalMobile}

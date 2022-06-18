@@ -12,90 +12,6 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  TongHoaHong: 900000,
-  Items: [
-    {
-      CreateDate: '2022-06-03T14:11:39',
-      StaffsList: [
-        {
-          Staff: {
-            ID: 123,
-            FullName: 'Nguyễn Tài Tuấn'
-          },
-          RoseMoney: 2000000,
-          OrdersList: [
-            {
-              ID: 25841, // Id đơn hàng
-              Member: {
-                ID: 258,
-                FullName: 'Nguyễn Tài Tuấn',
-                Phone: '0971021196'
-              },
-              RoseMoney: 2000000,
-              Lines: [
-                {
-                  ProdId: 1234,
-                  ProdTitle: 'SP A',
-                  ToPay: 200000
-                },
-                {
-                  ProdId: 1234,
-                  ProdTitle: 'SP B',
-                  ToPay: 100000
-                }
-              ]
-            },
-            {
-              ID: 25842, // Id đơn hàng
-              Member: {
-                ID: 258,
-                FullName: 'Nguyễn Tài Tuấn 2',
-                Phone: '0971021196'
-              },
-              RoseMoney: 2000000,
-              Lines: [
-                {
-                  ProdId: 1234,
-                  ProdTitle: 'SP C',
-                  ToPay: 200000
-                }
-              ]
-            }
-          ]
-        },
-        {
-          Staff: {
-            ID: 1235,
-            FullName: 'Lê bảo ngọc'
-          },
-          RoseMoney: 2000000,
-          OrdersList: [
-            {
-              ID: 25842, // Id đơn hàng
-              Member: {
-                ID: 258,
-                FullName: 'Nguyễn Tài Tuấn',
-                Phone: '0971021196'
-              },
-              RoseMoney: 2000000,
-              Lines: [
-                {
-                  ProdId: 1234,
-                  ProdTitle: 'SP E',
-                  ToPay: 200000
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-
 function RoseStaff(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -154,9 +70,9 @@ function RoseStaff(props) {
       .getListStaffRose(newFilters)
       .then(({ data }) => {
         const { Items, Total, TongHoaHong } = {
-          Items: data.result?.Items || JSONData.Items,
-          TongHoaHong: data.result?.TongHoaHong || JSONData.TongHoaHong,
-          Total: data.result?.Total || JSONData.Total
+          Items: data.result?.Items || [],
+          TongHoaHong: data.result?.TongHoaHong || 0,
+          Total: data.result?.Total || 0
         }
         setListData(Items)
         setTotalHoaHong(TongHoaHong)
@@ -262,6 +178,13 @@ function RoseStaff(props) {
                 attrs: { 'data-title': 'Ngày' }
               },
               {
+                text: 'Tổng hoa hồng',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
                 text: 'Nhân viên',
                 headerStyle: {
                   minWidth: '200px',
@@ -271,15 +194,15 @@ function RoseStaff(props) {
               {
                 text: 'Hoa hồng',
                 headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
+                  minWidth: '150px',
+                  width: '150px'
                 }
               },
               {
                 text: 'Đơn hàng',
                 headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
+                  minWidth: '120px',
+                  width: '120px'
                 }
               },
               {
@@ -292,8 +215,8 @@ function RoseStaff(props) {
               {
                 text: 'Số điện thoại',
                 headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
+                  minWidth: '150px',
+                  width: '150px'
                 }
               },
               {
@@ -306,8 +229,8 @@ function RoseStaff(props) {
               {
                 text: 'Chi tiết',
                 headerStyle: {
-                  minWidth: '250px',
-                  width: '250px'
+                  minWidth: '350px',
+                  width: '350px'
                 }
               }
             ]}
@@ -333,11 +256,11 @@ function RoseStaff(props) {
               columns: [
                 {
                   attrs: { 'data-title': 'Tổng khách hàng' },
-                  formatter: row => row.ListCustomer.length
+                  formatter: row => row.StaffsList.length
                 },
                 {
-                  attrs: { 'data-title': 'Tổng thanh toán nợ' },
-                  formatter: row => PriceHelper.formatVND(row.TTToanNo)
+                  attrs: { 'data-title': 'Tổng hoa hồng' },
+                  formatter: row => PriceHelper.formatVND(row.Tong)
                 }
               ]
             }}
@@ -352,18 +275,24 @@ function RoseStaff(props) {
                         staff.OrdersList.map((order, orderIndex) => (
                           <Fragment key={orderIndex}>
                             <tr>
-                              {index === 0 &&
-                                staffIndex === 0 &&
-                                orderIndex === 0 && (
+                              {staffIndex === 0 && orderIndex === 0 && (
+                                <Fragment>
                                   <td
                                     className="vertical-align-middle"
                                     rowSpan={AmountMember(item.StaffsList)}
                                   >
                                     {moment(item.CreateDate).format(
-                                      'HH:mm DD-MM-YYYY'
+                                      'DD-MM-YYYY'
                                     )}
                                   </td>
-                                )}
+                                  <td
+                                    className="vertical-align-middle fw-600"
+                                    rowSpan={AmountMember(item.StaffsList)}
+                                  >
+                                    {PriceHelper.formatVND(item.Tong)}
+                                  </td>
+                                </Fragment>
+                              )}
                               {orderIndex === 0 && (
                                 <Fragment>
                                   <td
@@ -376,14 +305,22 @@ function RoseStaff(props) {
                                     className="vertical-align-middle"
                                     rowSpan={staff.OrdersList.length}
                                   >
-                                    {PriceHelper.formatVND(staff.RoseMoney)}
+                                    {PriceHelper.formatVND(staff.Value)}
                                   </td>
                                 </Fragment>
                               )}
-                              <td>#{order.ID}</td>
-                              <td>{order?.Member?.FullName || 'Chưa có'}</td>
-                              <td>{order?.Member?.Phone || 'Chưa có'}</td>
-                              <td>{PriceHelper.formatVND(order.RoseMoney)}</td>
+                              <td className="vertical-align-middle">
+                                #{order.ID}
+                              </td>
+                              <td className="vertical-align-middle">
+                                {order?.Member?.FullName || 'Chưa có'}
+                              </td>
+                              <td className="vertical-align-middle">
+                                {order?.Member?.Phone || 'Chưa có'}
+                              </td>
+                              <td className="vertical-align-middle">
+                                {PriceHelper.formatVND(order.Value)}
+                              </td>
                               <td>
                                 {order.Lines.map(
                                   line =>
