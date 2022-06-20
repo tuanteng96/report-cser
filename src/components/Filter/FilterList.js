@@ -16,11 +16,11 @@ import AsyncSelect from 'react-select/async'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 import AsyncSelectSVPP from '../Selects/AsyncSelectSVPP'
 import AsyncSelectProductNVL from '../Selects/AsyncSelectProductNVL'
-
-import vi from 'date-fns/locale/vi' // the locale you want
 import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
 import AsyncSelectCategories from '../Selects/AsyncSelectCategories'
 import AsyncSelectBrands from '../Selects/AsyncSelectBrands'
+
+import vi from 'date-fns/locale/vi' // the locale you want
 registerLocale('vi', vi) // register it with the name you want
 
 const {
@@ -32,8 +32,7 @@ const {
   TypeTCList,
   TagsTCList,
   TypeCNList,
-  CategoriesTKList,
-  TypeTHList
+  CategoriesTKList
 } = JsonFilter
 
 function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
@@ -210,30 +209,13 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                     <div className="form-group mb-20px">
                       <label>Sản phẩm, Nguyên vật liệu</label>
                       <AsyncSelectProductNVL
+                        isMulti
                         isClearable={true}
                         menuPosition="fixed"
                         name="ProdIDs"
                         value={values.ProdIDs}
                         onChange={otp => {
                           setFieldValue('ProdIDs', otp, false)
-                        }}
-                      />
-                    </div>
-                  )}
-                  {'TypeTH' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Tình trạng</label>
-                      <Select
-                        menuPosition="fixed"
-                        isClearable={true}
-                        name="TypeTH"
-                        placeholder="Chọn loại"
-                        classNamePrefix="select"
-                        options={TypeTHList}
-                        className="select-control"
-                        value={values.TypeTH}
-                        onChange={otp => {
-                          setFieldValue('TypeTH', otp)
                         }}
                       />
                     </div>
@@ -438,6 +420,39 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
+                    </div>
+                  )}
+                  {'QtyNumber' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Số lượng</label>
+                      <input
+                        type="text"
+                        name="QtyNumber"
+                        value={values.QtyNumber}
+                        className="form-control"
+                        placeholder="Nhập số lượng"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        autoComplete="off"
+                      />
+                    </div>
+                  )}
+                  {'IsQtyEmpty' in values && (
+                    <div>
+                      <label class="checkbox d-flex">
+                        <input
+                          type="checkbox"
+                          name="IsQtyEmpty"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.IsQtyEmpty}
+                          checked={values.IsQtyEmpty}
+                        />
+                        <span className="checkbox-icon"></span>
+                        <span className="fw-600 cursor-pointer">
+                          Lọc sản phẩm còn
+                        </span>
+                      </label>
                     </div>
                   )}
                   {'ProductId' in values && (

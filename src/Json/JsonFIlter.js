@@ -155,15 +155,5 @@ export const JsonFilter = {
       value: 1,
       label: 'Nguyên vật liệu'
     }
-  ],
-  TypeTHList: [
-    {
-      value: 0,
-      label: 'Đã dùng'
-    },
-    {
-      value: 1,
-      label: 'Dự kiến'
-    }
   ]
 }

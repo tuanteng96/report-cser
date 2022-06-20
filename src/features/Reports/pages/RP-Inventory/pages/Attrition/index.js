@@ -33,25 +33,6 @@ const JSONData = {
           SUnit: 'ml'
         }
       ]
-    },
-    {
-      ProdId: 12358,
-      ProdTitle: 'Serum B',
-      Code: '2540HB',
-      Unit: 1200,
-      SUnit: 'ml',
-      UsageList: [
-        {
-          Title: 'Triệt lông 2',
-          Unit: 500,
-          SUnit: 'ml'
-        },
-        {
-          Title: 'Chăm sóc da 2',
-          Unit: 200,
-          SUnit: 'ml'
-        }
-      ]
     }
   ]
 }
@@ -68,8 +49,7 @@ function Attrition(props) {
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
     CategoriesTK: '', // 0 => SP, 1 => NVL
-    ProdIDs: '', // Danh sách SP, NVL
-    TypeTH: '' // 0 => Đã dùng, 1 => Dự kiến
+    ProdIDs: '' // Danh sách SP, NVL
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -92,15 +72,22 @@ function Attrition(props) {
   }, [filters])
 
   useEffect(() => {
-    getListPayroll()
+    getListAttrition()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListPayroll = (isLoading = true, callback) => {
+  const getListAttrition = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
-      Mon: filters.Mon ? moment(filters.Mon).format('MM/yyyy') : null
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null,
+      CategoriesTK: filters.CategoriesTK ? filters.CategoriesTK.value : '',
+      ProdIDs: filters.ProdIDs && filters.ProdIDs.map(item => item.Id).join(',')
     }
     reportsApi
       .getInventoryAttrition(newFilters)
@@ -128,14 +115,14 @@ function Attrition(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      //getListPayroll()
+      getListAttrition()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    //getListPayroll()
+    getListAttrition()
   }
 
   const OpenModalMobile = value => {
@@ -250,9 +237,19 @@ function Attrition(props) {
                 text: 'Sử dụng',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.Unit ? `${row?.Unit} ${row?.SUnit}` : 'Chưa xác định',
+                formatter: (cell, row) => row?.Unit || 'Chưa xác định',
                 attrs: { 'data-title': 'Sử dụng' },
+                headerStyle: () => {
+                  return { minWidth: '150px', width: '150px' }
+                }
+              },
+              {
+                dataField: 'SUnit',
+                text: 'Đơn vị',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => row?.SUnit || 'Chưa xác định',
+                attrs: { 'data-title': 'Đơn vị' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
                 }

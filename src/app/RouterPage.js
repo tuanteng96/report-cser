@@ -66,6 +66,7 @@ function RouterPage(props) {
         <Route path="sp-dv-ban-ra" element={<SaleDetails />} />
         <Route path="thanh-toan-tra-no" element={<DebtPayment />} />
         <Route path="tra-hang" element={<Returns />} />
+        <Route path="top-ban-hang-doanh-so" element={<TopProducts />} />
       </Route>
       <Route
         path="/thu-chi-va-so-quy"
@@ -113,7 +114,7 @@ function RouterPage(props) {
         <Route index element={<Navigate to="danh-sach" replace />} />
         <Route path="danh-sach" element={<InventoryHome />} />
         <Route path="tieu-hao" element={<InventoryAttrition />} />
-        <Route path="canh-bao-nvl" element={<WarningMaterials />} />
+        <Route path="du-kien-nvl" element={<WarningMaterials />} />
       </Route>
       <Route
         path="/khac"
@@ -127,7 +128,6 @@ function RouterPage(props) {
           index
           element={<Navigate to="top-ban-hang-doanh-so" replace />}
         />
-        <Route path="top-ban-hang-doanh-so" element={<TopProducts />} />
       </Route>
       <Route path="/app23/index.html" element={<Navigate to="/" replace />} />
     </Routes>

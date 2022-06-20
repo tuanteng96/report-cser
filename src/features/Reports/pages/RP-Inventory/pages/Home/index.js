@@ -11,31 +11,6 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      ProdId: 12357,
-      ProdTitle: 'Serum A',
-      Code: '2540HU',
-      Qty: 25, // SL Hiện tại
-      QtyBefore: 15, // SL tồn trước
-      QtyImport: 20, // SL Nhập trong
-      QtyExport: 8 // SL Xuất trong
-    },
-    {
-      ProdId: 12358,
-      ProdTitle: 'Serum B',
-      Code: '2540HB',
-      Qty: 3, // SL Hiện tại
-      QtyBefore: 15, // SL tồn trước
-      QtyImport: 20, // SL Nhập trong
-      QtyExport: 8 // SL Xuất trong
-    }
-  ]
-}
-
 function Home(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -49,7 +24,8 @@ function Home(props) {
     Ps: 10, // Số lượng item
     CategoriesTK: '', // 0 => SP, 1 => NVL
     ProdIDs: '', // Danh sách SP, NVL
-    QtyNumber: '' // Lọc ra Qty < QtyNumber
+    QtyNumber: '', // Lọc ra Qty < QtyNumber
+    IsQtyEmpty: false
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -80,14 +56,21 @@ function Home(props) {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
-      Mon: filters.Mon ? moment(filters.Mon).format('MM/yyyy') : null
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null,
+      CategoriesTK: filters.CategoriesTK ? filters.CategoriesTK.value : '',
+      ProdIDs: filters.ProdIDs && filters.ProdIDs.map(item => item.Id).join(',')
     }
     reportsApi
       .getListInventory(newFilters)
       .then(({ data }) => {
         const { Items, Total } = {
-          Items: data.result?.Items || JSONData.Items,
-          Total: data.result?.Total || JSONData.Total
+          Items: data.result?.Items || [],
+          Total: data.result?.Total || 0
         }
         setListData(Items)
         setLoading(false)
@@ -108,14 +91,14 @@ function Home(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      //getListPayroll()
+      getListPayroll()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    //getListPayroll()
+    getListPayroll()
   }
 
   const OpenModalMobile = value => {
@@ -229,6 +212,17 @@ function Home(props) {
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 attrs: { 'data-title': 'Mã' },
+                headerStyle: () => {
+                  return { minWidth: '150px', width: '150px' }
+                }
+              },
+              {
+                dataField: 'SUnit',
+                text: 'Đơn vị',
+                formatter: (cell, row) => row?.SUnit || 'Chưa xác định',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                attrs: { 'data-title': 'Đơn vị' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
                 }

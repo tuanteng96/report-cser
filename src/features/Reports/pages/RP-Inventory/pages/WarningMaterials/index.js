@@ -19,7 +19,8 @@ const JSONData = {
       ProdId: 12357,
       ProdTitle: 'Serum A',
       Code: '2540HU',
-      Unit: 1500,
+      Unit: 1500, //NVL dự kiến
+      LUnit: 1000, // NVL Thiếu
       SUnit: 'ml',
       UsageList: [
         {
@@ -29,25 +30,6 @@ const JSONData = {
         },
         {
           Title: 'Chăm sóc da',
-          Unit: 200,
-          SUnit: 'ml'
-        }
-      ]
-    },
-    {
-      ProdId: 12358,
-      ProdTitle: 'Serum B',
-      Code: '2540HB',
-      Unit: 1200,
-      SUnit: 'ml',
-      UsageList: [
-        {
-          Title: 'Triệt lông 2',
-          Unit: 500,
-          SUnit: 'ml'
-        },
-        {
-          Title: 'Chăm sóc da 2',
           Unit: 200,
           SUnit: 'ml'
         }
@@ -66,7 +48,8 @@ function WarningMaterials(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10 // Số lượng item
+    Ps: 10, // Số lượng item
+    CategoriesTK: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -97,7 +80,13 @@ function WarningMaterials(props) {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
-      Mon: filters.Mon ? moment(filters.Mon).format('MM/yyyy') : null
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null,
+      CategoriesTK: filters.CategoriesTK ? filters.CategoriesTK.value : ''
     }
     reportsApi
       .getInventoryAttrition(newFilters)
@@ -150,7 +139,7 @@ function WarningMaterials(props) {
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Cảnh báo nguyên vật liệu
+            Nguyên vật liệu dự kiến
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -178,7 +167,7 @@ function WarningMaterials(props) {
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">
-            Danh sách cảnh báo nguyên vật liệu
+            Danh sách nguyên vật liệu dự kiến
           </div>
         </div>
         <div className="p-20px">
@@ -249,21 +238,30 @@ function WarningMaterials(props) {
                 text: 'NVL dự kiến',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.Unit ? `${row?.Unit} ${row?.SUnit}` : 'Chưa xác định',
+                formatter: (cell, row) => row?.Unit || 'Chưa xác định',
                 attrs: { 'data-title': 'NVL dự kiến' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
                 }
               },
               {
-                dataField: 'Unit',
+                dataField: 'LUnit',
                 text: 'NVL thiếu',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.Unit ? `${row?.Unit} ${row?.SUnit}` : 'Chưa xác định',
+                formatter: (cell, row) => row?.LUnit || 'Chưa xác định',
                 attrs: { 'data-title': 'NVL thiếu' },
+                headerStyle: () => {
+                  return { minWidth: '150px', width: '150px' }
+                }
+              },
+              {
+                dataField: 'SUnit',
+                text: 'Đơn vị',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => row?.SUnit || 'Chưa xác định',
+                attrs: { 'data-title': 'Đơn vị' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
                 }

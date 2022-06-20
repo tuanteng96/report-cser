@@ -51,6 +51,10 @@ const MenuList = [
       {
         Title: 'Thanh toán trả nợ',
         Href: '/ban-hang/thanh-toan-tra-no'
+      },
+      {
+        Title: 'Top bán hàng, doanh số',
+        Href: '/ban-hang/top-ban-hang-doanh-so'
       }
     ]
   },
@@ -119,8 +123,8 @@ const MenuList = [
         Href: '/ton-kho/tieu-hao'
       },
       {
-        Title: 'Cảnh báo NVL',
-        Href: '/ton-kho/canh-bao-nvl'
+        Title: 'Nguyên vật liệu dự kiến',
+        Href: '/ton-kho/du-kien-nvl'
       }
     ]
   },
@@ -145,10 +149,6 @@ const MenuList = [
       {
         Title: 'Khách hàng hết sản phẩm',
         Href: '/cskh/khach-hang-het-san-pham'
-      },
-      {
-        Title: 'Khách lâu không sử dụng',
-        Href: '/cskh/khach-lau-khong-su-dung'
       },
       {
         Title: 'Khách hết thẻ trong ngày',
@@ -193,10 +193,6 @@ const MenuList = [
       {
         Title: 'Top đánh giá',
         Href: '/khac/top-danh-gia'
-      },
-      {
-        Title: 'Top bán hàng, doanh số',
-        Href: '/khac/top-ban-hang-doanh-so'
       },
       {
         Title: 'Dịch vụ đã bán chưa thực hiện',
