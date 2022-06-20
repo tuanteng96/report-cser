@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { Modal } from 'react-bootstrap'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import clsx from 'clsx'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import clsx from 'clsx'
 moment.locale('vi')
 
 const perfectScrollbarOptions = {
@@ -15,7 +15,6 @@ const perfectScrollbarOptions = {
 }
 
 function ModalViewMobile({ show, onHide, data }) {
-  console.log(data)
   return (
     <Modal
       className="modal-view-mobile"
@@ -30,7 +29,7 @@ function ModalViewMobile({ show, onHide, data }) {
             : 'Không có'}{' '}
           - Tổng{' '}
           <span className="text-success">
-            {PriceHelper.formatVND(data?.Tong)}
+            {PriceHelper.formatVND(data?.TongThuc)}
           </span>
         </div>
         <div
@@ -65,7 +64,7 @@ function ModalViewMobile({ show, onHide, data }) {
                     Hoa hồng
                   </div>
                   <div className="fw-600 font-size-mdd w-60 text-end">
-                    {PriceHelper.formatVND(item?.Value)}
+                    {PriceHelper.formatVND(item?.TongThuc)}
                   </div>
                 </div>
                 {item.OrdersList &&
@@ -82,7 +81,7 @@ function ModalViewMobile({ show, onHide, data }) {
                           Đơn hàng
                         </div>
                         <div className="fw-600 font-size-mdd w-60 text-end">
-                          #{order.Id}
+                          #{order.ID}
                         </div>
                       </div>
                       <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
@@ -106,7 +105,7 @@ function ModalViewMobile({ show, onHide, data }) {
                           Hoa hồng
                         </div>
                         <div className="fw-600 font-size-mdd w-60 text-end">
-                          {PriceHelper.formatVND(order?.Value)}
+                          {PriceHelper.formatVND(order?.GiaTriThuc)}
                         </div>
                       </div>
                       <div className="px-15px d-flex justify-content-between flex-column py-12px line-height-sm">

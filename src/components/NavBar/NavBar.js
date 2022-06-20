@@ -117,6 +117,10 @@ const MenuList = [
       {
         Title: 'Tiêu hao',
         Href: '/ton-kho/tieu-hao'
+      },
+      {
+        Title: 'Cảnh báo NVL',
+        Href: '/ton-kho/canh-bao-nvl'
       }
     ]
   },

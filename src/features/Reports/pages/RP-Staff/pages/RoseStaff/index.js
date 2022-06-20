@@ -7,6 +7,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -25,13 +26,20 @@ function RoseStaff(props) {
     Ps: 10, // Số lượng item
     MemberID: '', // ID khách hàng
     StaffID: '', // ID nhân viên
-    OrderID: ''
+    OrderID: '',
+    CategoriesId: '', // ID 1 danh mục
+    BrandId: '', //ID 1 nhãn hàng
+    ProductId: '' // ID 1 SP, DV, NVL, ...
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
-  const [TotalHoaHong, setTotalHoaHong] = useState(0)
+  const [TotalHoaHong, setTotalHoaHong] = useState({
+    TongHoaHong: 0,
+    KhauTru: 0,
+    TongThucHoahong: 0
+  })
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -64,18 +72,23 @@ function RoseStaff(props) {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
       StaffID: filters.StaffID ? filters.StaffID.value : '',
-      MemberID: filters.MemberID ? filters.MemberID.value : ''
+      MemberID: filters.MemberID ? filters.MemberID.value : '',
+      CategoriesId: filters.CategoriesId ? filters.CategoriesId.value : '',
+      BrandId: filters.BrandId ? filters.BrandId.value : '',
+      ProductId: filters.ProductId ? filters.ProductId.value : ''
     }
     reportsApi
       .getListStaffRose(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TongHoaHong } = {
+        const { Items, Total, TongHoaHong, TongThucHoahong, KhauTru } = {
           Items: data.result?.Items || [],
           TongHoaHong: data.result?.TongHoaHong || 0,
+          KhauTru: data.result?.KhauTru || 0,
+          TongThucHoahong: data.result?.TongThucHoahong || 0,
           Total: data.result?.Total || 0
         }
         setListData(Items)
-        setTotalHoaHong(TongHoaHong)
+        setTotalHoaHong({ TongHoaHong, TongThucHoahong, KhauTru })
         setLoading(false)
         setPageTotal(Total)
         isFilter && setIsFilter(false)
@@ -123,6 +136,14 @@ function RoseStaff(props) {
     return totalArray
   }
 
+  const CustomStyles = item => {
+    const styles = {}
+    if (item.tra_lai_don_hang) {
+      styles.background = '#ffb2c1'
+    }
+    return styles
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -158,11 +179,47 @@ function RoseStaff(props) {
           <div className="fw-500 font-size-lg">
             Danh sách hoa hồng nhân viên
           </div>
-          <div className="fw-500">
-            Tổng hoa hồng{' '}
-            <span className="font-size-xl fw-600 text-success">
-              {PriceHelper.formatVND(TotalHoaHong)}
-            </span>
+          <div className="fw-500 d-flex align-items-center ml-25px">
+            Tổng hoa hồng
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="top"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Header
+                    className="py-10px text-uppercase fw-600"
+                    as="h3"
+                  >
+                    Chi tiết hoa hồng
+                  </Popover.Header>
+                  <Popover.Body className="p-0">
+                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <span>Tổng</span>
+                      <span>
+                        {PriceHelper.formatVNDPositive(
+                          TotalHoaHong.TongHoaHong
+                        )}
+                      </span>
+                    </div>
+                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                      <span>Khấu trừ</span>
+                      <span className="text-danger">
+                        {PriceHelper.formatVNDPositive(TotalHoaHong.KhauTru)}
+                      </span>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                  {PriceHelper.formatVNDPositive(TotalHoaHong.TongThucHoahong)}
+                </span>
+                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+              </div>
+            </OverlayTrigger>
           </div>
         </div>
         <div className="p-20px">
@@ -260,7 +317,7 @@ function RoseStaff(props) {
                 },
                 {
                   attrs: { 'data-title': 'Tổng hoa hồng' },
-                  formatter: row => PriceHelper.formatVND(row.Tong)
+                  formatter: row => PriceHelper.formatVND(row.TongThuc)
                 }
               ]
             }}
@@ -289,7 +346,7 @@ function RoseStaff(props) {
                                     className="vertical-align-middle fw-600"
                                     rowSpan={AmountMember(item.StaffsList)}
                                   >
-                                    {PriceHelper.formatVND(item.Tong)}
+                                    {PriceHelper.formatVND(item.TongThuc)}
                                   </td>
                                 </Fragment>
                               )}
@@ -305,23 +362,35 @@ function RoseStaff(props) {
                                     className="vertical-align-middle"
                                     rowSpan={staff.OrdersList.length}
                                   >
-                                    {PriceHelper.formatVND(staff.Value)}
+                                    {PriceHelper.formatVND(staff.TongThuc)}
                                   </td>
                                 </Fragment>
                               )}
-                              <td className="vertical-align-middle">
+                              <td
+                                className="vertical-align-middle"
+                                style={CustomStyles(order)}
+                              >
                                 #{order.ID}
                               </td>
-                              <td className="vertical-align-middle">
+                              <td
+                                className="vertical-align-middle"
+                                style={CustomStyles(order)}
+                              >
                                 {order?.Member?.FullName || 'Chưa có'}
                               </td>
-                              <td className="vertical-align-middle">
+                              <td
+                                className="vertical-align-middle"
+                                style={CustomStyles(order)}
+                              >
                                 {order?.Member?.Phone || 'Chưa có'}
                               </td>
-                              <td className="vertical-align-middle">
-                                {PriceHelper.formatVND(order.Value)}
+                              <td
+                                className="vertical-align-middle"
+                                style={CustomStyles(order)}
+                              >
+                                {PriceHelper.formatVND(order.GiaTriThuc)}
                               </td>
-                              <td>
+                              <td style={CustomStyles(order)}>
                                 {order.Lines.map(
                                   line =>
                                     `${

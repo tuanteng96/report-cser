@@ -15,8 +15,12 @@ import { JsonFilter } from 'src/Json/JsonFilter'
 import AsyncSelect from 'react-select/async'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 import AsyncSelectSVPP from '../Selects/AsyncSelectSVPP'
+import AsyncSelectProductNVL from '../Selects/AsyncSelectProductNVL'
 
 import vi from 'date-fns/locale/vi' // the locale you want
+import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
+import AsyncSelectCategories from '../Selects/AsyncSelectCategories'
+import AsyncSelectBrands from '../Selects/AsyncSelectBrands'
 registerLocale('vi', vi) // register it with the name you want
 
 const {
@@ -205,7 +209,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                   {'ProdIDs' in values && (
                     <div className="form-group mb-20px">
                       <label>Sản phẩm, Nguyên vật liệu</label>
-                      <AsyncSelectMembers
+                      <AsyncSelectProductNVL
                         isClearable={true}
                         menuPosition="fixed"
                         name="ProdIDs"
@@ -433,6 +437,47 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         placeholder="Nhập ID đơn hàng"
                         onChange={handleChange}
                         onBlur={handleBlur}
+                      />
+                    </div>
+                  )}
+                  {'ProductId' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Sản phẩm, DV, NVL, ...</label>
+                      <AsyncSelectProducts
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="ProductId"
+                        onChange={otp => {
+                          setFieldValue('ProductId', otp, false)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'CategoriesId' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Danh mục</label>
+                      <AsyncSelectCategories
+                        menuPlacement="top"
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="CategoriesId"
+                        onChange={otp => {
+                          setFieldValue('CategoriesId', otp, false)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'BrandId' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Nhãn hàng</label>
+                      <AsyncSelectBrands
+                        menuPlacement="top"
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="BrandId"
+                        onChange={otp => {
+                          setFieldValue('BrandId', otp, false)
+                        }}
                       />
                     </div>
                   )}

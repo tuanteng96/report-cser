@@ -56,7 +56,7 @@ const JSONData = {
   ]
 }
 
-function Attrition(props) {
+function WarningMaterials(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
@@ -66,10 +66,7 @@ function Attrition(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
-    CategoriesTK: '', // 0 => SP, 1 => NVL
-    ProdIDs: '', // Danh sách SP, NVL
-    TypeTH: '' // 0 => Đã dùng, 1 => Dự kiến
+    Ps: 10 // Số lượng item
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -153,7 +150,7 @@ function Attrition(props) {
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Tiêu hao
+            Cảnh báo nguyên vật liệu
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -180,7 +177,9 @@ function Attrition(props) {
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
-          <div className="fw-500 font-size-lg">Danh sách tiêu hao</div>
+          <div className="fw-500 font-size-lg">
+            Danh sách cảnh báo nguyên vật liệu
+          </div>
         </div>
         <div className="p-20px">
           <BaseTablesCustom
@@ -247,12 +246,24 @@ function Attrition(props) {
               },
               {
                 dataField: 'Unit',
-                text: 'Sử dụng',
+                text: 'NVL dự kiến',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
                   row?.Unit ? `${row?.Unit} ${row?.SUnit}` : 'Chưa xác định',
-                attrs: { 'data-title': 'Sử dụng' },
+                attrs: { 'data-title': 'NVL dự kiến' },
+                headerStyle: () => {
+                  return { minWidth: '150px', width: '150px' }
+                }
+              },
+              {
+                dataField: 'Unit',
+                text: 'NVL thiếu',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  row?.Unit ? `${row?.Unit} ${row?.SUnit}` : 'Chưa xác định',
+                attrs: { 'data-title': 'NVL thiếu' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
                 }
@@ -291,4 +302,4 @@ function Attrition(props) {
   )
 }
 
-export default Attrition
+export default WarningMaterials

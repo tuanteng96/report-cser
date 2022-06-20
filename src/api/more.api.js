@@ -21,10 +21,23 @@ const moreApi = {
   getAllMember: key => {
     return http.get(`/api/gl/select2?cmd=member&q=${key}`)
   },
+  getAllCategories: key => {
+    return http.get(
+      `/api/gl/select2?cmd=cate&app=type&ignore_root=1&roots=794,795&q=${key}`
+    )
+  },
+  getAllBrands: key => {
+    return http.get(
+      `/api/gl/select2?cmd=cate&app=manu&ignore_root=1&ignore_pid0=1&roots=4&q=${key}`
+    )
+  },
   getAllServicePP: key => {
     return http.get(
       `/api/gl/select2?cmd=prod&combo=0&fee=0&ignore_all=1&srv=1&q=${key}`
     )
+  },
+  getAllProducts: key => {
+    return http.get(`/api/gl/select2?cmd=prod&no_root=1&ignore_all=1&q=${key}`)
   },
   getAllProductNVL: data => {
     return http.post(`${SubApi}/more/danh-sach-sp-nvl`, JSON.stringify(data))

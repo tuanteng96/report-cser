@@ -6,10 +6,11 @@ import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
+import ChildrenTables from 'src/components/Tables/ChildrenTables'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import ChildrenTables from 'src/components/Tables/ChildrenTables'
 moment.locale('vi')
 
 function SalesStaff(props) {
@@ -25,13 +26,20 @@ function SalesStaff(props) {
     Ps: 10, // Số lượng item
     MemberID: '', // ID khách hàng
     StaffID: '', // ID nhân viên
-    ServiceCardID: ''
+    //ServiceCardID: '',
+    CategoriesId: '', // ID 1 danh mục
+    BrandId: '', //ID 1 nhãn hàng
+    ProductId: '' // ID 1 SP, DV, NVL, ...
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
-  const [TotalSales, setTotalSales] = useState(0)
+  const [TotalSales, setTotalSales] = useState({
+    TongDoanhSo: 0,
+    TongThucDoanhSo: 0,
+    KhauTru: 0
+  })
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -65,18 +73,23 @@ function SalesStaff(props) {
         : null,
       StaffID: filters.StaffID ? filters.StaffID.value : '',
       MemberID: filters.MemberID ? filters.MemberID.value : '',
-      ServiceCardID: filters.ServiceCardID ? filters.ServiceCardID.value : ''
+      // ServiceCardID: filters.ServiceCardID ? filters.ServiceCardID.value : '',
+      CategoriesId: filters.CategoriesId ? filters.CategoriesId.value : '',
+      BrandId: filters.BrandId ? filters.BrandId.value : '',
+      ProductId: filters.ProductId ? filters.ProductId.value : ''
     }
     reportsApi
       .getListStaffSales(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TongDoanhSo } = {
+        const { Items, Total, TongDoanhSo, TongThucDoanhSo, KhauTru } = {
           Items: data.result?.Items || [],
           Total: data.result?.Total || 0,
-          TongDoanhSo: data.result?.TongDoanhSo || 0
+          TongDoanhSo: data.result?.TongDoanhSo || 0,
+          TongThucDoanhSo: data.result?.TongThucDoanhSo || 0,
+          KhauTru: data.result?.KhauTru || 0
         }
         setListData(Items)
-        setTotalSales(TongDoanhSo)
+        setTotalSales({ TongDoanhSo, TongThucDoanhSo, KhauTru })
         setLoading(false)
         setPageTotal(Total)
         isFilter && setIsFilter(false)
@@ -123,7 +136,15 @@ function SalesStaff(props) {
     }
     return totalArray
   }
-  console.log(ListData)
+
+  const CustomStyles = item => {
+    const styles = {}
+    if (item.tra_lai_don_hang) {
+      styles.background = '#ffb2c1'
+    }
+    return styles
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -159,11 +180,45 @@ function SalesStaff(props) {
           <div className="fw-500 font-size-lg">
             Danh sách doanh số nhân viên
           </div>
-          <div className="fw-500">
-            Tổng doanh số{' '}
-            <span className="font-size-xl fw-600 text-success">
-              {PriceHelper.formatVND(TotalSales)}
-            </span>
+          <div className="fw-500 d-flex align-items-center ml-25px">
+            Tổng doanh số
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="top"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Header
+                    className="py-10px text-uppercase fw-600"
+                    as="h3"
+                  >
+                    Chi tiết doanh số
+                  </Popover.Header>
+                  <Popover.Body className="p-0">
+                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <span>Tổng</span>
+                      <span>
+                        {PriceHelper.formatVNDPositive(TotalSales.TongDoanhSo)}
+                      </span>
+                    </div>
+                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                      <span>Khấu trừ</span>
+                      <span className="text-danger">
+                        {PriceHelper.formatVNDPositive(TotalSales.KhauTru)}
+                      </span>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                  {PriceHelper.formatVNDPositive(TotalSales.TongThucDoanhSo)}
+                </span>
+                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+              </div>
+            </OverlayTrigger>
           </div>
         </div>
         <FilterList
@@ -269,7 +324,7 @@ function SalesStaff(props) {
                 },
                 {
                   attrs: { 'data-title': 'Tổng doanh số' },
-                  formatter: row => PriceHelper.formatVND(row.Tong)
+                  formatter: row => PriceHelper.formatVND(row.TongThuc)
                 }
               ]
             }}
@@ -298,7 +353,7 @@ function SalesStaff(props) {
                                     className="vertical-align-middle fw-600"
                                     rowSpan={AmountMember(item.StaffsList)}
                                   >
-                                    {PriceHelper.formatVND(item.Tong)}
+                                    {PriceHelper.formatVND(item.TongThuc)}
                                   </td>
                                 </Fragment>
                               )}
@@ -314,23 +369,35 @@ function SalesStaff(props) {
                                     className="vertical-align-middle"
                                     rowSpan={staff.OrdersList.length}
                                   >
-                                    {PriceHelper.formatVND(staff.Value)}
+                                    {PriceHelper.formatVND(staff.TongThuc)}
                                   </td>
                                 </Fragment>
                               )}
-                              <td className="vertical-align-middle">
+                              <td
+                                className="vertical-align-middle"
+                                style={CustomStyles(order)}
+                              >
                                 #{order.ID}
                               </td>
-                              <td className="vertical-align-middle">
+                              <td
+                                className="vertical-align-middle"
+                                style={CustomStyles(order)}
+                              >
                                 {order?.Member?.FullName || 'Chưa có'}
                               </td>
-                              <td className="vertical-align-middle">
+                              <td
+                                className="vertical-align-middle"
+                                style={CustomStyles(order)}
+                              >
                                 {order?.Member?.Phone || 'Chưa có'}
                               </td>
-                              <td className="vertical-align-middle">
-                                {PriceHelper.formatVND(order.Value)}
+                              <td
+                                className="vertical-align-middle"
+                                style={CustomStyles(order)}
+                              >
+                                {PriceHelper.formatVND(order.GiaTriThuc)}
                               </td>
-                              <td>
+                              <td style={CustomStyles(order)}>
                                 {order.Lines.map(
                                   line =>
                                     `${

@@ -8,7 +8,7 @@ AsyncSelectProductNVL.propTypes = {
 }
 
 function AsyncSelectProductNVL({ onChange, value, ...props }) {
-  const getAllStaffs = async (search, loadedOptions, { page }) => {
+  const getAllProductNVL = async (search, loadedOptions, { page }) => {
     const newPost = {
       Key: search,
       Pi: 1,
@@ -41,7 +41,7 @@ function AsyncSelectProductNVL({ onChange, value, ...props }) {
       {...props}
       className="select-control"
       classNamePrefix="select"
-      loadOptions={getAllStaffs}
+      loadOptions={getAllProductNVL}
       placeholder="Chọn sản phẩm, NVL"
       value={value}
       onChange={onChange}

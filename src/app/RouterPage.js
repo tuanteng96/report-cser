@@ -24,6 +24,7 @@ import PayrollStaff from 'src/features/Reports/pages/RP-Staff/pages/PayrollStaff
 import RPInventory from 'src/features/Reports/pages/RP-Inventory'
 import InventoryHome from 'src/features/Reports/pages/RP-Inventory/pages/Home'
 import InventoryAttrition from 'src/features/Reports/pages/RP-Inventory/pages/Attrition'
+import WarningMaterials from 'src/features/Reports/pages/RP-Inventory/pages/WarningMaterials'
 
 function RouterPage(props) {
   return (
@@ -112,6 +113,7 @@ function RouterPage(props) {
         <Route index element={<Navigate to="danh-sach" replace />} />
         <Route path="danh-sach" element={<InventoryHome />} />
         <Route path="tieu-hao" element={<InventoryAttrition />} />
+        <Route path="canh-bao-nvl" element={<WarningMaterials />} />
       </Route>
       <Route
         path="/khac"
