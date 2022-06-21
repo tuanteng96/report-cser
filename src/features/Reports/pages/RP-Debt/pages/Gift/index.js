@@ -7,6 +7,7 @@ import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -67,18 +68,23 @@ function Gift(props) {
     reportsApi
       .getListDebtGift(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TONG_DH_TANG, TONG_TIEN_TANG } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0,
-          TONG_DH_TANG: data.result?.TONG_DH_TANG || 0,
-          TONG_TIEN_TANG: data.result?.TONG_TIEN_TANG || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total, TONG_DH_TANG, TONG_TIEN_TANG } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0,
+            TONG_DH_TANG: data.result?.TONG_DH_TANG || 0,
+            TONG_TIEN_TANG: data.result?.TONG_TIEN_TANG || 0
+          }
+          setListData(Items)
+          setTotal({ TONG_DH_TANG, TONG_TIEN_TANG })
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setTotal({ TONG_DH_TANG, TONG_TIEN_TANG })
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

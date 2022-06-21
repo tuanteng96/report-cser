@@ -86,6 +86,9 @@ const reportsApi = {
   },
   getInventoryAttrition: data => {
     return http.post(`${SubApi}/ton-kho/tieu-hao`, JSON.stringify(data))
+  },
+  getInventoryWarning: data => {
+    return http.post(`${SubApi}/ton-kho/du-kien-nvl`, JSON.stringify(data))
   }
 }
 export default reportsApi

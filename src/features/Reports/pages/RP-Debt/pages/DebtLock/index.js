@@ -7,6 +7,7 @@ import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
 import FilterList from 'src/components/Filter/FilterList'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -67,21 +68,26 @@ function DebtLock(props) {
     reportsApi
       .getListDebtLock(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TONG_DH_KHOA_NO, TONG_TIEN_KHOA_NO } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0,
-          TONG_DH_KHOA_NO: data.result?.TONG_DH_KHOA_NO || 0,
-          TONG_TIEN_KHOA_NO: data.result?.TONG_TIEN_KHOA_NO || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total, TONG_DH_KHOA_NO, TONG_TIEN_KHOA_NO } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0,
+            TONG_DH_KHOA_NO: data.result?.TONG_DH_KHOA_NO || 0,
+            TONG_TIEN_KHOA_NO: data.result?.TONG_TIEN_KHOA_NO || 0
+          }
+          setListData(Items)
+          setTotal({
+            TONG_DH_KHOA_NO: TONG_DH_KHOA_NO,
+            TONG_TIEN_KHOA_NO: TONG_TIEN_KHOA_NO
+          })
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setTotal({
-          TONG_DH_KHOA_NO: TONG_DH_KHOA_NO,
-          TONG_TIEN_KHOA_NO: TONG_TIEN_KHOA_NO
-        })
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

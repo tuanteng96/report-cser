@@ -6,8 +6,8 @@ import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import reportsApi from 'src/api/reports.api'
-// import { OverlayTrigger, Popover } from 'react-bootstrap'
 import ModalViewMobile from './ModalViewMobile'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -59,17 +59,22 @@ function PayrollStaff(props) {
     reportsApi
       .getListStaffPayroll(newFilters)
       .then(({ data }) => {
-        const { Items, Total, SumTotal } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0,
-          SumTotal: data.result?.Sum || {}
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total, SumTotal } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0,
+            SumTotal: data.result?.Sum || {}
+          }
+          setListData(Items)
+          setTotal({ ...Total, ...SumTotal })
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setTotal({ ...Total, ...SumTotal })
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

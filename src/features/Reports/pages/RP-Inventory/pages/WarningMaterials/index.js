@@ -6,6 +6,7 @@ import _ from 'lodash'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -89,17 +90,22 @@ function WarningMaterials(props) {
       CategoriesTK: filters.CategoriesTK ? filters.CategoriesTK.value : ''
     }
     reportsApi
-      .getInventoryAttrition(newFilters)
+      .getInventoryWarning(newFilters)
       .then(({ data }) => {
-        const { Items, Total } = {
-          Items: data.result?.Items || JSONData.Items,
-          Total: data.result?.Total || JSONData.Total
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total } = {
+            Items: data.result?.Items || JSONData.Items,
+            Total: data.result?.Total || JSONData.Total
+          }
+          setListData(Items)
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

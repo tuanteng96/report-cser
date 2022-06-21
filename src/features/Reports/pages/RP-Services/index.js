@@ -13,6 +13,7 @@ import LoadingChart from 'src/components/Loading/LoadingChart'
 import { TextHelper } from 'src/helpers/TextHelpers'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import FilterList from 'src/components/Filter/FilterList'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -130,31 +131,36 @@ function RPServices(props) {
     reportsApi
       .getOverviewServices(newFilters)
       .then(({ data }) => {
-        setDataChart(prevState => ({
-          ...prevState,
-          labels:
-            data.result?.Items?.map(
-              sets =>
-                `${sets.ProServiceName} (${TextHelper.NumberFixed(
-                  sets.CasesPercent,
-                  2
-                )}%)`
-            ) || [],
-          datasets: prevState.datasets.map(sets => ({
-            ...sets,
-            data: data.result?.Items?.map(item => item.CasesNum) || [],
-            backgroundColor: data.result?.Items
-              ? ColorsHelpers.getColorSize(data.result.Items.length)
-              : [],
-            borderColor: data.result?.Items
-              ? ColorsHelpers.getBorderSize(data.result.Items.length)
-              : []
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          setDataChart(prevState => ({
+            ...prevState,
+            labels:
+              data.result?.Items?.map(
+                sets =>
+                  `${sets.ProServiceName} (${TextHelper.NumberFixed(
+                    sets.CasesPercent,
+                    2
+                  )}%)`
+              ) || [],
+            datasets: prevState.datasets.map(sets => ({
+              ...sets,
+              data: data.result?.Items?.map(item => item.CasesNum) || [],
+              backgroundColor: data.result?.Items
+                ? ColorsHelpers.getColorSize(data.result.Items.length)
+                : [],
+              borderColor: data.result?.Items
+                ? ColorsHelpers.getBorderSize(data.result.Items.length)
+                : []
+            }))
           }))
-        }))
-        setOverviewData(data.result)
-        setLoading(false)
-        isFilter && setIsFilter(false)
-        callback && callback()
+          setOverviewData(data.result)
+          setLoading(false)
+          isFilter && setIsFilter(false)
+          callback && callback()
+        }
       })
       .catch(error => console.log(error))
   }

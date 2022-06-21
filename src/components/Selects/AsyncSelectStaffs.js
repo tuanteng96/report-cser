@@ -2,6 +2,7 @@ import React from 'react'
 import { AsyncPaginate } from 'react-select-async-paginate'
 import PropTypes from 'prop-types'
 import moreApi from 'src/api/more.api'
+import { isArray } from 'lodash'
 
 AsyncSelectStaffs.propTypes = {
   onChange: PropTypes.func
@@ -9,29 +10,32 @@ AsyncSelectStaffs.propTypes = {
 
 function AsyncSelectStaffs({ onChange, value, ...props }) {
   const getAllStaffs = async (search, loadedOptions, { page }) => {
-    const newPost = {
-      Key: search,
-      Pi: 1,
-      Ps: 10
+    const { data } = await moreApi.getAllStaffStock(search)
+    const { Items } = {
+      Items: data.data || []
     }
-    const { data } = await moreApi.getAllStaff(newPost)
-    const { PCount, Items } = {
-      PCount: data.result?.PCount || 0,
-      Items: data.result?.Items || []
+    const newData = []
+
+    if (Items && isArray(Items)) {
+      for (let key of Items) {
+        const { group, groupid, text, id } = key
+        const index = newData.findIndex(item => item.groupid === groupid)
+        if (index > -1) {
+          newData[index].options.push({ label: text, value: id, ...key })
+        } else {
+          const newItem = {}
+          newItem.label = group
+          newItem.groupid = groupid
+          newItem.options = [{ label: text, value: id, ...key }]
+          newData.push(newItem)
+        }
+      }
     }
-    const newData =
-      Items && Items.length > 0
-        ? Items.map(item => ({
-            ...item,
-            label: item.Title,
-            value: item.Id
-          }))
-        : []
     return {
       options: newData,
-      hasMore: page < PCount,
+      hasMore: false,
       additional: {
-        page: page + 1
+        page: 1
       }
     }
   }

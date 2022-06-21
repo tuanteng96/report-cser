@@ -16,6 +16,7 @@
   './components/tooltip', './components/checkbox';
 // 4: Plugins
 @import './vendors/plugins/perfect-scrollbar', './vendors/plugins/datepicker',
-  './vendors/plugins/react-select', './vendors/plugins/react-apexcharts';
+  './vendors/plugins/react-select', './vendors/plugins/react-apexcharts',
+  './vendors/plugins/sweetalert2';
 // 5: Layout
 @import './layout/init';

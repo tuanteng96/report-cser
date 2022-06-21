@@ -24,7 +24,7 @@ function ModalViewMobile({ show, onHide, data }) {
     >
       <div className="modal-view-head align-items-baseline px-15px py-8px">
         <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
-          {data?.Member?.FullName || 'Chưa có tên KH'}
+          {data?.ProdTitle || 'Chưa có'}
         </div>
         <div
           className="modal-view-close font-size-h3 w-20px text-center"
@@ -41,18 +41,38 @@ function ModalViewMobile({ show, onHide, data }) {
         <div className="py-5px">
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Số điện thoại
+              Mã
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Member?.Phone || 'Chưa có số điện thoại'}
+              {data?.Code || 'Chưa có'}
             </div>
           </div>
-          <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Tổng nợ
+              Sử dụng
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.TongNo)}
+              {data?.Unit || 'Chưa có'}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+              Đơn vị
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.SUnit || 'Chưa có'}
+            </div>
+          </div>
+          <div className="px-15px d-flex flex-column justify-content-between py-10px line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm text-truncate">
+              Tỉ lệ vào các dịch vụ
+            </div>
+            <div className="fw-600 font-size-mdd">
+              {data?.UsageList
+                ? data?.UsageList.map(
+                    item => `${item.Title} (${item?.Unit} ${item?.SUnit})`
+                  ).join(', ')
+                : 'Chưa xác định'}
             </div>
           </div>
         </div>

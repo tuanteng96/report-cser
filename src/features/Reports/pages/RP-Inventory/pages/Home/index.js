@@ -6,6 +6,7 @@ import _ from 'lodash'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -25,7 +26,7 @@ function Home(props) {
     CategoriesTK: '', // 0 => SP, 1 => NVL
     ProdIDs: '', // Danh sách SP, NVL
     QtyNumber: '', // Lọc ra Qty < QtyNumber
-    IsQtyEmpty: false
+    IsQtyEmpty: true
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -68,15 +69,20 @@ function Home(props) {
     reportsApi
       .getListInventory(newFilters)
       .then(({ data }) => {
-        const { Items, Total } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0
+          }
+          setListData(Items)
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

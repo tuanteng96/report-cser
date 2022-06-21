@@ -8,6 +8,7 @@ import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
 import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -81,19 +82,24 @@ function SalesStaff(props) {
     reportsApi
       .getListStaffSales(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TongDoanhSo, TongThucDoanhSo, KhauTru } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0,
-          TongDoanhSo: data.result?.TongDoanhSo || 0,
-          TongThucDoanhSo: data.result?.TongThucDoanhSo || 0,
-          KhauTru: data.result?.KhauTru || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total, TongDoanhSo, TongThucDoanhSo, KhauTru } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0,
+            TongDoanhSo: data.result?.TongDoanhSo || 0,
+            TongThucDoanhSo: data.result?.TongThucDoanhSo || 0,
+            KhauTru: data.result?.KhauTru || 0
+          }
+          setListData(Items)
+          setTotalSales({ TongDoanhSo, TongThucDoanhSo, KhauTru })
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setTotalSales({ TongDoanhSo, TongThucDoanhSo, KhauTru })
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }
@@ -400,9 +406,13 @@ function SalesStaff(props) {
                               <td style={CustomStyles(order)}>
                                 {order.Lines.map(
                                   line =>
-                                    `${
-                                      line.ProdTitle
-                                    } - ${PriceHelper.formatVND(line.ToPay)}`
+                                    `${line.ProdTitle} ( ${
+                                      line.GiaTri > 0
+                                        ? PriceHelper.formatVND(line.GiaTri)
+                                        : `- ${PriceHelper.formatVND(
+                                            line.KhauTru
+                                          )}`
+                                    } )`
                                 ).join(', ')}
                               </td>
                             </tr>

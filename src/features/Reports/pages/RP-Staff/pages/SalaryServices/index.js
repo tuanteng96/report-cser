@@ -8,6 +8,7 @@ import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -76,28 +77,38 @@ function SalaryServices(props) {
     reportsApi
       .getListStaffSalarySV(newFilters)
       .then(({ data }) => {
-        const {
-          Items,
-          Total,
-          Tong_Luong,
-          Tong_DV,
-          Tong_PP,
-          Tong_Luong_Tat_ca_nhan_vien
-        } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0,
-          Tong_Luong: data.result?.Tong_Luong || 0,
-          Tong_DV: data.result?.Tong_DV || 0,
-          Tong_PP: data.result?.Tong_PP || 0,
-          Tong_Luong_Tat_ca_nhan_vien:
-            data.result?.Tong_Luong_Tat_ca_nhan_vien || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const {
+            Items,
+            Total,
+            Tong_Luong,
+            Tong_DV,
+            Tong_PP,
+            Tong_Luong_Tat_ca_nhan_vien
+          } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0,
+            Tong_Luong: data.result?.Tong_Luong || 0,
+            Tong_DV: data.result?.Tong_DV || 0,
+            Tong_PP: data.result?.Tong_PP || 0,
+            Tong_Luong_Tat_ca_nhan_vien:
+              data.result?.Tong_Luong_Tat_ca_nhan_vien || 0
+          }
+          setListData(Items)
+          setTotal({
+            Tong_Luong,
+            Tong_DV,
+            Tong_PP,
+            Tong_Luong_Tat_ca_nhan_vien
+          })
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setTotal({ Tong_Luong, Tong_DV, Tong_PP, Tong_Luong_Tat_ca_nhan_vien })
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

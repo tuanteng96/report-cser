@@ -9,6 +9,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap'
 import clsx from 'clsx'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -66,17 +67,22 @@ function Returns(props) {
     reportsApi
       .getListReturns(newFilters)
       .then(({ data }) => {
-        const { Items, Total, ToPay } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0,
-          ToPay: data.result?.ToPay || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total, ToPay } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0,
+            ToPay: data.result?.ToPay || 0
+          }
+          setListData(Items)
+          setTotal({ ToPay })
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setTotal({ ToPay })
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

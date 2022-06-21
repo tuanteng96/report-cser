@@ -10,6 +10,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import PerfectScrollbar from 'react-perfect-scrollbar'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -84,27 +85,32 @@ function TopProducts(props) {
     reportsApi
       .getListSalesDetail(newFilters)
       .then(({ data }) => {
-        var List_TOP_BH = [...data?.result]
-        var List_TOP_DS = [...data?.result]
-
-        if (filters.TopType) {
-          List_TOP_BH = List_TOP_BH.filter(
-            item => item.Format === Number(filters.TopType)
-          ).sort((a, b) => parseFloat(b.SumQTy) - parseFloat(a.SumQTy))
-          List_TOP_DS = List_TOP_DS.filter(
-            item => item.Format === Number(filters.TopType)
-          ).sort((a, b) => parseFloat(b.SumTopay) - parseFloat(a.SumTopay))
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
         } else {
-          List_TOP_BH = List_TOP_BH.sort((a, b) => b.SumQTy - a.SumQTy)
-          List_TOP_DS = List_TOP_DS.sort((a, b) => b.SumTopay - a.SumTopay)
+          var List_TOP_BH = [...data?.result]
+          var List_TOP_DS = [...data?.result]
+
+          if (filters.TopType) {
+            List_TOP_BH = List_TOP_BH.filter(
+              item => item.Format === Number(filters.TopType)
+            ).sort((a, b) => parseFloat(b.SumQTy) - parseFloat(a.SumQTy))
+            List_TOP_DS = List_TOP_DS.filter(
+              item => item.Format === Number(filters.TopType)
+            ).sort((a, b) => parseFloat(b.SumTopay) - parseFloat(a.SumTopay))
+          } else {
+            List_TOP_BH = List_TOP_BH.sort((a, b) => b.SumQTy - a.SumQTy)
+            List_TOP_DS = List_TOP_DS.sort((a, b) => b.SumTopay - a.SumTopay)
+          }
+          setDataResult({
+            TOP_BH: ArrayHeplers.getItemSize(List_TOP_BH, 15),
+            TOP_DS: ArrayHeplers.getItemSize(List_TOP_DS, 15)
+          })
+          setLoading(false)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setDataResult({
-          TOP_BH: ArrayHeplers.getItemSize(List_TOP_BH, 15),
-          TOP_DS: ArrayHeplers.getItemSize(List_TOP_DS, 15)
-        })
-        setLoading(false)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

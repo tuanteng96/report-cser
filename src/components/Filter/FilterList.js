@@ -439,7 +439,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                   )}
                   {'IsQtyEmpty' in values && (
                     <div>
-                      <label class="checkbox d-flex">
+                      <label className="checkbox d-flex">
                         <input
                           type="checkbox"
                           name="IsQtyEmpty"

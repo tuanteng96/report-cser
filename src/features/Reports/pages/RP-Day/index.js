@@ -8,6 +8,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import Filter from 'src/components/Filter/Filter'
 import _ from 'lodash'
 import IconMenuMobile from '../../components/IconMenuMobile'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -53,10 +54,14 @@ function RPDay(props) {
     reportsApi
       .getAllDay(newFilters)
       .then(({ data }) => {
-        setDataDays(data.result)
-        setLoading(false)
-        isFilter && setIsFilter(false)
-        callback && callback()
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          setDataDays(data.result)
+          isFilter && setIsFilter(false)
+          callback && callback()
+        }
       })
       .catch(error => console.log(error))
   }
@@ -103,6 +108,7 @@ function RPDay(props) {
           <IconMenuMobile />
         </div>
       </div>
+
       <Filter
         show={isFilter}
         filters={filters}

@@ -12,6 +12,7 @@ import LoadingSkeleton from './LoadingSkeleton'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ChartCircle from './ChartCircle'
 import { useWindowSize } from 'src/hooks/useWindowSize'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -81,39 +82,44 @@ function Sales(props) {
     reportsApi
       .getOverviewSell(newFilters)
       .then(({ data }) => {
-        setDataSell({
-          ...data.result,
-          SellWeek: data?.result
-            ? [
-                data?.result?.DSo_ThisMonday,
-                data?.result?.DSo_ThisTuesday,
-                data?.result?.DSo_ThisWednesday,
-                data?.result?.DSo_ThisThursday,
-                data?.result?.DSo_ThisFriday,
-                data?.result?.DSo_ThisSaturday,
-                data?.result?.DSo_ThisSunday
-              ]
-            : [],
-          SellYear: data?.result
-            ? [
-                data?.result?.DSo_ThisJanuary,
-                data?.result?.DSo_ThisFebruary,
-                data?.result?.DSo_ThisMarch,
-                data?.result?.DSo_ThisApril,
-                data?.result?.DSo_ThisMay,
-                data?.result?.DSo_ThisJune,
-                data?.result?.DSo_ThisJuly,
-                data?.result?.DSo_ThisAugust,
-                data?.result?.DSo_ThisSeptember,
-                data?.result?.DSo_ThisOctober,
-                data?.result?.DSo_ThisNovember,
-                data?.result?.DSo_ThisDecember
-              ]
-            : []
-        })
-        setLoading(false)
-        isFilter && setIsFilter(false)
-        callback && callback()
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          setDataSell({
+            ...data.result,
+            SellWeek: data?.result
+              ? [
+                  data?.result?.DSo_ThisMonday,
+                  data?.result?.DSo_ThisTuesday,
+                  data?.result?.DSo_ThisWednesday,
+                  data?.result?.DSo_ThisThursday,
+                  data?.result?.DSo_ThisFriday,
+                  data?.result?.DSo_ThisSaturday,
+                  data?.result?.DSo_ThisSunday
+                ]
+              : [],
+            SellYear: data?.result
+              ? [
+                  data?.result?.DSo_ThisJanuary,
+                  data?.result?.DSo_ThisFebruary,
+                  data?.result?.DSo_ThisMarch,
+                  data?.result?.DSo_ThisApril,
+                  data?.result?.DSo_ThisMay,
+                  data?.result?.DSo_ThisJune,
+                  data?.result?.DSo_ThisJuly,
+                  data?.result?.DSo_ThisAugust,
+                  data?.result?.DSo_ThisSeptember,
+                  data?.result?.DSo_ThisOctober,
+                  data?.result?.DSo_ThisNovember,
+                  data?.result?.DSo_ThisDecember
+                ]
+              : []
+          })
+          setLoading(false)
+          isFilter && setIsFilter(false)
+          callback && callback()
+        }
       })
       .catch(error => console.log(error))
   }

@@ -9,6 +9,7 @@ import reportsApi from 'src/api/reports.api'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { AssetsHelpers } from 'src/helpers/AssetsHelpers'
 import LoadingSkeleton from './LoadingSkeleton'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -94,30 +95,37 @@ function RPReEx(props) {
     reportsApi
       .getOverviewReEx(newFilters)
       .then(({ data }) => {
-        setDataChart(prevState => ({
-          ...prevState,
-          labels: data.result?.DS ? data.result?.DS.map(item => item.Text) : [],
-          datasets: [
-            {
-              label: `Thu`,
-              data: data.result?.DS
-                ? data.result?.DS.map(item => item.THU)
-                : [],
-              backgroundColor: 'rgba(53, 162, 235, 0.5)'
-            },
-            {
-              label: `Chi`,
-              data: data.result?.DS
-                ? data.result?.DS.map(item => Math.abs(item.CHI))
-                : [],
-              backgroundColor: 'rgba(255, 99, 132, 0.5)'
-            }
-          ]
-        }))
-        setOverviewData(data.result)
-        setLoading(false)
-        !loadingList && isFilter && setIsFilter(false)
-        callback && callback()
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          setDataChart(prevState => ({
+            ...prevState,
+            labels: data.result?.DS
+              ? data.result?.DS.map(item => item.Text)
+              : [],
+            datasets: [
+              {
+                label: `Thu`,
+                data: data.result?.DS
+                  ? data.result?.DS.map(item => item.THU)
+                  : [],
+                backgroundColor: 'rgba(53, 162, 235, 0.5)'
+              },
+              {
+                label: `Chi`,
+                data: data.result?.DS
+                  ? data.result?.DS.map(item => Math.abs(item.CHI))
+                  : [],
+                backgroundColor: 'rgba(255, 99, 132, 0.5)'
+              }
+            ]
+          }))
+          setOverviewData(data.result)
+          setLoading(false)
+          !loadingList && isFilter && setIsFilter(false)
+          callback && callback()
+        }
       })
       .catch(error => console.log(error))
   }

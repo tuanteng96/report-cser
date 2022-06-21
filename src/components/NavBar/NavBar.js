@@ -5,6 +5,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import clsx from 'clsx'
 import { useSelector, useDispatch } from 'react-redux'
 import { ToggleAside } from '../../layout/LayoutSlice'
+import Swal from 'sweetalert2'
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
@@ -127,91 +128,91 @@ const MenuList = [
         Href: '/ton-kho/du-kien-nvl'
       }
     ]
-  },
-  {
-    Title: 'CSKH',
-    TitleKey: 'CSKH',
-    IconClass: 'fa-regular fa-handshake icon',
-    Href: '/cskh',
-    Children: [
-      {
-        Title: 'Khách hàng sử dụng APP',
-        Href: '/cskh/khach-hang-su-dung-app'
-      },
-      {
-        Title: 'Khách hàng sinh nhật',
-        Href: '/cskh/khach-hang-sinh-nhat'
-      },
-      {
-        Title: 'Khách hàng sắp lên cấp',
-        Href: '/cskh/khach-hang-sap-len-cap'
-      },
-      {
-        Title: 'Khách hàng hết sản phẩm',
-        Href: '/cskh/khach-hang-het-san-pham'
-      },
-      {
-        Title: 'Khách hết thẻ trong ngày',
-        Href: '/cskh/khach-het-the-trong-ngay'
-      },
-      {
-        Title: 'Thẻ sắp hết hạn',
-        Href: '/cskh/the-sap-het-han'
-      },
-      {
-        Title: 'Thời gian nghe Smart Call',
-        Href: '/cskh/thoi-gian-nghe-smart-call'
-      },
-      {
-        Title: 'Đánh giá dịch vụ',
-        Href: '/cskh/danh-gia-dich-vu'
-      },
-      {
-        Title: 'Chỉ sử dụng mã giảm giá',
-        Href: '/cskh/chi-su-dung-ma-giam-gia'
-      },
-      {
-        Title: 'Chỉ sử dụng buổi lẻ',
-        Href: '/cskh/chi-su-dung-buoi-le'
-      },
-      {
-        Title: 'Top ưu đãi sử dụng',
-        Href: '/cskh/top-uu-dai-su-dung'
-      },
-      {
-        Title: 'Tần suất sử dụng dịch vụ',
-        Href: '/cskh/tan-suat-su-dunng-dich-vu'
-      }
-    ]
-  },
-  {
-    Title: 'Khác',
-    TitleKey: 'KHAC',
-    IconClass: 'fa-regular fa-chart-scatter-bubble icon',
-    Href: '/khac',
-    Children: [
-      {
-        Title: 'Top đánh giá',
-        Href: '/khac/top-danh-gia'
-      },
-      {
-        Title: 'Dịch vụ đã bán chưa thực hiện',
-        Href: '/khac/dich-vu-da-ban-chua-thuc-hien'
-      },
-      {
-        Title: 'Tổng tiền ví khách hàng',
-        Href: '/khac/tong-tien-vi-khach-hang'
-      },
-      {
-        Title: 'Tổng tiền thẻ tiền',
-        Href: '/khac/tong-tien-the-tien'
-      },
-      {
-        Title: 'Lợi nhuận',
-        Href: '/khac/loi-nhuan'
-      }
-    ]
   }
+  // {
+  //   Title: 'CSKH',
+  //   TitleKey: 'CSKH',
+  //   IconClass: 'fa-regular fa-handshake icon',
+  //   Href: '/cskh',
+  //   Children: [
+  //     {
+  //       Title: 'Khách hàng sử dụng APP',
+  //       Href: '/cskh/khach-hang-su-dung-app'
+  //     },
+  //     {
+  //       Title: 'Khách hàng sinh nhật',
+  //       Href: '/cskh/khach-hang-sinh-nhat'
+  //     },
+  //     {
+  //       Title: 'Khách hàng sắp lên cấp',
+  //       Href: '/cskh/khach-hang-sap-len-cap'
+  //     },
+  //     {
+  //       Title: 'Khách hàng hết sản phẩm',
+  //       Href: '/cskh/khach-hang-het-san-pham'
+  //     },
+  //     {
+  //       Title: 'Khách hết thẻ trong ngày',
+  //       Href: '/cskh/khach-het-the-trong-ngay'
+  //     },
+  //     {
+  //       Title: 'Thẻ sắp hết hạn',
+  //       Href: '/cskh/the-sap-het-han'
+  //     },
+  //     {
+  //       Title: 'Thời gian nghe Smart Call',
+  //       Href: '/cskh/thoi-gian-nghe-smart-call'
+  //     },
+  //     {
+  //       Title: 'Đánh giá dịch vụ',
+  //       Href: '/cskh/danh-gia-dich-vu'
+  //     },
+  //     {
+  //       Title: 'Chỉ sử dụng mã giảm giá',
+  //       Href: '/cskh/chi-su-dung-ma-giam-gia'
+  //     },
+  //     {
+  //       Title: 'Chỉ sử dụng buổi lẻ',
+  //       Href: '/cskh/chi-su-dung-buoi-le'
+  //     },
+  //     {
+  //       Title: 'Top ưu đãi sử dụng',
+  //       Href: '/cskh/top-uu-dai-su-dung'
+  //     },
+  //     {
+  //       Title: 'Tần suất sử dụng dịch vụ',
+  //       Href: '/cskh/tan-suat-su-dunng-dich-vu'
+  //     }
+  //   ]
+  // },
+  // {
+  //   Title: 'Khác',
+  //   TitleKey: 'KHAC',
+  //   IconClass: 'fa-regular fa-chart-scatter-bubble icon',
+  //   Href: '/khac',
+  //   Children: [
+  //     {
+  //       Title: 'Top đánh giá',
+  //       Href: '/khac/top-danh-gia'
+  //     },
+  //     {
+  //       Title: 'Dịch vụ đã bán chưa thực hiện',
+  //       Href: '/khac/dich-vu-da-ban-chua-thuc-hien'
+  //     },
+  //     {
+  //       Title: 'Tổng tiền ví khách hàng',
+  //       Href: '/khac/tong-tien-vi-khach-hang'
+  //     },
+  //     {
+  //       Title: 'Tổng tiền thẻ tiền',
+  //       Href: '/khac/tong-tien-the-tien'
+  //     },
+  //     {
+  //       Title: 'Lợi nhuận',
+  //       Href: '/khac/loi-nhuan'
+  //     }
+  //   ]
+  // }
 ]
 
 function NavBar(props) {
@@ -220,6 +221,7 @@ function NavBar(props) {
   }))
   const { width } = useWindowSize()
   const [IndexShow, setIndexShow] = useState('')
+  const [locationCurent, setLocationCurrent] = useState('')
   let location = useLocation()
   const dispatch = useDispatch()
 
@@ -227,8 +229,15 @@ function NavBar(props) {
     if (width < 1200) {
       dispatch(ToggleAside(false))
     }
+    setLocationCurrent(location.pathname)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
+
+  useEffect(() => {
+    if (location.pathname !== locationCurent) {
+      Swal.close()
+    }
+  }, [location, locationCurent])
 
   useEffect(() => {
     const { pathname } = location

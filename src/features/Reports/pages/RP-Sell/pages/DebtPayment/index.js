@@ -8,6 +8,7 @@ import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import ModalViewMobile from './ModalViewMobile'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -67,17 +68,22 @@ function DebtPayment(props) {
     reportsApi
       .getListDebtPayment(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TTToanNo } = {
-          Items: data.result?.Items || [],
-          TTToanNo: data.result?.TTToanNo || 0,
-          Total: data.result?.Total || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total, TTToanNo } = {
+            Items: data.result?.Items || [],
+            TTToanNo: data.result?.TTToanNo || 0,
+            Total: data.result?.Total || 0
+          }
+          setListData(Items)
+          setTongTTNo(TTToanNo)
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setTongTTNo(TTToanNo)
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

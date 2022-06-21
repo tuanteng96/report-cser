@@ -7,6 +7,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -73,19 +74,24 @@ function Home(props) {
     reportsApi
       .getListDebt(newFilters)
       .then(({ data }) => {
-        const { Items, Total, TongNo, DH_NO, KH_NO } = {
-          Items: data.result?.Items || [],
-          TongNo: data.result?.TongNo || 0,
-          DH_NO: (data.result?.DH_NO && data.result?.DH_NO.length) || 0,
-          KH_NO: (data.result?.KH_NO && data.result?.KH_NO.length) || 0,
-          Total: data.result?.Total || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Items, Total, TongNo, DH_NO, KH_NO } = {
+            Items: data.result?.Items || [],
+            TongNo: data.result?.TongNo || 0,
+            DH_NO: (data.result?.DH_NO && data.result?.DH_NO.length) || 0,
+            KH_NO: (data.result?.KH_NO && data.result?.KH_NO.length) || 0,
+            Total: data.result?.Total || 0
+          }
+          setListData(Items)
+          setTotal({ TongNo, DH_NO, KH_NO })
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Items)
-        setTotal({ TongNo, DH_NO, KH_NO })
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

@@ -9,6 +9,7 @@ import ElementEmpty from 'src/components/Empty/ElementEmpty'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { useWindowSize } from 'src/hooks/useWindowSize'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -86,20 +87,28 @@ function SaleDetails(props) {
     reportsApi
       .getListSalesDetail(newFilters)
       .then(({ data }) => {
-        setDataResult({
-          SP_NVL:
-            (data?.result && data?.result.filter(item => item.Format === 1)) ||
-            [],
-          DV_PP:
-            (data?.result && data?.result.filter(item => item.Format === 2)) ||
-            [],
-          TT:
-            (data?.result && data?.result.filter(item => item.Format === 3)) ||
-            []
-        })
-        setLoading(false)
-        isFilter && setIsFilter(false)
-        callback && callback()
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          setDataResult({
+            SP_NVL:
+              (data?.result &&
+                data?.result.filter(item => item.Format === 1)) ||
+              [],
+            DV_PP:
+              (data?.result &&
+                data?.result.filter(item => item.Format === 2)) ||
+              [],
+            TT:
+              (data?.result &&
+                data?.result.filter(item => item.Format === 3)) ||
+              []
+          })
+          setLoading(false)
+          isFilter && setIsFilter(false)
+          callback && callback()
+        }
       })
       .catch(error => console.log(error))
   }

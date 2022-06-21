@@ -7,11 +7,12 @@ import LoadingSkeleton from './LoadingSkeleton'
 import reportsApi from 'src/api/reports.api'
 import ListCustomer from './ListCustomer'
 import _ from 'lodash'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
+import FilterList from 'src/components/Filter/FilterList'
+import { useWindowSize } from 'src/hooks/useWindowSize'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import FilterList from 'src/components/Filter/FilterList'
-import { useWindowSize } from 'src/hooks/useWindowSize'
 moment.locale('vi')
 
 const optionsObj = {
@@ -118,25 +119,30 @@ function RPCustomer() {
     reportsApi
       .getOverviewCustomer(newFilters)
       .then(({ data }) => {
-        setDataChart(prevState => ({
-          ...prevState,
-          datasets: [
-            {
-              label: `Năm ${moment().subtract(1, 'year').format('YYYY')}`,
-              data: data?.result?.SoKHs_ByMonth_LastYear || [],
-              backgroundColor: 'rgba(255, 99, 132, 0.5)'
-            },
-            {
-              label: `Năm ${moment().format('YYYY')}`,
-              data: data?.result?.SoKHs_ByMonth_ThisYear || [],
-              backgroundColor: 'rgba(53, 162, 235, 0.5)'
-            }
-          ]
-        }))
-        setOverviewData(data.result)
-        setLoading(false)
-        isFilter && setIsFilter(false)
-        callback && callback()
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          setDataChart(prevState => ({
+            ...prevState,
+            datasets: [
+              {
+                label: `Năm ${moment().subtract(1, 'year').format('YYYY')}`,
+                data: data?.result?.SoKHs_ByMonth_LastYear || [],
+                backgroundColor: 'rgba(255, 99, 132, 0.5)'
+              },
+              {
+                label: `Năm ${moment().format('YYYY')}`,
+                data: data?.result?.SoKHs_ByMonth_ThisYear || [],
+                backgroundColor: 'rgba(53, 162, 235, 0.5)'
+              }
+            ]
+          }))
+          setOverviewData(data.result)
+          setLoading(false)
+          isFilter && setIsFilter(false)
+          callback && callback()
+        }
       })
       .catch(error => console.log(error))
   }
