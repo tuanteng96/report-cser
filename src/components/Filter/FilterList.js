@@ -449,7 +449,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           checked={values.IsQtyEmpty}
                         />
                         <span className="checkbox-icon"></span>
-                        <span className="fw-600 cursor-pointer">
+                        <span className="fw-500 cursor-pointer">
                           Lọc sản phẩm còn
                         </span>
                       </label>
