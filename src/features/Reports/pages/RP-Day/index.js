@@ -59,6 +59,7 @@ function RPDay(props) {
           setLoading(false)
         } else {
           setDataDays(data.result)
+          setLoading(false)
           isFilter && setIsFilter(false)
           callback && callback()
         }
