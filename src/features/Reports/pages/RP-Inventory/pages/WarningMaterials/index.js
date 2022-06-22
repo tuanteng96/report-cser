@@ -12,53 +12,6 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      ProdId: 12357,
-      ProdTitle: 'Serum A',
-      Code: '2540HU',
-      Unit: 1500, //NVL dự kiến
-      LUnit: 1000, // NVL Thiếu
-      SUnit: 'ml',
-      UsageList: [
-        {
-          Title: 'Triệt lông',
-          Unit: 500,
-          SUnit: 'ml'
-        },
-        {
-          Title: 'Chăm sóc da',
-          Unit: 200,
-          SUnit: 'ml'
-        }
-      ]
-    },
-    {
-      ProdId: 12357,
-      ProdTitle: 'Serum A',
-      Code: '2540HU',
-      Unit: 1500, //NVL dự kiến
-      LUnit: 0, // NVL Thiếu
-      SUnit: 'ml',
-      UsageList: [
-        {
-          Title: 'Triệt lông',
-          Unit: 500,
-          SUnit: 'ml'
-        },
-        {
-          Title: 'Chăm sóc da',
-          Unit: 200,
-          SUnit: 'ml'
-        }
-      ]
-    }
-  ]
-}
-
 function WarningMaterials(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -90,11 +43,11 @@ function WarningMaterials(props) {
   }, [filters])
 
   useEffect(() => {
-    getListPayroll()
+    getListInventoryWarning()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListPayroll = (isLoading = true, callback) => {
+  const getListInventoryWarning = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters
@@ -107,8 +60,8 @@ function WarningMaterials(props) {
           setLoading(false)
         } else {
           const { Items, Total } = {
-            Items: data.result?.Items || JSONData.Items,
-            Total: data.result?.Total || JSONData.Total
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0
           }
           setListData(Items)
           setLoading(false)
@@ -130,14 +83,14 @@ function WarningMaterials(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      //getListPayroll()
+      getListInventoryWarning()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    //getListPayroll()
+    getListInventoryWarning()
   }
 
   const OpenModalMobile = value => {
