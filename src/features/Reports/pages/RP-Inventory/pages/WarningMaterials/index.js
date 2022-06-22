@@ -35,6 +35,26 @@ const JSONData = {
           SUnit: 'ml'
         }
       ]
+    },
+    {
+      ProdId: 12357,
+      ProdTitle: 'Serum A',
+      Code: '2540HU',
+      Unit: 1500, //NVL dự kiến
+      LUnit: 0, // NVL Thiếu
+      SUnit: 'ml',
+      UsageList: [
+        {
+          Title: 'Triệt lông',
+          Unit: 500,
+          SUnit: 'ml'
+        },
+        {
+          Title: 'Chăm sóc da',
+          Unit: 200,
+          SUnit: 'ml'
+        }
+      ]
     }
   ]
 }
@@ -46,11 +66,8 @@ function WarningMaterials(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    DateStart: new Date(), // Ngày bắt đầu
-    DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
-    CategoriesTK: ''
+    Ps: 10 // Số lượng item
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -80,14 +97,7 @@ function WarningMaterials(props) {
   const getListPayroll = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      CategoriesTK: filters.CategoriesTK ? filters.CategoriesTK.value : ''
+      ...filters
     }
     reportsApi
       .getInventoryWarning(newFilters)
@@ -255,7 +265,7 @@ function WarningMaterials(props) {
                 text: 'NVL thiếu',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.LUnit || 'Chưa xác định',
+                formatter: (cell, row) => row?.LUnit || 0,
                 attrs: { 'data-title': 'NVL thiếu' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -294,6 +304,11 @@ function WarningMaterials(props) {
             className="table-responsive-attr"
             classes="table-bordered"
             footerClasses="bg-light"
+            rowStyle={({ LUnit }) => {
+              if (LUnit > 0) {
+                return { background: '#ffb2c1' }
+              }
+            }}
           />
         </div>
         <ModalViewMobile
