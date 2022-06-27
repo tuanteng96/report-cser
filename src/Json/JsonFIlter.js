@@ -155,5 +155,43 @@ export const JsonFilter = {
       value: 1,
       label: 'Nguyên vật liệu'
     }
+  ],
+  TagWLList: [
+    {
+      value: 'NAP_VI',
+      label: 'Nạp ví'
+    },
+    {
+      value: 'CHI_VI',
+      label: 'Nạp ví'
+    },
+    {
+      value: 'TICH_LUY',
+      label: 'Tích lũy'
+    },
+    {
+      value: 'KHAU_TRU_TICH_LUY',
+      label: 'Khấu trừ tích lũy'
+    },
+    {
+      value: 'GUOI_THIEU_AFF',
+      label: 'Giới thiệu AFF'
+    },
+    {
+      value: 'KHAU_TRU_GIOI_THIEU',
+      label: 'Khấu trừ giới thiệu'
+    },
+    {
+      value: 'HOAN_VI_TRA_HANG',
+      label: 'Hoàn ví trả hàng'
+    },
+    {
+      value: 'KET_THUC_THE_HOAN_VI',
+      label: 'Kết thúc thẻ hoàn ví'
+    },
+    {
+      value: 'THANH_TOAN_DON_HANG',
+      label: 'Thanh toán đơn hàng'
+    }
   ]
 }

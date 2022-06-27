@@ -25,6 +25,10 @@ import RPInventory from 'src/features/Reports/pages/RP-Inventory'
 import InventoryHome from 'src/features/Reports/pages/RP-Inventory/pages/Home'
 import InventoryAttrition from 'src/features/Reports/pages/RP-Inventory/pages/Attrition'
 import WarningMaterials from 'src/features/Reports/pages/RP-Inventory/pages/WarningMaterials'
+import BirthdayCustomer from 'src/features/Reports/pages/RP-CSKH/pages/BirthdayCustomer'
+import RPCSKH from 'src/features/Reports/pages/RP-CSKH'
+import TotalWallet from 'src/features/Reports/pages/RP-More/pages/TotalWallet'
+import TotalCard from 'src/features/Reports/pages/RP-More/pages/TotalCard'
 
 function RouterPage(props) {
   return (
@@ -117,6 +121,17 @@ function RouterPage(props) {
         <Route path="du-kien-nvl" element={<WarningMaterials />} />
       </Route>
       <Route
+        path="/cskh"
+        element={
+          <LayoutReport>
+            <RPCSKH />
+          </LayoutReport>
+        }
+      >
+        <Route index element={<Navigate to="khach-hang-sinh-nhat" replace />} />
+        <Route path="khach-hang-sinh-nhat" element={<BirthdayCustomer />} />
+      </Route>
+      <Route
         path="/khac"
         element={
           <LayoutReport>
@@ -126,8 +141,10 @@ function RouterPage(props) {
       >
         <Route
           index
-          element={<Navigate to="top-ban-hang-doanh-so" replace />}
+          element={<Navigate to="tong-tien-vi-khach-hang" replace />}
         />
+        <Route path="tong-tien-vi-khach-hang" element={<TotalWallet />} />
+        <Route path="tong-tien-the-tien" element={<TotalCard />} />
       </Route>
       <Route path="/app23/index.html" element={<Navigate to="/" replace />} />
     </Routes>

@@ -1,4 +1,17 @@
 .modal {
+  .modal-dialog {
+    .modal-content {
+      border-radius: 0.25rem;
+      border: 0;
+      .modal-header {
+        .btn-close {
+          &:focus {
+            box-shadow: none;
+          }
+        }
+      }
+    }
+  }
   &.modal-view-mobile {
     height: 100vh;
     .modal-dialog {

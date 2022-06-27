@@ -59,6 +59,7 @@
           min-height: 45px;
           border-width: 0;
           position: relative;
+          text-align: right;
           &:not(:last-child) {
             border-bottom: 1px solid $table-border-color;
           }

@@ -89,6 +89,27 @@ const reportsApi = {
   },
   getInventoryWarning: data => {
     return http.post(`${SubApi}/ton-kho/du-kien-nvl`, JSON.stringify(data))
+  },
+  getListReturns: data => {
+    return http.post(`${SubApi}/ban-hang/tra-hang`, JSON.stringify(data))
+  },
+  getListBirthdayCustomer: data => {
+    return http.post(
+      `${SubApi}/cskh/khach-hang-sinh-nhat`,
+      JSON.stringify(data)
+    )
+  },
+  getListTotalWallet: data => {
+    return http.post(
+      `${SubApi}/khac/tong-tien-vi-khach-hang`,
+      JSON.stringify(data)
+    )
+  },
+  getListTotalWalletDetail: data => {
+    return http.post(
+      `${SubApi}/khac/chi-tiet-vi-khach-hang`,
+      JSON.stringify(data)
+    )
   }
 }
 export default reportsApi

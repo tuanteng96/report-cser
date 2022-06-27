@@ -61,29 +61,35 @@ function BaseTablesCustom({
     if (width > 767) {
       setColumnsTable(columns)
     } else {
-      setColumnsTable([
+      var newArray = [
         ...ArrayHeplers.getItemSize(columns, optionsMoible?.itemShow),
-        ...(optionsMoible?.columns || []),
-        {
-          dataField: 'Active',
-          text: '#',
-          //headerAlign: "center",
-          //style: { textAlign: "center" },
-          formatter: (cell, row) => (
-            <button
-              type="button"
-              className="btn btn-primary btn-xs"
-              onClick={() => optionsMoible?.CallModal(row)}
-            >
-              Xem chi tiết
-            </button>
-          ),
-          attrs: { 'data-title': '.....' },
-          headerStyle: () => {
-            return { minWidth: '150px', width: '150px' }
+        ...(optionsMoible?.columns || [])
+      ]
+      if (!optionsMoible?.hideBtnDetail) {
+        newArray = [
+          ...newArray,
+          {
+            dataField: 'Active',
+            text: '#',
+            //headerAlign: "center",
+            //style: { textAlign: "center" },
+            formatter: (cell, row) => (
+              <button
+                type="button"
+                className="btn btn-primary btn-xs"
+                onClick={() => optionsMoible?.CallModal(row)}
+              >
+                Xem chi tiết
+              </button>
+            ),
+            attrs: { 'data-title': '.....' },
+            headerStyle: () => {
+              return { minWidth: '150px', width: '150px' }
+            }
           }
-        }
-      ])
+        ]
+      }
+      setColumnsTable(newArray)
     }
   }, [columns, width, optionsMoible])
 
@@ -156,6 +162,32 @@ function BaseTablesCustom({
                 <div className="d-flex align-items-center text-gray-500">
                   Hiển thị
                   <div className="px-8px">
+                    <Dropdown
+                      as={ButtonGroup}
+                      id={`dropdown-variants-Secondary`}
+                      variant=" font-weight-boldest"
+                      title={paginationProps.sizePerPage}
+                    >
+                      <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
+                        {sizePerPageLists.map((item, index) => (
+                          <Dropdown.Item
+                            key={index}
+                            eventKey={index}
+                            active={
+                              sizePerPageLists[index] ===
+                              paginationProps.sizePerPage
+                            }
+                            onClick={() =>
+                              paginationProps.onSizePerPageChange(
+                                sizePerPageLists[index]
+                              )
+                            }
+                          >
+                            {sizePerPageLists[index]}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
                     <DropdownButton
                       as={ButtonGroup}
                       key="secondary"
