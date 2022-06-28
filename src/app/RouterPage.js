@@ -141,9 +141,9 @@ function RouterPage(props) {
       >
         <Route
           index
-          element={<Navigate to="tong-tien-vi-khach-hang" replace />}
+          element={<Navigate to="bao-cao-vi" replace />}
         />
-        <Route path="tong-tien-vi-khach-hang" element={<TotalWallet />} />
+        <Route path="bao-cao-vi" element={<TotalWallet />} />
         <Route path="tong-tien-the-tien" element={<TotalCard />} />
       </Route>
       <Route path="/app23/index.html" element={<Navigate to="/" replace />} />

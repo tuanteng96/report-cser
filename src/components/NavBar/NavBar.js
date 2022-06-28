@@ -200,8 +200,8 @@ const MenuList = [
       //   Href: '/khac/dich-vu-da-ban-chua-thuc-hien'
       // },
       {
-        Title: 'Tổng tiền ví khách hàng',
-        Href: '/khac/tong-tien-vi-khach-hang'
+        Title: 'Báo cáo ví',
+        Href: '/khac/bao-cao-vi'
       },
       // {
       //   Title: 'Tổng tiền thẻ tiền',

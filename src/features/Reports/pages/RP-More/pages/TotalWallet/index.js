@@ -138,7 +138,7 @@ function TotalWallet(props) {
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Tổng tiền ví khách hàng
+            Báo cáo ví
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -486,23 +486,6 @@ function TotalWallet(props) {
                 )
               },
               {
-                dataField: 'PhiDV',
-                text: 'Phí dịch vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.PhiDV),
-                attrs: { 'data-title': 'Phí dịch vụ' },
-                headerStyle: () => {
-                  return { minWidth: '160px', width: '160px' }
-                },
-                footer: 'Phí dịch vụ',
-                footerFormatter: () => (
-                  <span className="font-size-md font-number">
-                    {PriceHelper.formatVND(TotalList?.PhiDV)}
-                  </span>
-                )
-              },
-              {
                 dataField: 'TonCuoiKy',
                 text: 'Tồn tới thời gian lọc',
                 //headerAlign: "center",
@@ -557,7 +540,6 @@ function TotalWallet(props) {
                 headerStyle: () => {
                   return { minWidth: '120px', width: '120px' }
                 },
-                footer: ''
               }
             ]}
             loading={loading}
