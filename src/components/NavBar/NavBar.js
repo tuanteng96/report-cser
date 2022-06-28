@@ -185,34 +185,34 @@ const MenuList = [
   //     }
   //   ]
   // },
-  // {
-  //   Title: 'Khác',
-  //   TitleKey: 'KHAC',
-  //   IconClass: 'fa-regular fa-chart-scatter-bubble icon',
-  //   Href: '/khac',
-  //   Children: [
-  //     {
-  //       Title: 'Top đánh giá',
-  //       Href: '/khac/top-danh-gia'
-  //     },
-  //     {
-  //       Title: 'Dịch vụ đã bán chưa thực hiện',
-  //       Href: '/khac/dich-vu-da-ban-chua-thuc-hien'
-  //     },
-  //     {
-  //       Title: 'Tổng tiền ví khách hàng',
-  //       Href: '/khac/tong-tien-vi-khach-hang'
-  //     },
-  //     {
-  //       Title: 'Tổng tiền thẻ tiền',
-  //       Href: '/khac/tong-tien-the-tien'
-  //     },
-  //     {
-  //       Title: 'Lợi nhuận',
-  //       Href: '/khac/loi-nhuan'
-  //     }
-  //   ]
-  // }
+  {
+    Title: 'Khác',
+    TitleKey: 'KHAC',
+    IconClass: 'fa-regular fa-chart-scatter-bubble icon',
+    Href: '/khac',
+    Children: [
+      // {
+      //   Title: 'Top đánh giá',
+      //   Href: '/khac/top-danh-gia'
+      // },
+      // {
+      //   Title: 'Dịch vụ đã bán chưa thực hiện',
+      //   Href: '/khac/dich-vu-da-ban-chua-thuc-hien'
+      // },
+      {
+        Title: 'Tổng tiền ví khách hàng',
+        Href: '/khac/tong-tien-vi-khach-hang'
+      },
+      // {
+      //   Title: 'Tổng tiền thẻ tiền',
+      //   Href: '/khac/tong-tien-the-tien'
+      // },
+      // {
+      //   Title: 'Lợi nhuận',
+      //   Href: '/khac/loi-nhuan'
+      // }
+    ]
+  }
 ]
 
 function NavBar(props) {

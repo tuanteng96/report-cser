@@ -14,38 +14,6 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      Id: 12372, // ID khách hàng
-      FullName: 'Nguyễn Tài Tuấn',
-      Phone: '0971021196',
-      TonTruoc: 5000000,
-      CongTrongKy: 2000000,
-      TruTrongKy: 1000000,
-      TonCuoiKy: 1000000,
-      TonHienTai: 3000000
-    }
-  ]
-}
-
-const JSONDataDetail = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      Id: 1237,
-      CreateDate: '2022-06-21T16:59:43.113',
-      TotalValue: 10000000,
-      Tag: 'NAP_VI',
-      StockName: 'Cser Hà Nội',
-      Content: 'Nội dung'
-    }
-  ]
-}
-
 function TotalWallet(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -64,11 +32,7 @@ function TotalWallet(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
-  const [TotalList, setTotalList] = useState({
-    TonCuoiKy: 0,
-    TonHienTai: 0,
-    TonTruoc: 0
-  })
+  const [TotalList, setTotalList] = useState({})
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -113,15 +77,13 @@ function TotalWallet(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, TonCuoiKy, TonHienTai, TonTruoc } = {
+          const { Items, Total } = {
             Items: data.result?.Items || [],
-            Total: data.result?.Total || 0,
-            TonCuoiKy: data.result?.TonCuoiKy || 0,
-            TonHienTai: data.result?.TonHienTai || 0,
-            TonTruoc: data.result?.TonTruoc || 0
+            Total: data.result?.Total || 0
           }
+          console.log(data.result)
           setListData(Items)
-          setTotalList({ TonCuoiKy, TonHienTai, TonTruoc })
+          setTotalList(data.result)
           setLoading(false)
           setPageTotal(Total)
           isFilter && setIsFilter(false)
@@ -284,8 +246,7 @@ function TotalWallet(props) {
                 text: 'Tồn trước',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.TonTruoc),
+                formatter: (cell, row) => PriceHelper.formatVND(row.TonTruoc),
                 attrs: { 'data-title': 'Tồn trước' },
                 headerStyle: () => {
                   return { minWidth: '160px', width: '150px' }
@@ -302,40 +263,51 @@ function TotalWallet(props) {
                 text: 'Nạp ví',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.NapVi),
+                formatter: (cell, row) => PriceHelper.formatVND(row.NapVi),
                 attrs: { 'data-title': 'Nạp ví' },
                 headerStyle: () => {
                   return { minWidth: '160px', width: '160px' }
                 },
-                footer: '',
-                footerAttrs: (column, colIndex) => ({
-                  colSpan: 15
-                })
+                footer: 'Nạp ví',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.NapVi)}
+                  </span>
+                )
               },
               {
                 dataField: 'TraTMTuVi',
                 text: 'Trả tiền mặt từ ví',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.TraTMTuVi),
+                formatter: (cell, row) => PriceHelper.formatVND(row.TraTMTuVi),
                 attrs: { 'data-title': 'Trả tiền mặt từ ví' },
                 headerStyle: () => {
                   return { minWidth: '180px', width: '180px' }
-                }
+                },
+                footer: 'Trả tiền mặt từ ví',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.TraTMTuVi)}
+                  </span>
+                )
               },
               {
                 dataField: 'KetThucLe',
                 text: 'Kết thúc lẻ buổi hoàn ví',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.KetThucLe),
+                formatter: (cell, row) => PriceHelper.formatVND(row.KetThucLe),
                 attrs: { 'data-title': 'Kết thúc lẻ buổi hoàn ví' },
                 headerStyle: () => {
                   return { minWidth: '200px', width: '200px' }
-                }
+                },
+                footer: 'Kết thúc lẻ buổi hoàn ví',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.KetThucLe)}
+                  </span>
+                )
               },
               {
                 dataField: 'HoanTienMuaHang',
@@ -343,11 +315,17 @@ function TotalWallet(props) {
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.HoanTienMuaHang),
+                  PriceHelper.formatVND(row.HoanTienMuaHang),
                 attrs: { 'data-title': 'Hoàn tiền tích lũy (Mua hàng)' },
                 headerStyle: () => {
                   return { minWidth: '230px', width: '230px' }
-                }
+                },
+                footer: 'Hoàn tiền tích lũy (Mua hàng)',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.HoanTienMuaHang)}
+                  </span>
+                )
               },
               {
                 dataField: 'KhauTruTichLuy',
@@ -355,11 +333,17 @@ function TotalWallet(props) {
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.KhauTruTichLuy),
+                  PriceHelper.formatVND(row.KhauTruTichLuy),
                 attrs: { 'data-title': 'Khấu trừ tích lũy (Trả hàng)' },
                 headerStyle: () => {
                   return { minWidth: '230px', width: '230px' }
-                }
+                },
+                footer: 'Khấu trừ tích lũy (Trả hàng)',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.KhauTruTichLuy)}
+                  </span>
+                )
               },
               {
                 dataField: 'TraHangHoanVi',
@@ -367,23 +351,34 @@ function TotalWallet(props) {
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.TraHangHoanVi),
+                  PriceHelper.formatVND(row.TraHangHoanVi),
                 attrs: { 'data-title': 'Trả hàng hoàn ví' },
                 headerStyle: () => {
                   return { minWidth: '160px', width: '160px' }
-                }
+                },
+                footer: 'Trả hàng hoàn ví',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.TraHangHoanVi)}
+                  </span>
+                )
               },
               {
                 dataField: 'HoaHongGT',
                 text: 'Hoa hồng giới thiệu',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.HoaHongGT),
+                formatter: (cell, row) => PriceHelper.formatVND(row.HoaHongGT),
                 attrs: { 'data-title': 'Hoa hồng giới thiệu' },
                 headerStyle: () => {
                   return { minWidth: '160px', width: '160px' }
-                }
+                },
+                footer: 'Hoa hồng giới thiệu',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.HoaHongGT)}
+                  </span>
+                )
               },
               {
                 dataField: 'KhauTruHoaHongGT',
@@ -391,10 +386,16 @@ function TotalWallet(props) {
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.KhauTruHoaHongGT),
+                  PriceHelper.formatVND(row.KhauTruHoaHongGT),
                 headerStyle: () => {
                   return { minWidth: '230px', width: '230px' }
-                }
+                },
+                footer: 'Khấu trừ hoa hồng giới thiệu',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.KhauTruHoaHongGT)}
+                  </span>
+                )
               },
               {
                 dataField: 'HoaHongChiaSeMaGiamGia',
@@ -402,11 +403,17 @@ function TotalWallet(props) {
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.HoaHongChiaSeMaGiamGia),
+                  PriceHelper.formatVND(row.HoaHongChiaSeMaGiamGia),
                 attrs: { 'data-title': 'Hoa hồng chia sẻ mã giảm giá' },
                 headerStyle: () => {
                   return { minWidth: '230px', width: '230px' }
-                }
+                },
+                footer: 'Hoa hồng chia sẻ mã giảm giá',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.HoaHongChiaSeMaGiamGia)}
+                  </span>
+                )
               },
               {
                 dataField: 'KetThucTheHoanVi',
@@ -414,35 +421,51 @@ function TotalWallet(props) {
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.KetThucTheHoanVi),
-                attrs: { 'data-title': 'Kết thúc thẻ hoàn ví' },
+                  PriceHelper.formatVND(row.KetThucTheHoanVi),
+                attrs: { 'data-title': 'Hoa hồng giới thiệu' },
                 headerStyle: () => {
                   return { minWidth: '180px', width: '180px' }
-                }
+                },
+                footer: 'Hoa hồng giới thiệu',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.KetThucTheHoanVi)}
+                  </span>
+                )
               },
               {
                 dataField: 'TangDKDN',
                 text: 'Tặng đăng ký đăng nhập',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.TangDKDN),
+                formatter: (cell, row) => PriceHelper.formatVND(row.TangDKDN),
                 attrs: { 'data-title': 'Tặng đăng ký đăng nhập' },
                 headerStyle: () => {
                   return { minWidth: '200px', width: '200px' }
-                }
+                },
+                footer: 'Tặng đăng ký đăng nhập',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.TangDKDN)}
+                  </span>
+                )
               },
               {
                 dataField: 'TangSN',
                 text: 'Tặng sinh nhật',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.TangSN),
+                formatter: (cell, row) => PriceHelper.formatVND(row.TangSN),
                 attrs: { 'data-title': 'Tặng sinh nhật' },
                 headerStyle: () => {
                   return { minWidth: '160px', width: '160px' }
-                }
+                },
+                footer: 'Tặng sinh nhật',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.TangSN)}
+                  </span>
+                )
               },
               {
                 dataField: 'ThanhToanDH',
@@ -450,42 +473,58 @@ function TotalWallet(props) {
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.ThanhToanDH),
+                  PriceHelper.formatVND(row.ThanhToanDH),
                 attrs: { 'data-title': 'Thanh toán đơn hàng' },
                 headerStyle: () => {
                   return { minWidth: '180px', width: '180px' }
-                }
+                },
+                footer: 'Thanh toán đơn hàng',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.ThanhToanDH)}
+                  </span>
+                )
               },
               {
                 dataField: 'PhiDV',
                 text: 'Phí dịch vụ',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.PhiDV),
+                formatter: (cell, row) => PriceHelper.formatVND(row.PhiDV),
                 attrs: { 'data-title': 'Phí dịch vụ' },
                 headerStyle: () => {
                   return { minWidth: '160px', width: '160px' }
-                }
+                },
+                footer: 'Phí dịch vụ',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.PhiDV)}
+                  </span>
+                )
               },
               {
-                dataField: 'Birthday',
+                dataField: 'TonCuoiKy',
                 text: 'Tồn tới thời gian lọc',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVNDPositive(0),
+                formatter: (cell, row) => PriceHelper.formatVND(row.TonCuoiKy),
                 attrs: { 'data-title': 'Tồn tới thời gian lọc' },
                 headerStyle: () => {
                   return { minWidth: '180px', width: '180px' }
-                }
+                },
+                footer: 'Tồn tới thời gian lọc',
+                footerFormatter: () => (
+                  <span className="font-size-md font-number">
+                    {PriceHelper.formatVND(TotalList?.TonCuoiKy)}
+                  </span>
+                )
               },
               {
                 dataField: 'TonHienTai',
                 text: 'Hiện tại',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVNDPositive(row.TonHienTai),
+                formatter: (cell, row) => PriceHelper.formatVND(row.TonHienTai),
                 attrs: { 'data-title': 'Hiện tại' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -495,7 +534,10 @@ function TotalWallet(props) {
                   <span className="text-success font-size-md font-number">
                     {PriceHelper.formatVND(TotalList?.TonHienTai)}
                   </span>
-                )
+                ),
+                footerAttrs: (column, colIndex) => ({
+                  colSpan: 2
+                })
               },
               {
                 dataField: '#',
