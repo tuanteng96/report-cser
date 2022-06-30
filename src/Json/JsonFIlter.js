@@ -148,39 +148,64 @@ export const JsonFilter = {
         }
     ],
     TagWLList: [{
-            value: 'NAP_VI',
-            label: 'Nạp ví'
+            value: 'NAP_QUY',
+            label: 'Nạp quỹ'
         },
         {
-            value: 'CHI_VI',
-            label: 'Chi ví'
+            value: 'CHI_QUY',
+            label: 'Chi quỹ'
         },
         {
-            value: 'TICH_LUY',
-            label: 'Tích lũy'
+            value: 'CHINH_SUA_SO_BUOI_DV',
+            label: 'Kết thúc lẻ buổi dịch vụ'
+        },
+        {
+            value: 'HOAN_TIEN_MUA_HANG',
+            label: 'Hoàn tiền mua hàng'
         },
         {
             value: 'KHAU_TRU_TICH_LUY',
             label: 'Khấu trừ tích lũy'
         },
         {
-            value: 'GUOI_THIEU_AFF',
-            label: 'Giới thiệu AFF'
+            value: 'TRA_HANG_HOAN_VI',
+            label: 'Trả hàng hoàn ví'
         },
         {
-            value: 'KHAU_TRU_GIOI_THIEU',
-            label: 'Khấu trừ giới thiệu'
+            value: 'HH_GT',
+            label: 'Hoa hồng giới thiệu'
         },
         {
-            value: 'HOAN_VI_TRA_HANG',
-            label: 'Hoàn ví trả hàng'
+            value: 'KHAU_TRU_HH_GT',
+            label: 'Khấu trừ hoa hồng giới thiệu'
+        },
+        {
+            value: 'CHIA_SE_MAGIAMGIA',
+            label: 'Chia sẻ mã giảm giá'
         },
         {
             value: 'KET_THUC_THE_HOAN_VI',
             label: 'Kết thúc thẻ hoàn ví'
         },
+
         {
-            value: 'THANH_TOAN_DON_HANG',
+            value: 'DANG_KY_THANH_VIEN',
+            label: 'Đăng ký thành viên'
+        },
+        {
+            value: 'DANG_NHAP_LAN_DAU',
+            label: 'Đăng nhập lần đầu'
+        },
+        {
+            value: 'CHUC_MUNG_SN',
+            label: 'Chúc mừng sinh nhật'
+        },
+        {
+            value: 'CHUC_MUNG_SN_THANG',
+            label: 'Chúc mừng sinh nhật tháng'
+        },
+        {
+            value: 'THANH_TOAN_DH',
             label: 'Thanh toán đơn hàng'
         }
     ]
