@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { LayoutSplashScreen } from 'src/layout/_core/SplashScreen'
 import { setProfile } from './AuthSlice'
 
-// window.token =
-//   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjUyMjU3MzUyMjY2NyIsIm5iZiI6MTY1NjU4MTQ5NCwiZXhwIjoxNjU3MTg2Mjk0LCJpYXQiOjE2NTY1ODE0OTR9.oNqiekFphwasP6zdh3sMhfg31SdEgpfd8ak5ONXcUHg'
+window.token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjUyMjU3MzUyMjcwNiIsIm5iZiI6MTY1NjcyNTk3MiwiZXhwIjoxNjU3MzMwNzcyLCJpYXQiOjE2NTY3MjU5NzJ9.QA6lXazpZN7-kCBEibWjzzcHSAZDt5sWKhxRoEXrobg'
 
 function AuthInit(props) {
   const [showSplashScreen, setShowSplashScreen] = useState(true)

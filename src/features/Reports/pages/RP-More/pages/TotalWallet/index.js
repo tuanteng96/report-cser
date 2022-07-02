@@ -175,6 +175,27 @@ function TotalWallet(props) {
             optionsMoible={{
               itemShow: 3,
               CallModal: row => OpenModalMobile(row),
+              columns: [
+                {
+                  dataField: '#',
+                  text: '...',
+                  //headerAlign: "center",
+                  //style: { textAlign: "center" },
+                  formatter: (cell, row) => (
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-xs"
+                      onClick={() => OpenModalDetail(row)}
+                    >
+                      Chi tiết
+                    </button>
+                  ),
+                  attrs: { 'data-title': 'Sử dụng ví' },
+                  headerStyle: () => {
+                    return { minWidth: '150px', width: '150px' }
+                  }
+                }
+              ],
               tfoot: {
                 Title: 'Tổng',
                 CallModal: () => OpenModalMobile({ ...TotalList, TypeOf: true })
@@ -540,7 +561,7 @@ function TotalWallet(props) {
                 attrs: { 'data-title': '#' },
                 headerStyle: () => {
                   return { minWidth: '120px', width: '120px' }
-                },
+                }
               }
             ]}
             loading={loading}

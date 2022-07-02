@@ -4,50 +4,11 @@ import { Modal } from 'react-bootstrap'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
+import { JsonFilter } from 'src/Json/JsonFilter'
 
 import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
-
-const perfectScrollbarOptions = {
-  wheelSpeed: 2,
-  wheelPropagation: false
-}
-
-const TagsList = [
-  {
-    value: 'NAP_QUY',
-    label: 'Nạp quỹ'
-  },
-  {
-    value: 'MUA_HANG',
-    label: 'Mua hàng'
-  },
-  {
-    value: 'HOAN_TIEN',
-    label: 'Hoàn tiền'
-  },
-  {
-    value: 'CHIA_SE_MAGIAMGIA',
-    label: 'Chia sẽ mã giảm giá'
-  },
-  {
-    value: 'THANH_TOAN_DH',
-    label: 'Thanh toán đơn hàng'
-  },
-  {
-    value: 'PHI',
-    label: 'Phí'
-  },
-  {
-    value: 'THE_TIEN',
-    label: 'Thẻ tiền'
-  },
-  {
-    value: 'GIOI_THIEU',
-    label: 'Giới thiệu'
-  }
-]
 
 function ModalViewDetail({ show, onHide, Member }) {
   const [ListData, setListData] = useState([])
@@ -72,10 +33,12 @@ function ModalViewDetail({ show, onHide, Member }) {
       setListData([])
       setPageTotal(0)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Member, show])
 
   useEffect(() => {
     getListWallet()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
   const getListWallet = () => {
@@ -96,9 +59,9 @@ function ModalViewDetail({ show, onHide, Member }) {
   }
 
   const getTags = tag => {
-    const index = TagsList.findIndex(item => item.value === tag)
+    const index = JsonFilter.TagWLList.findIndex(item => item.value === tag)
     if (index > -1) {
-      return TagsList[index].label
+      return JsonFilter.TagWLList[index].label
     }
     return tag
   }
