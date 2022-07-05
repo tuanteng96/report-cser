@@ -150,7 +150,7 @@ function Gift(props) {
         loading={loading}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách tặng</div>
           <div className="d-flex">
             <div className="fw-500">

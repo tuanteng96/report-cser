@@ -107,6 +107,12 @@ const reportsApi = {
             `${SubApi}/khac/chi-tiet-vi-khach-hang`,
             JSON.stringify(data)
         )
+    },
+    getListTotalCard: data => {
+        return http.post(
+            `${SubApi}/khac/bao-cao-the-tien`,
+            JSON.stringify(data)
+        )
     }
 }
 export default reportsApi

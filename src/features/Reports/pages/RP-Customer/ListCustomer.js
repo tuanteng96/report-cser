@@ -8,6 +8,8 @@ import reportsApi from 'src/api/reports.api'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
+import { useWindowSize } from 'src/hooks/useWindowSize'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -21,6 +23,7 @@ const ListCustomer = forwardRef(
     const [PageTotal, setPageTotal] = useState(0)
     const [initialValuesMobile, setInitialValuesMobile] = useState(null)
     const [isModalMobile, setIsModalMobile] = useState(false)
+    const { width } = useWindowSize()
 
     useEffect(() => {
       getListCustomer()
@@ -82,20 +85,60 @@ const ListCustomer = forwardRef(
       <div className="bg-white rounded mt-25px">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
-          <div className="d-flex">
-            <div className="fw-500">
-              Tổng KH
-              <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                {PageTotal}
-              </span>
-            </div>
-            <div className="fw-500 pl-20px">
-              KH đến từ Online
-              <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                {TotalOl}
-              </span>
-            </div>
-          </div>
+          {
+            width > 1200 ? (
+              <div className="d-flex">
+                <div className="fw-500">
+                  Tổng KH
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {PageTotal}
+                  </span>
+                </div>
+                <div className="fw-500 pl-20px">
+                  KH đến từ Online
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {TotalOl}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="fw-500 d-flex align-items-center">
+                Tổng KH
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="bottom"
+                  placement="bottom"
+                  overlay={
+                    <Popover id={`popover-positioned-top`}>
+                      <Popover.Body className="p-0">
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>Tổng KH</span>
+                          <span>
+                            {PriceHelper.formatVNDPositive(PageTotal)}
+                          </span>
+                        </div>
+                        <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                          <span>KH đến từ Online</span>
+                          <span>
+                            {PriceHelper.formatVNDPositive(TotalOl)}
+                          </span>
+                        </div>
+                      </Popover.Body>
+                    </Popover>
+                  }
+                >
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                      {PriceHelper.formatVNDPositive(PageTotal)}
+                    </span>
+                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                  </div>
+                </OverlayTrigger>
+              </div>
+            )
+          }
+
         </div>
         <div className="p-20px">
           <BaseTablesCustom

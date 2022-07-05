@@ -8,6 +8,8 @@ import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
+import { OverlayTrigger, Popover, Tooltip } from 'react-bootstrap'
+import { useWindowSize } from 'src/hooks/useWindowSize'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -38,6 +40,7 @@ function Home(props) {
   const [PageTotal, setPageTotal] = useState(1)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
+  const { width } = useWindowSize()
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -168,26 +171,64 @@ function Home(props) {
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách công nợ</div>
-          <div className="d-flex">
-            <div className="fw-500">
-              Tổng KH nợ{' '}
-              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
-                {Total.KH_NO}
-              </span>
+
+          {width <= 1200 ? (
+            <div className="fw-500 d-flex align-items-center">
+              Tổng nợ
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="bottom"
+                placement="bottom"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Body className="p-0">
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Tổng KH nợ</span>
+                        <span>
+                          {Total.KH_NO}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                        <span>Tổng ĐH nợ</span>
+                        <span>
+                          {Total.DH_NO}
+                        </span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                    {PriceHelper.formatVNDPositive(PageTotal)}
+                  </span>
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-danger ml-5px"></i>
+                </div>
+              </OverlayTrigger>
             </div>
-            <div className="fw-500 pl-20px">
-              Tổng ĐH nợ{' '}
-              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
-                {Total.DH_NO}
-              </span>
+          ) : (
+            <div className="d-flex">
+              <div className="fw-500">
+                Tổng KH nợ{' '}
+                <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                  {Total.KH_NO}
+                </span>
+              </div>
+              <div className="fw-500 pl-20px">
+                Tổng ĐH nợ{' '}
+                <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                  {Total.DH_NO}
+                </span>
+              </div>
+              <div className="fw-500 pl-20px">
+                Tổng tiền nợ{' '}
+                <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                  {PriceHelper.formatVND(Total.TongNo)}
+                </span>
+              </div>
             </div>
-            <div className="fw-500 pl-20px">
-              Tổng tiền nợ{' '}
-              <span className="font-size-xl fw-600 text-danger pl-5px font-number">
-                {PriceHelper.formatVND(Total.TongNo)}
-              </span>
-            </div>
-          </div>
+          )}
         </div>
         <div className="p-20px">
           <ChildrenTables

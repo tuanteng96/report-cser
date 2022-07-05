@@ -142,18 +142,44 @@ const ListSell = forwardRef(
           <div className="d-flex">
             <div className="fw-500 pr-15px d-flex align-items-center">
               <div className="fw-500 pl-15px">
-                Tổng đơn hàng{' '}
+                Tổng ĐH{' '}
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
                   {PageTotal}
                 </span>
+                <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="top"
+                    overlay={
+                      <Popover id={`popover-positioned-top`}>
+                        <Popover.Body className="p-0">
+                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                            <span>Nguyên giá</span>
+                            <span>
+                              {PriceHelper.formatVND(Total.Value)}
+                            </span>
+                          </div>
+                          <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
+                            <span>Giảm giá</span>
+                            <span>
+                              {PriceHelper.formatVND(Total.ReducedValue)}
+                            </span>
+                          </div>
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h6 vertical-align-text-top"></i>
+                  </OverlayTrigger>
               </div>
               <div className="fw-500 pl-15px d-xl-none">
-                Cần thanh toán{' '}
+                Cần T.Toán{' '}
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
                   {PriceHelper.formatVND(Total.ToPay)}
                 </span>
               </div>
-              {width < 1200 && (
+              {width <= 1200 && (
                 <OverlayTrigger
                   rootClose
                   trigger="click"
@@ -219,31 +245,19 @@ const ListSell = forwardRef(
             {width >= 1200 && (
               <Fragment>
                 <div className="fw-500 pr-15px">
-                  Nguyên giá{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVND(Total.Value)}
-                  </span>
-                </div>
-                <div className="fw-500 pr-15px">
-                  Giảm giá{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVND(Total.ReducedValue)}
-                  </span>
-                </div>
-                <div className="fw-500 pr-15px">
                   Tổng tiền{' '}
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVND(Total.TotalValue)}
                   </span>
                 </div>
                 <div className="fw-500 pr-15px">
-                  Cần thanh toán{' '}
+                  Cần T.Toán{' '}
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVND(Total.ToPay)}
                   </span>
                 </div>
                 <div className="fw-500 pr-15px">
-                  Đã thanh toán{' '}
+                  Đã T.Toán{' '}
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVND(Total.DaThToan)}
                   </span>
@@ -293,7 +307,7 @@ const ListSell = forwardRef(
                   </span>
                 </div>
                 <div className="fw-500">
-                  Còn nợ{' '}
+                  Nợ{' '}
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVNDPositive(Total.ConNo)}
                   </span>

@@ -142,12 +142,12 @@ const ListServices = forwardRef(
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách dịch vụ</div>
           <div className="d-flex">
-            <div className="fw-500 pr-15px">
+            <div className="fw-500">
               Tổng dịch vụ{' '}
               <span className="font-size-xl fw-600 text-success pl-5px font-number">
                 {PageTotal}
               </span>
-              {width < 1200 && (
+              {width <= 1200 && (
                 <OverlayTrigger
                   rootClose
                   trigger="click"

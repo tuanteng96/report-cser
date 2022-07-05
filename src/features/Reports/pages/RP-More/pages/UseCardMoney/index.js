@@ -6,10 +6,7 @@ import FilterList from 'src/components/Filter/FilterList'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
-import ModalViewMobile from "./ModalViewMobile"
 import { PriceHelper } from 'src/helpers/PriceHelper'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
-import { useWindowSize } from 'src/hooks/useWindowSize'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -45,7 +42,7 @@ const JSONData = {
   ]
 }
 
-function TotalCard(props) {
+function UseCardMoney(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
@@ -57,17 +54,14 @@ function TotalCard(props) {
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
     MemberID: "",
-    MoneyCardName: ""
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
-  const [Total, setTotal] = useState({})
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
-  const { width } = useWindowSize()
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -109,7 +103,6 @@ function TotalCard(props) {
             Items: data.result?.Items || JSONData.Items,
             Total: data.result?.Total || JSONData.Total
           }
-          setTotal(data.result || JSONData)
           setListData(Items)
           setLoading(false)
           setPageTotal(Total)
@@ -153,7 +146,7 @@ function TotalCard(props) {
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Báo cáo thẻ tiền
+            Báo cáo sử dụng thẻ tiền
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -180,82 +173,7 @@ function TotalCard(props) {
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
-          <div className="fw-500 font-size-lg">Danh sách thẻ tiền</div>
-          {width > 1200 ? (
-            <div className="d-flex">
-              <div className="fw-500">
-                Tổng thu{' '}
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PriceHelper.formatVND(Total?.TongThu)}
-                </span>
-              </div>
-              <div className="fw-500 pl-20px">
-                Tổng giá trị{' '}
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PriceHelper.formatVND(Total?.TongGiaTri)}
-                </span>
-              </div>
-              <div className="fw-500 pl-20px">
-                Tổng chi{' '}
-                <span className="font-size-xl fw-600 text-danger pl-5px font-number">
-                  {PriceHelper.formatVND(Total?.TongChi)}
-                </span>
-              </div>
-              <div className="fw-500 pl-20px">
-                Còn lại{' '}
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PriceHelper.formatVND(Total?.ConLai)}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="fw-500 d-flex align-items-center">
-              Còn lại
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="bottom"
-                placement="bottom"
-                overlay={
-                  <Popover id={`popover-positioned-top`}>
-                    <Popover.Header
-                      className="py-10px text-uppercase fw-600"
-                      as="h3"
-                    >
-                      Chi tiết thẻ tiền
-                    </Popover.Header>
-                    <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                        <span>Tổng thu</span>
-                        <span>
-                          {PriceHelper.formatVNDPositive(Total.TongThu)}
-                        </span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                        <span>Tổng giá trị</span>
-                        <span>
-                          {PriceHelper.formatVNDPositive(Total.TongGiaTri)}
-                        </span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
-                        <span>Tổng chi</span>
-                        <span>
-                          {PriceHelper.formatVNDPositive(Total.TongChi)}
-                        </span>
-                      </div>
-                    </Popover.Body>
-                  </Popover>
-                }
-              >
-                <div className="d-flex justify-content-between align-items-center">
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVNDPositive(Total.ConLai)}
-                  </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
-                </div>
-              </OverlayTrigger>
-            </div>
-          )}
+          <div className="fw-500 font-size-lg">Danh sách sử dụng thẻ tiền</div>
         </div>
         <div className="p-20px">
           <BaseTablesCustom
@@ -459,14 +377,14 @@ function TotalCard(props) {
             classes="table-bordered"
           />
         </div>
-        <ModalViewMobile
+        {/* <ModalViewMobile
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
-        />
+        /> */}
       </div>
     </div>
   )
 }
 
-export default TotalCard
+export default UseCardMoney

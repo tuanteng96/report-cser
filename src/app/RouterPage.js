@@ -29,6 +29,7 @@ import BirthdayCustomer from 'src/features/Reports/pages/RP-CSKH/pages/BirthdayC
 import RPCSKH from 'src/features/Reports/pages/RP-CSKH'
 import TotalWallet from 'src/features/Reports/pages/RP-More/pages/TotalWallet'
 import TotalCard from 'src/features/Reports/pages/RP-More/pages/TotalCard'
+import UseCardMoney from 'src/features/Reports/pages/RP-More/pages/UseCardMoney'
 
 function RouterPage(props) {
   return (
@@ -144,7 +145,8 @@ function RouterPage(props) {
           element={<Navigate to="bao-cao-vi" replace />}
         />
         <Route path="bao-cao-vi" element={<TotalWallet />} />
-        <Route path="tong-tien-the-tien" element={<TotalCard />} />
+        <Route path="bao-cao-the-tien" element={<TotalCard />} />
+        <Route path="bao-cao-su-dung-the-tien" element={<UseCardMoney />} />
       </Route>
       <Route path="/app23/index.html" element={<Navigate to="/" replace />} />
     </Routes>

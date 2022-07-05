@@ -382,6 +382,20 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       />
                     </div>
                   )}
+                  {'MoneyCardName' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Tên thẻ tiền</label>
+                      <input
+                        type="text"
+                        name="MoneyCardName"
+                        value={values.MoneyCardName}
+                        className="form-control"
+                        placeholder="Tên thẻ tiền"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </div>
+                  )}
                   {'TagWL' in values && (
                     <div className="form-group mb-20px">
                       <label>Loại</label>

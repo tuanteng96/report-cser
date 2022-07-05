@@ -203,10 +203,14 @@ const MenuList = [
         Title: 'Báo cáo ví',
         Href: '/khac/bao-cao-vi'
       },
-      // {
-      //   Title: 'Tổng tiền thẻ tiền',
-      //   Href: '/khac/tong-tien-the-tien'
-      // },
+      {
+        Title: 'Báo cáo thẻ tiền',
+        Href: '/khac/bao-cao-the-tien'
+      },
+      {
+        Title: 'Báo cáo sử dụng thẻ tiền',
+        Href: '/khac/bao-cao-su-dung-the-tien'
+      },
       // {
       //   Title: 'Lợi nhuận',
       //   Href: '/khac/loi-nhuan'
