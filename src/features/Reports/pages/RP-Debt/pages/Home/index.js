@@ -185,15 +185,11 @@ function Home(props) {
                     <Popover.Body className="p-0">
                       <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                         <span>Tổng KH nợ</span>
-                        <span>
-                          {Total.KH_NO}
-                        </span>
+                        <span>{Total.KH_NO}</span>
                       </div>
                       <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
                         <span>Tổng ĐH nợ</span>
-                        <span>
-                          {Total.DH_NO}
-                        </span>
+                        <span>{Total.DH_NO}</span>
                       </div>
                     </Popover.Body>
                   </Popover>

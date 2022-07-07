@@ -210,7 +210,7 @@ const MenuList = [
       {
         Title: 'Báo cáo sử dụng thẻ tiền',
         Href: '/khac/bao-cao-su-dung-the-tien'
-      },
+      }
       // {
       //   Title: 'Lợi nhuận',
       //   Href: '/khac/loi-nhuan'

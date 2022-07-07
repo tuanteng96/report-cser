@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import FilterList from 'src/components/Filter/FilterList'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import ChildrenTables from 'src/components/Tables/ChildrenTables'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -15,29 +15,69 @@ moment.locale('vi')
 const JSONData = {
   Total: 1,
   PCount: 1,
-  TongThu: 20000000,
-  TongGiaTri: 30000000,
-  TongChi: 10000000,
-  ConLai: 12000000,
   Items: [
     {
-      Id: 12372, // ID khách hàng
-      TenTheTien: 'Thẻ tiền 5tr',
-      GiaBan: 15000000,
-      TongGiaTri: 50000000,
-      GiaTriChiTieuSP: 20000000,
-      GiaTriChiTieuDV: 15000000,
-      TongChiTieu: 3000000,
-      DaChiTieuSP: 150000000,
-      DaChiTieuDV: 20000000,
-      TongConLai: 18000000,
-      ConLaiSP: 2000000,
-      ConLaiDV: 12000000,
-      Member: {
-        Id: 12372,
-        FullName: "Nguyễn Tài Tuấn",
-        Phone: "0971021196"
-      }
+      CreateDate: '2022-07-06T08:48:22.877', // ID khách hàng
+      MemberList: [
+        {
+          Id: 12372, // ID Member
+          FullName: 'Nguyễn Tài Tuấn',
+          Phone: '0971021196',
+          UsageHistory: [
+            {
+              Title: 'Thẻ tiền 5tr',
+              Code: 45652,
+              Type: 'THANH_TOAN',
+              Value: 70000,
+              ProdLists: [
+                {
+                  Id: 12258,
+                  Title: 'Kem trị nám',
+                  Qty: 5
+                },
+                {
+                  Id: 12258,
+                  Title: 'Tăm trắng',
+                  Qty: 1
+                }
+              ]
+            },
+            {
+              Title: 'Thẻ tiền 5tr',
+              Code: 45652,
+              Type: 'THANH_TOAN',
+              Value: 25000,
+              ProdLists: [
+                {
+                  Id: 12258,
+                  Title: 'Maxat Body toàn thân',
+                  Qty: 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          Id: 12372, // ID Member
+          FullName: 'Lê Bảo Ngọc',
+          Phone: '0981883338',
+          UsageHistory: [
+            {
+              Title: 'Thẻ tiền 5tr',
+              Code: 45652,
+              Type: 'THANH_TOAN',
+              Value: 25000,
+              ProdLists: [
+                {
+                  Id: 12258,
+                  Title: 'Maxat Body toàn thân',
+                  Qty: 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
@@ -53,7 +93,7 @@ function UseCardMoney(props) {
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
-    MemberID: "",
+    MemberID: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -90,10 +130,10 @@ function UseCardMoney(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : ""
+      MemberID: filters.MemberID ? filters.MemberID.value : ''
     }
     reportsApi
-      .getListTotalCard(newFilters)
+      .getListTotalUseCard(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -129,7 +169,7 @@ function UseCardMoney(props) {
     }
   }
 
-  const onRefresh = () => { }
+  const onRefresh = () => {}
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
@@ -139,6 +179,15 @@ function UseCardMoney(props) {
   const HideModalMobile = () => {
     setInitialValuesMobile(null)
     setIsModalMobile(false)
+  }
+
+  const AmountUse = (item) => {
+    var totalArray = 0
+    if (!item) return totalArray
+    for (let keyItem of item) {
+      totalArray += keyItem?.UsageHistory?.length || 0
+    }
+    return totalArray
   }
 
   return (
@@ -176,206 +225,145 @@ function UseCardMoney(props) {
           <div className="fw-500 font-size-lg">Danh sách sử dụng thẻ tiền</div>
         </div>
         <div className="p-20px">
-          <BaseTablesCustom
+          <ChildrenTables
             data={ListData}
-            textDataNull="Không có dữ liệu."
-            optionsMoible={{
-              itemShow: 4,
-              CallModal: row => OpenModalMobile(row),
-            }}
+            columns={[
+              {
+                text: 'Ngày',
+                headerStyle: {
+                  minWidth: '160px',
+                  width: '160px'
+                },
+                attrs: { 'data-title': 'Ngày' }
+              },
+              {
+                text: 'Khách hàng',
+                headerStyle: {
+                  minWidth: '200px',
+                  width: '200px'
+                }
+              },
+              {
+                text: 'Số điện thoại',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
+                text: 'Sử dụng / Hoàn',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
+                text: 'Mã thẻ tiền',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
+                text: 'Tên thẻ tiền',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
+                text: 'Số tiền',
+                headerStyle: {
+                  minWidth: '120px',
+                  width: '120px'
+                }
+              },
+              {
+                text: 'Sản phẩm / Dịch vụ',
+                headerStyle: {
+                  minWidth: '220px',
+                  width: '220px'
+                }
+              }
+            ]}
             options={{
-              custom: true,
               totalSize: PageTotal,
               page: filters.Pi,
               sizePerPage: filters.Ps,
-              alwaysShowAllBtns: true,
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
-              },
+              sizePerPageList: [10, 25, 30, 50],
               onPageChange: page => {
                 setListData([])
                 const Pi = page
                 setFilters({ ...filters, Pi: Pi })
+              },
+              onSizePerPageChange: sizePerPage => {
+                setListData([])
+                const Ps = sizePerPage
+                setFilters({ ...filters, Ps: Ps })
               }
             }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
+            optionsMoible={{
+              itemShow: 0,
+              CallModal: row => OpenModalMobile(row),
+              columns: [
+                {
+                  attrs: { 'data-title': 'Ngày' },
+                  formatter: row => moment(row.CreateDate).format('DD-MM-YYYY')
                 },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'Id',
-                text: 'ID',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => <div>#{row.Id}</div>,
-                attrs: { 'data-title': 'ID' },
-                headerStyle: () => {
-                  return { minWidth: '100px', width: '100px' }
+                {
+                  attrs: { 'data-title': 'Tổng khách hàng' },
+                  formatter: row => row.MemberList.length
                 }
-              },
-              {
-                dataField: 'TenTheTien',
-                text: 'Tên thẻ tiền',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.TenTheTien || 'Chưa có',
-                attrs: { 'data-title': 'Tên thẻ tiền' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'GiaBan',
-                text: 'Giá bán',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.GiaBan),
-                attrs: { 'data-title': 'Giá bán' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'TongGiaTri',
-                text: 'Tổng giá trị',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.TongGiaTri),
-                attrs: { 'data-title': 'Tổng giá trị' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'GiaTriChiTieuSP',
-                text: 'Giá trị chi tiêu SP',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.GiaTriChiTieuSP),
-                attrs: { 'data-title': 'Giá trị chi tiêu SP' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'GiaTriChiTieuDV',
-                text: 'Giá trị chi tiêu DV',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.GiaTriChiTieuDV),
-                attrs: { 'data-title': 'Giá trị chi tiêu DV' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'TongChiTieu',
-                text: 'Tổng chi tiêu',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.TongChiTieu),
-                attrs: { 'data-title': 'Tổng chi tiêu' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'DaChiTieuSP',
-                text: 'Đã chi tiêu SP',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.DaChiTieuSP),
-                attrs: { 'data-title': 'Đã chi tiêu SP' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'DaChiTieuDV',
-                text: 'Đã chi tiêu DV',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.DaChiTieuDV),
-                attrs: { 'data-title': 'Đã chi tiêu DV' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'TongConLai',
-                text: 'Tổng còn lại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.TongConLai),
-                attrs: { 'data-title': 'Tổng còn lại' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'ConLaiSP',
-                text: 'Còn lại sản phẩm',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.ConLaiSP),
-                attrs: { 'data-title': 'Còn lại sản phẩm' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'ConLaiDV',
-                text: 'Còn lại dịch vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.ConLaiDV),
-                attrs: { 'data-title': 'Còn lại dịch vụ' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'FullName',
-                text: 'Khách hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.FullName || "Chưa có",
-                attrs: { 'data-title': 'Khách hàng' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'Phone',
-                text: 'Số điện thoại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.Phone || "Chưa có",
-                attrs: { 'data-title': 'Số điện thoại' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-            ]}
+              ]
+            }}
             loading={loading}
-            keyField="Id"
-            className="table-responsive-attr"
-            classes="table-bordered"
-          />
+          >
+            {ListData &&
+              ListData.map((item, itemIndex) => (
+                <Fragment key={itemIndex}>
+                  {item.MemberList.map((member, memberIndex) => (
+                    <Fragment key={memberIndex}>
+                      {member.UsageHistory.map((use, useIndex) => (
+                        <tr key={use}>
+                          {memberIndex === 0 && useIndex === 0 && (
+                            <td
+                              className="vertical-align-middle"
+                              rowSpan={AmountUse(item.MemberList)}
+                            >
+                              {moment(item.CreateDate).format('DD-MM-YYYY HH:mm')}
+                            </td>
+                          )}
+                          {useIndex === 0 && (
+                            <Fragment>
+                              <td
+                                className="vertical-align-middle"
+                                rowSpan={member.UsageHistory.length}
+                              >
+                                {member.FullName}
+                              </td>
+                              <td
+                                className="vertical-align-middle"
+                                rowSpan={member.UsageHistory.length}
+                              >
+                                {member.Phone}
+                              </td>
+                            </Fragment>
+                          )}
+                          <td>{use.Type}</td>
+                          <td>{use.Code}</td>
+                          <td>{use.Title}</td>
+                          <td>{PriceHelper.formatVND(use.Value)}</td>
+                          <td>
+                            {use.ProdLists &&
+                              use.ProdLists.map(item => `${item.Title} (x${item.Qty})`).join(", ")}
+                          </td>
+                        </tr>
+                      ))}
+                    </Fragment>
+                  ))}
+                </Fragment>
+              ))}
+          </ChildrenTables>
         </div>
         {/* <ModalViewMobile
           show={isModalMobile}

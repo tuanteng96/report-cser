@@ -136,7 +136,7 @@ function TopProducts(props) {
   }
 
   return (
-    <div className="py-main py-main-100 d-flex flex-column">
+    <div className="py-main h-100 d-flex flex-column">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
@@ -167,7 +167,7 @@ function TopProducts(props) {
       />
       {loading && <LoadingSkeleton />}
       {!loading && (
-        <div className="flex-1-1-auto" style={{ height: heighElm.Content }}>
+        <div className="flex-grow-1" style={{ height: heighElm.Content }}>
           <div className="row h-auto h-lg-100">
             <div className="col-lg-6 col-md-6 mb-15px mb-lg-0 h-100">
               <div className="bg-white rounded h-100">

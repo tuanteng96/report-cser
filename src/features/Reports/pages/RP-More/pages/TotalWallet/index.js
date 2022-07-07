@@ -66,7 +66,7 @@ function TotalWallet(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : "",
+      MemberID: filters.MemberID ? filters.MemberID.value : '',
       TagWL: filters.TagWL
         ? filters.TagWL.map(item => item.value).join(',')
         : ''

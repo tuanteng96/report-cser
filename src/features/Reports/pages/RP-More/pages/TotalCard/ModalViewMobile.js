@@ -134,7 +134,7 @@ function ModalViewMobile({ show, onHide, data }) {
                 Khách hàng
               </div>
               <div className="fw-600 font-size-mdd w-60 text-end">
-                {data?.Member?.FullName || "Chưa có"}
+                {data?.Member?.FullName || 'Chưa có'}
               </div>
             </div>
             <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
@@ -142,7 +142,7 @@ function ModalViewMobile({ show, onHide, data }) {
                 Số điện thoại
               </div>
               <div className="fw-600 font-size-mdd w-60 text-end">
-                {data?.Member?.Phone || "Chưa có"}
+                {data?.Member?.Phone || 'Chưa có'}
               </div>
             </div>
           </div>

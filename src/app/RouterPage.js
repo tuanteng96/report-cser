@@ -140,10 +140,7 @@ function RouterPage(props) {
           </LayoutReport>
         }
       >
-        <Route
-          index
-          element={<Navigate to="bao-cao-vi" replace />}
-        />
+        <Route index element={<Navigate to="bao-cao-vi" replace />} />
         <Route path="bao-cao-vi" element={<TotalWallet />} />
         <Route path="bao-cao-the-tien" element={<TotalCard />} />
         <Route path="bao-cao-su-dung-the-tien" element={<UseCardMoney />} />

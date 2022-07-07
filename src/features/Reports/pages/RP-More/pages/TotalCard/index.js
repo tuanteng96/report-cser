@@ -6,7 +6,7 @@ import FilterList from 'src/components/Filter/FilterList'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
-import ModalViewMobile from "./ModalViewMobile"
+import ModalViewMobile from './ModalViewMobile'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWindowSize } from 'src/hooks/useWindowSize'
@@ -38,8 +38,8 @@ const JSONData = {
       ConLaiDV: 12000000,
       Member: {
         Id: 12372,
-        FullName: "Nguyễn Tài Tuấn",
-        Phone: "0971021196"
+        FullName: 'Nguyễn Tài Tuấn',
+        Phone: '0971021196'
       }
     }
   ]
@@ -56,8 +56,8 @@ function TotalCard(props) {
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
-    MemberID: "",
-    MoneyCardName: ""
+    MemberID: '',
+    MoneyCardName: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -96,7 +96,7 @@ function TotalCard(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : ""
+      MemberID: filters.MemberID ? filters.MemberID.value : ''
     }
     reportsApi
       .getListTotalCard(newFilters)
@@ -136,7 +136,7 @@ function TotalCard(props) {
     }
   }
 
-  const onRefresh = () => { }
+  const onRefresh = () => {}
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
@@ -263,7 +263,7 @@ function TotalCard(props) {
             textDataNull="Không có dữ liệu."
             optionsMoible={{
               itemShow: 4,
-              CallModal: row => OpenModalMobile(row),
+              CallModal: row => OpenModalMobile(row)
             }}
             options={{
               custom: true,
@@ -347,7 +347,8 @@ function TotalCard(props) {
                 text: 'Giá trị chi tiêu SP',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.GiaTriChiTieuSP),
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.GiaTriChiTieuSP),
                 attrs: { 'data-title': 'Giá trị chi tiêu SP' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -358,7 +359,8 @@ function TotalCard(props) {
                 text: 'Giá trị chi tiêu DV',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.GiaTriChiTieuDV),
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.GiaTriChiTieuDV),
                 attrs: { 'data-title': 'Giá trị chi tiêu DV' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -369,7 +371,8 @@ function TotalCard(props) {
                 text: 'Tổng chi tiêu',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.TongChiTieu),
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.TongChiTieu),
                 attrs: { 'data-title': 'Tổng chi tiêu' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -380,7 +383,8 @@ function TotalCard(props) {
                 text: 'Đã chi tiêu SP',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.DaChiTieuSP),
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.DaChiTieuSP),
                 attrs: { 'data-title': 'Đã chi tiêu SP' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -391,7 +395,8 @@ function TotalCard(props) {
                 text: 'Đã chi tiêu DV',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.DaChiTieuDV),
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row.DaChiTieuDV),
                 attrs: { 'data-title': 'Đã chi tiêu DV' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -435,7 +440,7 @@ function TotalCard(props) {
                 text: 'Khách hàng',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.FullName || "Chưa có",
+                formatter: (cell, row) => row?.Member?.FullName || 'Chưa có',
                 attrs: { 'data-title': 'Khách hàng' },
                 headerStyle: () => {
                   return { minWidth: '200px', width: '200px' }
@@ -446,12 +451,12 @@ function TotalCard(props) {
                 text: 'Số điện thoại',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.Phone || "Chưa có",
+                formatter: (cell, row) => row?.Member?.Phone || 'Chưa có',
                 attrs: { 'data-title': 'Số điện thoại' },
                 headerStyle: () => {
                   return { minWidth: '200px', width: '200px' }
                 }
-              },
+              }
             ]}
             loading={loading}
             keyField="Id"

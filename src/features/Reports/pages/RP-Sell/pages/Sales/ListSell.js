@@ -147,31 +147,29 @@ const ListSell = forwardRef(
                   {PageTotal}
                 </span>
                 <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    key="top"
-                    placement="top"
-                    overlay={
-                      <Popover id={`popover-positioned-top`}>
-                        <Popover.Body className="p-0">
-                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                            <span>Nguyên giá</span>
-                            <span>
-                              {PriceHelper.formatVND(Total.Value)}
-                            </span>
-                          </div>
-                          <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
-                            <span>Giảm giá</span>
-                            <span>
-                              {PriceHelper.formatVND(Total.ReducedValue)}
-                            </span>
-                          </div>
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h6 vertical-align-text-top"></i>
-                  </OverlayTrigger>
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={
+                    <Popover id={`popover-positioned-top`}>
+                      <Popover.Body className="p-0">
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>Nguyên giá</span>
+                          <span>{PriceHelper.formatVND(Total.Value)}</span>
+                        </div>
+                        <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
+                          <span>Giảm giá</span>
+                          <span>
+                            {PriceHelper.formatVND(Total.ReducedValue)}
+                          </span>
+                        </div>
+                      </Popover.Body>
+                    </Popover>
+                  }
+                >
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h6 vertical-align-text-top"></i>
+                </OverlayTrigger>
               </div>
               <div className="fw-500 pl-15px d-xl-none">
                 Cần T.Toán{' '}
