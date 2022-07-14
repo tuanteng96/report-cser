@@ -13,6 +13,7 @@ import { useWindowSize } from 'src/hooks/useWindowSize'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import clsx from 'clsx'
 moment.locale('vi')
 
 const JSONData = {
@@ -40,7 +41,30 @@ const JSONData = {
         Id: 12372,
         FullName: 'Nguyễn Tài Tuấn',
         Phone: '0971021196'
-      }
+      },
+      IsExpired: true, // Hết hạn
+      IsLock: true // Khóa
+    },
+    {
+      Id: 12372, // ID khách hàng
+      TenTheTien: 'Thẻ tiền 10tr',
+      GiaBan: 15000000,
+      TongGiaTri: 50000000,
+      GiaTriChiTieuSP: 20000000,
+      GiaTriChiTieuDV: 15000000,
+      TongChiTieu: 3000000,
+      DaChiTieuSP: 150000000,
+      DaChiTieuDV: 20000000,
+      TongConLai: 18000000,
+      ConLaiSP: 2000000,
+      ConLaiDV: 12000000,
+      Member: {
+        Id: 12372,
+        FullName: 'Nguyễn Tài Tuấn',
+        Phone: '0971021196'
+      },
+      IsExpired: false, // Hết hạn
+      IsLock: false // Khóa
     }
   ]
 }
@@ -146,6 +170,14 @@ function TotalCard(props) {
   const HideModalMobile = () => {
     setInitialValuesMobile(null)
     setIsModalMobile(false)
+  }
+
+  const rowStyle = (row, rowIndex) => {
+    const styles = {}
+    if (row?.IsExpired) {
+      styles.backgroundColor = 'rgb(255 160 160)'
+    }
+    return styles
   }
 
   return (
@@ -314,7 +346,19 @@ function TotalCard(props) {
                 text: 'Tên thẻ tiền',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => row.TenTheTien || 'Chưa có',
+                formatter: (cell, row) => (
+                  <div>
+                    <span className="pr-5px">{row.TenTheTien}</span>
+                    {row?.IsLock && (
+                      <span className={clsx({ 'text-danger': row?.IsLock })}>
+                        -
+                        <span className="fw-600 font-size-smm pl-5px">
+                          Đã Khóa
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                ),
                 attrs: { 'data-title': 'Tên thẻ tiền' },
                 headerStyle: () => {
                   return { minWidth: '200px', width: '200px' }
@@ -462,6 +506,7 @@ function TotalCard(props) {
             keyField="Id"
             className="table-responsive-attr"
             classes="table-bordered"
+            rowStyle={rowStyle}
           />
         </div>
         <ModalViewMobile

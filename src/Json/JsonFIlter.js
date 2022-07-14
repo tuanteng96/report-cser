@@ -218,5 +218,23 @@ export const JsonFilter = {
       value: 'THANH_TOAN_DH',
       label: 'Thanh toán đơn hàng'
     }
+  ],
+  TypeTTList: [
+    {
+      value: 'MUA_THE_TIEN',
+      label: 'Mua thẻ tiền'
+    },
+    {
+      value: 'THANH_TOAN_DON_HANG',
+      label: 'Thanh toán đơn hàng'
+    },
+    {
+      value: 'KET_THUC_THE',
+      label: 'Hoàn thẻ tiền kết thúc thẻ'
+    },
+    {
+      value: 'TRA_HANG',
+      label: 'Hoàn thẻ tiền trả hàng'
+    }
   ]
 }

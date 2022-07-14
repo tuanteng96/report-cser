@@ -33,7 +33,8 @@ const {
   TagsTCList,
   TypeCNList,
   CategoriesTKList,
-  TagWLList
+  TagWLList,
+  TypeTTList
 } = JsonFilter
 
 function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
@@ -378,6 +379,25 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         value={values.MemberID}
                         onChange={otp => {
                           setFieldValue('MemberID', otp, false)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'TypeTT' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại</label>
+                      <Select
+                        isMulti
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="TypeTT"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={TypeTTList}
+                        className="select-control"
+                        value={values.TypeTT}
+                        onChange={otp => {
+                          setFieldValue('TypeTT', otp)
                         }}
                       />
                     </div>

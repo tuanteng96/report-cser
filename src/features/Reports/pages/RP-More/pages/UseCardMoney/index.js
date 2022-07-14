@@ -79,7 +79,8 @@ const JSONData = {
         }
       ]
     }
-  ]
+  ],
+  TongTien: 130000
 }
 
 function UseCardMoney(props) {
@@ -93,12 +94,14 @@ function UseCardMoney(props) {
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
-    MemberID: ''
+    MemberID: '',
+    TypeTT: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
+  const [TotalValue, setTotalValue] = useState(0)
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -130,7 +133,11 @@ function UseCardMoney(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : ''
+      MemberID: filters.MemberID ? filters.MemberID.value : '',
+      TypeTT:
+        filters.TypeTT && filters.TypeTT.length > 0
+          ? filters.TypeTT.map(item => item.value).join(',')
+          : ''
     }
     reportsApi
       .getListTotalUseCard(newFilters)
@@ -139,11 +146,13 @@ function UseCardMoney(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total } = {
+          const { Items, Total, TongTien } = {
             Items: data.result?.Items || JSONData.Items,
-            Total: data.result?.Total || JSONData.Total
+            Total: data.result?.Total || JSONData.Total,
+            TongTien: data.result?.TongTien || JSONData.TongTien
           }
           setListData(Items)
+          setTotalValue(TongTien)
           setLoading(false)
           setPageTotal(Total)
           isFilter && setIsFilter(false)
@@ -181,7 +190,7 @@ function UseCardMoney(props) {
     setIsModalMobile(false)
   }
 
-  const AmountUse = (item) => {
+  const AmountUse = item => {
     var totalArray = 0
     if (!item) return totalArray
     for (let keyItem of item) {
@@ -223,6 +232,14 @@ function UseCardMoney(props) {
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách sử dụng thẻ tiền</div>
+          <div className="d-flex">
+            <div className="fw-500 d-flex align-items-center">
+              Tổng tiền
+              <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                {PriceHelper.formatVND(TotalValue)}
+              </span>
+            </div>
+          </div>
         </div>
         <div className="p-20px">
           <ChildrenTables
@@ -330,7 +347,9 @@ function UseCardMoney(props) {
                               className="vertical-align-middle"
                               rowSpan={AmountUse(item.MemberList)}
                             >
-                              {moment(item.CreateDate).format('DD-MM-YYYY HH:mm')}
+                              {moment(item.CreateDate).format(
+                                'DD-MM-YYYY HH:mm'
+                              )}
                             </td>
                           )}
                           {useIndex === 0 && (
@@ -355,7 +374,9 @@ function UseCardMoney(props) {
                           <td>{PriceHelper.formatVND(use.Value)}</td>
                           <td>
                             {use.ProdLists &&
-                              use.ProdLists.map(item => `${item.Title} (x${item.Qty})`).join(", ")}
+                              use.ProdLists.map(
+                                item => `${item.Title} (x${item.Qty})`
+                              ).join(', ')}
                           </td>
                         </tr>
                       ))}
