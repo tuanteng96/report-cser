@@ -19,6 +19,7 @@ import AsyncSelectProductNVL from '../Selects/AsyncSelectProductNVL'
 import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
 import AsyncSelectCategories from '../Selects/AsyncSelectCategories'
 import AsyncSelectBrands from '../Selects/AsyncSelectBrands'
+import AsyncSelectCardMoney from '../Selects/AsyncSelectCardMoney'
 
 import vi from 'date-fns/locale/vi' // the locale you want
 registerLocale('vi', vi) // register it with the name you want
@@ -34,7 +35,8 @@ const {
   TypeCNList,
   CategoriesTKList,
   TagWLList,
-  TypeTTList
+  TypeTTList,
+  StatusTTList
 } = JsonFilter
 
 function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
@@ -405,14 +407,32 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                   {'MoneyCardName' in values && (
                     <div className="form-group mb-20px">
                       <label>Tên thẻ tiền</label>
-                      <input
-                        type="text"
+                      <AsyncSelectCardMoney
+                        isClearable={true}
+                        menuPosition="fixed"
                         name="MoneyCardName"
-                        value={values.MoneyCardName}
-                        className="form-control"
-                        placeholder="Tên thẻ tiền"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        onChange={otp => {
+                          setFieldValue('MoneyCardName', otp, false)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'StatusTT' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại</label>
+                      <Select
+                        isMulti
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="StatusTT"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={StatusTTList}
+                        className="select-control"
+                        value={values.StatusTT}
+                        onChange={otp => {
+                          setFieldValue('StatusTT', otp)
+                        }}
                       />
                     </div>
                   )}

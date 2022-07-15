@@ -16,59 +16,6 @@ import 'moment/locale/vi'
 import clsx from 'clsx'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  TongThu: 20000000,
-  TongGiaTri: 30000000,
-  TongChi: 10000000,
-  ConLai: 12000000,
-  Items: [
-    {
-      Id: 12372, // ID khách hàng
-      TenTheTien: 'Thẻ tiền 5tr',
-      GiaBan: 15000000,
-      TongGiaTri: 50000000,
-      GiaTriChiTieuSP: 20000000,
-      GiaTriChiTieuDV: 15000000,
-      TongChiTieu: 3000000,
-      DaChiTieuSP: 150000000,
-      DaChiTieuDV: 20000000,
-      TongConLai: 18000000,
-      ConLaiSP: 2000000,
-      ConLaiDV: 12000000,
-      Member: {
-        Id: 12372,
-        FullName: 'Nguyễn Tài Tuấn',
-        Phone: '0971021196'
-      },
-      IsExpired: true, // Hết hạn
-      IsLock: true // Khóa
-    },
-    {
-      Id: 12372, // ID khách hàng
-      TenTheTien: 'Thẻ tiền 10tr',
-      GiaBan: 15000000,
-      TongGiaTri: 50000000,
-      GiaTriChiTieuSP: 20000000,
-      GiaTriChiTieuDV: 15000000,
-      TongChiTieu: 3000000,
-      DaChiTieuSP: 150000000,
-      DaChiTieuDV: 20000000,
-      TongConLai: 18000000,
-      ConLaiSP: 2000000,
-      ConLaiDV: 12000000,
-      Member: {
-        Id: 12372,
-        FullName: 'Nguyễn Tài Tuấn',
-        Phone: '0971021196'
-      },
-      IsExpired: false, // Hết hạn
-      IsLock: false // Khóa
-    }
-  ]
-}
-
 function TotalCard(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -81,7 +28,8 @@ function TotalCard(props) {
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
     MemberID: '',
-    MoneyCardName: ''
+    MoneyCardName: '',
+    StatusTT: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -106,11 +54,11 @@ function TotalCard(props) {
   }, [filters])
 
   useEffect(() => {
-    getListCustomer()
+    getListCardService()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListCustomer = (isLoading = true, callback) => {
+  const getListCardService = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
@@ -120,7 +68,12 @@ function TotalCard(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : ''
+      MemberID: filters.MemberID ? filters.MemberID.value : '',
+      MoneyCardName: filters.MoneyCardName ? filters.MoneyCardName.label : '',
+      StatusTT:
+        filters.StatusTT && filters.StatusTT.length > 0
+          ? filters.StatusTT.map(item => item.value).join(',')
+          : ''
     }
     reportsApi
       .getListTotalCard(newFilters)
@@ -130,10 +83,10 @@ function TotalCard(props) {
           setLoading(false)
         } else {
           const { Items, Total } = {
-            Items: data.result?.Items || JSONData.Items,
-            Total: data.result?.Total || JSONData.Total
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0
           }
-          setTotal(data.result || JSONData)
+          setTotal(data.result)
           setListData(Items)
           setLoading(false)
           setPageTotal(Total)
@@ -160,7 +113,9 @@ function TotalCard(props) {
     }
   }
 
-  const onRefresh = () => {}
+  const onRefresh = () => {
+    getListCardService()
+  }
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
@@ -359,6 +314,18 @@ function TotalCard(props) {
                     )}
                   </div>
                 ),
+                attrs: { 'data-title': 'Tên thẻ tiền' },
+                headerStyle: () => {
+                  return { minWidth: '200px', width: '200px' }
+                }
+              },
+              {
+                dataField: 'CreateDate',
+                text: 'Thời gian mua',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) =>
+                  moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
                 attrs: { 'data-title': 'Tên thẻ tiền' },
                 headerStyle: () => {
                   return { minWidth: '200px', width: '200px' }

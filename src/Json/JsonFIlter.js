@@ -236,5 +236,19 @@ export const JsonFilter = {
       value: 'TRA_HANG',
       label: 'Hoàn thẻ tiền trả hàng'
     }
+  ],
+  StatusTTList: [
+    {
+      value: 'KHOA',
+      label: 'Khóa'
+    },
+    {
+      value: 'HET_HAN',
+      label: 'Hết hạn'
+    },
+    {
+      value: 'DANG_SU_DUNG',
+      label: 'Đang sử dụng'
+    }
   ]
 }

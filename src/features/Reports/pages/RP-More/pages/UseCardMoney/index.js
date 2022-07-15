@@ -12,77 +12,6 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      CreateDate: '2022-07-06T08:48:22.877', // ID khách hàng
-      MemberList: [
-        {
-          Id: 12372, // ID Member
-          FullName: 'Nguyễn Tài Tuấn',
-          Phone: '0971021196',
-          UsageHistory: [
-            {
-              Title: 'Thẻ tiền 5tr',
-              Code: 45652,
-              Type: 'THANH_TOAN',
-              Value: 70000,
-              ProdLists: [
-                {
-                  Id: 12258,
-                  Title: 'Kem trị nám',
-                  Qty: 5
-                },
-                {
-                  Id: 12258,
-                  Title: 'Tăm trắng',
-                  Qty: 1
-                }
-              ]
-            },
-            {
-              Title: 'Thẻ tiền 5tr',
-              Code: 45652,
-              Type: 'THANH_TOAN',
-              Value: 25000,
-              ProdLists: [
-                {
-                  Id: 12258,
-                  Title: 'Maxat Body toàn thân',
-                  Qty: 1
-                }
-              ]
-            }
-          ]
-        },
-        {
-          Id: 12372, // ID Member
-          FullName: 'Lê Bảo Ngọc',
-          Phone: '0981883338',
-          UsageHistory: [
-            {
-              Title: 'Thẻ tiền 5tr',
-              Code: 45652,
-              Type: 'THANH_TOAN',
-              Value: 25000,
-              ProdLists: [
-                {
-                  Id: 12258,
-                  Title: 'Maxat Body toàn thân',
-                  Qty: 1
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  TongTien: 130000
-}
-
 function UseCardMoney(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -119,11 +48,11 @@ function UseCardMoney(props) {
   }, [filters])
 
   useEffect(() => {
-    getListCustomer()
+    getListCardService()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListCustomer = (isLoading = true, callback) => {
+  const getListCardService = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
@@ -147,9 +76,9 @@ function UseCardMoney(props) {
           setLoading(false)
         } else {
           const { Items, Total, TongTien } = {
-            Items: data.result?.Items || JSONData.Items,
-            Total: data.result?.Total || JSONData.Total,
-            TongTien: data.result?.TongTien || JSONData.TongTien
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || [],
+            TongTien: data.result?.TongTien || 0
           }
           setListData(Items)
           setTotalValue(TongTien)
@@ -178,7 +107,9 @@ function UseCardMoney(props) {
     }
   }
 
-  const onRefresh = () => {}
+  const onRefresh = () => {
+    getListCardService()
+  }
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
@@ -197,6 +128,22 @@ function UseCardMoney(props) {
       totalArray += keyItem?.UsageHistory?.length || 0
     }
     return totalArray
+  }
+
+  const translateType = types => {
+    if (types === 'THE_TIEN') {
+      return 'Mua thẻ tiền'
+    }
+    if (types === 'THANH_TOAN_DH') {
+      return 'Thanh toán đơn hàng'
+    }
+    if (types === 'KET_THUC_THE') {
+      return 'Kết thúc thẻ'
+    }
+    if (types === 'TRA_HANG') {
+      return 'Trả hàng'
+    }
+    return types
   }
 
   return (
@@ -341,7 +288,7 @@ function UseCardMoney(props) {
                   {item.MemberList.map((member, memberIndex) => (
                     <Fragment key={memberIndex}>
                       {member.UsageHistory.map((use, useIndex) => (
-                        <tr key={use}>
+                        <tr key={useIndex}>
                           {memberIndex === 0 && useIndex === 0 && (
                             <td
                               className="vertical-align-middle"
@@ -368,7 +315,7 @@ function UseCardMoney(props) {
                               </td>
                             </Fragment>
                           )}
-                          <td>{use.Type}</td>
+                          <td>{translateType(use.Type)}</td>
                           <td>{use.Code}</td>
                           <td>{use.Title}</td>
                           <td>{PriceHelper.formatVND(use.Value)}</td>
