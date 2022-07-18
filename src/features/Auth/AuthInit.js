@@ -4,7 +4,7 @@ import { LayoutSplashScreen } from 'src/layout/_core/SplashScreen'
 import { setProfile } from './AuthSlice'
 
 window.token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjQwIiwibmJmIjoxNjU3ODU1ODI2LCJleHAiOjE2NTg0NjA2MjYsImlhdCI6MTY1Nzg1NTgyNn0.nZhRBoIdfNG1FmckdQplNJ5EHOqhiFfAUOQg9k32izQ'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjU2IiwibmJmIjoxNjU4MTEwOTYxLCJleHAiOjE2NTg3MTU3NjEsImlhdCI6MTY1ODExMDk2MX0.FWqTLbF4SqrFzeHQ0vq97k6hP8CSsW-1v1oY85E6LHc'
 
 function AuthInit(props) {
   const [showSplashScreen, setShowSplashScreen] = useState(true)
