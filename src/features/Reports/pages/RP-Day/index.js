@@ -155,9 +155,15 @@ function RPDay(props) {
                     </div>
                   </div>
                   <div className="d-flex justify-content-between pt-12px">
-                    <div className="text-muted">Tổng khách CheckIn</div>
+                    <div className="text-muted">
+                      Khách mới / Tổng khách CheckIn
+                    </div>
                     <div className="fw-600 font-number">
-                      {dataDays?.KHCheckIn || 0}
+                      <span className="font-size-md text-success">
+                        {dataDays?.KHFirstCheckIn || 0}
+                      </span>
+                      <span className="font-size-xs px-1">/</span>
+                      <span>{dataDays?.KHCheckIn || 0}</span>
                     </div>
                   </div>
                 </div>

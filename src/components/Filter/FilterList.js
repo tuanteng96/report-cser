@@ -404,15 +404,15 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       />
                     </div>
                   )}
-                  {'MoneyCardName' in values && (
+                  {'MoneyCardID' in values && (
                     <div className="form-group mb-20px">
                       <label>Tên thẻ tiền</label>
                       <AsyncSelectCardMoney
                         isClearable={true}
                         menuPosition="fixed"
-                        name="MoneyCardName"
+                        name="MoneyCardID"
                         onChange={otp => {
-                          setFieldValue('MoneyCardName', otp, false)
+                          setFieldValue('MoneyCardID', otp, false)
                         }}
                       />
                     </div>

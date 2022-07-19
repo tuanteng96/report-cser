@@ -7,6 +7,7 @@ import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ChildrenTables from 'src/components/Tables/ChildrenTables'
+import ModalViewMobile from './ModalViewMobile'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -295,7 +296,7 @@ function UseCardMoney(props) {
                               rowSpan={AmountUse(item.MemberList)}
                             >
                               {moment(item.CreateDate).format(
-                                'DD-MM-YYYY HH:mm'
+                                'DD-MM-YYYY'
                               )}
                             </td>
                           )}
@@ -333,11 +334,12 @@ function UseCardMoney(props) {
               ))}
           </ChildrenTables>
         </div>
-        {/* <ModalViewMobile
+        <ModalViewMobile
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
-        /> */}
+          translateType={translateType}
+        />
       </div>
     </div>
   )

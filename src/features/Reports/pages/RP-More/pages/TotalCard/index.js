@@ -28,7 +28,7 @@ function TotalCard(props) {
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
     MemberID: '',
-    MoneyCardName: '',
+    MoneyCardID: '',
     StatusTT: ''
   })
   const [StockName, setStockName] = useState('')
@@ -69,7 +69,7 @@ function TotalCard(props) {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
       MemberID: filters.MemberID ? filters.MemberID.value : '',
-      MoneyCardName: filters.MoneyCardName ? filters.MoneyCardName.label : '',
+      MoneyCardID: filters.MoneyCardID ? filters.MoneyCardID.value : '',
       StatusTT:
         filters.StatusTT && filters.StatusTT.length > 0
           ? filters.StatusTT.map(item => item.value).join(',')
