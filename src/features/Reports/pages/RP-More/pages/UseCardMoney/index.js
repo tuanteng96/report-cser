@@ -295,9 +295,7 @@ function UseCardMoney(props) {
                               className="vertical-align-middle"
                               rowSpan={AmountUse(item.MemberList)}
                             >
-                              {moment(item.CreateDate).format(
-                                'DD-MM-YYYY'
-                              )}
+                              {moment(item.CreateDate).format('DD-MM-YYYY')}
                             </td>
                           )}
                           {useIndex === 0 && (

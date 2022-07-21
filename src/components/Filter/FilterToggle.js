@@ -10,7 +10,7 @@ import AsyncSelectGroupsCustomer from '../Selects/AsyncSelectGroupsCustomer'
 import AsyncSelectSource from '../Selects/AsyncSelectSource'
 import { JsonFilter } from 'src/Json/JsonFilter'
 import AsyncSelectBrands from '../Selects/AsyncSelectBrands'
-import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
+import NumberFormat from 'react-number-format'
 import AsyncSelectProduct from '../Selects/AsyncSelectProduct'
 
 registerLocale('vi', vi) // register it with the name you want
@@ -86,78 +86,79 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                     <i className="fa-regular fa-xmark font-size-lg text-muted"></i>
                   </div>
                 </div>
-                <div className="filter-box__body p-20px">
-                  {'DateStart' in values && (
-                    <div className="mb-20px form-group">
-                      <label>Ngày bắt đầu</label>
-                      <DatePicker
-                        onChange={date => {
-                          setFieldValue('DateStart', date, false)
-                        }}
-                        selected={values.DateStart}
-                        // selectsStart
-                        // startDate={values.DateStart}
-                        // endDate={values.DateEnd}
-                        placeholderText="Chọn ngày"
-                        className="form-control"
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  )}
-                  {'DateEnd' in values && (
-                    <div className="mb-20px form-group">
-                      <label>Ngày kết thúc</label>
-                      <DatePicker
-                        onChange={date => {
-                          setFieldValue('DateEnd', date, false)
-                        }}
-                        selected={values.DateEnd}
-                        // selectsEnd
-                        // startDate={values.DateStart}
-                        // endDate={values.DateEnd}
-                        placeholderText="Chọn ngày"
-                        className="form-control"
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  )}
-                  {'StockID' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Cơ sở của bạn</label>
-                      <Select
-                        name="StockID"
-                        placeholder="Chọn cơ cở"
-                        classNamePrefix="select"
-                        options={StocksList}
-                        className="select-control"
-                        value={StocksList.filter(
-                          item => Number(item.value) === Number(values?.StockID)
-                        )}
-                        onChange={otp => {
-                          setFieldValue('StockID', otp ? otp.value : '')
-                        }}
-                      />
-                    </div>
-                  )}
-                  {'BirthDateStart' in values && (
-                    <div className="mb-20px form-group">
-                      <label>Ngày sinh nhật</label>
-                      <DatePicker
-                        placeholderText="Chọn ngày"
-                        className="form-control"
-                        selectsRange={true}
-                        startDate={values.BirthDateStart}
-                        endDate={values.BirthDateEnd}
-                        onChange={date => {
-                          const [Start, End] = date
-                          setFieldValue('BirthDateStart', Start, false)
-                          setFieldValue('BirthDateEnd', End, false)
-                        }}
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  )}
-                  <FilterGroups Title={'Thông tin'} initialShow={false}>
+                <div className="filter-box__body">
+                  <div className="p-20px">
+                    {'DateStart' in values && (
+                      <div className="mb-20px form-group">
+                        <label>Ngày bắt đầu</label>
+                        <DatePicker
+                          onChange={date => {
+                            setFieldValue('DateStart', date, false)
+                          }}
+                          selected={values.DateStart}
+                          // selectsStart
+                          // startDate={values.DateStart}
+                          // endDate={values.DateEnd}
+                          placeholderText="Chọn ngày"
+                          className="form-control"
+                          dateFormat="dd/MM/yyyy"
+                        />
+                      </div>
+                    )}
+                    {'DateEnd' in values && (
+                      <div className="mb-20px form-group">
+                        <label>Ngày kết thúc</label>
+                        <DatePicker
+                          onChange={date => {
+                            setFieldValue('DateEnd', date, false)
+                          }}
+                          selected={values.DateEnd}
+                          // selectsEnd
+                          // startDate={values.DateStart}
+                          // endDate={values.DateEnd}
+                          placeholderText="Chọn ngày"
+                          className="form-control"
+                          dateFormat="dd/MM/yyyy"
+                        />
+                      </div>
+                    )}
+                    {'StockID' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Cơ sở của bạn</label>
+                        <Select
+                          name="StockID"
+                          placeholder="Chọn cơ cở"
+                          classNamePrefix="select"
+                          options={StocksList}
+                          className="select-control"
+                          value={StocksList.filter(
+                            item =>
+                              Number(item.value) === Number(values?.StockID)
+                          )}
+                          onChange={otp => {
+                            setFieldValue('StockID', otp ? otp.value : '')
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'BirthDateStart' in values && (
+                      <div className="mb-20px form-group">
+                        <label>Ngày sinh nhật</label>
+                        <DatePicker
+                          placeholderText="Chọn ngày"
+                          className="form-control"
+                          selectsRange={true}
+                          startDate={values.BirthDateStart}
+                          endDate={values.BirthDateEnd}
+                          onChange={date => {
+                            const [Start, End] = date
+                            setFieldValue('BirthDateStart', Start, false)
+                            setFieldValue('BirthDateEnd', End, false)
+                          }}
+                          dateFormat="dd/MM/yyyy"
+                        />
+                      </div>
+                    )}
                     {'GroupCustomerID' in values && (
                       <div className="form-group mb-20px">
                         <label>Nhóm khách hàng</label>
@@ -205,7 +206,7 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       </div>
                     )}
                     {'StatusMonetCard' in values && (
-                      <div className="form-group mb-20px">
+                      <div className="form-group">
                         <label>Tình trạng thẻ tiền</label>
                         <Select
                           menuPosition="fixed"
@@ -222,8 +223,8 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         />
                       </div>
                     )}
-                  </FilterGroups>
-                  <FilterGroups Title={'Đơn hàng'} initialShow={false}>
+                  </div>
+                  <div className="p-20px border-top">
                     <div className="form-group mb-20px">
                       <label>Cơ sở mua hàng</label>
                       <Select
@@ -303,8 +304,54 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         value={values.Orders.ProductOrderID}
                       />
                     </div>
-                  </FilterGroups>
-                  <FilterGroups Title={'Dịch vụ'} initialShow={false}>
+                    <div className="form-group">
+                      <label>Mức chi tiêu</label>
+                      <div className="d-flex">
+                        <div className="flex-1">
+                          <NumberFormat
+                            allowNegative={false}
+                            name="Orders.PriceFrom"
+                            placeholder="Từ"
+                            className={`form-control`}
+                            isNumericString={true}
+                            thousandSeparator={true}
+                            value={values?.Orders?.PriceFrom}
+                            onValueChange={val => {
+                              setFieldValue(
+                                'Orders.PriceFrom',
+                                val.floatValue ? val.floatValue : val.value
+                              )
+                            }}
+                            onBlur={handleBlur}
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="d-flex align-items-center justify-content-center w-35px">
+                          <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                        </div>
+                        <div className="flex-1">
+                          <NumberFormat
+                            allowNegative={false}
+                            name="Orders.PriceTo"
+                            placeholder="Đến"
+                            className={`form-control`}
+                            isNumericString={true}
+                            thousandSeparator={true}
+                            value={values?.Orders?.PriceTo}
+                            onValueChange={val => {
+                              setFieldValue(
+                                'Orders.PriceTo',
+                                val.floatValue ? val.floatValue : val.value
+                              )
+                            }}
+                            onBlur={handleBlur}
+                            autoComplete="off"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-20px border-top">
                     <div className="form-group mb-20px">
                       <label>Trạng thái</label>
                       <Select
@@ -322,6 +369,52 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       />
                     </div>
                     <div className="form-group mb-20px">
+                      <label>Số buổi dịch vụ còn</label>
+                      <div className="d-flex">
+                        <div className="flex-1">
+                          <NumberFormat
+                            allowNegative={false}
+                            name="Services.DayFrom"
+                            placeholder="Từ"
+                            className={`form-control`}
+                            isNumericString={true}
+                            //thousandSeparator={true}
+                            value={values?.Services?.DayFrom}
+                            onValueChange={val => {
+                              setFieldValue(
+                                'Services.DayFrom',
+                                val.floatValue ? val.floatValue : val.value
+                              )
+                            }}
+                            onBlur={handleBlur}
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="d-flex align-items-center justify-content-center w-35px">
+                          <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                        </div>
+                        <div className="flex-1">
+                          <NumberFormat
+                            allowNegative={false}
+                            name="Services.DayTo"
+                            placeholder="Đến"
+                            className={`form-control`}
+                            isNumericString={true}
+                            //thousandSeparator={true}
+                            value={values?.Services?.DayTo}
+                            onValueChange={val => {
+                              setFieldValue(
+                                'Services.DayTo',
+                                val.floatValue ? val.floatValue : val.value
+                              )
+                            }}
+                            onBlur={handleBlur}
+                            autoComplete="off"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-group">
                       <label>Loại</label>
                       <Select
                         menuPosition="fixed"
@@ -337,7 +430,7 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         }}
                       />
                     </div>
-                  </FilterGroups>
+                  </div>
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
                   <button

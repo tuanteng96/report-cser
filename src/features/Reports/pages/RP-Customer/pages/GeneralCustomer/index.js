@@ -8,6 +8,7 @@ import { useWindowSize } from 'src/hooks/useWindowSize'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import _ from 'lodash'
 import FilterToggle from 'src/components/Filter/FilterToggle'
+import reportsApi from 'src/api/reports.api'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -15,7 +16,6 @@ import 'moment/locale/vi'
 moment.locale('vi')
 
 function GeneralCustomer(props) {
-
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
@@ -26,23 +26,27 @@ function GeneralCustomer(props) {
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
-    BirthDateStart: new Date(),
-    BirthDateEnd: new Date(),
+    BirthDateStart: null,
+    BirthDateEnd: null,
     GroupCustomerID: '', // ID Nhóm khách hàng
     SourceName: '', // ID Thành phố
     StatusWallet: '', // Tình trạng ví
     StatusMonetCard: '', // Tình trạng thẻ tiền
     Orders: {
-      DateOrderStart: '', // Bắt đầu mua hàng
-      DateOrderEnd: '', // Kết thúc mua hàng
+      DateOrderStart: null, // Bắt đầu mua hàng
+      DateOrderEnd: null, // Kết thúc mua hàng
       StockOrderID: '', // Điểm mua hàng
       TypeOrder: '', // Phát sinh mua (SP / DV / THE_TIEN / PP / NVL)
       BrandOrderID: '', // Phát sinh mua theo nhãn hàng
-      ProductOrderID: '' // Phát sinh mua theo nhãn hàng
+      ProductOrderID: '', // Phát sinh mua theo nhãn hàng
+      PriceFrom: '', // Mức chi tiêu từ
+      PriceTo: '' // Mức chi tiêu đến
     },
     Services: {
-      Status: "",
-      Type: ""
+      Status: '',
+      Type: '',
+      DayFrom: '', // Số buổi còn lại từ
+      DayTo: '' // Số buổi còn lại đến
     }
   })
   const [StockName, setStockName] = useState('')
@@ -67,6 +71,80 @@ function GeneralCustomer(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
+  useEffect(() => {
+    getListGeneralCustomer()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
+
+  const getListGeneralCustomer = (isLoading = true, callback) => {
+    //isLoading && setLoading(true)
+    const newFilters = {
+      ...filters,
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null,
+      BirthDateStart: filters.BirthDateStart
+        ? moment(filters.BirthDateStart).format('DD/MM/yyyy')
+        : null,
+      BirthDateEnd: filters.BirthDateEnd
+        ? moment(filters.BirthDateEnd).format('DD/MM/yyyy')
+        : filters.BirthDateStart
+        ? moment(filters.BirthDateStart).format('DD/MM/yyyy')
+        : null,
+      GroupCustomerID: filters.GroupCustomerID
+        ? filters.GroupCustomerID.value
+        : '',
+      StatusMonetCard: filters.StatusMonetCard
+        ? filters.StatusMonetCard.value
+        : '',
+      StatusWallet: filters.StatusWallet ? filters.StatusWallet.value : '',
+      SourceName: filters.SourceName ? filters.SourceName.value : '',
+      Orders: {
+        ...filters.Orders,
+        BrandOrderID: filters.Orders.BrandOrderID
+          ? filters.Orders.BrandOrderID.value
+          : '',
+        ProductOrderID: filters.Orders.ProductOrderID
+          ? filters.Orders.ProductOrderID.value
+          : '',
+        TypeOrder: filters.Orders.TypeOrder
+          ? filters.Orders.TypeOrder.map(item => item.value).join(',')
+          : '',
+        DateOrderStart: filters.Orders.DateOrderStart
+          ? moment(filters.Orders.DateOrderStart).format('DD/MM/yyyy')
+          : null,
+        DateOrderEnd: filters.Orders.DateOrderEnd
+          ? moment(filters.Orders.DateOrderEnd).format('DD/MM/yyyy')
+          : filters.Orders.DateOrderStart
+          ? moment(filters.Orders.DateOrderStart).format('DD/MM/yyyy')
+          : null
+      },
+      Services: {
+        ...filters.Services,
+        Status: filters.Services.Status ? filters.Services.Status.value : '',
+        Type: filters.Services.Type ? filters.Services.Type.value : ''
+      }
+    }
+    reportsApi
+      .getListCustomerGeneral(newFilters)
+      .then(({ data }) => {
+        const { Members, Total, TotalOnline } = {
+          Members: data?.result?.Members || [],
+          Total: data?.result?.Total || 0,
+          TotalOnline: data?.result?.TotalOnline || 0
+        }
+        setListData(Members)
+        setTotalOl(TotalOnline)
+        setLoading(false)
+        setPageTotal(Total)
+        callback && callback()
+      })
+      .catch(error => console.log(error))
+  }
+
   const onOpenFilter = () => {
     setIsFilter(true)
   }
@@ -85,14 +163,14 @@ function GeneralCustomer(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      
+      getListGeneralCustomer()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    
+    getListGeneralCustomer()
   }
 
   const OpenModalMobile = value => {
