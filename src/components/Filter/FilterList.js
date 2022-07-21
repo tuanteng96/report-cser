@@ -414,6 +414,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('MoneyCardID', otp, false)
                         }}
+                        value={values.MoneyCardID}
                       />
                     </div>
                   )}
@@ -452,7 +453,6 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('TagWL', otp)
                         }}
-                        i
                       />
                     </div>
                   )}
@@ -480,6 +480,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('ServiceCardID', otp, false)
                         }}
+                        value={values.ServiceCardID}
                       />
                     </div>
                   )}
@@ -540,6 +541,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('ProductId', otp, false)
                         }}
+                        value={values.ProductId}
                       />
                     </div>
                   )}
@@ -554,6 +556,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('CategoriesId', otp, false)
                         }}
+                        value={values.CategoriesId}
                       />
                     </div>
                   )}
@@ -568,6 +571,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('BrandId', otp, false)
                         }}
+                        value={values.BrandId}
                       />
                     </div>
                   )}
@@ -581,6 +585,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('Status', otp, false)
                         }}
+                        value={values.Status}
                       />
                     </div>
                   )}
@@ -594,6 +599,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('Warranty', otp, false)
                         }}
+                        value={values.Warranty}
                       />
                     </div>
                   )}
@@ -607,6 +613,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp =>
                           setFieldValue('GroupCustomerID', otp, false)
                         }
+                        value={values.GroupCustomerID}
                       />
                     </div>
                   )}
@@ -620,6 +627,7 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         onChange={otp => {
                           setFieldValue('SourceName', otp, false)
                         }}
+                        value={values.SourceName}
                       />
                     </div>
                   )}

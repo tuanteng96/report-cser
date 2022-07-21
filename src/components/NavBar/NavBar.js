@@ -23,7 +23,17 @@ const MenuList = [
     Title: 'Khách hàng',
     TitleKey: 'KHACH_HANG',
     IconClass: 'fa-regular fa-chart-user icon',
-    Href: '/khach-hang'
+    Href: '/khach-hang',
+    Children: [
+      {
+        Title: 'Tổng quan khách hàng',
+        Href: '/khach-hang/tong-quan'
+      },
+      {
+        Title: 'Tổng hợp khách hàng',
+        Href: '/khach-hang/tong-hop'
+      }
+    ]
   },
   {
     Title: 'Dịch vụ',

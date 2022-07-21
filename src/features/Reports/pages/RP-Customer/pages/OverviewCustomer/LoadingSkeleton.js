@@ -1,7 +1,7 @@
 import React from 'react'
-import ChartWidget2 from '../../components/ChartWidget2'
 import Skeleton from 'react-loading-skeleton'
 import LoadingChart from 'src/components/Loading/LoadingChart'
+import ChartWidget2 from 'src/features/Reports/components/ChartWidget2'
 
 function LoadingSkeleton(props) {
   return (

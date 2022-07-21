@@ -1,6 +1,6 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import AsyncSelect from 'react-select/async'
+import { AsyncPaginate } from 'react-select-async-paginate'
 import moreApi from 'src/api/more.api'
 
 AsyncSelectGroupsCustomer.propTypes = {
@@ -8,40 +8,37 @@ AsyncSelectGroupsCustomer.propTypes = {
 }
 
 function AsyncSelectGroupsCustomer({ value, onChange, ...props }) {
-  const typingTimeoutRef = useRef(null)
-  const getAllGroups = (inputValue, callback) => {
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current)
+  const getAllGroups = async (search, loadedOptions, { page }) => {
+    const { data } = await moreApi.getAllGroupCustomer({
+      Key: search
+    })
+    const newData =
+      data &&
+      data.result &&
+      data.result.map(item => ({
+        ...item,
+        label: item.Title,
+        value: item.Id
+      }))
+    return {
+      options: newData,
+      hasMore: false,
+      additional: {
+        page: 1
+      }
     }
-    typingTimeoutRef.current = setTimeout(() => {
-      moreApi
-        .getAllGroupCustomer({
-          _key: inputValue
-        })
-        .then(({ data }) => {
-          const newData =
-            data &&
-            data.result &&
-            data.result.map(item => ({
-              ...item,
-              label: item.Title,
-              value: item.Id
-            }))
-          callback(newData)
-        })
-        .catch(err => console.log(err))
-    }, 500)
   }
 
   return (
-    <AsyncSelect
+    <AsyncPaginate
       {...props}
       className="select-control"
       classNamePrefix="select"
-      cacheOptions
-      loadOptions={(inputValue, callback) => getAllGroups(inputValue, callback)}
-      defaultOptions
+      loadOptions={getAllGroups}
       placeholder="Chọn nhóm khách hàng"
+      additional={{
+        page: 1
+      }}
       value={value}
       onChange={onChange}
       noOptionsMessage={() => 'Không có dữ liệu'}

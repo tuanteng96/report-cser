@@ -30,6 +30,8 @@ import RPCSKH from 'src/features/Reports/pages/RP-CSKH'
 import TotalWallet from 'src/features/Reports/pages/RP-More/pages/TotalWallet'
 import TotalCard from 'src/features/Reports/pages/RP-More/pages/TotalCard'
 import UseCardMoney from 'src/features/Reports/pages/RP-More/pages/UseCardMoney'
+import GeneralCustomer from 'src/features/Reports/pages/RP-Customer/pages/GeneralCustomer'
+import OverviewCustomer from 'src/features/Reports/pages/RP-Customer/pages/OverviewCustomer'
 
 function RouterPage(props) {
   return (
@@ -49,7 +51,11 @@ function RouterPage(props) {
             <RPCustomer />
           </LayoutReport>
         }
-      ></Route>
+      >
+        <Route index element={<Navigate to="tong-quan" replace />} />
+        <Route path="tong-quan" element={<OverviewCustomer />} />
+        <Route path="tong-hop" element={<GeneralCustomer />} />
+      </Route>
       <Route
         path="/dich-vu"
         element={

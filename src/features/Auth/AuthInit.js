@@ -3,9 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { LayoutSplashScreen } from 'src/layout/_core/SplashScreen'
 import { setProfile } from './AuthSlice'
 
-window.token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjU2IiwibmJmIjoxNjU4MTEwOTYxLCJleHAiOjE2NTg3MTU3NjEsImlhdCI6MTY1ODExMDk2MX0.FWqTLbF4SqrFzeHQ0vq97k6hP8CSsW-1v1oY85E6LHc'
-
 function AuthInit(props) {
   const [showSplashScreen, setShowSplashScreen] = useState(true)
   const { Token } = useSelector(({ auth }) => ({
@@ -15,7 +12,7 @@ function AuthInit(props) {
   // We should request user by authToken before rendering the application
 
   function checkInfo(fn) {
-    if (!window.Info && !window.token) {
+    if (!window.Info || !window.token) {
       setTimeout(() => {
         checkInfo(fn)
       }, 50)
@@ -23,7 +20,6 @@ function AuthInit(props) {
       fn()
     }
   }
-
   useEffect(() => {
     async function requestUser() {
       checkInfo(() => {
