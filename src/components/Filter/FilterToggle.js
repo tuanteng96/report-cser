@@ -11,7 +11,7 @@ import AsyncSelectSource from '../Selects/AsyncSelectSource'
 import { JsonFilter } from 'src/Json/JsonFilter'
 import AsyncSelectBrands from '../Selects/AsyncSelectBrands'
 import NumberFormat from 'react-number-format'
-import AsyncSelectProduct from '../Selects/AsyncSelectProduct'
+import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -26,21 +26,21 @@ const {
   StatusServiceMemberList
 } = JsonFilter
 
-const FilterGroups = ({ children, initialShow, Title }) => {
-  const [show, setShow] = useState(initialShow)
-  return (
-    <div>
-      <div
-        className="font-size-sm fw-600 text-uppercase d-flex align-items-center justify-content-between cursor-pointer pb-8px"
-        onClick={() => setShow(!show)}
-      >
-        {Title}
-        <i className="fa-solid fa-chevron-down font-size-xs"></i>
-      </div>
-      {show && children}
-    </div>
-  )
-}
+// const FilterGroups = ({ children, initialShow, Title }) => {
+//   const [show, setShow] = useState(initialShow)
+//   return (
+//     <div>
+//       <div
+//         className="font-size-sm fw-600 text-uppercase d-flex align-items-center justify-content-between cursor-pointer pb-8px"
+//         onClick={() => setShow(!show)}
+//       >
+//         {Title}
+//         <i className="fa-solid fa-chevron-down font-size-xs"></i>
+//       </div>
+//       {show && children}
+//     </div>
+//   )
+// }
 
 function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
   const { Stocks } = useSelector(({ auth }) => ({
@@ -70,8 +70,7 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
       >
         {formikProps => {
           // errors, touched, handleChange, handleBlur
-          const { values, setFieldValue, handleChange, handleBlur } =
-            formikProps
+          const { values, setFieldValue, handleBlur } = formikProps
           return (
             <Form>
               <div className="filter-box__content">
@@ -293,8 +292,8 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       />
                     </div>
                     <div className="form-group mb-20px">
-                      <label>Phát sinh mua sản phẩm</label>
-                      <AsyncSelectProduct
+                      <label>Phát sinh mua mặt hàng</label>
+                      <AsyncSelectProducts
                         isClearable={true}
                         menuPosition="fixed"
                         name="Orders.ProductOrderID"
@@ -355,6 +354,7 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                     <div className="form-group mb-20px">
                       <label>Trạng thái</label>
                       <Select
+                        isMulti
                         menuPosition="fixed"
                         isClearable={true}
                         name="Services.Status"
@@ -417,6 +417,7 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                     <div className="form-group">
                       <label>Loại</label>
                       <Select
+                        isMulti
                         menuPosition="fixed"
                         isClearable={true}
                         name="Services.Type"

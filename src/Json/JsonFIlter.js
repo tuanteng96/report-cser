@@ -263,8 +263,12 @@ export const JsonFilter = {
   ],
   TypeServiceMemberList: [
     {
-      value: 'CHUA_SU_DUNG',
-      label: 'Chưa sử dụng dịch vụ bao giờ'
+      value: 'MUA_CHUA_SU_DUNG',
+      label: 'Mua nhưng chưa sử dụng'
+    },
+    {
+      value: 'CHUA_MUA_DV',
+      label: 'Chưa mua dịch vụ'
     },
     {
       value: 'SD_GIAM_GIA',
@@ -287,6 +291,10 @@ export const JsonFilter = {
     {
       value: 'CON_BUOI_VA_HET_HAN',
       label: 'Còn buổi và hết hạn'
+    },
+    {
+      value: 'DV_BAO_HANH',
+      label: 'Dịch vụ bảo hành'
     }
   ]
 }

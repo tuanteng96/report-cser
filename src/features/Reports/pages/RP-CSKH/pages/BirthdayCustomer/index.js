@@ -6,6 +6,7 @@ import FilterList from 'src/components/Filter/FilterList'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
+import ModalViewMobile from './ModalViewMobile'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -305,11 +306,11 @@ function BirthdayCustomer(props) {
             rowStyle={rowStyle}
           />
         </div>
-        {/* <ModalViewMobile
-                    show={isModalMobile}
-                    onHide={HideModalMobile}
-                    data={initialValuesMobile}
-                /> */}
+        <ModalViewMobile
+          show={isModalMobile}
+          onHide={HideModalMobile}
+          data={initialValuesMobile}
+        />
       </div>
     </div>
   )

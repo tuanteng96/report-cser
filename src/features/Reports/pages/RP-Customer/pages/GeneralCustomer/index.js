@@ -124,8 +124,12 @@ function GeneralCustomer(props) {
       },
       Services: {
         ...filters.Services,
-        Status: filters.Services.Status ? filters.Services.Status.value : '',
-        Type: filters.Services.Type ? filters.Services.Type.value : ''
+        Status: filters.Services.Status
+          ? filters.Services.Status.map(item => item.value).join(',')
+          : '',
+        Type: filters.Services.Type
+          ? filters.Services.Type.map(item => item.value).join(',')
+          : ''
       }
     }
     reportsApi

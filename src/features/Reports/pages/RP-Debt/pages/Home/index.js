@@ -8,7 +8,7 @@ import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
-import { OverlayTrigger, Popover, Tooltip } from 'react-bootstrap'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 
 import moment from 'moment'
