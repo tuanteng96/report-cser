@@ -227,21 +227,17 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                     <div className="form-group mb-20px">
                       <label>Cơ sở mua hàng</label>
                       <Select
-                        name="Orders.StockOrderID"
+                        name="StockOrderID"
                         placeholder="Chọn cơ cở"
                         classNamePrefix="select"
                         options={StocksList}
                         className="select-control"
                         value={StocksList.filter(
                           item =>
-                            Number(item.value) ===
-                            Number(values?.Orders?.StockOrderID)
+                            Number(item.value) === Number(values?.StockOrderID)
                         )}
                         onChange={otp => {
-                          setFieldValue(
-                            'Orders.StockOrderID',
-                            otp ? otp.value : ''
-                          )
+                          setFieldValue('StockOrderID', otp ? otp.value : '')
                         }}
                       />
                     </div>
@@ -251,12 +247,12 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         placeholderText="Chọn ngày"
                         className="form-control"
                         selectsRange={true}
-                        startDate={values?.Orders?.DateOrderStart}
-                        endDate={values?.Orders?.DateOrderEnd}
+                        startDate={values?.DateOrderStart}
+                        endDate={values?.DateOrderEnd}
                         onChange={date => {
                           const [Start, End] = date
-                          setFieldValue('Orders.DateOrderStart', Start, false)
-                          setFieldValue('Orders.DateOrderEnd', End, false)
+                          setFieldValue('DateOrderStart', Start, false)
+                          setFieldValue('DateOrderEnd', End, false)
                         }}
                         dateFormat="dd/MM/yyyy"
                       />
@@ -267,14 +263,14 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         isMulti
                         menuPosition="fixed"
                         isClearable={true}
-                        name="Orders.TypeOrder"
+                        name="TypeOrder"
                         placeholder="Chọn loại"
                         classNamePrefix="select"
                         options={TypeCNList}
                         className="select-control"
-                        value={values?.Orders?.TypeOrder}
+                        value={values?.TypeOrder}
                         onChange={otp => {
-                          setFieldValue('Orders.TypeOrder', otp)
+                          setFieldValue('TypeOrder', otp)
                         }}
                       />
                     </div>
@@ -284,11 +280,11 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         menuPlacement="top"
                         isClearable={true}
                         menuPosition="fixed"
-                        name="Orders.BrandOrderID"
+                        name="BrandOrderID"
                         onChange={otp => {
-                          setFieldValue('Orders.BrandOrderID', otp, false)
+                          setFieldValue('BrandOrderID', otp, false)
                         }}
-                        value={values?.Orders?.BrandOrderID}
+                        value={values?.BrandOrderID}
                       />
                     </div>
                     <div className="form-group mb-20px">
@@ -298,9 +294,9 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         menuPosition="fixed"
                         name="Orders.ProductOrderID"
                         onChange={otp => {
-                          setFieldValue('Orders.ProductOrderID', otp, false)
+                          setFieldValue('ProductOrderID', otp, false)
                         }}
-                        value={values.Orders.ProductOrderID}
+                        value={values.ProductOrderID}
                       />
                     </div>
                     <div className="form-group">
@@ -309,15 +305,15 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         <div className="flex-1">
                           <NumberFormat
                             allowNegative={false}
-                            name="Orders.PriceFrom"
+                            name="PriceFromOrder"
                             placeholder="Từ"
                             className={`form-control`}
                             isNumericString={true}
                             thousandSeparator={true}
-                            value={values?.Orders?.PriceFrom}
+                            value={values?.PriceFromOrder}
                             onValueChange={val => {
                               setFieldValue(
-                                'Orders.PriceFrom',
+                                'PriceFromOrder',
                                 val.floatValue ? val.floatValue : val.value
                               )
                             }}
@@ -331,15 +327,15 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         <div className="flex-1">
                           <NumberFormat
                             allowNegative={false}
-                            name="Orders.PriceTo"
+                            name="PriceToOrder"
                             placeholder="Đến"
                             className={`form-control`}
                             isNumericString={true}
                             thousandSeparator={true}
-                            value={values?.Orders?.PriceTo}
+                            value={values?.PriceToOrder}
                             onValueChange={val => {
                               setFieldValue(
-                                'Orders.PriceTo',
+                                'PriceToOrder',
                                 val.floatValue ? val.floatValue : val.value
                               )
                             }}
@@ -357,14 +353,14 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         isMulti
                         menuPosition="fixed"
                         isClearable={true}
-                        name="Services.Status"
+                        name="StatusServices"
                         placeholder="Chọn trạng thái"
                         classNamePrefix="select"
                         options={StatusServiceMemberList}
                         className="select-control"
-                        value={values?.Services?.Status}
+                        value={values?.StatusServices}
                         onChange={otp => {
-                          setFieldValue('Services.Status', otp)
+                          setFieldValue('StatusServices', otp)
                         }}
                       />
                     </div>
@@ -374,15 +370,15 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         <div className="flex-1">
                           <NumberFormat
                             allowNegative={false}
-                            name="Services.DayFrom"
+                            name="DayFromServices"
                             placeholder="Từ"
                             className={`form-control`}
                             isNumericString={true}
                             //thousandSeparator={true}
-                            value={values?.Services?.DayFrom}
+                            value={values?.DayFromServices}
                             onValueChange={val => {
                               setFieldValue(
-                                'Services.DayFrom',
+                                'DayFromServices',
                                 val.floatValue ? val.floatValue : val.value
                               )
                             }}
@@ -396,15 +392,15 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         <div className="flex-1">
                           <NumberFormat
                             allowNegative={false}
-                            name="Services.DayTo"
+                            name="DayToServices"
                             placeholder="Đến"
                             className={`form-control`}
                             isNumericString={true}
                             //thousandSeparator={true}
-                            value={values?.Services?.DayTo}
+                            value={values?.DayToServices}
                             onValueChange={val => {
                               setFieldValue(
-                                'Services.DayTo',
+                                'DayToServices',
                                 val.floatValue ? val.floatValue : val.value
                               )
                             }}
@@ -420,14 +416,14 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         isMulti
                         menuPosition="fixed"
                         isClearable={true}
-                        name="Services.Type"
+                        name="TypeServices"
                         placeholder="Chọn loại"
                         classNamePrefix="select"
                         options={TypeServiceMemberList}
                         className="select-control"
-                        value={values?.Services?.Type}
+                        value={values?.TypeServices}
                         onChange={otp => {
-                          setFieldValue('Services.Type', otp)
+                          setFieldValue('TypeServices', otp)
                         }}
                       />
                     </div>

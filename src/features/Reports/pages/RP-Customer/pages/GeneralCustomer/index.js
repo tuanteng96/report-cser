@@ -32,22 +32,18 @@ function GeneralCustomer(props) {
     SourceName: '', // ID Thành phố
     StatusWallet: '', // Tình trạng ví
     StatusMonetCard: '', // Tình trạng thẻ tiền
-    Orders: {
-      DateOrderStart: null, // Bắt đầu mua hàng
-      DateOrderEnd: null, // Kết thúc mua hàng
-      StockOrderID: '', // Điểm mua hàng
-      TypeOrder: '', // Phát sinh mua (SP / DV / THE_TIEN / PP / NVL)
-      BrandOrderID: '', // Phát sinh mua theo nhãn hàng
-      ProductOrderID: '', // Phát sinh mua theo nhãn hàng
-      PriceFrom: '', // Mức chi tiêu từ
-      PriceTo: '' // Mức chi tiêu đến
-    },
-    Services: {
-      Status: '',
-      Type: '',
-      DayFrom: '', // Số buổi còn lại từ
-      DayTo: '' // Số buổi còn lại đến
-    }
+    DateOrderStart: null, // Bắt đầu mua hàng
+    DateOrderEnd: null, // Kết thúc mua hàng
+    StockOrderID: '', // Điểm mua hàng
+    TypeOrder: '', // Phát sinh mua (SP / DV / THE_TIEN / PP / NVL)
+    BrandOrderID: '', // Phát sinh mua theo nhãn hàng
+    ProductOrderID: '', // Phát sinh mua theo nhãn hàng
+    PriceFromOrder: '', // Mức chi tiêu từ
+    PriceToOrder: '', // Mức chi tiêu đến
+    StatusServices: '',
+    TypeServices: '',
+    DayFromServices: '', // Số buổi còn lại từ
+    DayToServices: '' // Số buổi còn lại đến
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
@@ -77,7 +73,7 @@ function GeneralCustomer(props) {
   }, [filters])
 
   const getListGeneralCustomer = (isLoading = true, callback) => {
-    //isLoading && setLoading(true)
+    isLoading && setLoading(true)
     const newFilters = {
       ...filters,
       DateStart: filters.DateStart
@@ -102,35 +98,27 @@ function GeneralCustomer(props) {
         : '',
       StatusWallet: filters.StatusWallet ? filters.StatusWallet.value : '',
       SourceName: filters.SourceName ? filters.SourceName.value : '',
-      Orders: {
-        ...filters.Orders,
-        BrandOrderID: filters.Orders.BrandOrderID
-          ? filters.Orders.BrandOrderID.value
-          : '',
-        ProductOrderID: filters.Orders.ProductOrderID
-          ? filters.Orders.ProductOrderID.value
-          : '',
-        TypeOrder: filters.Orders.TypeOrder
-          ? filters.Orders.TypeOrder.map(item => item.value).join(',')
-          : '',
-        DateOrderStart: filters.Orders.DateOrderStart
-          ? moment(filters.Orders.DateOrderStart).format('DD/MM/yyyy')
-          : null,
-        DateOrderEnd: filters.Orders.DateOrderEnd
-          ? moment(filters.Orders.DateOrderEnd).format('DD/MM/yyyy')
-          : filters.Orders.DateOrderStart
-          ? moment(filters.Orders.DateOrderStart).format('DD/MM/yyyy')
-          : null
-      },
-      Services: {
-        ...filters.Services,
-        Status: filters.Services.Status
-          ? filters.Services.Status.map(item => item.value).join(',')
-          : '',
-        Type: filters.Services.Type
-          ? filters.Services.Type.map(item => item.value).join(',')
-          : ''
-      }
+      BrandOrderID: filters.BrandOrderID ? filters.BrandOrderID.value : '',
+      ProductOrderID: filters.ProductOrderID
+        ? filters.ProductOrderID.value
+        : '',
+      TypeOrder: filters.TypeOrder
+        ? filters.TypeOrder.map(item => item.value).join(',')
+        : '',
+      DateOrderStart: filters.DateOrderStart
+        ? moment(filters.DateOrderStart).format('DD/MM/yyyy')
+        : null,
+      DateOrderEnd: filters.DateOrderEnd
+        ? moment(filters.DateOrderEnd).format('DD/MM/yyyy')
+        : filters.DateOrderStart
+        ? moment(filters.DateOrderStart).format('DD/MM/yyyy')
+        : null,
+      StatusServices: filters.StatusServices
+        ? filters.StatusServices.map(item => item.value).join(',')
+        : '',
+      TypeServices: filters.TypeServices
+        ? filters.TypeServices.map(item => item.value).join(',')
+        : ''
     }
     reportsApi
       .getListCustomerGeneral(newFilters)
