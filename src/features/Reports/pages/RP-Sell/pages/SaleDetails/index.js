@@ -10,9 +10,11 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 moment.locale('vi')
 
 const perfectScrollbarOptions = {
@@ -28,7 +30,10 @@ function SaleDetails(props) {
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     DateStart: new Date(), // Ngày,
-    DateEnd: new Date() // Ngày,
+    DateEnd: new Date(), // Ngày,
+    BrandIds: '',
+    CategoriesIds: '',
+    ProductIds: ''
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -37,6 +42,10 @@ function SaleDetails(props) {
     SP_NVL: [], //1
     DV_PP: [], //2
     TT: [] //3
+  })
+  const [Total, setTotal] = useState({
+    SL: 0,
+    DS: 0
   })
   const [heighElm, setHeightElm] = useState({
     Content: 'calc(100% - 55px)',
@@ -82,7 +91,19 @@ function SaleDetails(props) {
         : null,
       Voucher: filters.Voucher ? filters.Voucher.value : '',
       Payment: filters.Payment ? filters.Payment.value : '',
-      IsMember: filters.IsMember ? filters.IsMember.value : ''
+      IsMember: filters.IsMember ? filters.IsMember.value : '',
+      BrandIds:
+        filters.BrandIds && filters.BrandIds.length > 0
+          ? filters.BrandIds.map(item => item.value).join(',')
+          : '',
+      CategoriesIds:
+        filters.CategoriesIds && filters.CategoriesIds.length > 0
+          ? filters.CategoriesIds.map(item => item.value).join(',')
+          : '',
+      ProductIds:
+        filters.ProductIds && filters.ProductIds.length > 0
+          ? filters.ProductIds.map(item => item.value).join(',')
+          : ''
     }
     reportsApi
       .getListSalesDetail(newFilters)
@@ -91,6 +112,11 @@ function SaleDetails(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
+          setTotal(prevState => ({
+            ...prevState,
+            DS: ArrayHeplers.totalKeyArray(data?.result, 'SumTopay'),
+            SL: ArrayHeplers.totalKeyArray(data?.result, 'SumQTy')
+          }))
           setDataResult({
             SP_NVL:
               (data?.result &&
@@ -164,6 +190,58 @@ function SaleDetails(props) {
         loading={loading}
       />
       {loading && <LoadingSkeleton />}
+      <div className="bg-white mb-15px">
+        <div className="px-20px py-15px border-gray-200 d-flex align-items-center justify-content-between">
+          <div className="fw-500 font-size-lg">Danh sách SP, DV bán ra</div>
+          {width <= 1200 ? (
+            <div className="fw-500 d-flex align-items-center">
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="bottom"
+                placement="bottom"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Body className="p-0">
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Tổng số lượng</span>
+                        <span>{PriceHelper.formatVNDPositive(Total.SL)}</span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                        <span>Tổng tiền</span>
+                        <span>{PriceHelper.formatVNDPositive(Total.DS)}</span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-size-xl fw-600 text-danger pl-5px font-number text-success">
+                    {PriceHelper.formatVNDPositive(Total.DS)}
+                  </span>
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-danger ml-5px"></i>
+                </div>
+              </OverlayTrigger>
+            </div>
+          ) : (
+            <div className="d-flex">
+              <div className="fw-500">
+                Tổng số lượng{' '}
+                <span className="font-size-xl fw-600 pl-5px font-number text-success">
+                  {PriceHelper.formatVND(Total.SL)}
+                </span>
+              </div>
+              <div className="fw-500 pl-20px">
+                Tổng tiền{' '}
+                <span className="font-size-xl fw-600 pl-5px font-number text-success">
+                  {PriceHelper.formatVND(Total.DS)}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {!loading && (
         <div className="flex-grow-1">
           <div className="row h-auto h-lg-100">

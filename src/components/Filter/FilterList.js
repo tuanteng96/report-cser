@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import Select from 'react-select'
+import Select, { components } from 'react-select'
 import { Formik, Form } from 'formik'
 import { useSelector } from 'react-redux'
 import AsyncSelectProvinces from '../Selects/AsyncSelectProvinces'
@@ -20,8 +20,10 @@ import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
 import AsyncSelectCategories from '../Selects/AsyncSelectCategories'
 import AsyncSelectBrands from '../Selects/AsyncSelectBrands'
 import AsyncSelectCardMoney from '../Selects/AsyncSelectCardMoney'
+import AsyncSelectCategoriesFull from '../Selects/AsyncSelectCategoriesFull'
 
 import vi from 'date-fns/locale/vi' // the locale you want
+
 registerLocale('vi', vi) // register it with the name you want
 
 const {
@@ -36,10 +38,37 @@ const {
   CategoriesTKList,
   TagWLList,
   TypeTTList,
-  StatusTTList
+  StatusTTList,
+  StarRatingList
 } = JsonFilter
 
-function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
+const CustomOption = ({ children, data, ...props }) => {
+  return (
+    <components.Option {...props}>
+      {data.value
+        ? Array(data.value)
+            .fill()
+            .map((star, index) => (
+              <i
+                className="fa-solid fa-star pl-6px text-warning"
+                key={index}
+              ></i>
+            ))
+        : children}
+    </components.Option>
+  )
+}
+
+function FilterList({
+  show,
+  onHide,
+  filters,
+  onSubmit,
+  loading,
+  loadingExport,
+  onRefresh,
+  onExport
+}) {
   const { Stocks } = useSelector(({ auth }) => ({
     Stocks: auth.Info.Stocks
   }))
@@ -545,6 +574,21 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       />
                     </div>
                   )}
+                  {'ProductIds' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Sản phẩm, DV, NVL, ...</label>
+                      <AsyncSelectProducts
+                        isMulti
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="ProductIds"
+                        onChange={otp => {
+                          setFieldValue('ProductIds', otp, false)
+                        }}
+                        value={values.ProductIds}
+                      />
+                    </div>
+                  )}
                   {'CategoriesId' in values && (
                     <div className="form-group mb-20px">
                       <label>Danh mục</label>
@@ -560,6 +604,22 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       />
                     </div>
                   )}
+                  {'CategoriesIds' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Danh mục</label>
+                      <AsyncSelectCategoriesFull
+                        isMulti
+                        menuPlacement="top"
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="CategoriesIds"
+                        onChange={otp => {
+                          setFieldValue('CategoriesIds', otp, false)
+                        }}
+                        value={values.CategoriesIds}
+                      />
+                    </div>
+                  )}
                   {'BrandId' in values && (
                     <div className="form-group mb-20px">
                       <label>Nhãn hàng</label>
@@ -572,6 +632,22 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           setFieldValue('BrandId', otp, false)
                         }}
                         value={values.BrandId}
+                      />
+                    </div>
+                  )}
+                  {'BrandIds' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Nhãn hàng</label>
+                      <AsyncSelectBrands
+                        isMulti
+                        menuPlacement="top"
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="BrandIds"
+                        onChange={otp => {
+                          setFieldValue('BrandIds', otp, false)
+                        }}
+                        value={values.BrandIds}
                       />
                     </div>
                   )}
@@ -600,6 +676,26 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           setFieldValue('Warranty', otp, false)
                         }}
                         value={values.Warranty}
+                      />
+                    </div>
+                  )}
+                  {'StarRating' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Đánh giá</label>
+                      <Select
+                        isMulti
+                        placeholder="Chọn đánh giá"
+                        classNamePrefix="select"
+                        options={StarRatingList}
+                        className="select-control"
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="StarRating"
+                        onChange={otp => {
+                          setFieldValue('StarRating', otp, false)
+                        }}
+                        value={values.StarRating}
+                        components={{ Option: CustomOption }}
                       />
                     </div>
                   )}
@@ -666,14 +762,25 @@ function FilterList({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                   <button
                     type="button"
                     className={clsx(
+                      'btn btn-primary me-2 max-w-135px text-truncate',
+                      loadingExport && 'spinner spinner-white spinner-right'
+                    )}
+                    disabled={loadingExport}
+                    onClick={onExport}
+                  >
+                    <i className="far fa-file-excel pr-8px"></i>
+                    Xuất Excel
+                  </button>
+                  <button
+                    type="button"
+                    className={clsx(
                       'btn btn-info',
                       loading && 'spinner spinner-white spinner-right'
                     )}
                     disabled={loading}
                     onClick={onRefresh}
                   >
-                    <i className="fa-regular fa-arrows-rotate pr-5px"></i>
-                    Làm mới
+                    <i className="fa-regular fa-arrows-rotate"></i>
                   </button>
                   <button
                     type="submit"

@@ -296,5 +296,31 @@ export const JsonFilter = {
       value: 'DV_BAO_HANH',
       label: 'Dịch vụ bảo hành'
     }
+  ],
+  StarRatingList: [
+    {
+      value: 0,
+      label: 'Chưa đánh giá'
+    },
+    {
+      value: 1,
+      label: '1 Sao'
+    },
+    {
+      value: 2,
+      label: '2 Sao'
+    },
+    {
+      value: 3,
+      label: '3 Sao'
+    },
+    {
+      value: 4,
+      label: '4 Sao'
+    },
+    {
+      value: 5,
+      label: '5 Sao'
+    }
   ]
 }

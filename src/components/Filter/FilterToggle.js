@@ -42,7 +42,16 @@ const {
 //   )
 // }
 
-function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
+function FilterToggle({
+  show,
+  onHide,
+  filters,
+  onSubmit,
+  loading,
+  loadingExport,
+  onRefresh,
+  onExport
+}) {
   const { Stocks } = useSelector(({ auth }) => ({
     Stocks: auth.Info.Stocks
   }))
@@ -250,6 +259,7 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         startDate={values?.DateOrderStart}
                         endDate={values?.DateOrderEnd}
                         onChange={date => {
+                          console.log(date)
                           const [Start, End] = date
                           setFieldValue('DateOrderStart', Start, false)
                           setFieldValue('DateOrderEnd', End, false)
@@ -433,14 +443,25 @@ function FilterToggle({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                   <button
                     type="button"
                     className={clsx(
+                      'btn btn-primary me-2 max-w-135px text-truncate',
+                      loadingExport && 'spinner spinner-white spinner-right'
+                    )}
+                    disabled={loadingExport}
+                    onClick={onExport}
+                  >
+                    <i className="far fa-file-excel pr-8px"></i>
+                    <span>Xuất Excel</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={clsx(
                       'btn btn-info',
                       loading && 'spinner spinner-white spinner-right'
                     )}
                     disabled={loading}
                     onClick={onRefresh}
                   >
-                    <i className="fa-regular fa-arrows-rotate pr-5px"></i>
-                    Làm mới
+                    <i className="fa-regular fa-arrows-rotate"></i>
                   </button>
                   <button
                     type="submit"

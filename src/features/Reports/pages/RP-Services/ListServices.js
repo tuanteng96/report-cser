@@ -60,7 +60,11 @@ const ListServices = forwardRef(
         ProvincesID: filters.ProvincesID ? filters.ProvincesID.value : '',
         DistrictsID: filters.DistrictsID ? filters.DistrictsID.value : '',
         Status: filters.Status ? filters.Status.value : '',
-        Warranty: filters.Warranty ? filters.Warranty.value : ''
+        Warranty: filters.Warranty ? filters.Warranty.value : '',
+        StarRating:
+          filters.StarRating && filters.StarRating.length > 0
+            ? filters.StarRating.map(item => item.value).join(',')
+            : ''
       }
       reportsApi
         .getListServices(newFilters)
@@ -142,7 +146,7 @@ const ListServices = forwardRef(
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách dịch vụ</div>
           <div className="d-flex">
-            <div className="fw-500">
+            <div className="fw-500 pr-10px">
               Tổng dịch vụ{' '}
               <span className="font-size-xl fw-600 text-success pl-5px font-number">
                 {PageTotal}

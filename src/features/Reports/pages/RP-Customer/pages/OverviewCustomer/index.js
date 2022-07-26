@@ -79,6 +79,7 @@ function OverviewCustomer() {
   const [OverviewData, setOverviewData] = useState(null)
   const [dataChart, setDataChart] = useState(objData)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
   const [heightChart, setHeightChart] = useState(100)
   const elementListRef = useRef()
@@ -155,6 +156,17 @@ function OverviewCustomer() {
     }
   }
 
+  const onExport = async () => {
+    setLoadingExport(true)
+    const data = await elementListRef?.current?.onGetDataExport()
+    window?.EzsExportExcel &&
+      window?.EzsExportExcel({
+        Url: '/khach-hang/tong-quan',
+        Data: data,
+        hideLoading: () => setLoadingExport(false)
+      })
+  }
+
   const onRefresh = () => {
     elementListRef?.current?.onRefresh(() => getOverviewCustomer())
   }
@@ -204,6 +216,8 @@ function OverviewCustomer() {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       {loading && <LoadingSkeleton />}
       {!loading && (
@@ -336,6 +350,7 @@ function OverviewCustomer() {
         onSizePerPageChange={onSizePerPageChange}
         filters={filters}
         ref={elementListRef}
+        onExport={onExport}
       />
     </div>
   )

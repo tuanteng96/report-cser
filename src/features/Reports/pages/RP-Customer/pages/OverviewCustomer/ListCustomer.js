@@ -33,12 +33,22 @@ const ListCustomer = forwardRef(
     useImperativeHandle(ref, () => ({
       onRefresh(callback) {
         getListCustomer(false, () => callback && callback())
+      },
+      onGetDataExport() {
+        return new Promise((resolve, reject) => {
+          const newFilters = GeneralNewFilter({ ...filters, Ps: 1000 })
+          reportsApi
+            .getListCustomer(newFilters)
+            .then(({ data }) => {
+              resolve(data)
+            })
+            .catch(error => console.log(error))
+        })
       }
     }))
 
-    const getListCustomer = (isLoading = true, callback) => {
-      isLoading && setLoading(true)
-      const newFilters = {
+    const GeneralNewFilter = filters => {
+      return {
         ...filters,
         DateStart: filters.DateStart
           ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -54,6 +64,11 @@ const ListCustomer = forwardRef(
         ProvincesID: filters.ProvincesID ? filters.ProvincesID.value : '',
         DistrictsID: filters.DistrictsID ? filters.DistrictsID.value : ''
       }
+    }
+
+    const getListCustomer = (isLoading = true, callback) => {
+      isLoading && setLoading(true)
+      const newFilters = GeneralNewFilter(filters)
       reportsApi
         .getListCustomer(newFilters)
         .then(({ data }) => {

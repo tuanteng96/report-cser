@@ -59,7 +59,8 @@ function RPServices(props) {
     Ps: 10, // Số lượng item
     Status: '', // Trạng thái
     Warranty: '', // Bảo hành
-    StaffID: '' // ID nhân viên
+    StaffID: '', // ID nhân viên
+    StarRating: '' // Đánh giá sao
   })
   const [dataChart, setDataChart] = useState(objData)
   const [optionsChart, setOptionsChart] = useState(optionsObj)

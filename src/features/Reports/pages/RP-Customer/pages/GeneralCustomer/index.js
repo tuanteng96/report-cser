@@ -48,6 +48,7 @@ function GeneralCustomer(props) {
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
   const [TotalOl, setTotalOl] = useState(0)
   const [isFilter, setIsFilter] = useState(false)
@@ -72,9 +73,8 @@ function GeneralCustomer(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListGeneralCustomer = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -120,6 +120,11 @@ function GeneralCustomer(props) {
         ? filters.TypeServices.map(item => item.value).join(',')
         : ''
     }
+  }
+
+  const getListGeneralCustomer = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListCustomerGeneral(newFilters)
       .then(({ data }) => {
@@ -159,6 +164,22 @@ function GeneralCustomer(props) {
     } else {
       setFilters({ ...values, Pi: 1 })
     }
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000 })
+    reportsApi
+      .getListCustomerGeneral(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/khach-hang/tong-hop',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const onRefresh = () => {
@@ -204,6 +225,8 @@ function GeneralCustomer(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
