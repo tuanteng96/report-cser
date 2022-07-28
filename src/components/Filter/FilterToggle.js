@@ -150,21 +150,41 @@ function FilterToggle({
                       </div>
                     )}
                     {'BirthDateStart' in values && (
-                      <div className="mb-20px form-group">
+                      <div className="form-group mb-20px">
                         <label>Ngày sinh nhật</label>
-                        <DatePicker
-                          placeholderText="Chọn ngày"
-                          className="form-control"
-                          selectsRange={true}
-                          startDate={values.BirthDateStart}
-                          endDate={values.BirthDateEnd}
-                          onChange={date => {
-                            const [Start, End] = date
-                            setFieldValue('BirthDateStart', Start, false)
-                            setFieldValue('BirthDateEnd', End, false)
-                          }}
-                          dateFormat="dd/MM/yyyy"
-                        />
+                        <div className="d-flex">
+                          <div className="flex-1">
+                            <DatePicker
+                              onChange={date => {
+                                setFieldValue('BirthDateStart', date, false)
+                              }}
+                              selected={values.BirthDateStart}
+                              // selectsEnd
+                              // startDate={values.DateStart}
+                              // endDate={values.DateEnd}
+                              className="form-control"
+                              dateFormat="dd/MM"
+                              placeholderText="Bắt đầu"
+                            />
+                          </div>
+                          <div className="d-flex align-items-center justify-content-center w-35px">
+                            <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                          </div>
+                          <div className="flex-1">
+                            <DatePicker
+                              onChange={date => {
+                                setFieldValue('BirthDateEnd', date, false)
+                              }}
+                              selected={values.BirthDateEnd}
+                              // selectsEnd
+                              // startDate={values.DateStart}
+                              // endDate={values.DateEnd}
+                              className="form-control"
+                              dateFormat="dd/MM"
+                              placeholderText="Bắt đầu"
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
                     {'GroupCustomerID' in values && (
@@ -252,20 +272,39 @@ function FilterToggle({
                     </div>
                     <div className="mb-20px form-group">
                       <label>Thời gian mua hàng</label>
-                      <DatePicker
-                        placeholderText="Chọn ngày"
-                        className="form-control"
-                        selectsRange={true}
-                        startDate={values?.DateOrderStart}
-                        endDate={values?.DateOrderEnd}
-                        onChange={date => {
-                          console.log(date)
-                          const [Start, End] = date
-                          setFieldValue('DateOrderStart', Start, false)
-                          setFieldValue('DateOrderEnd', End, false)
-                        }}
-                        dateFormat="dd/MM/yyyy"
-                      />
+                      <div className="d-flex">
+                        <div className="flex-1">
+                          <DatePicker
+                            onChange={date => {
+                              setFieldValue('DateOrderStart', date, false)
+                            }}
+                            selected={values.DateOrderStart}
+                            // selectsEnd
+                            // startDate={values.DateStart}
+                            // endDate={values.DateEnd}
+                            className="form-control"
+                            dateFormat="dd/MM"
+                            placeholderText="Bắt đầu"
+                          />
+                        </div>
+                        <div className="d-flex align-items-center justify-content-center w-35px">
+                          <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                        </div>
+                        <div className="flex-1">
+                          <DatePicker
+                            onChange={date => {
+                              setFieldValue('DateOrderEnd', date, false)
+                            }}
+                            selected={values.DateOrderEnd}
+                            // selectsEnd
+                            // startDate={values.DateStart}
+                            // endDate={values.DateEnd}
+                            className="form-control"
+                            dateFormat="dd/MM"
+                            placeholderText="Bắt đầu"
+                          />
+                        </div>
+                      </div>
                     </div>
                     <div className="form-group mb-20px">
                       <label>Phát sinh mua</label>
@@ -466,13 +505,13 @@ function FilterToggle({
                   <button
                     type="submit"
                     className={clsx(
-                      'btn btn-success ms-2',
+                      'btn btn-success ms-2 max-w-135px text-truncate',
                       loading && 'spinner spinner-white spinner-right'
                     )}
                     disabled={loading}
                   >
                     <i className="fa-regular fa-magnifying-glass pr-5px"></i>
-                    Lọc kết quả
+                    <span>Lọc kết quả</span>
                   </button>
                 </div>
               </div>

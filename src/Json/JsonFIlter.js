@@ -281,7 +281,7 @@ export const JsonFilter = {
   ],
   StatusServiceMemberList: [
     {
-      value: 'CON',
+      value: 'CON_HAN',
       label: 'Hiện còn'
     },
     {

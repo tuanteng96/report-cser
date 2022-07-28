@@ -137,6 +137,7 @@ function GeneralCustomer(props) {
         setTotalOl(TotalOnline)
         setLoading(false)
         setPageTotal(Total)
+        isFilter && setIsFilter(false)
         callback && callback()
       })
       .catch(error => console.log(error))
@@ -392,12 +393,7 @@ function GeneralCustomer(props) {
                 text: 'Giới tính',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.Gender === 0 ? (
-                    'Nam'
-                  ) : (
-                    <>{row.Gender === 1 ? 'Nữ' : 'Chưa xác định'}</>
-                  ),
+                formatter: (cell, row) => row.Gender,
                 attrs: { 'data-title': 'Giới tính' },
                 headerStyle: () => {
                   return { minWidth: '100px', width: '100px' }

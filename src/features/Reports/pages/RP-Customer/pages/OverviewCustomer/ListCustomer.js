@@ -261,12 +261,7 @@ const ListCustomer = forwardRef(
                 text: 'Giới tính',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row.Gender === 0 ? (
-                    'Nam'
-                  ) : (
-                    <>{row.Gender === 1 ? 'Nữ' : 'Chưa xác định'}</>
-                  ),
+                formatter: (cell, row) => row.Gender,
                 attrs: { 'data-title': 'Giới tính' },
                 headerStyle: () => {
                   return { minWidth: '100px', width: '100px' }
