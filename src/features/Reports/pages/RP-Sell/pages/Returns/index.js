@@ -29,6 +29,7 @@ function Returns(props) {
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
   const [Total, setTotal] = useState({ ToPay: 0 })
@@ -53,9 +54,8 @@ function Returns(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListReturns = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -64,6 +64,11 @@ function Returns(props) {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null
     }
+  }
+
+  const getListReturns = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListReturns(newFilters)
       .then(({ data }) => {
@@ -93,6 +98,22 @@ function Returns(props) {
     } else {
       setFilters({ ...values, Pi: 1 })
     }
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListReturns(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/ban-hang/tra-hang',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const onRefresh = () => {
@@ -146,6 +167,8 @@ function Returns(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -237,7 +260,7 @@ function Returns(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               },
               onPageChange: page => {
                 setListData([])

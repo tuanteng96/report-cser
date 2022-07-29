@@ -35,6 +35,7 @@ function Sales(props) {
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
   const [dataSell, setDataSell] = useState({})
   const [heightElm, setHeightElm] = useState(0)
@@ -149,7 +150,18 @@ function Sales(props) {
   }
 
   const onSizePerPageChange = Ps => {
-    setFilters({ ...filters, Ps: Ps })
+    setFilters({ ...filters, Ps: Ps, Pi: 1 })
+  }
+
+  const onExport = async () => {
+    setLoadingExport(true)
+    const data = await elementListRef?.current?.onGetDataExport()
+    window?.EzsExportExcel &&
+      window?.EzsExportExcel({
+        Url: '/ban-hang/doanh-so',
+        Data: data,
+        hideLoading: () => setLoadingExport(false)
+      })
   }
 
   return (
@@ -181,6 +193,8 @@ function Sales(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="row">
         <div className="col-md-12 col-lg-5" ref={elementRef}>

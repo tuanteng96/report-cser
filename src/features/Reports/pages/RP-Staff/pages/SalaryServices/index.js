@@ -32,6 +32,7 @@ function SalaryServices(props) {
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [ListData, setListData] = useState([])
   const [Total, setTotal] = useState({
     Tong_Luong: 0,
@@ -60,9 +61,8 @@ function SalaryServices(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListSalarys = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -74,6 +74,11 @@ function SalaryServices(props) {
       MemberID: filters.MemberID ? filters.MemberID.value : '',
       ServiceCardID: filters.ServiceCardID ? filters.ServiceCardID.value : ''
     }
+  }
+
+  const getListSalarys = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListStaffSalarySV(newFilters)
       .then(({ data }) => {
@@ -133,6 +138,22 @@ function SalaryServices(props) {
     getListSalarys()
   }
 
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListStaffSalarySV(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/nhan-vien/luong-ca-dich-vu',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
+  }
+
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
     setIsModalMobile(true)
@@ -172,6 +193,8 @@ function SalaryServices(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -225,14 +248,6 @@ function SalaryServices(props) {
             </div>
           </div>
         </div>
-        <FilterList
-          show={isFilter}
-          filters={filters}
-          onHide={onHideFilter}
-          onSubmit={onFilter}
-          onRefresh={onRefresh}
-          loading={loading}
-        />
         <div className="p-20px">
           <BaseTablesCustom
             data={ListData}
@@ -250,7 +265,7 @@ function SalaryServices(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               },
               onPageChange: page => {
                 setListData([])

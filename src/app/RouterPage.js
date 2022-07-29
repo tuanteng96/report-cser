@@ -32,6 +32,8 @@ import TotalCard from 'src/features/Reports/pages/RP-More/pages/TotalCard'
 import UseCardMoney from 'src/features/Reports/pages/RP-More/pages/UseCardMoney'
 import GeneralCustomer from 'src/features/Reports/pages/RP-Customer/pages/GeneralCustomer'
 import OverviewCustomer from 'src/features/Reports/pages/RP-Customer/pages/OverviewCustomer'
+import ExpenseCustomer from 'src/features/Reports/pages/RP-Customer/pages/ExpenseCustomer'
+import UseServiceCustomer from 'src/features/Reports/pages/RP-Customer/pages/UseServiceCustomer'
 
 function RouterPage(props) {
   return (
@@ -55,6 +57,8 @@ function RouterPage(props) {
         <Route index element={<Navigate to="tong-quan" replace />} />
         <Route path="tong-quan" element={<OverviewCustomer />} />
         <Route path="tong-hop" element={<GeneralCustomer />} />
+        <Route path="chi-tieu" element={<ExpenseCustomer />} />
+        <Route path="su-dung-dich-vu" element={<UseServiceCustomer />} />
       </Route>
       <Route
         path="/dich-vu"

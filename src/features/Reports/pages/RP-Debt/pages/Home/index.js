@@ -31,6 +31,7 @@ function Home(props) {
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [ListData, setListData] = useState([])
   const [Total, setTotal] = useState({
     DH_NO: 0,
@@ -59,9 +60,8 @@ function Home(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListDebt = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -74,6 +74,11 @@ function Home(props) {
           ? filters.TypeCN.map(item => item.value).join(',')
           : ''
     }
+  }
+
+  const getListDebt = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListDebt(newFilters)
       .then(({ data }) => {
@@ -105,6 +110,22 @@ function Home(props) {
     } else {
       setFilters({ ...values, Pi: 1 })
     }
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListDebt(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/cong-no/danh-sach',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const onRefresh = () => {
@@ -167,6 +188,8 @@ function Home(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -329,7 +352,7 @@ function Home(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               }
             }}
             optionsMoible={{

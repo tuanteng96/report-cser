@@ -39,12 +39,22 @@ const ListServices = forwardRef(
     useImperativeHandle(ref, () => ({
       onRefresh(callback) {
         getListServices(false, () => callback && callback())
+      },
+      onGetDataExport() {
+        return new Promise((resolve, reject) => {
+          const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+          reportsApi
+            .getListServices(newFilters)
+            .then(({ data }) => {
+              resolve(data)
+            })
+            .catch(error => console.log(error))
+        })
       }
     }))
 
-    const getListServices = (isLoading = true, callback) => {
-      isLoading && setLoading(true)
-      const newFilters = {
+    const GeneralNewFilter = filters => {
+      return {
         ...filters,
         DateStart: filters.DateStart
           ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -66,6 +76,11 @@ const ListServices = forwardRef(
             ? filters.StarRating.map(item => item.value).join(',')
             : ''
       }
+    }
+
+    const getListServices = (isLoading = true, callback) => {
+      isLoading && setLoading(true)
+      const newFilters = GeneralNewFilter(filters)
       reportsApi
         .getListServices(newFilters)
         .then(({ data }) => {

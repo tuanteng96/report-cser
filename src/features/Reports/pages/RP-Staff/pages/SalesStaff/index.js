@@ -35,6 +35,7 @@ function SalesStaff(props) {
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [ListData, setListData] = useState([])
   const [TotalSales, setTotalSales] = useState({
     TongDoanhSo: 0,
@@ -62,9 +63,8 @@ function SalesStaff(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListSalarys = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -79,6 +79,11 @@ function SalesStaff(props) {
       BrandId: filters.BrandId ? filters.BrandId.value : '',
       ProductId: filters.ProductId ? filters.ProductId.value : ''
     }
+  }
+
+  const getListSalarys = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListStaffSales(newFilters)
       .then(({ data }) => {
@@ -122,6 +127,22 @@ function SalesStaff(props) {
 
   const onRefresh = () => {
     getListSalarys()
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListStaffSales(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/nhan-vien/doanh-so',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const OpenModalMobile = value => {
@@ -180,6 +201,8 @@ function SalesStaff(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -227,14 +250,6 @@ function SalesStaff(props) {
             </OverlayTrigger>
           </div>
         </div>
-        <FilterList
-          show={isFilter}
-          filters={filters}
-          onHide={onHideFilter}
-          onSubmit={onFilter}
-          onRefresh={onRefresh}
-          loading={loading}
-        />
         <div className="p-20px">
           <ChildrenTables
             data={ListData}
@@ -317,7 +332,7 @@ function SalesStaff(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               }
             }}
             optionsMoible={{

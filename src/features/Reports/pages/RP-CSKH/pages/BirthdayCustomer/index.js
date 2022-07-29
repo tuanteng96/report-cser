@@ -218,7 +218,7 @@ function BirthdayCustomer(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               },
               onPageChange: page => {
                 setListData([])

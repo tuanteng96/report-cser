@@ -63,6 +63,7 @@ function RPReEx(props) {
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [loadingList, setLoadingList] = useState(false)
   const [ListData, setListData] = useState(null)
   const [dataChart, setDataChart] = useState(objData)
@@ -135,9 +136,8 @@ function RPReEx(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListReEx = (isLoading = true, callback) => {
-    isLoading && setLoadingList(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -154,6 +154,11 @@ function RPReEx(props) {
           ? filters.TagsTC.map(item => item.value).join(',')
           : ''
     }
+  }
+
+  const getListReEx = (isLoading = true, callback) => {
+    isLoading && setLoadingList(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListReEx(newFilters)
       .then(({ data }) => {
@@ -166,7 +171,7 @@ function RPReEx(props) {
   }
 
   const onSizePerPageChange = PsNew => {
-    setFilters({ ...filters, Ps: PsNew })
+    setFilters({ ...filters, Ps: PsNew, Pi: 1 })
   }
 
   const onPageChange = PiNew => {
@@ -187,6 +192,22 @@ function RPReEx(props) {
     } else {
       setFilters({ ...values, Pi: 1 })
     }
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListReEx(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/thu-chi-va-so-quy',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const onRefresh = () => {
@@ -223,6 +244,8 @@ function RPReEx(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="row">
         <div className="col-lg-5 col-xl-6">

@@ -33,6 +33,7 @@ function Home(props) {
   const [ListData, setListData] = useState([])
   const [PageTotal, setPageTotal] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
@@ -53,9 +54,8 @@ function Home(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListPayroll = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -66,6 +66,11 @@ function Home(props) {
       CategoriesTK: filters.CategoriesTK ? filters.CategoriesTK.value : '',
       ProdIDs: filters.ProdIDs && filters.ProdIDs.map(item => item.Id).join(',')
     }
+  }
+
+  const getListPayroll = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListInventory(newFilters)
       .then(({ data }) => {
@@ -105,6 +110,22 @@ function Home(props) {
 
   const onRefresh = () => {
     getListPayroll()
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListInventory(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/ton-kho/danh-sach',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const OpenModalMobile = value => {
@@ -154,6 +175,8 @@ function Home(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -176,7 +199,7 @@ function Home(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               },
               onPageChange: page => {
                 setListData([])

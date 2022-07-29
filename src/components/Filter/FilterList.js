@@ -763,7 +763,8 @@ function FilterList({
                     type="button"
                     className={clsx(
                       'btn btn-primary me-2 max-w-135px text-truncate',
-                      loadingExport && 'spinner spinner-white spinner-right'
+                      (loadingExport || loading) &&
+                        'spinner spinner-white spinner-right'
                     )}
                     disabled={loadingExport}
                     onClick={onExport}
@@ -785,7 +786,7 @@ function FilterList({
                   <button
                     type="submit"
                     className={clsx(
-                      'btn btn-success ms-2',
+                      'btn btn-success ms-2 ms-2 max-w-135px text-truncate',
                       loading && 'spinner spinner-white spinner-right'
                     )}
                     disabled={loading}

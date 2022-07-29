@@ -12,6 +12,8 @@ import { JsonFilter } from 'src/Json/JsonFilter'
 import AsyncSelectBrands from '../Selects/AsyncSelectBrands'
 import NumberFormat from 'react-number-format'
 import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
+import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
+import AsyncSelectServices from '../Selects/AsyncSelectServices'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -187,6 +189,20 @@ function FilterToggle({
                         </div>
                       </div>
                     )}
+                    {'MemberID' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Khách hàng</label>
+                        <AsyncSelectMembers
+                          isClearable={true}
+                          menuPosition="fixed"
+                          name="MemberID"
+                          value={values.MemberID}
+                          onChange={otp => {
+                            setFieldValue('MemberID', otp, false)
+                          }}
+                        />
+                      </div>
+                    )}
                     {'GroupCustomerID' in values && (
                       <div className="form-group mb-20px">
                         <label>Nhóm khách hàng</label>
@@ -202,7 +218,11 @@ function FilterToggle({
                       </div>
                     )}
                     {'SourceName' in values && (
-                      <div className="form-group mb-20px">
+                      <div
+                        className={`form-group ${clsx({
+                          'mb-20px': 'StatusWallet' in values
+                        })}`}
+                      >
                         <label>Nguồn khách hàng</label>
                         <AsyncSelectSource
                           isClearable={true}
@@ -252,238 +272,296 @@ function FilterToggle({
                       </div>
                     )}
                   </div>
-                  <div className="p-20px border-top">
-                    <div className="form-group mb-20px">
-                      <label>Cơ sở mua hàng</label>
-                      <Select
-                        name="StockOrderID"
-                        placeholder="Chọn cơ cở"
-                        classNamePrefix="select"
-                        options={StocksList}
-                        className="select-control"
-                        value={StocksList.filter(
-                          item =>
-                            Number(item.value) === Number(values?.StockOrderID)
-                        )}
-                        onChange={otp => {
-                          setFieldValue('StockOrderID', otp ? otp.value : '')
-                        }}
-                      />
-                    </div>
-                    <div className="mb-20px form-group">
-                      <label>Thời gian mua hàng</label>
-                      <div className="d-flex">
-                        <div className="flex-1">
-                          <DatePicker
-                            onChange={date => {
-                              setFieldValue('DateOrderStart', date, false)
-                            }}
-                            selected={values.DateOrderStart}
-                            // selectsEnd
-                            // startDate={values.DateStart}
-                            // endDate={values.DateEnd}
-                            className="form-control"
-                            dateFormat="dd/MM"
-                            placeholderText="Bắt đầu"
-                          />
-                        </div>
-                        <div className="d-flex align-items-center justify-content-center w-35px">
-                          <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
-                        </div>
-                        <div className="flex-1">
-                          <DatePicker
-                            onChange={date => {
-                              setFieldValue('DateOrderEnd', date, false)
-                            }}
-                            selected={values.DateOrderEnd}
-                            // selectsEnd
-                            // startDate={values.DateStart}
-                            // endDate={values.DateEnd}
-                            className="form-control"
-                            dateFormat="dd/MM"
-                            placeholderText="Bắt đầu"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="form-group mb-20px">
-                      <label>Phát sinh mua</label>
-                      <Select
-                        isMulti
-                        menuPosition="fixed"
-                        isClearable={true}
-                        name="TypeOrder"
-                        placeholder="Chọn loại"
-                        classNamePrefix="select"
-                        options={TypeCNList}
-                        className="select-control"
-                        value={values?.TypeOrder}
-                        onChange={otp => {
-                          setFieldValue('TypeOrder', otp)
-                        }}
-                      />
-                    </div>
-                    <div className="form-group mb-20px">
-                      <label>Phát sinh mua theo nhãn hàng</label>
-                      <AsyncSelectBrands
-                        menuPlacement="top"
-                        isClearable={true}
-                        menuPosition="fixed"
-                        name="BrandOrderID"
-                        onChange={otp => {
-                          setFieldValue('BrandOrderID', otp, false)
-                        }}
-                        value={values?.BrandOrderID}
-                      />
-                    </div>
-                    <div className="form-group mb-20px">
-                      <label>Phát sinh mua mặt hàng</label>
-                      <AsyncSelectProducts
-                        isClearable={true}
-                        menuPosition="fixed"
-                        name="Orders.ProductOrderID"
-                        onChange={otp => {
-                          setFieldValue('ProductOrderID', otp, false)
-                        }}
-                        value={values.ProductOrderID}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Mức chi tiêu</label>
-                      <div className="d-flex">
-                        <div className="flex-1">
-                          <NumberFormat
-                            allowNegative={false}
-                            name="PriceFromOrder"
-                            placeholder="Từ"
-                            className={`form-control`}
-                            isNumericString={true}
-                            thousandSeparator={true}
-                            value={values?.PriceFromOrder}
-                            onValueChange={val => {
+                  {('StockOrderID' in values ||
+                    'DateOrderStart' in values ||
+                    'TypeOrder' in values ||
+                    'BrandOrderID' in values ||
+                    'ProductOrderID' in values ||
+                    'PriceFromOrder' in values) && (
+                    <div className="p-20px border-top">
+                      {'StockOrderID' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Cơ sở mua hàng</label>
+                          <Select
+                            name="StockOrderID"
+                            placeholder="Chọn cơ cở"
+                            classNamePrefix="select"
+                            options={StocksList}
+                            className="select-control"
+                            value={StocksList.filter(
+                              item =>
+                                Number(item.value) ===
+                                Number(values?.StockOrderID)
+                            )}
+                            onChange={otp => {
                               setFieldValue(
-                                'PriceFromOrder',
-                                val.floatValue ? val.floatValue : val.value
+                                'StockOrderID',
+                                otp ? otp.value : ''
                               )
                             }}
-                            onBlur={handleBlur}
-                            autoComplete="off"
                           />
                         </div>
-                        <div className="d-flex align-items-center justify-content-center w-35px">
-                          <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                      )}
+                      {'DateOrderStart' in values && (
+                        <div
+                          className={`form-group ${clsx({
+                            'mb-20px': 'TypeOrder' in values
+                          })}`}
+                        >
+                          <label>Thời gian mua hàng</label>
+                          <div className="d-flex">
+                            <div className="flex-1">
+                              <DatePicker
+                                onChange={date => {
+                                  setFieldValue('DateOrderStart', date, false)
+                                }}
+                                selected={values.DateOrderStart}
+                                // selectsEnd
+                                // startDate={values.DateStart}
+                                // endDate={values.DateEnd}
+                                className="form-control"
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="Bắt đầu"
+                              />
+                            </div>
+                            <div className="d-flex align-items-center justify-content-center w-35px">
+                              <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                            </div>
+                            <div className="flex-1">
+                              <DatePicker
+                                onChange={date => {
+                                  setFieldValue('DateOrderEnd', date, false)
+                                }}
+                                selected={values.DateOrderEnd}
+                                // selectsEnd
+                                // startDate={values.DateStart}
+                                // endDate={values.DateEnd}
+                                className="form-control"
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="Bắt đầu"
+                              />
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <NumberFormat
-                            allowNegative={false}
-                            name="PriceToOrder"
-                            placeholder="Đến"
-                            className={`form-control`}
-                            isNumericString={true}
-                            thousandSeparator={true}
-                            value={values?.PriceToOrder}
-                            onValueChange={val => {
-                              setFieldValue(
-                                'PriceToOrder',
-                                val.floatValue ? val.floatValue : val.value
-                              )
+                      )}
+                      {'TypeOrder' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Phát sinh mua</label>
+                          <Select
+                            isMulti
+                            menuPosition="fixed"
+                            isClearable={true}
+                            name="TypeOrder"
+                            placeholder="Chọn loại"
+                            classNamePrefix="select"
+                            options={TypeCNList}
+                            className="select-control"
+                            value={values?.TypeOrder}
+                            onChange={otp => {
+                              setFieldValue('TypeOrder', otp)
                             }}
-                            onBlur={handleBlur}
-                            autoComplete="off"
                           />
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-20px border-top">
-                    <div className="form-group mb-20px">
-                      <label>Trạng thái</label>
-                      <Select
-                        isMulti
-                        menuPosition="fixed"
-                        isClearable={true}
-                        name="StatusServices"
-                        placeholder="Chọn trạng thái"
-                        classNamePrefix="select"
-                        options={StatusServiceMemberList}
-                        className="select-control"
-                        value={values?.StatusServices}
-                        onChange={otp => {
-                          setFieldValue('StatusServices', otp)
-                        }}
-                      />
-                    </div>
-                    <div className="form-group mb-20px">
-                      <label>Số buổi dịch vụ còn</label>
-                      <div className="d-flex">
-                        <div className="flex-1">
-                          <NumberFormat
-                            allowNegative={false}
-                            name="DayFromServices"
-                            placeholder="Từ"
-                            className={`form-control`}
-                            isNumericString={true}
-                            //thousandSeparator={true}
-                            value={values?.DayFromServices}
-                            onValueChange={val => {
-                              setFieldValue(
-                                'DayFromServices',
-                                val.floatValue ? val.floatValue : val.value
-                              )
+                      )}
+                      {'BrandOrderID' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Phát sinh mua theo nhãn hàng</label>
+                          <AsyncSelectBrands
+                            menuPlacement="top"
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="BrandOrderID"
+                            onChange={otp => {
+                              setFieldValue('BrandOrderID', otp, false)
                             }}
-                            onBlur={handleBlur}
-                            autoComplete="off"
+                            value={values?.BrandOrderID}
                           />
                         </div>
-                        <div className="d-flex align-items-center justify-content-center w-35px">
-                          <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
-                        </div>
-                        <div className="flex-1">
-                          <NumberFormat
-                            allowNegative={false}
-                            name="DayToServices"
-                            placeholder="Đến"
-                            className={`form-control`}
-                            isNumericString={true}
-                            //thousandSeparator={true}
-                            value={values?.DayToServices}
-                            onValueChange={val => {
-                              setFieldValue(
-                                'DayToServices',
-                                val.floatValue ? val.floatValue : val.value
-                              )
+                      )}
+                      {'ProductOrderID' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Phát sinh mua mặt hàng</label>
+                          <AsyncSelectProducts
+                            closeMenuOnScroll={true}
+                            menuPlacement="top"
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="ProductOrderID"
+                            onChange={otp => {
+                              setFieldValue('ProductOrderID', otp, false)
                             }}
-                            onBlur={handleBlur}
-                            autoComplete="off"
+                            value={values.ProductOrderID}
                           />
                         </div>
-                      </div>
+                      )}
+                      {'PriceFromOrder' in values && (
+                        <div className="form-group">
+                          <label>Mức chi tiêu</label>
+                          <div className="d-flex">
+                            <div className="flex-1">
+                              <NumberFormat
+                                allowNegative={false}
+                                name="PriceFromOrder"
+                                placeholder="Từ"
+                                className={`form-control`}
+                                isNumericString={true}
+                                thousandSeparator={true}
+                                value={values?.PriceFromOrder}
+                                onValueChange={val => {
+                                  setFieldValue(
+                                    'PriceFromOrder',
+                                    val.floatValue ? val.floatValue : val.value
+                                  )
+                                }}
+                                onBlur={handleBlur}
+                                autoComplete="off"
+                              />
+                            </div>
+                            <div className="d-flex align-items-center justify-content-center w-35px">
+                              <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                            </div>
+                            <div className="flex-1">
+                              <NumberFormat
+                                allowNegative={false}
+                                name="PriceToOrder"
+                                placeholder="Đến"
+                                className={`form-control`}
+                                isNumericString={true}
+                                thousandSeparator={true}
+                                value={values?.PriceToOrder}
+                                onValueChange={val => {
+                                  setFieldValue(
+                                    'PriceToOrder',
+                                    val.floatValue ? val.floatValue : val.value
+                                  )
+                                }}
+                                onBlur={handleBlur}
+                                autoComplete="off"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="form-group">
-                      <label>Loại</label>
-                      <Select
-                        isMulti
-                        menuPosition="fixed"
-                        isClearable={true}
-                        name="TypeServices"
-                        placeholder="Chọn loại"
-                        classNamePrefix="select"
-                        options={TypeServiceMemberList}
-                        className="select-control"
-                        value={values?.TypeServices}
-                        onChange={otp => {
-                          setFieldValue('TypeServices', otp)
-                        }}
-                      />
+                  )}
+                  {('StatusServices' in values ||
+                    'DayFromServices' in values ||
+                    'TypeServices' in values ||
+                    'ServiceIDs' in values) && (
+                    <div className="p-20px border-top">
+                      {'ServiceIDs' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Dịch vụ</label>
+                          <AsyncSelectServices
+                            isMulti
+                            closeMenuOnScroll={true}
+                            menuPlacement="top"
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="ServiceIDs"
+                            onChange={otp => {
+                              setFieldValue('ServiceIDs', otp, false)
+                            }}
+                            value={values.ServiceIDs}
+                          />
+                        </div>
+                      )}
+                      {'StatusServices' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Trạng thái</label>
+                          <Select
+                            isMulti
+                            menuPosition="fixed"
+                            isClearable={true}
+                            name="StatusServices"
+                            placeholder="Chọn trạng thái"
+                            classNamePrefix="select"
+                            options={StatusServiceMemberList}
+                            className="select-control"
+                            value={values?.StatusServices}
+                            onChange={otp => {
+                              setFieldValue('StatusServices', otp)
+                            }}
+                          />
+                        </div>
+                      )}
+                      {'DayFromServices' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Số buổi dịch vụ còn</label>
+                          <div className="d-flex">
+                            <div className="flex-1">
+                              <NumberFormat
+                                allowNegative={false}
+                                name="DayFromServices"
+                                placeholder="Từ"
+                                className={`form-control`}
+                                isNumericString={true}
+                                //thousandSeparator={true}
+                                value={values?.DayFromServices}
+                                onValueChange={val => {
+                                  setFieldValue(
+                                    'DayFromServices',
+                                    val.floatValue ? val.floatValue : val.value
+                                  )
+                                }}
+                                onBlur={handleBlur}
+                                autoComplete="off"
+                              />
+                            </div>
+                            <div className="d-flex align-items-center justify-content-center w-35px">
+                              <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                            </div>
+                            <div className="flex-1">
+                              <NumberFormat
+                                allowNegative={false}
+                                name="DayToServices"
+                                placeholder="Đến"
+                                className={`form-control`}
+                                isNumericString={true}
+                                //thousandSeparator={true}
+                                value={values?.DayToServices}
+                                onValueChange={val => {
+                                  setFieldValue(
+                                    'DayToServices',
+                                    val.floatValue ? val.floatValue : val.value
+                                  )
+                                }}
+                                onBlur={handleBlur}
+                                autoComplete="off"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {'TypeServices' in values && (
+                        <div className="form-group">
+                          <label>Loại</label>
+                          <Select
+                            isMulti
+                            menuPosition="fixed"
+                            isClearable={true}
+                            name="TypeServices"
+                            placeholder="Chọn loại"
+                            classNamePrefix="select"
+                            options={TypeServiceMemberList}
+                            className="select-control"
+                            value={values?.TypeServices}
+                            onChange={otp => {
+                              setFieldValue('TypeServices', otp)
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
                   <button
                     type="button"
                     className={clsx(
                       'btn btn-primary me-2 max-w-135px text-truncate',
-                      loadingExport && 'spinner spinner-white spinner-right'
+                      (loadingExport || loading) &&
+                        'spinner spinner-white spinner-right'
                     )}
                     disabled={loadingExport}
                     onClick={onExport}

@@ -27,6 +27,7 @@ function WarningMaterials(props) {
   const [ListData, setListData] = useState([])
   const [PageTotal, setPageTotal] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
@@ -47,11 +48,15 @@ function WarningMaterials(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListInventoryWarning = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters
     }
+  }
+
+  const getListInventoryWarning = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getInventoryWarning(newFilters)
       .then(({ data }) => {
@@ -93,6 +98,22 @@ function WarningMaterials(props) {
     getListInventoryWarning()
   }
 
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getInventoryWarning(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/ton-kho/du-kien-nvl',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
+  }
+
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
     setIsModalMobile(true)
@@ -132,6 +153,8 @@ function WarningMaterials(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -156,7 +179,7 @@ function WarningMaterials(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               },
               onPageChange: page => {
                 setListData([])

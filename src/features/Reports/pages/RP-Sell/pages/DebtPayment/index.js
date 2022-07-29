@@ -31,6 +31,7 @@ function DebtPayment(props) {
   const [TongTTNo, setTongTTNo] = useState(0)
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
   const [PageTotal, setPageTotal] = useState(1)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
@@ -53,9 +54,8 @@ function DebtPayment(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListDebtPayment = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -65,6 +65,11 @@ function DebtPayment(props) {
         : null,
       MemberID: filters.MemberID ? filters.MemberID.value : ''
     }
+  }
+
+  const getListDebtPayment = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListDebtPayment(newFilters)
       .then(({ data }) => {
@@ -94,6 +99,22 @@ function DebtPayment(props) {
     } else {
       setFilters({ ...values, Pi: 1 })
     }
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListDebtPayment(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/ban-hang/thanh-toan-tra-no',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const onRefresh = () => {
@@ -167,6 +188,8 @@ function DebtPayment(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-column flex-md-row">
@@ -274,7 +297,7 @@ function DebtPayment(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               }
             }}
             optionsMoible={{

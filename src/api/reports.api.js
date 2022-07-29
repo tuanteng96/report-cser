@@ -15,6 +15,15 @@ const reportsApi = {
   getListCustomerGeneral: data => {
     return http.post(`${SubApi}/khach-hang/tong-hop`, JSON.stringify(data))
   },
+  getListCustomerExpense: data => {
+    return http.post(`${SubApi}/khach-hang/chi-tieu`, JSON.stringify(data))
+  },
+  getListCustomerUseService: data => {
+    return http.post(
+      `${SubApi}/khach-hang/su-dung-dich-vu`,
+      JSON.stringify(data)
+    )
+  },
   getOverviewServices: data => {
     return http.post(`${SubApi}/dich-vu/tong-quan`, JSON.stringify(data))
   },

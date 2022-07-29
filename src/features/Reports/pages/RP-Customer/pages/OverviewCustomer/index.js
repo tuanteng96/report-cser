@@ -184,7 +184,7 @@ function OverviewCustomer() {
   }
 
   const onSizePerPageChange = Ps => {
-    setFilters({ ...filters, Ps: Ps })
+    setFilters({ ...filters, Ps: Ps, Pi: 1 })
   }
 
   return (

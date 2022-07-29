@@ -35,6 +35,7 @@ function RoseStaff(props) {
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [ListData, setListData] = useState([])
   const [TotalHoaHong, setTotalHoaHong] = useState({
     TongHoaHong: 0,
@@ -62,9 +63,8 @@ function RoseStaff(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListRose = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -78,6 +78,11 @@ function RoseStaff(props) {
       BrandId: filters.BrandId ? filters.BrandId.value : '',
       ProductId: filters.ProductId ? filters.ProductId.value : ''
     }
+  }
+
+  const getListRose = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListStaffRose(newFilters)
       .then(({ data }) => {
@@ -121,6 +126,22 @@ function RoseStaff(props) {
 
   const onRefresh = () => {
     getListRose()
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListStaffRose(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/nhan-vien/hoa-hong',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const OpenModalMobile = value => {
@@ -179,6 +200,8 @@ function RoseStaff(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-column flex-md-row">
@@ -310,7 +333,7 @@ function RoseStaff(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               }
             }}
             optionsMoible={{

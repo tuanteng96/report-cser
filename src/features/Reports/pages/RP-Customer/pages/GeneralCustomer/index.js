@@ -9,6 +9,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap'
 import _ from 'lodash'
 import FilterToggle from 'src/components/Filter/FilterToggle'
 import reportsApi from 'src/api/reports.api'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -128,17 +129,22 @@ function GeneralCustomer(props) {
     reportsApi
       .getListCustomerGeneral(newFilters)
       .then(({ data }) => {
-        const { Members, Total, TotalOnline } = {
-          Members: data?.result?.Members || [],
-          Total: data?.result?.Total || 0,
-          TotalOnline: data?.result?.TotalOnline || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          const { Members, Total, TotalOnline } = {
+            Members: data?.result?.Members || [],
+            Total: data?.result?.Total || 0,
+            TotalOnline: data?.result?.TotalOnline || 0
+          }
+          setListData(Members)
+          setTotalOl(TotalOnline)
+          setLoading(false)
+          setPageTotal(Total)
+          isFilter && setIsFilter(false)
+          callback && callback()
         }
-        setListData(Members)
-        setTotalOl(TotalOnline)
-        setLoading(false)
-        setPageTotal(Total)
-        isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }
@@ -156,7 +162,7 @@ function GeneralCustomer(props) {
   }
 
   const onSizePerPageChange = Ps => {
-    setFilters({ ...filters, Ps: Ps })
+    setFilters({ ...filters, Ps: Ps, Pi: 1 })
   }
 
   const onFilter = values => {
@@ -169,7 +175,7 @@ function GeneralCustomer(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000 })
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
     reportsApi
       .getListCustomerGeneral(newFilters)
       .then(({ data }) => {

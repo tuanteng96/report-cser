@@ -37,6 +37,7 @@ function SaleDetails(props) {
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
   const [dataResult, setDataResult] = useState({
     SP_NVL: [], //1
@@ -79,9 +80,8 @@ function SaleDetails(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getSalesDetail = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -105,6 +105,11 @@ function SaleDetails(props) {
           ? filters.ProductIds.map(item => item.value).join(',')
           : ''
     }
+  }
+
+  const getSalesDetail = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListSalesDetail(newFilters)
       .then(({ data }) => {
@@ -145,6 +150,22 @@ function SaleDetails(props) {
     } else {
       setFilters({ ...values, Pi: 1 })
     }
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListSalesDetail(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/ban-hang/sp-dv-ban-ra',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const onRefresh = () => {
@@ -188,6 +209,8 @@ function SaleDetails(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       {loading && <LoadingSkeleton />}
       <div className="bg-white mb-15px">

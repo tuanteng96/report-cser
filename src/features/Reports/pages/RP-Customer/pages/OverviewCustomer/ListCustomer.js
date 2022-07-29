@@ -36,7 +36,7 @@ const ListCustomer = forwardRef(
       },
       onGetDataExport() {
         return new Promise((resolve, reject) => {
-          const newFilters = GeneralNewFilter({ ...filters, Ps: 1000 })
+          const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
           reportsApi
             .getListCustomer(newFilters)
             .then(({ data }) => {

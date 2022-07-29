@@ -31,6 +31,7 @@ function TotalWallet(props) {
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingExport, setLoadingExport] = useState(false)
   const [ListData, setListData] = useState([])
   const [TotalList, setTotalList] = useState({})
   const [PageTotal, setPageTotal] = useState(0)
@@ -56,9 +57,8 @@ function TotalWallet(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListTotal = (isLoading = true, callback) => {
-    isLoading && setLoading(true)
-    const newFilters = {
+  const GeneralNewFilter = filters => {
+    return {
       ...filters,
       DateStart: filters.DateStart
         ? moment(filters.DateStart).format('DD/MM/yyyy')
@@ -71,6 +71,11 @@ function TotalWallet(props) {
         ? filters.TagWL.map(item => item.value).join(',')
         : ''
     }
+  }
+
+  const getListTotal = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListTotalWallet(newFilters)
       .then(({ data }) => {
@@ -82,7 +87,6 @@ function TotalWallet(props) {
             Items: data.result?.Items || [],
             Total: data.result?.Total || 0
           }
-          console.log(data.result)
           setListData(Items)
           setTotalList(data.result)
           setLoading(false)
@@ -112,6 +116,22 @@ function TotalWallet(props) {
 
   const onRefresh = () => {
     getListTotal()
+  }
+
+  const onExport = () => {
+    setLoadingExport(true)
+    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    reportsApi
+      .getListTotalWallet(newFilters)
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/khac/bao-cao-vi',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
   }
 
   const OpenModalMobile = value => {
@@ -163,6 +183,8 @@ function TotalWallet(props) {
         onSubmit={onFilter}
         onRefresh={onRefresh}
         loading={loading}
+        loadingExport={loadingExport}
+        onExport={onExport}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
@@ -210,7 +232,7 @@ function TotalWallet(props) {
               onSizePerPageChange: sizePerPage => {
                 setListData([])
                 const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps })
+                setFilters({ ...filters, Ps: Ps, Pi: 1 })
               },
               onPageChange: page => {
                 setListData([])
