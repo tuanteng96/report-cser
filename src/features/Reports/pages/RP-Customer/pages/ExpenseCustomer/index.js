@@ -35,6 +35,7 @@ const JSONData = {
           ID: '1235', // ID Đơn hàng,
           Prods: [
             {
+              Id: 1234, // ID SP, Dv
               Title: 'Sản phẩm chăm sóc da',
               Qty: 5,
               Price: 200000
@@ -203,8 +204,6 @@ function ExpenseCustomer(props) {
       })
       .catch(error => console.log(error))
   }
-
-  console.log(JSONData)
 
   return (
     <div className="py-main">

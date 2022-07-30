@@ -7,6 +7,7 @@ import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import ModalViewMobile from './ModalViewMobile'
+import { PriceHelper } from 'src/helpers/PriceHelper'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -25,21 +26,29 @@ const JSONData = {
       },
       StockID: '8975',
       StockName: 'Cser Hà Nội',
-      ServiceList: [
+      LevelUp: 'Vip',
+      PriceLevelUp: 10000000, // Số tiền cần lên cấp
+      ProdsList: [
         {
-          Id: 2342, //ID Sp, dv
+          Id: 1234, // ID SP, dv
           Title: 'Chăm sóc da 10 buổi',
-          BuoiCon: 5,
-          UseEndTime: '2022-07-29T09:25:52.72', // Thời gian dùng cuối
-          Status: 'Hiện còn',
-          Desc: 'Chuyển nhượng : -3'
+          CreateDate: '2022-07-29T09:25:52.72', // Ngày mua
+          Qty: 2,
+          ExpiryDate: '2022-07-29T09:25:52.72' // Ngày ước tính dùng hết
+        },
+        {
+          Id: 1234, // ID SP, dv
+          Title: 'Chăm sóc da 10 buổi',
+          CreateDate: '2022-07-29T09:25:52.72', // Ngày mua
+          Qty: 2,
+          ExpiryDate: '2022-07-29T09:25:52.72' // Ngày ước tính dùng hết
         }
       ]
     }
   ]
 }
 
-function UseServiceCustomer(props) {
+function ExpectedCustomer(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
@@ -53,11 +62,16 @@ function UseServiceCustomer(props) {
     MemberID: '', // ID Khách hàng
     GroupCustomerID: '', // ID Nhóm khách hàng
     SourceName: '', // Nguồn
-    ServiceIDs: '', // ID dịch vụ
-    StatusServices: '',
-    TypeServices: '',
+    UsedUpDateStart: null, // Từ ước tính sử dụng hết
+    UsedUpDateEnd: null, // Đến ước tính sử dụng hết
+    ExpiryDateStart: null, // Hạn sử dụng từ ngày
+    ExpiryDateEnd: null, // Hạn sử dụng đến ngày
     DayFromServices: '', // Số buổi còn lại từ
-    DayToServices: '' // Số buổi còn lại đến
+    DayToServices: '', // Số buổi còn lại đến
+    PriceLevelUpFrom: '', // Giá trị lên cấp từ
+    PriceLevelUpTo: '', // Giá trị lên cấp đến
+    LevelUp: '', // Cấp dự kiến lên
+    TypeService: '' // Loại SP, DV
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
@@ -81,7 +95,7 @@ function UseServiceCustomer(props) {
   }, [filters])
 
   useEffect(() => {
-    getListUseServiceCustomer()
+    getListExpectedCustomer()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
@@ -94,28 +108,33 @@ function UseServiceCustomer(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
+      ExpiryDateEnd: filters.ExpiryDateEnd
+        ? moment(filters.ExpiryDateEnd).format('DD/MM/yyyy')
+        : null,
+      ExpiryDateStart: filters.ExpiryDateStart
+        ? moment(filters.ExpiryDateStart).format('DD/MM/yyyy')
+        : null,
       MemberID: filters.MemberID ? filters.MemberID.value : '',
       GroupCustomerID: filters.GroupCustomerID
         ? filters.GroupCustomerID.value
         : '',
       SourceName: filters.SourceName ? filters.SourceName.value : '',
-      StatusServices: filters.StatusServices
-        ? filters.StatusServices.map(item => item.value).join(',')
-        : '',
-      TypeServices: filters.TypeServices
-        ? filters.TypeServices.map(item => item.value).join(',')
-        : '',
-      ServiceIDs: filters.ServiceIDs
-        ? filters.ServiceIDs.map(item => item.value).join(',')
-        : ''
+      LevelUp: filters.LevelUp ? filters.LevelUp.value : '',
+      TypeService: filters.TypeService ? filters.TypeService.value : '',
+      UsedUpDateEnd: filters.UsedUpDateEnd
+        ? moment(filters.UsedUpDateEnd).format('DD/MM/yyyy')
+        : null,
+      UsedUpDateStart: filters.UsedUpDateStart
+        ? moment(filters.UsedUpDateStart).format('DD/MM/yyyy')
+        : null
     }
   }
 
-  const getListUseServiceCustomer = (isLoading = true, callback) => {
+  const getListExpectedCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListCustomerUseService(newFilters)
+      .getListCustomerExpected(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -145,14 +164,14 @@ function UseServiceCustomer(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      getListUseServiceCustomer()
+      getListExpectedCustomer()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    getListUseServiceCustomer()
+    getListExpectedCustomer()
   }
 
   const OpenModalMobile = value => {
@@ -169,11 +188,11 @@ function UseServiceCustomer(props) {
     setLoadingExport(true)
     const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
     reportsApi
-      .getListCustomerUseService(newFilters)
+      .getListCustomerExpected(newFilters)
       .then(({ data }) => {
         window?.EzsExportExcel &&
           window?.EzsExportExcel({
-            Url: '/khach-hang/su-dung-dich-vu',
+            Url: '/khach-hang/du-kien',
             Data: data,
             hideLoading: () => setLoadingExport(false)
           })
@@ -186,7 +205,7 @@ function UseServiceCustomer(props) {
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Khách hàng sử dụng dịch vụ
+            Khách hàng dự kiến
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -249,8 +268,8 @@ function UseServiceCustomer(props) {
               {
                 text: 'Số điện thoại',
                 headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
+                  minWidth: '150px',
+                  width: '150px'
                 },
                 attrs: { 'data-title': 'Số điện thoại' }
               },
@@ -263,35 +282,35 @@ function UseServiceCustomer(props) {
                 attrs: { 'data-title': 'Cơ sở' }
               },
               {
-                text: 'Tên dịch vụ',
+                text: 'Cấp dự kiến',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px'
+                }
+              },
+              {
+                text: 'GT chi tiêu để lên cấp',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
+                text: 'Thời gian mua',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
+                text: 'Tên mặt hàng',
                 headerStyle: {
                   minWidth: '250px',
                   width: '250px'
                 }
               },
               {
-                text: 'Số buổi còn',
-                headerStyle: {
-                  minWidth: '120px',
-                  width: '120px'
-                }
-              },
-              {
-                text: 'Thời gian dùng cuối',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Trạng thái',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Mô tả',
+                text: 'TG ước tính dùng hết',
                 headerStyle: {
                   minWidth: '180px',
                   width: '180px'
@@ -342,6 +361,14 @@ function UseServiceCustomer(props) {
                 {
                   attrs: { 'data-title': 'Cơ sở' },
                   formatter: row => row?.StockName
+                },
+                {
+                  attrs: { 'data-title': 'Cấp dự kiến' },
+                  formatter: row => row?.Level
+                },
+                {
+                  attrs: { 'data-title': 'GT Chi tiêu để lên cấp' },
+                  formatter: row => PriceHelper.formatVND(row?.PriceLevelUp)
                 }
               ]
             }}
@@ -350,14 +377,14 @@ function UseServiceCustomer(props) {
             {ListData &&
               ListData.map((item, index) => (
                 <Fragment key={index}>
-                  {item?.ServiceList &&
-                    item?.ServiceList.map((order, orderIndex) => (
+                  {item?.ProdsList &&
+                    item?.ProdsList.map((order, orderIndex) => (
                       <tr key={orderIndex}>
                         {orderIndex === 0 && (
                           <Fragment>
                             <td
                               className="vertical-align-middle text-center"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               <span className="font-number">
                                 {filters.Ps * (filters.Pi - 1) + (index + 1)}
@@ -365,7 +392,7 @@ function UseServiceCustomer(props) {
                             </td>
                             <td
                               className="vertical-align-middle"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               {moment(item.CreateDate).format(
                                 'HH:mm DD/MM/YYYY'
@@ -373,31 +400,45 @@ function UseServiceCustomer(props) {
                             </td>
                             <td
                               className="vertical-align-middle"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               {item?.Member?.FullName || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               {item?.Member?.Phone || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               {item?.StockName || 'Chưa xác định'}
                             </td>
+                            <td
+                              className="vertical-align-middle"
+                              rowSpan={item?.ProdsList.length}
+                            >
+                              {item?.LevelUp || 'Chưa xác định'}
+                            </td>
+                            <td
+                              className="vertical-align-middle"
+                              rowSpan={item?.ProdsList.length}
+                            >
+                              {PriceHelper.formatVND(item.PriceLevelUp)}
+                            </td>
                           </Fragment>
                         )}
-                        <td>{order.Title}</td>
-                        <td>{order.BuoiCon}</td>
                         <td>
-                          {moment(order.UseEndTime).format('HH:mm DD/MM/YYYY')}
+                          {moment(order.CreateDate).format('HH:mm DD/MM/YYYY')}
                         </td>
-                        <td>{order.Status}</td>
-                        <td>{order.Desc}</td>
+                        <td>
+                          {order.Title} (x{order.Qty})
+                        </td>
+                        <td>
+                          {moment(order.ExpiryDate).format('HH:mm DD/MM/YYYY')}
+                        </td>
                       </tr>
                     ))}
                 </Fragment>
@@ -414,4 +455,4 @@ function UseServiceCustomer(props) {
   )
 }
 
-export default UseServiceCustomer
+export default ExpectedCustomer

@@ -146,6 +146,16 @@ export const JsonFilter = {
       label: 'Thẻ tiền'
     }
   ],
+  TypeCNList2: [
+    {
+      value: 'SP',
+      label: 'Sản phẩm'
+    },
+    {
+      value: 'DV',
+      label: 'Dịch vụ'
+    }
+  ],
   CategoriesTKList: [
     {
       value: 0,
@@ -321,6 +331,28 @@ export const JsonFilter = {
     {
       value: 5,
       label: '5 Sao'
+    }
+  ],
+  FrequencyList: [
+    {
+      value: 'NGAY',
+      label: 'Ngày'
+    },
+    {
+      value: 'TUAN',
+      label: 'Tuần'
+    },
+    {
+      value: 'THANG',
+      label: 'Tháng'
+    },
+    {
+      value: 'NAM',
+      label: 'Năm'
+    },
+    {
+      value: 'KHAC',
+      label: 'Khác'
     }
   ]
 }

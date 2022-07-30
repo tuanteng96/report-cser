@@ -34,6 +34,8 @@ import GeneralCustomer from 'src/features/Reports/pages/RP-Customer/pages/Genera
 import OverviewCustomer from 'src/features/Reports/pages/RP-Customer/pages/OverviewCustomer'
 import ExpenseCustomer from 'src/features/Reports/pages/RP-Customer/pages/ExpenseCustomer'
 import UseServiceCustomer from 'src/features/Reports/pages/RP-Customer/pages/UseServiceCustomer'
+import ExpectedCustomer from 'src/features/Reports/pages/RP-Customer/pages/ExpectedCustomer'
+import FrequencyUseCustomer from 'src/features/Reports/pages/RP-Customer/pages/FrequencyUseCustomer'
 
 function RouterPage(props) {
   return (
@@ -59,6 +61,8 @@ function RouterPage(props) {
         <Route path="tong-hop" element={<GeneralCustomer />} />
         <Route path="chi-tieu" element={<ExpenseCustomer />} />
         <Route path="su-dung-dich-vu" element={<UseServiceCustomer />} />
+        <Route path="du-kien" element={<ExpectedCustomer />} />
+        <Route path="tan-suat-su-dung" element={<FrequencyUseCustomer />} />
       </Route>
       <Route
         path="/dich-vu"

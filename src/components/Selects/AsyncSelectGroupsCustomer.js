@@ -31,11 +31,11 @@ function AsyncSelectGroupsCustomer({ value, onChange, ...props }) {
 
   return (
     <AsyncPaginate
+      placeholder="Chọn nhóm khách hàng"
       {...props}
       className="select-control"
       classNamePrefix="select"
       loadOptions={getAllGroups}
-      placeholder="Chọn nhóm khách hàng"
       additional={{
         page: 1
       }}

@@ -25,21 +25,30 @@ const JSONData = {
       },
       StockID: '8975',
       StockName: 'Cser Hà Nội',
-      ServiceList: [
+      TanSuatSD: 3,
+      ProdsList: [
         {
-          Id: 2342, //ID Sp, dv
+          Id: 1234, // ID Sp, Dv
+          CreateDate: '2022-07-29T09:25:52.72', // Thời gian Mua
           Title: 'Chăm sóc da 10 buổi',
-          BuoiCon: 5,
-          UseEndTime: '2022-07-29T09:25:52.72', // Thời gian dùng cuối
-          Status: 'Hiện còn',
-          Desc: 'Chuyển nhượng : -3'
+          LastUsedTime: '2022-07-29T09:25:52.72', // Thời gian dùng gần nhất
+          Qty: 2,
+          TanSuatSD: 2
+        },
+        {
+          Id: 1234, // ID Sp, Dv
+          Title: 'Chăm sóc da 10 buổi',
+          CreateDate: '2022-07-29T09:25:52.72', // Thời gian Mua
+          LastUsedTime: '2022-07-29T09:25:52.72', // Thời gian dùng gần nhất
+          Qty: 2,
+          TanSuatSD: 1
         }
       ]
     }
   ]
 }
 
-function UseServiceCustomer(props) {
+function FrequencyUseCustomer(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
@@ -53,11 +62,13 @@ function UseServiceCustomer(props) {
     MemberID: '', // ID Khách hàng
     GroupCustomerID: '', // ID Nhóm khách hàng
     SourceName: '', // Nguồn
-    ServiceIDs: '', // ID dịch vụ
-    StatusServices: '',
-    TypeServices: '',
-    DayFromServices: '', // Số buổi còn lại từ
-    DayToServices: '' // Số buổi còn lại đến
+    CateServiceIDs: '', // Danh mục dịch vụ
+    ServiceIDs: '', // Danh mục dịch vụ
+    DayService: '', // Khoảng thời gian không đến làm dịch vụ
+    LastUsedFrom: null, // Ngày dùng cuối từ
+    LastUsedTo: null, // Ngày dùng cuối đến
+    Frequency: 'NGAY', // Tần suất SD
+    FrequencyDay: '' // Tuần suất theo ngày
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
@@ -81,7 +92,7 @@ function UseServiceCustomer(props) {
   }, [filters])
 
   useEffect(() => {
-    getListUseServiceCustomer()
+    getListFrequencyUseCustomer()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
@@ -94,28 +105,34 @@ function UseServiceCustomer(props) {
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null,
+      LastUsedFrom: filters.LastUsedFrom
+        ? moment(filters.LastUsedFrom).format('DD/MM/yyyy')
+        : null,
+      LastUsedTo: filters.LastUsedTo
+        ? moment(filters.LastUsedTo).format('DD/MM/yyyy')
+        : null,
       MemberID: filters.MemberID ? filters.MemberID.value : '',
       GroupCustomerID: filters.GroupCustomerID
         ? filters.GroupCustomerID.value
         : '',
       SourceName: filters.SourceName ? filters.SourceName.value : '',
-      StatusServices: filters.StatusServices
-        ? filters.StatusServices.map(item => item.value).join(',')
-        : '',
-      TypeServices: filters.TypeServices
-        ? filters.TypeServices.map(item => item.value).join(',')
-        : '',
-      ServiceIDs: filters.ServiceIDs
-        ? filters.ServiceIDs.map(item => item.value).join(',')
-        : ''
+      CateServiceIDs:
+        filters.CateServiceIDs && filters.CateServiceIDs.length > 0
+          ? filters.CateServiceIDs.map(item => item.value).join(',')
+          : '',
+      ServiceIDs:
+        filters.ServiceIDs && filters.ServiceIDs.length > 0
+          ? filters.ServiceIDs.map(item => item.value).join(',')
+          : '',
+      Frequency: filters.Frequency ? filters.Frequency.value : ''
     }
   }
 
-  const getListUseServiceCustomer = (isLoading = true, callback) => {
+  const getListFrequencyUseCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListCustomerUseService(newFilters)
+      .getListCustomerFrequencyUse(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -145,14 +162,14 @@ function UseServiceCustomer(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      getListUseServiceCustomer()
+      getListFrequencyUseCustomer()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onRefresh = () => {
-    getListUseServiceCustomer()
+    getListFrequencyUseCustomer()
   }
 
   const OpenModalMobile = value => {
@@ -169,11 +186,11 @@ function UseServiceCustomer(props) {
     setLoadingExport(true)
     const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
     reportsApi
-      .getListCustomerUseService(newFilters)
+      .getListCustomerFrequencyUse(newFilters)
       .then(({ data }) => {
         window?.EzsExportExcel &&
           window?.EzsExportExcel({
-            Url: '/khach-hang/su-dung-dich-vu',
+            Url: '/khach-hang/tan-suat-su-dung',
             Data: data,
             hideLoading: () => setLoadingExport(false)
           })
@@ -186,7 +203,7 @@ function UseServiceCustomer(props) {
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Khách hàng sử dụng dịch vụ
+            Tần suất sử dụng
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -249,8 +266,8 @@ function UseServiceCustomer(props) {
               {
                 text: 'Số điện thoại',
                 headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
+                  minWidth: '150px',
+                  width: '150px'
                 },
                 attrs: { 'data-title': 'Số điện thoại' }
               },
@@ -263,6 +280,21 @@ function UseServiceCustomer(props) {
                 attrs: { 'data-title': 'Cơ sở' }
               },
               {
+                text: 'Tần suất sử dụng',
+                headerStyle: {
+                  minWidth: '150px',
+                  width: '150px',
+                  textAlign: 'center'
+                }
+              },
+              {
+                text: 'Thời gian mua',
+                headerStyle: {
+                  minWidth: '180px',
+                  width: '180px'
+                }
+              },
+              {
                 text: 'Tên dịch vụ',
                 headerStyle: {
                   minWidth: '250px',
@@ -270,31 +302,18 @@ function UseServiceCustomer(props) {
                 }
               },
               {
-                text: 'Số buổi còn',
-                headerStyle: {
-                  minWidth: '120px',
-                  width: '120px'
-                }
-              },
-              {
-                text: 'Thời gian dùng cuối',
+                text: 'TG dùng gần nhất',
                 headerStyle: {
                   minWidth: '180px',
                   width: '180px'
                 }
               },
               {
-                text: 'Trạng thái',
+                text: 'Tần suất sử dụng',
                 headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Mô tả',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
+                  minWidth: '150px',
+                  width: '150px',
+                  textAlign: 'center'
                 }
               }
             ]}
@@ -342,6 +361,10 @@ function UseServiceCustomer(props) {
                 {
                   attrs: { 'data-title': 'Cơ sở' },
                   formatter: row => row?.StockName
+                },
+                {
+                  attrs: { 'data-title': 'Tần suất sử dụng' },
+                  formatter: row => row?.TanSuatSD
                 }
               ]
             }}
@@ -350,14 +373,14 @@ function UseServiceCustomer(props) {
             {ListData &&
               ListData.map((item, index) => (
                 <Fragment key={index}>
-                  {item?.ServiceList &&
-                    item?.ServiceList.map((order, orderIndex) => (
+                  {item?.ProdsList &&
+                    item?.ProdsList.map((order, orderIndex) => (
                       <tr key={orderIndex}>
                         {orderIndex === 0 && (
                           <Fragment>
                             <td
                               className="vertical-align-middle text-center"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               <span className="font-number">
                                 {filters.Ps * (filters.Pi - 1) + (index + 1)}
@@ -365,7 +388,7 @@ function UseServiceCustomer(props) {
                             </td>
                             <td
                               className="vertical-align-middle"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               {moment(item.CreateDate).format(
                                 'HH:mm DD/MM/YYYY'
@@ -373,31 +396,42 @@ function UseServiceCustomer(props) {
                             </td>
                             <td
                               className="vertical-align-middle"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               {item?.Member?.FullName || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               {item?.Member?.Phone || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
-                              rowSpan={item?.ServiceList.length}
+                              rowSpan={item?.ProdsList.length}
                             >
                               {item?.StockName || 'Chưa xác định'}
                             </td>
+                            <td
+                              className="vertical-align-middle text-center"
+                              rowSpan={item?.ProdsList.length}
+                            >
+                              {item?.TanSuatSD || 'Chưa xác định'}
+                            </td>
                           </Fragment>
                         )}
-                        <td>{order.Title}</td>
-                        <td>{order.BuoiCon}</td>
                         <td>
-                          {moment(order.UseEndTime).format('HH:mm DD/MM/YYYY')}
+                          {moment(order.CreateDate).format('HH:mm DD/MM/YYYY')}
                         </td>
-                        <td>{order.Status}</td>
-                        <td>{order.Desc}</td>
+                        <td>
+                          {order.Title} (x{order.Qty})
+                        </td>
+                        <td>
+                          {moment(order.LastUsedTime).format(
+                            'HH:mm DD/MM/YYYY'
+                          )}
+                        </td>
+                        <td className="text-center">{order.TanSuatSD}</td>
                       </tr>
                     ))}
                 </Fragment>
@@ -414,4 +448,4 @@ function UseServiceCustomer(props) {
   )
 }
 
-export default UseServiceCustomer
+export default FrequencyUseCustomer
