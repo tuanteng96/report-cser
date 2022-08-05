@@ -8,51 +8,11 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import ModalViewMobile from './ModalViewMobile'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
-
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Members: [
-    {
-      CreateDate: '2022-07-29T09:25:52.72',
-      Member: {
-        ID: '4236', // ID khách hàng
-        FullName: 'Nguyễn Tài Tuấn',
-        Phone: '0971021196'
-      },
-      StockID: '8975',
-      StockName: 'Cser Hà Nội',
-      TongChiTieu: 30000000,
-      OrdersList: [
-        {
-          CreateDate: '2022-07-29T09:25:52.72',
-          StockID: '8975',
-          StockName: 'Cser Hà Nội',
-          ID: '1235', // ID Đơn hàng,
-          Prods: [
-            {
-              Id: 1234, // ID SP, Dv
-              Title: 'Sản phẩm chăm sóc da',
-              Qty: 5,
-              Price: 200000
-            }
-          ],
-          DoanhSo: 200000,
-          GiamGia: 100000,
-          HoanLai: 100000,
-          DoanhThu: 400000,
-          DaThanhToan: 400000,
-          Vi: 100000,
-          TheTien: 10000
-        }
-      ]
-    }
-  ]
-}
 
 function ExpenseCustomer(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -146,7 +106,7 @@ function ExpenseCustomer(props) {
           setLoading(false)
         } else {
           const { Members, Total } = {
-            Members: data?.result?.Members || JSONData.Members,
+            Members: data?.result?.Members || [],
             Total: data?.result?.Total || 0
           }
           setListData(Members)
@@ -493,7 +453,49 @@ function ExpenseCustomer(props) {
                         <td>{PriceHelper.formatVND(order.GiamGia)}</td>
                         <td>{PriceHelper.formatVND(order.HoanLai)}</td>
                         <td>{PriceHelper.formatVND(order.DoanhThu)}</td>
-                        <td>{PriceHelper.formatVND(order.DaThanhToan)}</td>
+                        <td>
+                          <OverlayTrigger
+                            rootClose
+                            trigger="click"
+                            key="top"
+                            placement="top"
+                            overlay={
+                              <Popover id={`popover-positioned-top`}>
+                                <Popover.Header
+                                  className="py-10px text-uppercase fw-600"
+                                  as="h3"
+                                >
+                                  Chi tiết thanh toán #{order.ID}
+                                </Popover.Header>
+                                <Popover.Body className="p-0">
+                                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <span>Tiền mặt</span>
+                                    <span>
+                                      {PriceHelper.formatVND(order.TM)}
+                                    </span>
+                                  </div>
+                                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <span>Chuyển khoản</span>
+                                    <span>
+                                      {PriceHelper.formatVND(order.CK)}
+                                    </span>
+                                  </div>
+                                  <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                    <span>Quẹt thẻ</span>
+                                    <span>
+                                      {PriceHelper.formatVND(order.QT)}
+                                    </span>
+                                  </div>
+                                </Popover.Body>
+                              </Popover>
+                            }
+                          >
+                            <div className="d-flex justify-content-between align-items-center">
+                              {PriceHelper.formatVND(order.DaThanhToan)}
+                              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+                            </div>
+                          </OverlayTrigger>
+                        </td>
                         <td>{PriceHelper.formatVND(order.Vi)}</td>
                         <td>{PriceHelper.formatVND(order.TheTien)}</td>
                       </tr>
