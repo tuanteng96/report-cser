@@ -8,6 +8,7 @@ import reportsApi from 'src/api/reports.api'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import ModalViewMobile from './ModalViewMobile'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -119,7 +120,9 @@ function UseCardMoney(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    const newFilters = GeneralNewFilter(
+      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+    )
     reportsApi
       .getListTotalUseCard(newFilters)
       .then(({ data }) => {

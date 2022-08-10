@@ -8,6 +8,7 @@ import ModalViewMobile from './ModalViewMobile'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -116,7 +117,9 @@ function Gift(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    const newFilters = GeneralNewFilter(
+      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+    )
     reportsApi
       .getListDebtGift(newFilters)
       .then(({ data }) => {

@@ -130,7 +130,9 @@ function TopProducts(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    const newFilters = GeneralNewFilter(
+      ArrayHeplers.getFilterExport({ ...filters })
+    )
     reportsApi
       .getListSalesDetail(newFilters)
       .then(({ data }) => {

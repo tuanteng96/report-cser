@@ -12,6 +12,7 @@ import ModalViewMobile from './ModalViewMobile'
 import clsx from 'clsx'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWindowSize } from 'src/hooks/useWindowSize'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -51,7 +52,9 @@ const ListSell = forwardRef(
       },
       onGetDataExport() {
         return new Promise((resolve, reject) => {
-          const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+          const newFilters = GeneralNewFilter(
+            ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+          )
           reportsApi
             .getListSell(newFilters)
             .then(({ data }) => {

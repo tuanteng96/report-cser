@@ -8,6 +8,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
 import FilterList from 'src/components/Filter/FilterList'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -119,7 +120,9 @@ function DebtLock(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    const newFilters = GeneralNewFilter(
+      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+    )
     reportsApi
       .getListDebtLock(newFilters)
       .then(({ data }) => {

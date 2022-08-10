@@ -8,6 +8,7 @@ import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import ModalViewMobile from './ModalViewMobile'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -186,7 +187,9 @@ function ExpectedCustomer(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    const newFilters = GeneralNewFilter(
+      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+    )
     reportsApi
       .getListCustomerExpected(newFilters)
       .then(({ data }) => {

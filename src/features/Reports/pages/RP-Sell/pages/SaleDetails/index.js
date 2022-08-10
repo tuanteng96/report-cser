@@ -11,10 +11,10 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 moment.locale('vi')
 
 const perfectScrollbarOptions = {
@@ -154,7 +154,9 @@ function SaleDetails(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    const newFilters = GeneralNewFilter(
+      ArrayHeplers.getFilterExport({ ...filters })
+    )
     reportsApi
       .getListSalesDetail(newFilters)
       .then(({ data }) => {

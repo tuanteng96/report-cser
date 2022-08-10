@@ -9,6 +9,7 @@ import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -130,7 +131,9 @@ function RoseStaff(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    const newFilters = GeneralNewFilter(
+      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+    )
     reportsApi
       .getListStaffRose(newFilters)
       .then(({ data }) => {

@@ -9,6 +9,7 @@ import reportsApi from 'src/api/reports.api'
 import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -131,7 +132,9 @@ function SalesStaff(props) {
 
   const onExport = () => {
     setLoadingExport(true)
-    const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+    const newFilters = GeneralNewFilter(
+      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+    )
     reportsApi
       .getListStaffSales(newFilters)
       .then(({ data }) => {

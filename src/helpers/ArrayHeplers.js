@@ -6,5 +6,13 @@ export const ArrayHeplers = {
   totalKeyArray: (List, key) => {
     if (!List || List.length === 0) return 0
     return List.map(item => item[key]).reduce((prev, curr) => prev + curr, 0)
+  },
+  getFilterExport: (obj, total) => {
+    const newObj = { ...obj }
+    if (total < 1000) {
+      newObj.Pi = 1
+      newObj.Ps = 1000
+    }
+    return newObj
   }
 }

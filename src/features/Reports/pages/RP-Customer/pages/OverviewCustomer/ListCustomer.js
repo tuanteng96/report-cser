@@ -10,6 +10,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWindowSize } from 'src/hooks/useWindowSize'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -36,7 +37,9 @@ const ListCustomer = forwardRef(
       },
       onGetDataExport() {
         return new Promise((resolve, reject) => {
-          const newFilters = GeneralNewFilter({ ...filters, Ps: 1000, Pi: 1 })
+          const newFilters = GeneralNewFilter(
+            ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+          )
           reportsApi
             .getListCustomer(newFilters)
             .then(({ data }) => {
