@@ -68,6 +68,16 @@ function Sales(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
+  const awaitLoading = fn => {
+    if (elementListRef?.current.getLoading()) {
+      setTimeout(() => {
+        awaitLoading(fn)
+      }, 50)
+    } else {
+      fn()
+    }
+  }
+
   const getOverviewSell = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
@@ -117,9 +127,18 @@ function Sales(props) {
                 ]
               : []
           })
-          setLoading(false)
-          isFilter && setIsFilter(false)
-          callback && callback()
+
+          if (isFilter) {
+            awaitLoading(() => {
+              setLoading(false)
+              isFilter && setIsFilter(false)
+              callback && callback()
+            })
+          } else {
+            setLoading(false)
+            isFilter && setIsFilter(false)
+            callback && callback()
+          }
         }
       })
       .catch(error => console.log(error))
@@ -127,6 +146,7 @@ function Sales(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
+      setLoading(true)
       elementListRef?.current?.onRefresh(() => getOverviewSell())
     } else {
       setFilters({ ...values, Pi: 1 })
@@ -134,6 +154,7 @@ function Sales(props) {
   }
 
   const onRefresh = () => {
+    setLoading(true)
     elementListRef?.current?.onRefresh(() => getOverviewSell())
   }
 

@@ -123,6 +123,16 @@ function RPServices(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
+  const awaitLoading = fn => {
+    if (elementListRef?.current.getLoading()) {
+      setTimeout(() => {
+        awaitLoading(fn)
+      }, 50)
+    } else {
+      fn()
+    }
+  }
+
   const getOverviewService = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     const newFilters = {
@@ -159,9 +169,17 @@ function RPServices(props) {
             }))
           }))
           setOverviewData(data.result)
-          setLoading(false)
-          isFilter && setIsFilter(false)
-          callback && callback()
+          if (isFilter) {
+            awaitLoading(() => {
+              setLoading(false)
+              isFilter && setIsFilter(false)
+              callback && callback()
+            })
+          } else {
+            setLoading(false)
+            isFilter && setIsFilter(false)
+            callback && callback()
+          }
         }
       })
       .catch(error => console.log(error))
@@ -169,6 +187,7 @@ function RPServices(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
+      setLoading(true)
       elementListRef?.current?.onRefresh(() => getOverviewService())
     } else {
       setFilters({ ...values, Pi: 1 })
@@ -176,7 +195,8 @@ function RPServices(props) {
   }
 
   const onRefresh = () => {
-    elementListRef?.current?.onRefresh(() => getOverviewService())
+    setLoading(true)
+    elementListRef?.current?.onRefresh(() => getOverviewService(false))
   }
 
   const onOpenFilter = () => {

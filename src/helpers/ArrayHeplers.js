@@ -9,9 +9,9 @@ export const ArrayHeplers = {
   },
   getFilterExport: (obj, total) => {
     const newObj = { ...obj }
-    if (total < 1000) {
+    if (total < 1500) {
       newObj.Pi = 1
-      newObj.Ps = 1000
+      newObj.Ps = 1500
     }
     return newObj
   }

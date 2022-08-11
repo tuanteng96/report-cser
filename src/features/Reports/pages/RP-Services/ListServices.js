@@ -33,13 +33,15 @@ const ListServices = forwardRef(
     const { width } = useWindowSize()
 
     useEffect(() => {
+      setListData([])
       getListServices()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters])
 
     useImperativeHandle(ref, () => ({
       onRefresh(callback) {
-        getListServices(false, () => callback && callback())
+        setListData([])
+        getListServices(true, () => callback && callback())
       },
       onGetDataExport() {
         return new Promise((resolve, reject) => {
@@ -53,6 +55,9 @@ const ListServices = forwardRef(
             })
             .catch(error => console.log(error))
         })
+      },
+      getLoading() {
+        return loading
       }
     }))
 

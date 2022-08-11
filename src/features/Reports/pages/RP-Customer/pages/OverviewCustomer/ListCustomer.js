@@ -27,13 +27,15 @@ const ListCustomer = forwardRef(
     const { width } = useWindowSize()
 
     useEffect(() => {
-      getListCustomer()
+      setListData([])
+      getListCustomer(true)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters])
 
     useImperativeHandle(ref, () => ({
       onRefresh(callback) {
-        getListCustomer(false, () => callback && callback())
+        setListData([])
+        getListCustomer(true, () => callback && callback())
       },
       onGetDataExport() {
         return new Promise((resolve, reject) => {
@@ -47,6 +49,9 @@ const ListCustomer = forwardRef(
             })
             .catch(error => console.log(error))
         })
+      },
+      getLoading() {
+        return loading
       }
     }))
 
@@ -68,7 +73,6 @@ const ListCustomer = forwardRef(
         DistrictsID: filters.DistrictsID ? filters.DistrictsID.value : ''
       }
     }
-
     const getListCustomer = (isLoading = true, callback) => {
       isLoading && setLoading(true)
       const newFilters = GeneralNewFilter(filters)

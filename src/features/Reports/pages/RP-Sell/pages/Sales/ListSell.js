@@ -42,13 +42,15 @@ const ListSell = forwardRef(
     const { width } = useWindowSize()
 
     useEffect(() => {
+      setListData([])
       getListServices()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters])
 
     useImperativeHandle(ref, () => ({
       onRefresh(callback) {
-        getListServices(false, () => callback && callback())
+        setListData([])
+        getListServices(true, () => callback && callback())
       },
       onGetDataExport() {
         return new Promise((resolve, reject) => {
@@ -62,6 +64,9 @@ const ListSell = forwardRef(
             })
             .catch(error => console.log(error))
         })
+      },
+      getLoading() {
+        return loading
       }
     }))
 
@@ -158,7 +163,7 @@ const ListSell = forwardRef(
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách đơn hàng</div>
           <div className="d-flex">
-            <div className="fw-500 pr-15px d-flex align-items-center">
+            <div className="fw-500 pr-sm-15px d-flex align-items-center">
               <div className="fw-500 pl-15px">
                 Tổng ĐH{' '}
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
@@ -186,14 +191,8 @@ const ListSell = forwardRef(
                     </Popover>
                   }
                 >
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h6 vertical-align-text-top"></i>
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h6 vertical-align-text-top d-none d-sm-inline-block"></i>
                 </OverlayTrigger>
-              </div>
-              <div className="fw-500 pl-15px d-xl-none">
-                Cần T.Toán{' '}
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PriceHelper.formatVND(Total.ToPay)}
-                </span>
               </div>
               {width <= 1200 && (
                 <OverlayTrigger

@@ -33,22 +33,22 @@ const MenuList = [
         Title: 'Tổng hợp khách hàng',
         Href: '/khach-hang/tong-hop'
       },
-      {
-        Title: 'Chi tiêu',
-        Href: '/khach-hang/chi-tieu'
-      },
-      {
-        Title: 'Sử dụng dịch vụ',
-        Href: '/khach-hang/su-dung-dich-vu'
-      },
-      {
-        Title: 'Dự kiến',
-        Href: '/khach-hang/du-kien'
-      },
-      {
-        Title: 'Tần suất sử dụng',
-        Href: '/khach-hang/tan-suat-su-dung'
-      }
+      // {
+      //   Title: 'Chi tiêu',
+      //   Href: '/khach-hang/chi-tieu'
+      // },
+      // {
+      //   Title: 'Sử dụng dịch vụ',
+      //   Href: '/khach-hang/su-dung-dich-vu'
+      // },
+      // {
+      //   Title: 'Dự kiến',
+      //   Href: '/khach-hang/du-kien'
+      // },
+      // {
+      //   Title: 'Tần suất sử dụng',
+      //   Href: '/khach-hang/tan-suat-su-dung'
+      // }
     ]
   },
   {

@@ -101,11 +101,11 @@ function ChartCircle({ loading, data }) {
   return (
     <Tab.Container defaultActiveKey={KeyTabs}>
       <div className="h-100 position-relative">
-        <div className="d-flex justify-content-between align-items-center w-100 position-absolute top-0 right-0">
+        <div className="d-flex justify-content-between align-items-center flex-column flex-sm-row w-100 position-absolute top-0 right-0">
           <div className="fw-500 font-size-lg">Sản phẩm, dịch vụ bán ra</div>
           <Nav
             as="ul"
-            className="nav nav-pills nav-pills-sm"
+            className="nav nav-pills nav-pills-sm mt-8px mt-sm-0"
             onSelect={_key => setKeyTabs(_key)}
           >
             <Nav.Item className="nav-item" as="li">
@@ -116,7 +116,7 @@ function ChartCircle({ loading, data }) {
             </Nav.Item>
           </Nav>
         </div>
-        <Tab.Content className="tab-content h-100 pt-50px">
+        <Tab.Content className="tab-content h-100 pt-90px pt-sm-50px">
           <Tab.Pane eventKey="DS" className="p-0 h-100">
             {loading && <LoadingChart />}
             {!loading && (
