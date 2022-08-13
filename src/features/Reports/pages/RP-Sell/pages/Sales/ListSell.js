@@ -659,9 +659,9 @@ const ListSell = forwardRef(
                                 key={index}
                               >
                                 <div className="fw-500 mb-2px">
-                                  {item.ProdTitle}
+                                  {item.name}
                                   <span className="fw-500 text-dark pl-5px">
-                                    ( x{item.QTy} )
+                                    ( x{item.qty} )
                                   </span>
                                 </div>
                               </div>
