@@ -660,17 +660,9 @@ const ListSell = forwardRef(
                               >
                                 <div className="fw-500 mb-2px">
                                   {item.ProdTitle}
-                                </div>
-                                <div className="d-flex justify-content-between">
-                                  <div className="text-muted">
-                                    SL{' '}
-                                    <span className="fw-500 text-dark">
-                                      x {item.QTy}
-                                    </span>
-                                  </div>
-                                  <div className="fw-500">
-                                    {PriceHelper.formatVND(item.Topay)}
-                                  </div>
+                                  <span className="fw-500 text-dark pl-5px">
+                                    ( x{item.QTy} )
+                                  </span>
                                 </div>
                               </div>
                             ))}
