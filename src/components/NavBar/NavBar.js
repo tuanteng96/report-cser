@@ -32,7 +32,7 @@ const MenuList = [
       {
         Title: 'Tổng hợp khách hàng',
         Href: '/khach-hang/tong-hop'
-      },
+      }
       // {
       //   Title: 'Chi tiêu',
       //   Href: '/khach-hang/chi-tieu'

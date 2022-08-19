@@ -207,26 +207,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Chi tiết đơn hàng
             </div>
             <div className="fw-600 font-size-mdd w-100">
-              {data?.lines &&
-                data?.lines.map((item, index) => (
-                  <div
-                    className={clsx('py-12px', {
-                      'border-bottom': data?.lines.length - 1 !== index
-                    })}
-                    key={index}
-                  >
-                    <div className="fw-500 mb-2px">{item.ProdTitle}</div>
-                    <div className="d-flex justify-content-between">
-                      <div className="text-muted">
-                        SL{' '}
-                        <span className="fw-500 text-dark">x {item.QTy}</span>
-                      </div>
-                      <div className="fw-500">
-                        {PriceHelper.formatVND(item.Topay)}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              {data?.Prod ? `${data.Prod}, ` : ''}${data?.Svr || ''}
             </div>
           </div>
         </div>

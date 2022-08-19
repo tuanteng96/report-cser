@@ -637,47 +637,15 @@ const ListSell = forwardRef(
                 }
               },
               {
-                dataField: '#',
-                text: '#',
+                dataField: 'Prod',
+                text: 'Chi tiết',
                 headerAlign: 'center',
-                style: { textAlign: 'center' },
-                formatter: (cell, row) => (
-                  <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    placement="top"
-                    overlay={
-                      <Popover className="popover-md">
-                        <Popover.Body className="p-0">
-                          {row.lines &&
-                            row.lines.map((item, index) => (
-                              <div
-                                className={clsx('p-12px', {
-                                  'border-bottom':
-                                    row.lines.length - 1 !== index
-                                })}
-                                key={index}
-                              >
-                                <div className="fw-500 mb-2px">
-                                  {item.name}
-                                  <span className="fw-500 text-dark pl-5px">
-                                    ( x{item.qty} )
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <button type="button" className="btn btn-xs btn-primary">
-                      Xem đơn hàng
-                    </button>
-                  </OverlayTrigger>
-                ),
-                attrs: { 'data-title': '#' },
+                //style: { textAlign: 'center' },
+                formatter: (cell, row) =>
+                  `${row.Prod ? `${row.Prod}, ` : ''}${row.Svr || ''}`,
+                attrs: { 'data-title': 'Chi tiết' },
                 headerStyle: () => {
-                  return { minWidth: '112px', width: '112px' }
+                  return { minWidth: '200px', width: '200px' }
                 }
               }
             ]}
