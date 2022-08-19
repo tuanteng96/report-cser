@@ -57,6 +57,7 @@ function RPServices(props) {
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
+    MemberID: '',
     Status: '', // Trạng thái
     Warranty: '', // Bảo hành
     StaffID: '', // ID nhân viên

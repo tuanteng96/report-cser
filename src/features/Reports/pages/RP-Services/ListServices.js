@@ -71,6 +71,7 @@ const ListServices = forwardRef(
           ? moment(filters.DateEnd).format('DD/MM/yyyy')
           : null,
         StaffID: filters.StaffID ? filters.StaffID.value : '',
+        MemberID: filters.MemberID ? filters.MemberID.value : '',
         GroupCustomerID: filters.GroupCustomerID
           ? filters.GroupCustomerID.value
           : '',
