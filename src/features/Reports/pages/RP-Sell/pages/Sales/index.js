@@ -31,7 +31,8 @@ function Sales(props) {
     Ps: 10, // Số lượng item
     Voucher: '', // Trạng thái
     Payment: '', // Bảo hành
-    IsMember: '' // ID nhân viên
+    IsMember: '', // Loại khách hàng
+    MemberID: '' // ID khách hàng
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)

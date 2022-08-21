@@ -79,15 +79,7 @@ const ListSell = forwardRef(
         DateEnd: filters.DateEnd
           ? moment(filters.DateEnd).format('DD/MM/yyyy')
           : null,
-        StaffID: filters.StaffID ? filters.StaffID.value : '',
-        GroupCustomerID: filters.GroupCustomerID
-          ? filters.GroupCustomerID.value
-          : '',
-        SourceName: filters.SourceName ? filters.SourceName.value : '',
-        ProvincesID: filters.ProvincesID ? filters.ProvincesID.value : '',
-        DistrictsID: filters.DistrictsID ? filters.DistrictsID.value : '',
-        Status: filters.Status ? filters.Status.value : '',
-        Warranty: filters.Warranty ? filters.Warranty.value : ''
+        MemberID: filters.MemberID ? filters.MemberID.value : ''
       }
     }
 
