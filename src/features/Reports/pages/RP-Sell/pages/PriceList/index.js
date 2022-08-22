@@ -21,8 +21,6 @@ function PriceList(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    DateStart: new Date(), // Ngày bắt đầu
-    DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
     Key: '',
@@ -59,12 +57,8 @@ function PriceList(props) {
   const GeneralNewFilter = filters => {
     const newObj = {
       ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
+      DateStart: moment(new Date()).format('DD/MM/yyyy'),
+      DateEnd: moment(new Date()).format('DD/MM/yyyy'),
       Manu: filters.BrandId ? filters.BrandId.value : '',
       Cate: filters.CategoriesId ? filters.CategoriesId.value : '',
       Type:

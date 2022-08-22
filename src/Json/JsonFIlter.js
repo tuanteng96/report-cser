@@ -376,5 +376,25 @@ export const JsonFilter = {
       value: 'KHAC',
       label: 'Khác'
     }
+  ],
+  BrowserTypeList: [
+    {
+      value: 'android',
+      label: 'Android'
+    },
+    {
+      value: 'ios',
+      label: 'IOS'
+    }
+  ],
+  BrowserStatusList: [
+    {
+      value: 0,
+      label: 'Offline'
+    },
+    {
+      value: 1,
+      label: 'Online'
+    }
   ]
 }

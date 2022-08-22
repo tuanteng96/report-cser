@@ -10,6 +10,6 @@ export const BrowserHelpers = {
     if (/iPad|iPhone|iPod/.test(app)) {
       return 'iOS'
     }
-    return 'Chưa xác định'
+    return ''
   }
 }

@@ -9,6 +9,7 @@ import reportsApi from 'src/api/reports.api'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ModalViewMobile from './ModalViewMobile'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -21,16 +22,20 @@ function CustomerUseApp(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    DateStart: new Date(), // Ngày bắt đầu
-    DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10 // Số lượng item
+    Ps: 10, // Số lượng item
+    apptype: '',
+    onoff: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
   const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
+  const [Total, setTotal] = useState({
+    Android: 0,
+    IOS: 0
+  })
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
@@ -55,12 +60,10 @@ function CustomerUseApp(props) {
   const GeneralNewFilter = filters => {
     return {
       ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null
+      DateStart: moment(new Date()).format('DD/MM/yyyy'), // Ngày bắt đầu
+      DateEnd: moment(new Date()).format('DD/MM/yyyy'), // Ngày kết thúc
+      apptype: filters.apptype ? filters.apptype.value : '',
+      onoff: filters.onoff ? filters.onoff.value : ''
     }
   }
 
@@ -74,13 +77,16 @@ function CustomerUseApp(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total } = {
+          const { Items, Total, Android, IOS } = {
             Items: data.result?.Items || [],
-            Total: data.result?.Total || 0
+            Total: data.result?.Total || 0,
+            Android: data.result?.Android || 0,
+            IOS: data.result?.IOS || 0
           }
           setListData(Items)
           setLoading(false)
           setPageTotal(Total)
+          setTotal({ Android, IOS })
           isFilter && setIsFilter(false)
           callback && callback()
         }
@@ -171,6 +177,36 @@ function CustomerUseApp(props) {
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Khách hàng cài đặt APP</div>
+          <div>
+            <div className="fw-500 pl-15px">
+              Tổng khách hàng
+              <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                {PageTotal}
+              </span>
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Body className="p-0">
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Cài Android</span>
+                        <span>{Total.Android}</span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
+                        <span>Cài IOS</span>
+                        <span>{Total.IOS}</span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h6 vertical-align-text-top d-none d-sm-inline-block"></i>
+              </OverlayTrigger>
+            </div>
+          </div>
         </div>
         <div className="p-20px">
           <BaseTablesCustom

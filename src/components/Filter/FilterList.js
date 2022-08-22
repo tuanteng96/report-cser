@@ -40,7 +40,9 @@ const {
   TagWLList,
   TypeTTList,
   StatusTTList,
-  StarRatingList
+  StarRatingList,
+  BrowserTypeList,
+  BrowserStatusList
 } = JsonFilter
 
 const CustomOption = ({ children, data, ...props }) => {
@@ -217,6 +219,42 @@ function FilterList({
                         value={values.TypeCN}
                         onChange={otp => {
                           setFieldValue('TypeCN', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'apptype' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Thiết bị</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="apptype"
+                        placeholder="Chọn thiết bị"
+                        classNamePrefix="select"
+                        options={BrowserTypeList}
+                        className="select-control"
+                        value={values.apptype}
+                        onChange={otp => {
+                          setFieldValue('apptype', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'onoff' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Trạng thái</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="onoff"
+                        placeholder="Chọn trạng thái"
+                        classNamePrefix="select"
+                        options={BrowserStatusList}
+                        className="select-control"
+                        value={values.onoff}
+                        onChange={otp => {
+                          setFieldValue('onoff', otp)
                         }}
                       />
                     </div>
