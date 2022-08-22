@@ -39,6 +39,12 @@ const reportsApi = {
   getListServices: data => {
     return http.post(`${SubApi}/dich-vu/danh-sach`, JSON.stringify(data))
   },
+  getListOllCardService: data => {
+    return http.post(
+      `${SubApi}/khac/chi-tiet-vi-khach-hang`,
+      JSON.stringify(data)
+    )
+  },
   getOverviewSell: data => {
     return http.post(
       `${SubApi}/ban-hang/doanh-so-tong-quan`,
@@ -63,6 +69,12 @@ const reportsApi = {
   getListDebtPayment: data => {
     return http.post(
       `${SubApi}/ban-hang/thanh-toan-tra-no`,
+      JSON.stringify(data)
+    )
+  },
+  getListPriceSell: data => {
+    return http.post(
+      `${SubApi}/ban-hang/gia-ban-san-pham-dich-vu`,
       JSON.stringify(data)
     )
   },
@@ -110,6 +122,9 @@ const reportsApi = {
   },
   getInventoryWarning: data => {
     return http.post(`${SubApi}/ton-kho/du-kien-nvl`, JSON.stringify(data))
+  },
+  getListUseCustomerApp: data => {
+    return http.post(`${SubApi}/khach-hang/su-dung-app`, JSON.stringify(data))
   },
   getListBirthdayCustomer: data => {
     return http.post(

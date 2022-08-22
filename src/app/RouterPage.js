@@ -4,7 +4,6 @@ import LayoutReport from 'src/layout/LayoutReport'
 import RPCustomer from 'src/features/Reports/pages/RP-Customer'
 import RPDay from 'src/features/Reports/pages/RP-Day'
 import RPSell from 'src/features/Reports/pages/RP-Sell'
-import RPServices from 'src/features/Reports/pages/RP-Services'
 import Returns from 'src/features/Reports/pages/RP-Sell/pages/Returns'
 import Sales from 'src/features/Reports/pages/RP-Sell/pages/Sales'
 import SaleDetails from 'src/features/Reports/pages/RP-Sell/pages/SaleDetails'
@@ -36,6 +35,11 @@ import ExpenseCustomer from 'src/features/Reports/pages/RP-Customer/pages/Expens
 import UseServiceCustomer from 'src/features/Reports/pages/RP-Customer/pages/UseServiceCustomer'
 import ExpectedCustomer from 'src/features/Reports/pages/RP-Customer/pages/ExpectedCustomer'
 import FrequencyUseCustomer from 'src/features/Reports/pages/RP-Customer/pages/FrequencyUseCustomer'
+import CustomerUseApp from 'src/features/Reports/pages/RP-CSKH/pages/CustomerUseApp'
+import PriceList from 'src/features/Reports/pages/RP-Sell/pages/PriceList'
+import OverviewService from 'src/features/Reports/pages/RP-Services/pages/OverviewService'
+import RPServices from 'src/features/Reports/pages/RP-Services'
+import OddCardService from 'src/features/Reports/pages/RP-Services/pages/OddCardService'
 
 function RouterPage(props) {
   return (
@@ -71,7 +75,11 @@ function RouterPage(props) {
             <RPServices />
           </LayoutReport>
         }
-      ></Route>
+      >
+        <Route index element={<Navigate to="tong-quan" replace />} />
+        <Route path="tong-quan" element={<OverviewService />} />
+        <Route path="buoi-le-the-lieu-trinh" element={<OddCardService />} />
+      </Route>
       <Route
         path="/ban-hang"
         element={
@@ -86,6 +94,7 @@ function RouterPage(props) {
         <Route path="thanh-toan-tra-no" element={<DebtPayment />} />
         <Route path="tra-hang" element={<Returns />} />
         <Route path="top-ban-hang-doanh-so" element={<TopProducts />} />
+        <Route path="bang-gia" element={<PriceList />} />
       </Route>
       <Route
         path="/thu-chi-va-so-quy"
@@ -145,6 +154,7 @@ function RouterPage(props) {
       >
         <Route index element={<Navigate to="khach-hang-sinh-nhat" replace />} />
         <Route path="khach-hang-sinh-nhat" element={<BirthdayCustomer />} />
+        <Route path="bao-cao-cai-dat-app" element={<CustomerUseApp />} />
       </Route>
       <Route
         path="/khac"

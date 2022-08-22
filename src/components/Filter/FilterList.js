@@ -35,6 +35,7 @@ const {
   TypeTCList,
   TagsTCList,
   TypeCNList,
+  TypeCNHng,
   CategoriesTKList,
   TagWLList,
   TypeTTList,
@@ -216,6 +217,39 @@ function FilterList({
                         value={values.TypeCN}
                         onChange={otp => {
                           setFieldValue('TypeCN', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'Key' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Nhập tên mặt hàng</label>
+                      <input
+                        type="text"
+                        name="Key"
+                        value={values.Key}
+                        className="form-control"
+                        placeholder="Nhập tên ..."
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </div>
+                  )}
+                  {'TypeCNHng' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại</label>
+                      <Select
+                        isMulti
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="TypeCNHng"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={TypeCNHng}
+                        className="select-control"
+                        value={values.TypeCNHng}
+                        onChange={otp => {
+                          setFieldValue('TypeCNHng', otp)
                         }}
                       />
                     </div>

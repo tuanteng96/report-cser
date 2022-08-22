@@ -55,7 +55,17 @@ const MenuList = [
     Title: 'Dịch vụ',
     TitleKey: 'DICH_VU',
     IconClass: 'fa-regular fa-chart-waterfall icon',
-    Href: '/dich-vu'
+    Href: '/dich-vu',
+    Children: [
+      {
+        Title: 'Tổng quan - Doanh số',
+        Href: '/dich-vu/tong-quan'
+      },
+      {
+        Title: 'Buổi lẻ - Thẻ liệu trình',
+        Href: '/dich-vu/buoi-le-the-lieu-trinh'
+      }
+    ]
   },
   {
     Title: 'Bán hàng',
@@ -82,6 +92,10 @@ const MenuList = [
       {
         Title: 'Top bán hàng, doanh số',
         Href: '/ban-hang/top-ban-hang-doanh-so'
+      },
+      {
+        Title: 'Bảng giá',
+        Href: '/ban-hang/bang-gia'
       }
     ]
   },
@@ -155,62 +169,62 @@ const MenuList = [
       }
     ]
   },
-  // {
-  //   Title: 'CSKH',
-  //   TitleKey: 'CSKH',
-  //   IconClass: 'fa-regular fa-handshake icon',
-  //   Href: '/cskh',
-  //   Children: [
-  //     {
-  //       Title: 'Khách hàng sử dụng APP',
-  //       Href: '/cskh/khach-hang-su-dung-app'
-  //     },
-  //     {
-  //       Title: 'Khách hàng sinh nhật',
-  //       Href: '/cskh/khach-hang-sinh-nhat'
-  //     },
-  //     {
-  //       Title: 'Khách hàng sắp lên cấp',
-  //       Href: '/cskh/khach-hang-sap-len-cap'
-  //     },
-  //     {
-  //       Title: 'Khách hàng hết sản phẩm',
-  //       Href: '/cskh/khach-hang-het-san-pham'
-  //     },
-  //     {
-  //       Title: 'Khách hết thẻ trong ngày',
-  //       Href: '/cskh/khach-het-the-trong-ngay'
-  //     },
-  //     {
-  //       Title: 'Thẻ sắp hết hạn',
-  //       Href: '/cskh/the-sap-het-han'
-  //     },
-  //     {
-  //       Title: 'Thời gian nghe Smart Call',
-  //       Href: '/cskh/thoi-gian-nghe-smart-call'
-  //     },
-  //     {
-  //       Title: 'Đánh giá dịch vụ',
-  //       Href: '/cskh/danh-gia-dich-vu'
-  //     },
-  //     {
-  //       Title: 'Chỉ sử dụng mã giảm giá',
-  //       Href: '/cskh/chi-su-dung-ma-giam-gia'
-  //     },
-  //     {
-  //       Title: 'Chỉ sử dụng buổi lẻ',
-  //       Href: '/cskh/chi-su-dung-buoi-le'
-  //     },
-  //     {
-  //       Title: 'Top ưu đãi sử dụng',
-  //       Href: '/cskh/top-uu-dai-su-dung'
-  //     },
-  //     {
-  //       Title: 'Tần suất sử dụng dịch vụ',
-  //       Href: '/cskh/tan-suat-su-dunng-dich-vu'
-  //     }
-  //   ]
-  // },
+  {
+    Title: 'CSKH',
+    TitleKey: 'CSKH',
+    IconClass: 'fa-regular fa-handshake icon',
+    Href: '/cskh',
+    Children: [
+      {
+        Title: 'Báo cáo cài đặt APP',
+        Href: '/cskh/bao-cao-cai-dat-app'
+      }
+      // {
+      //   Title: 'Khách hàng sinh nhật',
+      //   Href: '/cskh/khach-hang-sinh-nhat'
+      // },
+      // {
+      //   Title: 'Khách hàng sắp lên cấp',
+      //   Href: '/cskh/khach-hang-sap-len-cap'
+      // },
+      // {
+      //   Title: 'Khách hàng hết sản phẩm',
+      //   Href: '/cskh/khach-hang-het-san-pham'
+      // },
+      // {
+      //   Title: 'Khách hết thẻ trong ngày',
+      //   Href: '/cskh/khach-het-the-trong-ngay'
+      // },
+      // {
+      //   Title: 'Thẻ sắp hết hạn',
+      //   Href: '/cskh/the-sap-het-han'
+      // },
+      // {
+      //   Title: 'Thời gian nghe Smart Call',
+      //   Href: '/cskh/thoi-gian-nghe-smart-call'
+      // },
+      // {
+      //   Title: 'Đánh giá dịch vụ',
+      //   Href: '/cskh/danh-gia-dich-vu'
+      // },
+      // {
+      //   Title: 'Chỉ sử dụng mã giảm giá',
+      //   Href: '/cskh/chi-su-dung-ma-giam-gia'
+      // },
+      // {
+      //   Title: 'Chỉ sử dụng buổi lẻ',
+      //   Href: '/cskh/chi-su-dung-buoi-le'
+      // },
+      // {
+      //   Title: 'Top ưu đãi sử dụng',
+      //   Href: '/cskh/top-uu-dai-su-dung'
+      // },
+      // {
+      //   Title: 'Tần suất sử dụng dịch vụ',
+      //   Href: '/cskh/tan-suat-su-dunng-dich-vu'
+      // }
+    ]
+  },
   {
     Title: 'Khác',
     TitleKey: 'KHAC',

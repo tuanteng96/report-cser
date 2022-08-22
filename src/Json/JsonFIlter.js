@@ -146,6 +146,28 @@ export const JsonFilter = {
       label: 'Thẻ tiền'
     }
   ],
+  TypeCNHng: [
+    {
+      value: 'san_pham',
+      label: 'Sản phẩm'
+    },
+    {
+      value: 'dich_vu',
+      label: 'Dịch vụ'
+    },
+    {
+      value: 'nvl',
+      label: 'Nguyên vật liệu'
+    },
+    {
+      value: 'phu_phi',
+      label: 'Phụ phí'
+    },
+    {
+      value: 'the_tien',
+      label: 'Thẻ tiền'
+    }
+  ],
   TypeCNList2: [
     {
       value: 'SP',
