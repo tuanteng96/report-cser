@@ -21,7 +21,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser Hồ Chí Minh'
       }
     ],
-    CrStockID: 8975
+    CrStockID: ''
   }
   window.token =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMjAxMDMwMTAyMDEyMDgiLCJuYmYiOjE2NjEzMjU4MDksImV4cCI6MTY2MTkzMDYwOSwiaWF0IjoxNjYxMzI1ODA5fQ.KyQ7l4YJ-e8VGiL7gztPO71EEhg_y3MTd94wigq7FSQ'

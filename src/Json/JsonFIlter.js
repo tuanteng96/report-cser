@@ -403,16 +403,8 @@ export const JsonFilter = {
       label: 'Đơn hàng thay đổi khách hàng'
     },
     {
-      value: 'Trả hàng',
-      label: 'Trả hàng'
-    },
-    {
       value: 'Tạo buổi bảo hành',
       label: 'Tạo buổi bảo hành'
-    },
-    {
-      value: 'Xóa đơn hàng',
-      label: 'Xóa đơn hàng'
     },
     {
       value: 'Kết thúc dịch vụ',

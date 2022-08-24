@@ -142,13 +142,15 @@ function OddCardService(props) {
 
   const transformDetail = row => {
     if (row.Title === 'Đơn hàng thay đổi khách mua hàng') {
+      console.log(row)
       return (
         <div>
-          Chuyển từ khách hàng vãng lãi (0000000000) đến khách hàng Trung Hiếu
-          (0978544973)
-          <div>
-            Mã đơn hàng : <span className='text-danger fw-500'>#40003</span>
-          </div>
+          Đơn hàng 
+          <code class="mx-5px">#{row.OrderID}</code>
+          được chuyển từ 
+          <code class="mx-5px">{row.MemberName || 'Chưa xác định'} - {row.MemberPhone || 'Chưa xác định'}</code>
+          đến
+          <code class="ml-5px">{row.ToMemberName || 'Chưa xác định'} - {row.ToMemberPhone || 'Chưa xác định'}</code>
         </div>
       )
     }
@@ -171,14 +173,69 @@ function OddCardService(props) {
     if (row.Title === 'Tạo buổi bảo hành') {
       return (
         <div>
+          <code className="fw-500 mr-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+           tạo buổi bảo hành - dịch vụ thẻ
+           <code className="fw-500 ml-6px">
+              {row.ProdTitle}
+            </code>
+        </div>
+      )
+    }
+    if(row.Title === 'Chuyển nhượng thẻ') {
+      return (
+        <div>
           <div>
-            Khách hàng
+            Khách hàng chuyển
             <span className="fw-500 pl-3px">
               {row.MemberName} - {row.MemberPhone}
             </span>
           </div>
-          Dịch vụ kích hoạt bảo hành
-          <span className="fw-500 pl-3px">{row.ProdTitle}</span>
+          <div>
+            Khách hàng nhận
+            <span className="fw-500 pl-3px">
+              {row.ToMemberName} - {row.ToMemberPhone}
+            </span>
+          </div>
+          <div>
+            Dịch vụ chuyển nhượng
+            <span className="fw-500 pl-3px">{row.ProdTitle}</span>
+          </div>
+          <div>
+            Số buổi chuyển nhượng
+            <span className="fw-500 pl-3px">{row.EndCount}</span>
+          </div>
+        </div>
+      )
+    }
+    if(row.Title === 'Kích hoạt bảo hành') {
+      return (
+        <div>
+          <div>
+            <code className="fw-500 mr-6px">
+              {row.MemberName} - {row.MemberPhone}
+            </code>
+            kích hoạt bảo hành - dịch vụ thẻ
+            <code className="fw-500 ml-6px">
+                {row.ProdTitle}
+            </code>
+          </div>
+        </div>
+      )
+    }
+    if(row.Title === 'Kết thúc dich vụ') {
+      return (
+        <div>
+          <div>
+            <code className="fw-500 mr-6px">
+              {row.MemberName} - {row.MemberPhone}
+            </code>
+            kết thúc
+            <code className="fw-500 ml-6px">
+                {row.ProdTitle}
+            </code>
+          </div>
         </div>
       )
     }
