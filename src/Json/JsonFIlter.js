@@ -396,5 +396,59 @@ export const JsonFilter = {
       value: 1,
       label: 'Online'
     }
+  ],
+  TypeNVList: [
+    {
+      value: 'Đơn hàng thay đổi khách hàng',
+      label: 'Đơn hàng thay đổi khách hàng'
+    },
+    {
+      value: 'Trả hàng',
+      label: 'Trả hàng'
+    },
+    {
+      value: 'Tạo buổi bảo hành',
+      label: 'Tạo buổi bảo hành'
+    },
+    {
+      value: 'Xóa đơn hàng',
+      label: 'Xóa đơn hàng'
+    },
+    {
+      value: 'Kết thúc dịch vụ',
+      label: 'Kết thúc dịch vụ'
+    },
+    {
+      value: 'Chuyển nhượng thẻ',
+      label: 'Chuyển nhượng thẻ'
+    },
+    {
+      value: 'Tặng buổi',
+      label: 'Tặng buổi'
+    },
+    {
+      value: 'Thay đổi ngày hết hạn',
+      label: 'Thay đổi ngày hết hạn'
+    },
+    {
+      value: 'Xóa buổi',
+      label: 'Xóa buổi'
+    },
+    {
+      value: 'Thêm buổi',
+      label: 'Thêm buổi'
+    },
+    {
+      value: 'Kích hoạt bảo hành',
+      label: 'Kích hoạt bảo hành'
+    },
+    {
+      value: 'Tạo buổi bảo hành',
+      label: 'Tạo buổi bảo hành'
+    },
+    {
+      value: 'Thay đổi cơ sở',
+      label: 'Thay đổi cơ sở'
+    }
   ]
 }

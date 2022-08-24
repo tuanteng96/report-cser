@@ -82,7 +82,7 @@ function ModalViewMobile({ show, onHide, data }) {
             Tồn kho
           </div>
           <div className="fw-600 font-size-mdd w-60 text-end">
-            {`${data?.TonKho} ${data?.DonVi || ''}`}
+            {data?.TonKho ? `${data?.TonKho} ${data?.DonVi || ''}` : 0}
           </div>
         </div>
         <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">

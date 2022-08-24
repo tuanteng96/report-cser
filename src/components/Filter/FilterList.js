@@ -42,7 +42,8 @@ const {
   StatusTTList,
   StarRatingList,
   BrowserTypeList,
-  BrowserStatusList
+  BrowserStatusList,
+  TypeNVList
 } = JsonFilter
 
 const CustomOption = ({ children, data, ...props }) => {
@@ -482,6 +483,24 @@ function FilterList({
                         value={values.MemberID}
                         onChange={otp => {
                           setFieldValue('MemberID', otp, false)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'ten_nghiep_vu' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="ten_nghiep_vu"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={TypeNVList}
+                        className="select-control"
+                        value={values.ten_nghiep_vu}
+                        onChange={otp => {
+                          setFieldValue('ten_nghiep_vu', otp)
                         }}
                       />
                     </div>

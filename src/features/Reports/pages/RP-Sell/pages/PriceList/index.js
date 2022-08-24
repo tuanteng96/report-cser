@@ -57,8 +57,8 @@ function PriceList(props) {
   const GeneralNewFilter = filters => {
     const newObj = {
       ...filters,
-      DateStart: moment(new Date()).format('DD/MM/yyyy'),
-      DateEnd: moment(new Date()).format('DD/MM/yyyy'),
+      DateStart: null,
+      DateEnd: null,
       Manu: filters.BrandId ? filters.BrandId.value : '',
       Cate: filters.CategoriesId ? filters.CategoriesId.value : '',
       Type:
@@ -308,7 +308,12 @@ function PriceList(props) {
                 text: 'Tồn kho',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => `${row?.TonKho} ${row?.DonVi || ''}`,
+                formatter: (cell, row) =>
+                  row?.TonKho || row?.TonKho === 0
+                    ? `${PriceHelper.formatVND(row?.TonKho)} ${
+                        row?.DonVi || ''
+                      }`
+                    : '',
                 attrs: { 'data-title': 'Tồn kho' },
                 headerStyle: () => {
                   return { minWidth: '100px', width: '100px' }

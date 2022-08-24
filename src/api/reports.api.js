@@ -33,6 +33,9 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getListOddService: data => {
+    return http.post(`${SubApi}/khach-hang/chinh-sua-the`, JSON.stringify(data))
+  },
   getOverviewServices: data => {
     return http.post(`${SubApi}/dich-vu/tong-quan`, JSON.stringify(data))
   },

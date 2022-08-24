@@ -25,7 +25,8 @@ function OddCardService(props) {
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
-    MemberID: ''
+    MemberID: '',
+    ten_nghiep_vu: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -61,7 +62,9 @@ function OddCardService(props) {
         : null,
       DateEnd: filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null
+        : null,
+      MemberID: filters.MemberID ? filters.MemberID?.value : '',
+      ten_nghiep_vu: filters.ten_nghiep_vu ? filters.ten_nghiep_vu.value : ''
     }
     return newObj
   }
@@ -69,7 +72,7 @@ function OddCardService(props) {
     isLoading && setLoading(true)
     const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListOllCardService(newFilters)
+      .getListOddService(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -115,7 +118,7 @@ function OddCardService(props) {
       ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
     )
     reportsApi
-      .getListOllCardService(newFilters)
+      .getListOddService(newFilters)
       .then(({ data }) => {
         window?.EzsExportExcel &&
           window?.EzsExportExcel({
@@ -137,12 +140,57 @@ function OddCardService(props) {
     setIsModalMobile(false)
   }
 
+  const transformDetail = row => {
+    if (row.Title === 'Đơn hàng thay đổi khách mua hàng') {
+      return (
+        <div>
+          Chuyển từ khách hàng vãng lãi (0000000000) đến khách hàng Trung Hiếu
+          (0978544973)
+          <div>
+            Mã đơn hàng : <span className='text-danger fw-500'>#40003</span>
+          </div>
+        </div>
+      )
+    }
+    if (row.Title === 'Trả hàng') {
+      return (
+        <div>
+          <div>
+            Khách hàng
+            <span className="fw-500 pl-3px">
+              {row.MemberName} - {row.MemberPhone}
+            </span>
+          </div>
+          <div>
+            Mã đơn hàng
+            <span className="text-danger fw-500 pl-3px">{row.OrderID}</span>
+          </div>
+        </div>
+      )
+    }
+    if (row.Title === 'Tạo buổi bảo hành') {
+      return (
+        <div>
+          <div>
+            Khách hàng
+            <span className="fw-500 pl-3px">
+              {row.MemberName} - {row.MemberPhone}
+            </span>
+          </div>
+          Dịch vụ kích hoạt bảo hành
+          <span className="fw-500 pl-3px">{row.ProdTitle}</span>
+        </div>
+      )
+    }
+    return 'Chi tiết'
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Buổi lẻ - Thẻ liệu trình
+            Báo cáo nghiệp vụ
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -171,9 +219,7 @@ function OddCardService(props) {
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
-          <div className="fw-500 font-size-lg">
-            Danh sách buổi lẻ - Thẻ liệu trình
-          </div>
+          <div className="fw-500 font-size-lg">Danh sách nghiệp vụ</div>
         </div>
         <div className="p-20px">
           <BaseTablesCustom
@@ -241,94 +287,59 @@ function OddCardService(props) {
                 attrs: { 'data-title': 'STT' }
               },
               {
-                dataField: 'ID',
-                text: 'ID',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => <div>#{row.ID}</div>,
-                attrs: { 'data-title': 'ID' },
-                headerStyle: () => {
-                  return { minWidth: '80px', width: '80px' }
-                }
-              },
-              {
-                dataField: 'Ten',
-                text: 'Tên mặt hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.Ten || 'Chưa có',
-                attrs: { 'data-title': 'Tên mặt hàng' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'MaSP',
-                text: 'Mã',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.MaSP,
-                attrs: { 'data-title': 'Mã' },
-                headerStyle: () => {
-                  return { minWidth: '120px', width: '120px' }
-                }
-              },
-              {
-                dataField: 'NguyenGia',
-                text: 'Nguyên giá',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row?.NguyenGia),
-                attrs: { 'data-title': 'Nguyên giá' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'GiaKM',
-                text: 'Giá hiện tại',
+                dataField: 'CreateDate',
+                text: 'Ngày',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  row?.GiaKM > 0
-                    ? PriceHelper.formatVND(row?.GiaKM)
-                    : PriceHelper.formatVND(row?.NguyenGia),
+                  moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
+                attrs: { 'data-title': 'Ngày' },
+                headerStyle: () => {
+                  return { minWidth: '180px', width: '180px' }
+                }
+              },
+              {
+                dataField: 'UserName',
+                text: 'Nhân viên thực hiện',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => row.UserName || 'Chưa có',
+                attrs: { 'data-title': 'Nhân viên thực hiện' },
+                headerStyle: () => {
+                  return { minWidth: '300px', width: '300px' }
+                }
+              },
+              {
+                dataField: 'StockTitle',
+                text: 'Cơ sở',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => row?.StockTitle,
+                attrs: { 'data-title': 'Cơ sở' },
+                headerStyle: () => {
+                  return { minWidth: '180px', width: '180px' }
+                }
+              },
+              {
+                dataField: 'Title',
+                text: 'Nghiệp vụ',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => row.Title,
+                attrs: { 'data-title': 'Nghiệp vụ' },
+                headerStyle: () => {
+                  return { minWidth: '300px', width: '300px' }
+                }
+              },
+              {
+                dataField: 'Chi tiết',
+                text: 'Chi tiết thực hiện',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => transformDetail(row),
                 attrs: { 'data-title': 'Giá hiện tại' },
                 headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'TonKho',
-                text: 'Tồn kho',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => `${row?.TonKho} ${row?.DonVi || ''}`,
-                attrs: { 'data-title': 'Tồn kho' },
-                headerStyle: () => {
-                  return { minWidth: '100px', width: '100px' }
-                }
-              },
-              {
-                dataField: 'DanhMuc',
-                text: 'Danh mục',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.DanhMuc,
-                attrs: { 'data-title': 'Danh mục' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'NhanHang',
-                text: 'Nhãn hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.NhanHang,
-                attrs: { 'data-title': 'Nhãn hàng' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
+                  return { minWidth: '150px' }
                 }
               }
             ]}

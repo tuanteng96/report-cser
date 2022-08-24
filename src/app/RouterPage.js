@@ -78,7 +78,7 @@ function RouterPage(props) {
       >
         <Route index element={<Navigate to="tong-quan" replace />} />
         <Route path="tong-quan" element={<OverviewService />} />
-        <Route path="buoi-le-the-lieu-trinh" element={<OddCardService />} />
+        <Route path="bao-cao-nghiep-vu" element={<OddCardService />} />
       </Route>
       <Route
         path="/ban-hang"

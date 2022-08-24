@@ -184,6 +184,22 @@ function UseServiceCustomer(props) {
       .catch(error => console.log(error))
   }
 
+  const getStatus = status => {
+    let obj = {
+      Title: status,
+      ClassName: 'default'
+    }
+    if (status === 'done') {
+      obj.Title = 'Hoàn thành'
+      obj.ClassName = 'success'
+    }
+    if (status === 'doing') {
+      obj.Title = 'Đang thực hiện'
+      obj.ClassName = 'warning'
+    }
+    return obj
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -399,7 +415,17 @@ function UseServiceCustomer(props) {
                         <td>
                           {moment(order.UseEndTime).format('HH:mm DD/MM/YYYY')}
                         </td>
-                        <td>{order.Status}</td>
+                        <td>
+                          {order.Status && (
+                            <span
+                              className={`badge badge-${
+                                getStatus(order.Status).ClassName
+                              }`}
+                            >
+                              {getStatus(order.Status).Title}
+                            </span>
+                          )}
+                        </td>
                         <td>{order.Desc}</td>
                       </tr>
                     ))}

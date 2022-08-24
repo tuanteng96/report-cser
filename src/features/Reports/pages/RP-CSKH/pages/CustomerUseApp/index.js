@@ -22,6 +22,8 @@ function CustomerUseApp(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
+    DateStart: moment().startOf('month').toDate(),
+    DateEnd: moment().endOf('month').toDate(),
     Pi: 1, // Trang hiện tại
     Ps: 10, // Số lượng item
     apptype: '',
@@ -60,8 +62,12 @@ function CustomerUseApp(props) {
   const GeneralNewFilter = filters => {
     return {
       ...filters,
-      DateStart: moment(new Date()).format('DD/MM/yyyy'), // Ngày bắt đầu
-      DateEnd: moment(new Date()).format('DD/MM/yyyy'), // Ngày kết thúc
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null,
       apptype: filters.apptype ? filters.apptype.value : '',
       onoff: filters.onoff ? filters.onoff.value : ''
     }
