@@ -403,6 +403,10 @@ export const JsonFilter = {
       label: 'Đơn hàng thay đổi khách hàng'
     },
     {
+      value: 'Xóa đơn hàng',
+      label: 'Xóa đơn hàng'
+    },
+    {
       value: 'Tạo buổi bảo hành',
       label: 'Tạo buổi bảo hành'
     },
@@ -433,10 +437,6 @@ export const JsonFilter = {
     {
       value: 'Kích hoạt bảo hành',
       label: 'Kích hoạt bảo hành'
-    },
-    {
-      value: 'Tạo buổi bảo hành',
-      label: 'Tạo buổi bảo hành'
     },
     {
       value: 'Thay đổi cơ sở',

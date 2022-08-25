@@ -142,104 +142,223 @@ function OddCardService(props) {
 
   const transformDetail = row => {
     if (row.Title === 'Đơn hàng thay đổi khách mua hàng') {
-      console.log(row)
       return (
         <div>
-          Đơn hàng 
-          <code class="mx-5px">#{row.OrderID}</code>
-          được chuyển từ 
-          <code class="mx-5px">{row.MemberName || 'Chưa xác định'} - {row.MemberPhone || 'Chưa xác định'}</code>
-          đến
-          <code class="ml-5px">{row.ToMemberName || 'Chưa xác định'} - {row.ToMemberPhone || 'Chưa xác định'}</code>
-        </div>
-      )
-    }
-    if (row.Title === 'Trả hàng') {
-      return (
-        <div>
-          <div>
-            Khách hàng
-            <span className="fw-500 pl-3px">
-              {row.MemberName} - {row.MemberPhone}
-            </span>
-          </div>
-          <div>
-            Mã đơn hàng
-            <span className="text-danger fw-500 pl-3px">{row.OrderID}</span>
-          </div>
+          Đơn hàng
+          <code className="mx-6px font-size-md fw-600">#{row.OrderID}</code>
+          được chuyển từ khách hàng
+          <code className="mx-6px font-size-md fw-600">
+            {row.OrderFromAnonymous ? (
+              'Khách vãng lai'
+            ) : (
+              <>
+                {row.OrderFromSenderName} - {row.OrderFromSenderPhone}
+              </>
+            )}
+          </code>
+          đến khách hàng
+          <code className="ml-6px font-size-md fw-600">
+            {row.OrderToSenderName || 'Chưa xác định'} -{' '}
+            {row.OrderToSenderPhone || 'Chưa xác định'}
+          </code>
         </div>
       )
     }
     if (row.Title === 'Tạo buổi bảo hành') {
       return (
         <div>
-          <code className="fw-500 mr-6px">
+          Khách hàng
+          <code className="font-size-md fw-600 mx-6px">
             {row.MemberName} - {row.MemberPhone}
           </code>
-           tạo buổi bảo hành - dịch vụ thẻ
-           <code className="fw-500 ml-6px">
-              {row.ProdTitle}
-            </code>
+          tạo buổi bảo hành - dịch vụ thẻ
+          <code className="font-size-md fw-600 ml-6px">{row.ProdTitle}</code>
         </div>
       )
     }
-    if(row.Title === 'Chuyển nhượng thẻ') {
+    if (row.Title === 'Chuyển nhượng thẻ') {
       return (
         <div>
-          <div>
-            Khách hàng chuyển
-            <span className="fw-500 pl-3px">
-              {row.MemberName} - {row.MemberPhone}
-            </span>
-          </div>
-          <div>
-            Khách hàng nhận
-            <span className="fw-500 pl-3px">
-              {row.ToMemberName} - {row.ToMemberPhone}
-            </span>
-          </div>
-          <div>
-            Dịch vụ chuyển nhượng
-            <span className="fw-500 pl-3px">{row.ProdTitle}</span>
-          </div>
-          <div>
-            Số buổi chuyển nhượng
-            <span className="fw-500 pl-3px">{row.EndCount}</span>
-          </div>
+          Chuyển nhựng
+          <code className="font-size-md fw-600 mx-6px">
+            {row.ProdTitle} - {row.OSUpdate} buổi
+          </code>
+          từ khách hàng
+          <code className="font-size-md fw-600 mx-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+          tới khách hàng
+          <code className="font-size-md fw-600 ml-6px">
+            {row.ToMemberName} - {row.ToMemberPhone}
+          </code>
         </div>
       )
     }
-    if(row.Title === 'Kích hoạt bảo hành') {
+    if (row.Title === 'Kích hoạt bảo hành') {
       return (
         <div>
           <div>
-            <code className="fw-500 mr-6px">
+            khách hàng
+            <code className="fw-600 font-size-md mx-6px">
               {row.MemberName} - {row.MemberPhone}
             </code>
             kích hoạt bảo hành - dịch vụ thẻ
-            <code className="fw-500 ml-6px">
-                {row.ProdTitle}
-            </code>
+            <code className="fw-600 font-size-md ml-6px">{row.ProdTitle}</code>
           </div>
         </div>
       )
     }
-    if(row.Title === 'Kết thúc dich vụ') {
+    if (row.Title === 'Kết thúc dich vụ') {
       return (
         <div>
           <div>
-            <code className="fw-500 mr-6px">
+            <code className="fw-600 font-size-md mr-6px">
               {row.MemberName} - {row.MemberPhone}
             </code>
             kết thúc
-            <code className="fw-500 ml-6px">
-                {row.ProdTitle}
+            <code className="fw-600 font-size-md ml-6px">{row.ProdTitle}</code>
+          </div>
+        </div>
+      )
+    }
+    if (row.Title === 'Tặng buổi') {
+      return (
+        <div>
+          Tặng
+          <code className="font-size-md fw-600 mx-6px">{row.OSAdd} buổi</code>
+          dịch vụ
+          <code className="font-size-md fw-600 mx-6px">{row.ProdTitle}</code>
+          cho
+          <code className="font-size-md fw-600 ml-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+        </div>
+      )
+    }
+    if (row.Title === 'Thay đổi ngày hết hạn') {
+      return (
+        <div>
+          Khách hàng
+          <code className="font-size-md fw-600 mx-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+          thay đổi ngày hết hạn dịch vụ
+          <code className="font-size-md fw-600 mx-6px">{row.ProdTitle}</code>
+          từ
+          <code className="font-size-md fw-600 mx-6px">
+            {moment(row.OSFromEndDate).format('HH:mm DD-MM-YYYY')}
+          </code>
+          đến
+          <code className="font-size-md fw-600 ml-6px">
+            {moment(row?.OSToEndDate).format('HH:mm DD-MM-YYYY')}
+          </code>
+        </div>
+      )
+    }
+    if (row.Title === 'Thêm buổi') {
+      return (
+        <div>
+          Khách hàng
+          <code className="font-size-md fw-600 mx-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+          thêm
+          <code className="font-size-md fw-600 mx-6px">
+            {row.OSUpdate} buổi
+          </code>
+          dịch vụ
+          <code className="font-size-md fw-600 ml-6px">{row.ProdTitle}</code>
+        </div>
+      )
+    }
+    if (row.Title === 'Xóa buổi') {
+      return (
+        <div>
+          Khách hàng
+          <code className="font-size-md fw-600 mx-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+          xóa
+          <code className="font-size-md fw-600 mx-6px">
+            {row.OSUpdate} buổi
+          </code>
+          dịch vụ
+          <code className="font-size-md fw-600 mx-6px">{row.ProdTitle}</code>
+          hoàn ví
+          <code className="font-size-md fw-600 ml-6px">
+            {PriceHelper.formatVND(row.GiveMM)}
+          </code>
+        </div>
+      )
+    }
+    if (row.Title === 'Thay đổi cơ sở') {
+      return (
+        <div>
+          Khách hàng
+          <code className="font-size-md fw-600 mx-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+          chuyển dịch vụ
+          <code className="font-size-md fw-600 mx-6px">{row.ProdTitle}</code>
+          tới cơ sở
+          <code className="font-size-md fw-600 ml-6px">{row.ToStockTitle}</code>
+        </div>
+      )
+    }
+    if (row.Title === 'Xóa đơn hàng') {
+      return (
+        <div>
+          Xóa đơn hàng
+          <code className="font-size-md fw-600 mx-6px">#{row.OrderID}</code>
+          của khách hàng
+          <code className="font-size-md fw-600 ml-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+        </div>
+      )
+    }
+    if (row.Title === 'kết thúc dịch vụ') {
+      return (
+        <div>
+          <div>
+            Khách hàng
+            <code className="font-size-md fw-600 mx-6px">
+              {row.MemberName} - {row.MemberPhone}
+            </code>
+            <code className="font-size-md fw-600 mx-6px">{row.ProdTitle}</code>
+            kết thúc
+            <code className="font-size-md fw-600 ml-6px">
+              {row.OSUpdate} buổi
+            </code>
+          </div>
+          <div>
+            Hoàn tiền mặt
+            <code className="font-size-md fw-600 mx-6px">
+              {PriceHelper.formatVND(row.GiveCash)}
+            </code>
+          </div>
+          <div>
+            Hoàn ví
+            <code className="font-size-md fw-600 mx-6px">
+              {PriceHelper.formatVND(row.GiveMM)}
+            </code>
+          </div>
+          <div>
+            Hoàn thẻ tiền
+            <code className="font-size-md fw-600 mx-6px">
+              {PriceHelper.formatVND(row.GiveMoneyCard)}
+            </code>
+          </div>
+          <div>
+            Thu thêm khách
+            <code className="font-size-md fw-600 mx-6px">
+              {PriceHelper.formatVND(row.TakeCash)}
             </code>
           </div>
         </div>
       )
     }
-    return 'Chi tiết'
+    return row.Title
   }
 
   return (
