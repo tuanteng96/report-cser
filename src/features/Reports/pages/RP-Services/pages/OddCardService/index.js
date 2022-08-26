@@ -209,7 +209,6 @@ function OddCardService(props) {
       )
     }
     if (row.Title === 'Kết thúc dich vụ') {
-      console.log(row)
       return (
         <div>
           Khách hàng
