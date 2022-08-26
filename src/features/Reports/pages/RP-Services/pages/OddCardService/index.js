@@ -209,15 +209,35 @@ function OddCardService(props) {
       )
     }
     if (row.Title === 'Kết thúc dich vụ') {
+      console.log(row)
       return (
         <div>
-          <div>
-            <code className="fw-600 font-size-md mr-6px">
-              {row.MemberName} - {row.MemberPhone}
-            </code>
-            kết thúc
-            <code className="fw-600 font-size-md ml-6px">{row.ProdTitle}</code>
-          </div>
+          Khách hàng
+          <code className="fw-600 font-size-md mx-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+          kết thúc
+          <code className="fw-600 font-size-md ml-6px">
+            {row.OSUpdate} buổi
+          </code>
+          của
+          <code className="fw-600 font-size-md ml-6px">{row.ProdTitle}</code>,
+          Hoàn tiền
+          <code className="fw-600 font-size-md mx-6px">
+            {PriceHelper.formatVND(row.GiveCash)}
+          </code>
+          , Hoàn Ví
+          <code className="fw-600 font-size-md mx-6px">
+            {PriceHelper.formatVND(row.GiveMM)}
+          </code>
+          , Hoàn thẻ tiền
+          <code className="fw-600 font-size-md mx-6px">
+            {PriceHelper.formatVND(row.GiveMoneyCard)}
+          </code>
+          , Thu thêm từ khách
+          <code className="fw-600 font-size-md mx-6px">
+            {PriceHelper.formatVND(row.TakeCash)}
+          </code>
         </div>
       )
     }
