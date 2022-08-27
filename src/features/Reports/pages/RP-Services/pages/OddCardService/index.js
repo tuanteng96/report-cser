@@ -141,7 +141,10 @@ function OddCardService(props) {
   }
 
   const transformDetail = row => {
-    if (row.Title === 'Đơn hàng thay đổi khách mua hàng') {
+    if (
+      row.Title === 'Đơn hàng thay đổi khách mua hàng' ||
+      row.Title === 'Đơn hàng thay đổi khách hàng'
+    ) {
       return (
         <div>
           Đơn hàng
@@ -208,7 +211,7 @@ function OddCardService(props) {
         </div>
       )
     }
-    if (row.Title === 'Kết thúc dich vụ') {
+    if (row.Title === 'Kết thúc dịch vụ' || row.Title === 'Kết thúc dich vụ') {
       return (
         <div>
           Khách hàng
