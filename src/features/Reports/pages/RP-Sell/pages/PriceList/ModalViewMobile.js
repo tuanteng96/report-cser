@@ -101,6 +101,30 @@ function ModalViewMobile({ show, onHide, data }) {
             {data?.NhanHang}
           </div>
         </div>
+        <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+          <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            Hoa hồng Sale
+          </div>
+          <div className="fw-600 font-size-mdd w-60 text-end">
+            {PriceHelper.formatVND(data?.hoa_hong_sale)}
+          </div>
+        </div>
+        <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+          <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            Hoa hồng KTV
+          </div>
+          <div className="fw-600 font-size-mdd w-60 text-end">
+            {PriceHelper.formatVND(data?.hoa_hong_ktv)}
+          </div>
+        </div>
+        <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+          <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            Lương ca
+          </div>
+          <div className="fw-600 font-size-mdd w-60 text-end">
+            {PriceHelper.formatVND(data?.luong_ca)}
+          </div>
+        </div>
       </PerfectScrollbar>
     </Modal>
   )

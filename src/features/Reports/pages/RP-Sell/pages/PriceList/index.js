@@ -340,6 +340,39 @@ function PriceList(props) {
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
                 }
+              },
+              {
+                dataField: 'hoa_hong_sale',
+                text: 'Hoa hồng Sale',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row?.hoa_hong_sale),
+                attrs: { 'data-title': 'Hoa hồng Sale' },
+                headerStyle: () => {
+                  return { minWidth: '150px', width: '150px' }
+                }
+              },
+              {
+                dataField: 'hoa_hong_ktv',
+                text: 'Hoa hồng KTV',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row?.hoa_hong_ktv),
+                attrs: { 'data-title': 'Hoa hồng KTV' },
+                headerStyle: () => {
+                  return { minWidth: '150px', width: '150px' }
+                }
+              },
+              {
+                dataField: 'luong_ca',
+                text: 'Lương ca',
+                //headerAlign: "center",
+                //style: { textAlign: "center" },
+                formatter: (cell, row) => PriceHelper.formatVND(row?.luong_ca),
+                attrs: { 'data-title': 'Lương ca' },
+                headerStyle: () => {
+                  return { minWidth: '150px', width: '150px' }
+                }
               }
             ]}
             loading={loading}
