@@ -346,7 +346,8 @@ function PriceList(props) {
                 text: 'Hoa hồng Sale',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row?.hoa_hong_sale),
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row?.hoa_hong_sale),
                 attrs: { 'data-title': 'Hoa hồng Sale' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -357,7 +358,8 @@ function PriceList(props) {
                 text: 'Hoa hồng KTV',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row?.hoa_hong_ktv),
+                formatter: (cell, row) =>
+                  PriceHelper.formatVND(row?.hoa_hong_ktv),
                 attrs: { 'data-title': 'Hoa hồng KTV' },
                 headerStyle: () => {
                   return { minWidth: '150px', width: '150px' }
@@ -368,10 +370,37 @@ function PriceList(props) {
                 text: 'Lương ca',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row?.luong_ca),
+                formatter: (cell, row) => (
+                  <div>
+                    {row.luong_ca_dv_goc &&
+                      row.luong_ca_dv_goc.map((o, index) => (
+                        <div key={index}>
+                          {o.RootTitle} -{' '}
+                          {o.Luong_ca_cap_bac &&
+                          o.Luong_ca_cap_bac.length > 0 ? (
+                            <div>
+                              {o.Luong_ca_cap_bac.map((x, idx) => (
+                                <code
+                                  className="fw-600 font-size-md px-2"
+                                  key={idx}
+                                >
+                                  {x.LevelName}{' '}
+                                  {PriceHelper.formatVND(x?.Salary)}
+                                </code>
+                              )).reduce((prev, curr) => [prev, ', ', curr])}
+                            </div>
+                          ) : (
+                            <code className="fw-600 font-size-md px-2px">
+                              Lương ca {PriceHelper.formatVND(o?.Luong_ca)}
+                            </code>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                ),
                 attrs: { 'data-title': 'Lương ca' },
                 headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
+                  return { minWidth: '200px', width: '200px' }
                 }
               }
             ]}

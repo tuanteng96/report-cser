@@ -634,7 +634,9 @@ const ListSell = forwardRef(
                 headerAlign: 'center',
                 //style: { textAlign: 'center' },
                 formatter: (cell, row) =>
-                  `${row.Prod ? `${row.Prod}, ` : ''}${row.Svr || ''}`,
+                  `${row.Prod ? `${row.Prod} ` : ''}${row.Svr ? ',' : ''}${
+                    row.Svr || ''
+                  }`,
                 attrs: { 'data-title': 'Chi tiết' },
                 headerStyle: () => {
                   return { minWidth: '200px', width: '200px' }

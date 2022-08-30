@@ -6,7 +6,6 @@ import _ from 'lodash'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
-import clsx from 'clsx'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
@@ -355,71 +354,17 @@ function Returns(props) {
                 }
               },
               {
-                dataField: 'lines',
-                text: 'Sản phẩm trả lại',
+                dataField: 'Prod',
+                text: 'Đơn hàng trả lại',
                 //headerAlign: "center",
                 //style: { textAlign: "center" },
                 formatter: (cell, row) =>
-                  row.lines &&
-                  row.lines
-                    .map(item => `${item.ProdTitle} (${item.QTy})`)
-                    .join(', '),
-                attrs: { 'data-title': 'Sản phẩm trả lại' },
+                  `${row.Prod ? `${row.Prod} ` : ''}${row.Svr ? ',' : ''}${
+                    row.Svr || ''
+                  }`,
+                attrs: { 'data-title': 'Đơn hàng trả lại' },
                 headerStyle: () => {
                   return { minWidth: '220px', width: '220px' }
-                }
-              },
-              {
-                dataField: '#',
-                text: '#',
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                formatter: (cell, row) => (
-                  <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    placement="top"
-                    overlay={
-                      <Popover className="popover-md">
-                        <Popover.Header>Đơn hàng #{row.Id}</Popover.Header>
-                        <Popover.Body className="p-0">
-                          {row.lines &&
-                            row.lines.map((item, index) => (
-                              <div
-                                className={clsx('p-12px', {
-                                  'border-bottom':
-                                    row.lines.length - 1 !== index
-                                })}
-                                key={index}
-                              >
-                                <div className="fw-500 mb-2px">
-                                  {item.ProdTitle}
-                                </div>
-                                <div className="d-flex justify-content-between">
-                                  <div className="text-muted">
-                                    SL{' '}
-                                    <span className="fw-500 text-dark">
-                                      x {item.QTy}
-                                    </span>
-                                  </div>
-                                  <div className="fw-500">
-                                    {PriceHelper.formatVND(item.Topay)}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <button type="button" className="btn btn-xs btn-primary">
-                      Xem đơn hàng
-                    </button>
-                  </OverlayTrigger>
-                ),
-                attrs: { 'data-title': '#' },
-                headerStyle: () => {
-                  return { minWidth: '112px', width: '112px' }
                 }
               }
             ]}

@@ -207,7 +207,9 @@ function ModalViewMobile({ show, onHide, data }) {
               Chi tiết đơn hàng
             </div>
             <div className="fw-600 font-size-mdd w-100">
-              {data?.Prod ? `${data.Prod}, ` : ''}${data?.Svr || ''}
+              {`${data?.Prod ? `${data?.Prod} ` : ''}${data?.Svr ? ',' : ''}${
+                data?.Svr || ''
+              }`}
             </div>
           </div>
         </div>
