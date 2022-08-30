@@ -8,6 +8,7 @@ import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import ModalViewMobile from './ModalViewMobile'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { JsonFilter } from 'src/Json/JsonFilter'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -55,8 +56,8 @@ function UseServiceCustomer(props) {
     GroupCustomerID: '', // ID Nhóm khách hàng
     SourceName: '', // Nguồn
     ServiceIDs: '', // ID dịch vụ
-    StatusServices: '',
-    TypeServices: '',
+    StatusServices: [JsonFilter.StatusServiceMemberList[0]],
+    //TypeServices: '',
     DayFromServices: '', // Số buổi còn lại từ
     DayToServices: '' // Số buổi còn lại đến
   })
@@ -184,21 +185,21 @@ function UseServiceCustomer(props) {
       .catch(error => console.log(error))
   }
 
-  const getStatus = status => {
-    let obj = {
-      Title: status,
-      ClassName: 'default'
-    }
-    if (status === 'done') {
-      obj.Title = 'Hoàn thành'
-      obj.ClassName = 'success'
-    }
-    if (status === 'doing') {
-      obj.Title = 'Đang thực hiện'
-      obj.ClassName = 'warning'
-    }
-    return obj
-  }
+  // const getStatus = status => {
+  //   let obj = {
+  //     Title: status,
+  //     ClassName: 'default'
+  //   }
+  //   if (status === 'done') {
+  //     obj.Title = 'Hoàn thành'
+  //     obj.ClassName = 'success'
+  //   }
+  //   if (status === 'doing') {
+  //     obj.Title = 'Đang thực hiện'
+  //     obj.ClassName = 'warning'
+  //   }
+  //   return obj
+  // }
 
   return (
     <div className="py-main">
@@ -394,13 +395,13 @@ function UseServiceCustomer(props) {
                               className="vertical-align-middle"
                               rowSpan={item?.ServiceList.length}
                             >
-                              {item?.Member?.FullName || 'Chưa xác định'}
+                              {item?.MemberFullName || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
                               rowSpan={item?.ServiceList.length}
                             >
-                              {item?.Member?.Phone || 'Chưa xác định'}
+                              {item?.MemberPhone || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
@@ -415,17 +416,7 @@ function UseServiceCustomer(props) {
                         <td>
                           {moment(order.UseEndTime).format('HH:mm DD/MM/YYYY')}
                         </td>
-                        <td>
-                          {order.Status && (
-                            <span
-                              className={`badge badge-${
-                                getStatus(order.Status).ClassName
-                              }`}
-                            >
-                              {getStatus(order.Status).Title}
-                            </span>
-                          )}
-                        </td>
+                        <td>{order.Status}</td>
                         <td>{order.Desc}</td>
                       </tr>
                     ))}
