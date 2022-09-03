@@ -43,7 +43,8 @@ const {
   StarRatingList,
   BrowserTypeList,
   BrowserStatusList,
-  TypeNVList
+  TypeNVList,
+  TypeNVList2
 } = JsonFilter
 
 const CustomOption = ({ children, data, ...props }) => {
@@ -70,6 +71,7 @@ function FilterList({
   onSubmit,
   loading,
   loadingExport,
+  ten_nghiep_vu2,
   onRefresh,
   onExport
 }) {
@@ -496,7 +498,7 @@ function FilterList({
                         name="ten_nghiep_vu"
                         placeholder="Chọn loại"
                         classNamePrefix="select"
-                        options={TypeNVList}
+                        options={ten_nghiep_vu2 ? TypeNVList2 : TypeNVList}
                         className="select-control"
                         value={values.ten_nghiep_vu}
                         onChange={otp => {

@@ -40,6 +40,7 @@ import PriceList from 'src/features/Reports/pages/RP-Sell/pages/PriceList'
 import OverviewService from 'src/features/Reports/pages/RP-Services/pages/OverviewService'
 import RPServices from 'src/features/Reports/pages/RP-Services'
 import OddCardService from 'src/features/Reports/pages/RP-Services/pages/OddCardService'
+import SaleReduced from 'src/features/Reports/pages/RP-Sell/pages/SaleReduced'
 
 function RouterPage(props) {
   return (
@@ -95,6 +96,7 @@ function RouterPage(props) {
         <Route path="tra-hang" element={<Returns />} />
         <Route path="top-ban-hang-doanh-so" element={<TopProducts />} />
         <Route path="bang-gia" element={<PriceList />} />
+        <Route path="doanh-so-giam-tru" element={<SaleReduced />} />
       </Route>
       <Route
         path="/thu-chi-va-so-quy"

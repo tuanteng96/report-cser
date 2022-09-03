@@ -94,6 +94,10 @@ const MenuList = [
         Href: '/ban-hang/top-ban-hang-doanh-so'
       },
       {
+        Title: 'Doanh số giảm trừ ( kết thúc thẻ, xóa buổi )',
+        Href: '/ban-hang/doanh-so-giam-tru'
+      },
+      {
         Title: 'Bảng giá',
         Href: '/ban-hang/bang-gia'
       }

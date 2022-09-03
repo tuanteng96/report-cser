@@ -88,14 +88,14 @@ function TopProducts(props) {
     isLoading && setLoading(true)
     const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListSalesDetail(newFilters)
+      .getListTopSalesDetail(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          var List_TOP_BH = [...data?.result]
-          var List_TOP_DS = [...data?.result]
+          var List_TOP_BH = data?.result ? [...data?.result] : []
+          var List_TOP_DS = data?.result ? [...data?.result] : []
 
           if (filters.TopType) {
             List_TOP_BH = List_TOP_BH.filter(
@@ -134,7 +134,7 @@ function TopProducts(props) {
       ArrayHeplers.getFilterExport({ ...filters })
     )
     reportsApi
-      .getListSalesDetail(newFilters)
+      .getListTopSalesDetail(newFilters)
       .then(({ data }) => {
         window?.EzsExportExcel &&
           window?.EzsExportExcel({

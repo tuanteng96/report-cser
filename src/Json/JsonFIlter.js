@@ -317,16 +317,12 @@ export const JsonFilter = {
       label: 'Hiện còn'
     },
     {
-      value: 'DA_SU_DUNG_HET',
-      label: 'Đã sử dụng hết'
-    },
-    {
-      value: 'CON_BUOI_VA_HET_HAN',
-      label: 'Còn buổi và hết hạn'
+      value: 'HET_HAN',
+      label: 'Không còn hiệu lực'
     },
     {
       value: 'DV_BAO_HANH',
-      label: 'Dịch vụ bảo hành'
+      label: 'Thẻ bảo hành'
     }
   ],
   StarRatingList: [
@@ -441,6 +437,16 @@ export const JsonFilter = {
     {
       value: 'Thay đổi cơ sở',
       label: 'Thay đổi cơ sở'
+    }
+  ],
+  TypeNVList2: [
+    {
+      value: 'Kết thúc dịch vụ',
+      label: 'Kết thúc dịch vụ'
+    },
+    {
+      value: 'Xóa buổi',
+      label: 'Xóa buổi'
     }
   ]
 }

@@ -36,6 +36,12 @@ const reportsApi = {
   getListOddService: data => {
     return http.post(`${SubApi}/khach-hang/chinh-sua-the`, JSON.stringify(data))
   },
+  getListSaleReduced: data => {
+    return http.post(
+      `${SubApi}/khach-hang/doanh-so-giam-tru`,
+      JSON.stringify(data)
+    )
+  },
   getOverviewServices: data => {
     return http.post(`${SubApi}/dich-vu/tong-quan`, JSON.stringify(data))
   },
@@ -63,6 +69,12 @@ const reportsApi = {
   getListSalesDetail: data => {
     return http.post(
       `${SubApi}/ban-hang/doanh-so-chi-tiet`,
+      JSON.stringify(data)
+    )
+  },
+  getListTopSalesDetail: data => {
+    return http.post(
+      `${SubApi}/ban-hang/top-ban-hang-doanh-so`,
       JSON.stringify(data)
     )
   },

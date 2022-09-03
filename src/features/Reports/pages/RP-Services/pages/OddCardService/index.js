@@ -537,7 +537,7 @@ function OddCardService(props) {
                 formatter: (cell, row) => transformDetail(row),
                 attrs: { 'data-title': 'Giá hiện tại' },
                 headerStyle: () => {
-                  return { minWidth: '150px' }
+                  return { minWidth: '300px' }
                 }
               }
             ]}
