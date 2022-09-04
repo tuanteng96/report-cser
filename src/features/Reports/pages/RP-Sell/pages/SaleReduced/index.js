@@ -6,7 +6,7 @@ import _ from 'lodash'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
-// import ModalViewMobile from './ModalViewMobile'
+import ModalViewMobile from './ModalViewMobile'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 
@@ -127,7 +127,7 @@ function SaleReduced(props) {
       .then(({ data }) => {
         window?.EzsExportExcel &&
           window?.EzsExportExcel({
-            Url: '/khach-hang/doanh-so-giam-tru',
+            Url: '/ban-hang/doanh-so-giam-tru',
             Data: data,
             hideLoading: () => setLoadingExport(false)
           })
@@ -183,7 +183,7 @@ function SaleReduced(props) {
           <div className="fw-500 font-size-lg">
             Danh sách - Kết thúc thẻ, xóa buổi
           </div>
-          <div className="fw-500 pr-15px">
+          <div className="fw-500">
             Tổng doanh số giảm trừ
             <span className="font-size-xl fw-600 text-success pl-5px font-number">
               {PriceHelper.formatVND(TotalSaleRuduced)}
@@ -195,32 +195,8 @@ function SaleReduced(props) {
             data={ListData}
             textDataNull="Không có dữ liệu."
             optionsMoible={{
-              itemShow: 2,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  dataField: 'FullName',
-                  text: 'Tên mặt hàng',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.Ten || 'Không có tên',
-                  attrs: { 'data-title': 'Tên mặt hàng' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                },
-                {
-                  dataField: 'Mã',
-                  text: 'Mã',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.MaSP || 'Không có mã',
-                  attrs: { 'data-title': 'Mã' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                }
-              ]
+              itemShow: 4,
+              CallModal: row => OpenModalMobile(row)
             }}
             options={{
               custom: true,
@@ -343,11 +319,11 @@ function SaleReduced(props) {
             classes="table-bordered"
           />
         </div>
-        {/* <ModalViewMobile
+        <ModalViewMobile
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
-        /> */}
+        />
       </div>
     </div>
   )

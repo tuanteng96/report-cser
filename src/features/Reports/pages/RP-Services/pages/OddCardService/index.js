@@ -6,7 +6,7 @@ import _ from 'lodash'
 import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
-// import ModalViewMobile from './ModalViewMobile'
+import ModalViewMobile from './ModalViewMobile'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 
@@ -141,6 +141,7 @@ function OddCardService(props) {
   }
 
   const transformDetail = row => {
+    if (!row) return
     if (
       row.Title === 'Đơn hàng thay đổi khách mua hàng' ||
       row.Title === 'Đơn hàng thay đổi khách hàng'
@@ -424,32 +425,8 @@ function OddCardService(props) {
             data={ListData}
             textDataNull="Không có dữ liệu."
             optionsMoible={{
-              itemShow: 2,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  dataField: 'FullName',
-                  text: 'Tên mặt hàng',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.Ten || 'Không có tên',
-                  attrs: { 'data-title': 'Tên mặt hàng' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                },
-                {
-                  dataField: 'Mã',
-                  text: 'Mã',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.MaSP || 'Không có mã',
-                  attrs: { 'data-title': 'Mã' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                }
-              ]
+              itemShow: 4,
+              CallModal: row => OpenModalMobile(row)
             }}
             options={{
               custom: true,
@@ -547,11 +524,12 @@ function OddCardService(props) {
             classes="table-bordered"
           />
         </div>
-        {/* <ModalViewMobile
+        <ModalViewMobile
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
-        /> */}
+          transformDetail={transformDetail}
+        />
       </div>
     </div>
   )

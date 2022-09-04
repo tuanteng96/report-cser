@@ -38,7 +38,7 @@ const reportsApi = {
   },
   getListSaleReduced: data => {
     return http.post(
-      `${SubApi}/khach-hang/doanh-so-giam-tru`,
+      `${SubApi}/ban-hang/doanh-so-giam-tru`,
       JSON.stringify(data)
     )
   },
