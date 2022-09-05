@@ -302,13 +302,6 @@ function ExpenseCustomer(props) {
                 }
               },
               {
-                text: 'Tiền hoàn lại',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
                 text: 'Doanh thu',
                 headerStyle: {
                   minWidth: '180px',
@@ -454,7 +447,6 @@ function ExpenseCustomer(props) {
                         </td>
                         <td>{PriceHelper.formatVND(order.DoanhSo)}</td>
                         <td>{PriceHelper.formatVND(order.GiamGia)}</td>
-                        <td>{PriceHelper.formatVND(order.HoanLai)}</td>
                         <td>{PriceHelper.formatVND(order.DoanhThu)}</td>
                         <td>
                           <OverlayTrigger
