@@ -418,13 +418,13 @@ function ExpenseCustomer(props) {
                               className="vertical-align-middle"
                               rowSpan={item?.OrdersList.length}
                             >
-                              {item?.Member?.FullName || 'Chưa xác định'}
+                              {item?.MemberFullName || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
                               rowSpan={item?.OrdersList.length}
                             >
-                              {item?.Member?.Phone || 'Chưa xác định'}
+                              {item?.MemberPhone || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
@@ -448,7 +448,7 @@ function ExpenseCustomer(props) {
                         <td>
                           {order.Prods && order.Prods.length > 0
                             ? order.Prods.map(
-                                prod => `${prod.Title} (x${prod.Qty})`
+                                prod => `${prod.name} (x${prod.qty})`
                               ).join(',')
                             : 'Không có mặt hàng.'}
                         </td>
