@@ -40,15 +40,15 @@ const MenuList = [
       {
         Title: 'Sử dụng dịch vụ',
         Href: '/khach-hang/su-dung-dich-vu'
+      },
+      {
+        Title: 'Dự kiến',
+        Href: '/khach-hang/du-kien'
+      },
+      {
+        Title: 'Tần suất sử dụng',
+        Href: '/khach-hang/tan-suat-su-dung'
       }
-      // {
-      //   Title: 'Dự kiến',
-      //   Href: '/khach-hang/du-kien'
-      // },
-      // {
-      //   Title: 'Tần suất sử dụng',
-      //   Href: '/khach-hang/tan-suat-su-dung'
-      // }
     ]
   },
   {

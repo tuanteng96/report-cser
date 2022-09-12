@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import Chart2Column from 'src/features/Reports/components/Chart2Column'
@@ -10,9 +10,12 @@ import _ from 'lodash'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import FilterList from 'src/components/Filter/FilterList'
 import { useWindowSize } from 'src/hooks/useWindowSize'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { PriceHelper } from 'src/helpers/PriceHelper'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 moment.locale('vi')
 
 const optionsObj = {
@@ -85,6 +88,11 @@ function OverviewCustomer() {
   const elementListRef = useRef()
   const { width } = useWindowSize()
 
+  // We'll start our table without any data
+  const [data, setData] = React.useState([])
+  const [loadingTable, setLoadingTable] = React.useState(false)
+  const [pageCount, setPageCount] = React.useState(0)
+
   useEffect(() => {
     if (width < 1430) {
       setHeightChart(50)
@@ -109,16 +117,22 @@ function OverviewCustomer() {
   useEffect(() => {
     getOverviewCustomer()
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    getListCustomer()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
   const awaitLoading = fn => {
-    if (elementListRef?.current.getLoading()) {
-      setTimeout(() => {
-        awaitLoading(fn)
-      }, 50)
-    } else {
-      fn()
-    }
+    // if (elementListRef?.current.getLoading()) {
+    //   setTimeout(() => {
+    //     awaitLoading(fn)
+    //   }, 50)
+    // } else {
+    //   fn()
+    // }
+    fn()
   }
 
   const getOverviewCustomer = (isLoading = true, callback) => {
@@ -205,6 +219,94 @@ function OverviewCustomer() {
 
   const onSizePerPageChange = Ps => {
     setFilters({ ...filters, Ps: Ps, Pi: 1 })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'STT',
+        accessor: (originalRow, rowIndex) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        style: {
+          maxWidth: 60
+        }
+      },
+      {
+        Header: 'Ngày tạo',
+        accessor: 'CreateDate'
+      },
+      {
+        Header: 'Tên khách hàng',
+        accessor: 'FullName'
+      },
+      {
+        Header: 'Số điện thoại',
+        accessor: 'MobilePhone'
+      },
+      {
+        Header: 'Email',
+        accessor: 'Phone'
+      },
+      {
+        Header: 'Ngày sinh',
+        accessor: 'BirthDate'
+      },
+      {
+        Header: 'Giới tính',
+        accessor: 'Gender'
+      },
+      {
+        Header: 'Địa chỉ',
+        accessor: 'HomeAddress'
+      },
+      {
+        Header: 'Quận huyện',
+        accessor: 'DistrictsName'
+      }
+    ],
+    [filters, loadingTable]
+  )
+
+  const GeneralNewFilter = filters => {
+    return {
+      ...filters,
+      DateStart: filters.DateStart
+        ? moment(filters.DateStart).format('DD/MM/yyyy')
+        : null,
+      DateEnd: filters.DateEnd
+        ? moment(filters.DateEnd).format('DD/MM/yyyy')
+        : null,
+      StaffID: filters.StaffID ? filters.StaffID.value : '',
+      GroupCustomerID: filters.GroupCustomerID
+        ? filters.GroupCustomerID.value
+        : '',
+      SourceName: filters.SourceName ? filters.SourceName.value : '',
+      ProvincesID: filters.ProvincesID ? filters.ProvincesID.value : '',
+      DistrictsID: filters.DistrictsID ? filters.DistrictsID.value : ''
+    }
+  }
+
+  const getListCustomer = callback => {
+    setLoadingTable(true)
+    const newFilters = GeneralNewFilter(filters)
+    reportsApi
+      .getListCustomer(newFilters)
+      .then(({ data }) => {
+        const { Members, PCount, TotalOnline } = {
+          Members: data?.result?.Members || [],
+          PCount: data?.result?.PCount || 0,
+          TotalOnline: data?.result?.TotalOnline || 0
+        }
+        setData(Members)
+        setPageCount(PCount)
+        setLoadingTable(false)
+      })
+      .catch(error => console.log(error))
+  }
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
   }
 
   return (
@@ -365,13 +467,76 @@ function OverviewCustomer() {
           </div>
         </div>
       )}
-      <ListCustomer
+
+      <div className="bg-white rounded mt-25px">
+        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+          <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
+          {width > 1200 ? (
+            <div className="d-flex">
+              <div className="fw-500">
+                Tổng KH
+                <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                  {0}
+                </span>
+              </div>
+              <div className="fw-500 pl-20px">
+                KH đến từ Online
+                <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                  {0}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="fw-500 d-flex align-items-center">
+              Tổng KH
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="bottom"
+                placement="bottom"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Body className="p-0">
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Tổng KH</span>
+                        <span>{PriceHelper.formatVNDPositive(0)}</span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                        <span>KH đến từ Online</span>
+                        <span>{PriceHelper.formatVNDPositive(0)}</span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {PriceHelper.formatVNDPositive(0)}
+                  </span>
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                </div>
+              </OverlayTrigger>
+            </div>
+          )}
+        </div>
+        <div className="p-20px">
+          <ReactTableV7
+            columns={columns}
+            data={data}
+            loading={loadingTable}
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+          />
+        </div>
+      </div>
+
+      {/* <ListCustomer
         onPageChange={onPageChange}
         onSizePerPageChange={onSizePerPageChange}
         filters={filters}
         ref={elementListRef}
         onExport={onExport}
-      />
+      /> */}
     </div>
   )
 }

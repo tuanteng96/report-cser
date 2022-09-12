@@ -414,7 +414,11 @@ function UseServiceCustomer(props) {
                         <td>{order.Title}</td>
                         <td>{order.BuoiCon}</td>
                         <td>
-                          {moment(order.UseEndTime).format('HH:mm DD/MM/YYYY')}
+                          {order.UseEndTime
+                            ? moment(order.UseEndTime).format(
+                                'HH:mm DD/MM/YYYY'
+                              )
+                            : ''}
                         </td>
                         <td>{order.Status}</td>
                         <td>{order.Desc}</td>
