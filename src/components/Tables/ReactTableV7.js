@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useTable, usePagination, useBlockLayout } from 'react-table'
 import { useSticky } from 'react-table-sticky'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
+import Pagination from '@material-ui/lab/Pagination'
+import { ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap'
+import ElementEmpty from '../Empty/ElementEmpty'
 
 ReactTableV7.propTypes = {
   columns: PropTypes.array,
@@ -10,6 +13,8 @@ ReactTableV7.propTypes = {
   fetchData: PropTypes.func,
   loading: PropTypes.bool
 }
+
+const sizePerPageLists = [10, 25, 50, 100, 500, 1000]
 
 function ReactTableV7({
   columns,
@@ -48,65 +53,93 @@ function ReactTableV7({
     usePagination,
     useBlockLayout
   )
-
+  const elmHeader = useRef(null)
   return (
     <>
-      <div
-        className="table sticky table-tanstack"
-        {...getTableProps()}
-        style={{ width: '100%', height: 400 }}
-      >
-        <div className="table-tanstack__header">
-          {headerGroups.map(headerGroup => (
-            <div {...headerGroup.getHeaderGroupProps()} className="tr">
-              {headerGroup.headers.map(column => (
-                <div
-                  {...column.getHeaderProps([{ style: column.style }])}
-                  className="th flex-fill"
-                >
-                  {column.render('Header')}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+      <div className={clsx('position-relative', loading && 'loading')}>
         <div
-          {...getTableBodyProps()}
-          className={`table-tanstack__body ${clsx({ loading: loading })}`}
+          className="table sticky table-tanstack mb-0"
+          {...getTableProps()}
+          style={{ width: '100%', height: 450 }}
         >
-          {page.map((row, i) => {
-            prepareRow(row)
-            return (
-              <div {...row.getRowProps()} className="tr">
-                {row.cells.map(cell => {
-                  return (
-                    <div
-                      {...cell.getCellProps([{ style: cell.column.style }])}
-                      className="td flex-fill"
-                    >
-                      {cell.render('Cell')}
-                    </div>
-                  )
-                })}
+          <div className="table-tanstack__header" ref={elmHeader}>
+            {headerGroups.map(headerGroup => (
+              <div {...headerGroup.getHeaderGroupProps()} className="tr">
+                {headerGroup.headers.map(column => (
+                  <div
+                    {...column.getHeaderProps([{ style: column.style }])}
+                    className="th flex-fill"
+                  >
+                    {column.render('Header')}
+                  </div>
+                ))}
               </div>
-            )
-          })}
-          <div className="table-tanstack-loading">
-            <div className="spinner spinner-primary"></div>
+            ))}
+          </div>
+          <div {...getTableBodyProps()} className={`table-tanstack__body`}>
+            {page.map((row, i) => {
+              prepareRow(row)
+              return (
+                <div {...row.getRowProps()} className="tr">
+                  {row.cells.map(cell => {
+                    return (
+                      <div
+                        {...cell.getCellProps([
+                          {
+                            style: {
+                              ...cell.column.style,
+                              ...cell.column.styleCell
+                            },
+                            className: cell.column.className
+                          }
+                        ])}
+                        {...cell.getCellProps([
+                          {
+                            className: cell.column.className
+                          }
+                        ])}
+                        className={clsx('td flex-fill', cell.column.classCell)}
+                      >
+                        {cell.render('Cell')}
+                      </div>
+                    )
+                  })}
+                </div>
+              )
+            })}
+            {!page || (page.length === 0 && <ElementEmpty />)}
           </div>
         </div>
+        <div
+          className="table-tanstack-loading"
+          style={{
+            height: `calc(100% - ${elmHeader?.current?.clientHeight || 44}px`
+          }}
+        >
+          <div className="spinner spinner-primary"></div>
+        </div>
       </div>
-
-      <div>
-        Showing {page.length} of ~{controlledPageCount * pageSize} results
-      </div>
-
       {/* 
         Pagination can be built however you'd like. 
         This is just a very basic UI implementation:
       */}
-      <div className="pagination">
-        <button
+      <div className="pagination d-flex justify-content-between align-items-center mt-20px">
+        <Pagination
+          count={controlledPageCount}
+          page={pageIndex + 1}
+          siblingCount={1}
+          boundaryCount={1}
+          variant="outlined"
+          shape="rounded"
+          onChange={(event, value) => {
+            gotoPage(value - 1)
+            onPagesChange({
+              Pi: value,
+              Ps: pageSize
+            })
+          }}
+        />
+        {/* <button
           onClick={() => {
             previousPage()
             onPagesChange({
@@ -152,23 +185,37 @@ function ReactTableV7({
             }}
             style={{ width: '100px' }}
           />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={e => {
-            setPageSize(Number(e.target.value))
-            onPagesChange({
-              Pi: 1,
-              Ps: Number(e.target.value)
-            })
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
+        </span>{' '} */}
+        <div className="d-flex align-items-center text-gray-500">
+          Hiển thị
+          <div className="px-8px">
+            <DropdownButton
+              as={ButtonGroup}
+              key="secondary"
+              id={`dropdown-variants-Secondary`}
+              variant=" font-weight-boldest"
+              title={pageSize}
+            >
+              {sizePerPageLists.map((item, index) => (
+                <Dropdown.Item
+                  key={index}
+                  eventKey={index}
+                  active={item === pageSize}
+                  onClick={() => {
+                    setPageSize(item)
+                    onPagesChange({
+                      Pi: 1,
+                      Ps: item
+                    })
+                  }}
+                >
+                  {item}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
+          </div>
+          trên trang
+        </div>
       </div>
     </>
   )

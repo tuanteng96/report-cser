@@ -16,7 +16,7 @@ function ElementEmpty({ width }) {
       style={{ width: width }}
     >
       <img
-        className="max-h-100 max-w-500px w-100"
+        className="max-h-100 max-w-300px w-100"
         src={ImageEmpty}
         alt="Không có dữ liệu"
       />

@@ -83,6 +83,10 @@ function OverviewCustomer() {
   const [dataChart, setDataChart] = useState(objData)
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
+  const [PageTotal, setPageTotal] = useState({
+    Total: 0,
+    TotalOnline: 0
+  })
   const [isFilter, setIsFilter] = useState(false)
   const [heightChart, setHeightChart] = useState(100)
   const elementListRef = useRef()
@@ -164,17 +168,9 @@ function OverviewCustomer() {
             ]
           }))
           setOverviewData(data.result)
-          if (isFilter) {
-            awaitLoading(() => {
-              setLoading(false)
-              isFilter && setIsFilter(false)
-              callback && callback()
-            })
-          } else {
-            setLoading(false)
-            isFilter && setIsFilter(false)
-            callback && callback()
-          }
+          setLoading(false)
+          !loadingTable && isFilter && setIsFilter(false)
+          callback && callback()
         }
       })
       .catch(error => console.log(error))
@@ -182,8 +178,7 @@ function OverviewCustomer() {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      setLoading(true)
-      elementListRef?.current?.onRefresh(() => getOverviewCustomer())
+      onRefresh()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
@@ -202,7 +197,8 @@ function OverviewCustomer() {
 
   const onRefresh = () => {
     setLoading(true)
-    elementListRef?.current?.onRefresh(() => getOverviewCustomer())
+    getOverviewCustomer()
+    getListCustomer()
   }
 
   const onOpenFilter = () => {
@@ -229,28 +225,40 @@ function OverviewCustomer() {
           filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
         width: 60,
         style: {
-          maxWidth: 60
-        }
+          maxWidth: 60,
+          textAlign: 'center'
+        },
+        classCell: 'd-flex align-items-center justify-content-center'
       },
       {
         Header: 'Ngày tạo',
-        accessor: 'CreateDate'
+        accessor: originalRow =>
+          moment(originalRow.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 180,
+        classCell: 'd-flex align-items-center'
       },
       {
         Header: 'Tên khách hàng',
-        accessor: 'FullName'
+        accessor: 'FullName',
+        width: 250,
+        classCell: 'd-flex align-items-center'
       },
       {
         Header: 'Số điện thoại',
-        accessor: 'MobilePhone'
+        accessor: 'MobilePhone',
+        width: 150,
+        classCell: 'd-flex align-items-center'
       },
       {
         Header: 'Email',
-        accessor: 'Phone'
+        accessor: originalRow => originalRow.Email,
+        width: 200
       },
       {
         Header: 'Ngày sinh',
-        accessor: 'BirthDate'
+        accessor: originalRow =>
+          originalRow.BirthDate &&
+          moment(originalRow.BirthDate).format('DD/MM/YYYY')
       },
       {
         Header: 'Giới tính',
@@ -258,11 +266,58 @@ function OverviewCustomer() {
       },
       {
         Header: 'Địa chỉ',
-        accessor: 'HomeAddress'
+        accessor: 'HomeAddress',
+        width: 250
       },
       {
         Header: 'Quận huyện',
-        accessor: 'DistrictsName'
+        accessor: 'DistrictsName',
+        width: 200
+      },
+      {
+        Header: 'Tỉnh / Thành phố',
+        accessor: 'ProvincesName',
+        width: 200
+      },
+      {
+        Header: 'Cơ sở',
+        accessor: 'ByStockName',
+        width: 180
+      },
+      {
+        Header: 'Nhóm khách hàng',
+        accessor: 'GroupCustomerName',
+        width: 180
+      },
+      {
+        Header: 'Nguồn',
+        accessor: 'Source',
+        width: 100
+      },
+      {
+        Header: 'Mã thẻ',
+        accessor: 'HandCardID',
+        width: 150
+      },
+      {
+        Header: 'Nhân viên chăm sóc',
+        accessor: 'ByUserName',
+        width: 250
+      },
+      {
+        Header: 'Ví',
+        accessor: originalRow => PriceHelper.formatVND(originalRow.vi_dien_tu),
+        width: 120
+      },
+      {
+        Header: 'Công nợ',
+        accessor: originalRow => PriceHelper.formatVND(originalRow.cong_no),
+        width: 120
+      },
+      {
+        Header: 'Thẻ tiền',
+        accessor: originalRow => PriceHelper.formatVND(originalRow.the_tien),
+        width: 120
       }
     ],
     [filters, loadingTable]
@@ -293,14 +348,21 @@ function OverviewCustomer() {
     reportsApi
       .getListCustomer(newFilters)
       .then(({ data }) => {
-        const { Members, PCount, TotalOnline } = {
+        const { Members, PCount, TotalOnline, Total } = {
           Members: data?.result?.Members || [],
           PCount: data?.result?.PCount || 0,
-          TotalOnline: data?.result?.TotalOnline || 0
+          TotalOnline: data?.result?.TotalOnline || 0,
+          Total: data?.result?.Total || 0
         }
         setData(Members)
+        setPageTotal({
+          Total: Total,
+          TotalOnline: TotalOnline
+        })
         setPageCount(PCount)
         setLoadingTable(false)
+        !loading && isFilter && setIsFilter(false)
+        callback && callback()
       })
       .catch(error => console.log(error))
   }
@@ -476,13 +538,13 @@ function OverviewCustomer() {
               <div className="fw-500">
                 Tổng KH
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {0}
+                  {PageTotal.Total}
                 </span>
               </div>
               <div className="fw-500 pl-20px">
                 KH đến từ Online
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {0}
+                  {PageTotal.TotalOnline}
                 </span>
               </div>
             </div>
@@ -499,11 +561,11 @@ function OverviewCustomer() {
                     <Popover.Body className="p-0">
                       <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                         <span>Tổng KH</span>
-                        <span>{PriceHelper.formatVNDPositive(0)}</span>
+                        <span>{PageTotal.Total}</span>
                       </div>
                       <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
                         <span>KH đến từ Online</span>
-                        <span>{PriceHelper.formatVNDPositive(0)}</span>
+                        <span>{PageTotal.TotalOnline}</span>
                       </div>
                     </Popover.Body>
                   </Popover>
@@ -511,7 +573,7 @@ function OverviewCustomer() {
               >
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVNDPositive(0)}
+                    {PageTotal.Total}
                   </span>
                   <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
                 </div>

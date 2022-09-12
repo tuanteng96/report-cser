@@ -29,3 +29,10 @@
   border-radius: 0.42rem;
   font-family: $font-family-number;
 }
+
+.dropdown-item {
+  &:active,
+  &.active {
+    color: $primary;
+  }
+}
