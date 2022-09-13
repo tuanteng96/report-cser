@@ -10,5 +10,28 @@ export const PermissionHelpers = {
       showConfirmButton: false,
       allowOutsideClick: false
     })
+  },
+  ExportExcel: async ({ FuncStart, FuncEnd, FuncApi, UrlName }) => {
+    FuncStart()
+    FuncApi().then(({ data }) => {
+      if (data.error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Xảy ra lỗi.',
+          text: 'Bạn không thể xuất Excel báo cáo này.',
+          footer: `<span class="text-danger">${data.error}</span>`,
+          showCancelButton: false,
+          showConfirmButton: false,
+          allowOutsideClick: false
+        })
+      } else {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: UrlName,
+            Data: data,
+            hideLoading: () => FuncEnd()
+          })
+      }
+    })
   }
 }

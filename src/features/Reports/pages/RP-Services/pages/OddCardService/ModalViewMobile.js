@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'react-bootstrap'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { PriceHelper } from 'src/helpers/PriceHelper'
 
 import moment from 'moment'
 import 'moment/locale/vi'

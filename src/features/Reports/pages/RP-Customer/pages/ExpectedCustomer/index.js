@@ -35,14 +35,14 @@ const JSONData = {
           Title: 'Chăm sóc da 10 buổi',
           CreateDate: '2022-07-29T09:25:52.72', // Ngày mua
           Qty: 2,
-          ExpiryDate: '2022-07-29T09:25:52.72' // Ngày ước tính dùng hết
+          UsedUpDate: '2022-07-29T09:25:52.72' // Ngày ước tính dùng hết
         },
         {
           Id: 1234, // ID SP, dv
           Title: 'Chăm sóc da 10 buổi',
           CreateDate: '2022-07-29T09:25:52.72', // Ngày mua
           Qty: 2,
-          ExpiryDate: '2022-07-29T09:25:52.72' // Ngày ước tính dùng hết
+          UsedUpDate: '2022-07-29T09:25:52.72' // Ngày ước tính dùng hết
         }
       ]
     }
@@ -355,11 +355,11 @@ function ExpectedCustomer(props) {
                 },
                 {
                   attrs: { 'data-title': 'Tên khách hàng' },
-                  formatter: row => row?.Member?.FullName || 'Chưa xác định'
+                  formatter: row => row?.MemberFullName || 'Chưa xác định'
                 },
                 {
                   attrs: { 'data-title': 'Số điện thoại' },
-                  formatter: row => row?.Member?.Phone || 'Chưa xác định'
+                  formatter: row => row?.MemberPhone || 'Chưa xác định'
                 },
                 {
                   attrs: { 'data-title': 'Cơ sở' },
@@ -405,13 +405,13 @@ function ExpectedCustomer(props) {
                               className="vertical-align-middle"
                               rowSpan={item?.ProdsList.length}
                             >
-                              {item?.Member?.FullName || 'Chưa xác định'}
+                              {item?.MemberFullName || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
                               rowSpan={item?.ProdsList.length}
                             >
-                              {item?.Member?.Phone || 'Chưa xác định'}
+                              {item?.MemberPhone || 'Chưa xác định'}
                             </td>
                             <td
                               className="vertical-align-middle"
@@ -440,7 +440,7 @@ function ExpectedCustomer(props) {
                           {order.Title} (x{order.Qty})
                         </td>
                         <td>
-                          {moment(order.ExpiryDate).format('HH:mm DD/MM/YYYY')}
+                          {moment(order.UsedUpDate).format('HH:mm DD/MM/YYYY')}
                         </td>
                       </tr>
                     ))}

@@ -5,17 +5,18 @@ import Chart2Column from 'src/features/Reports/components/Chart2Column'
 import ChartWidget2 from 'src/features/Reports/components/ChartWidget2'
 import reportsApi from 'src/api/reports.api'
 import LoadingSkeleton from './LoadingSkeleton'
-import ListCustomer from './ListCustomer'
 import _ from 'lodash'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import FilterList from 'src/components/Filter/FilterList'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+import { PriceHelper } from 'src/helpers/PriceHelper'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
+import ModalViewMobile from './ModalViewMobile'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import { PriceHelper } from 'src/helpers/PriceHelper'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
 moment.locale('vi')
 
 const optionsObj = {
@@ -71,7 +72,7 @@ function OverviewCustomer() {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     GroupCustomerID: '', // ID Nhóm khách hàng
     ProvincesID: '', // ID Thành phố
     DistrictsID: '', //ID Huyện
@@ -89,13 +90,14 @@ function OverviewCustomer() {
   })
   const [isFilter, setIsFilter] = useState(false)
   const [heightChart, setHeightChart] = useState(100)
-  const elementListRef = useRef()
+  const [initialValuesMobile, setInitialValuesMobile] = useState(null)
+  const [isModalMobile, setIsModalMobile] = useState(false)
   const { width } = useWindowSize()
 
   // We'll start our table without any data
-  const [data, setData] = React.useState([])
-  const [loadingTable, setLoadingTable] = React.useState(false)
-  const [pageCount, setPageCount] = React.useState(0)
+  const [data, setData] = useState([])
+  const [loadingTable, setLoadingTable] = useState(false)
+  const [pageCount, setPageCount] = useState(0)
 
   useEffect(() => {
     if (width < 1430) {
@@ -127,17 +129,6 @@ function OverviewCustomer() {
     getListCustomer()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
-
-  const awaitLoading = fn => {
-    // if (elementListRef?.current.getLoading()) {
-    //   setTimeout(() => {
-    //     awaitLoading(fn)
-    //   }, 50)
-    // } else {
-    //   fn()
-    // }
-    fn()
-  }
 
   const getOverviewCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
@@ -178,27 +169,27 @@ function OverviewCustomer() {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      onRefresh()
+      getListCustomer()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
   const onExport = async () => {
-    setLoadingExport(true)
-    const data = await elementListRef?.current?.onGetDataExport()
-    window?.EzsExportExcel &&
-      window?.EzsExportExcel({
-        Url: '/khach-hang/tong-quan',
-        Data: data,
-        hideLoading: () => setLoadingExport(false)
-      })
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListCustomer(
+          BrowserHelpers.getRequestParams(filters, { Total: PageTotal.Total })
+        ),
+      UrlName: '/khach-hang/tong-quan'
+    })
   }
 
   const onRefresh = () => {
     setLoading(true)
     getOverviewCustomer()
-    getListCustomer()
   }
 
   const onOpenFilter = () => {
@@ -207,14 +198,6 @@ function OverviewCustomer() {
 
   const onHideFilter = () => {
     setIsFilter(false)
-  }
-
-  const onPageChange = Pi => {
-    setFilters({ ...filters, Pi: Pi })
-  }
-
-  const onSizePerPageChange = Ps => {
-    setFilters({ ...filters, Ps: Ps, Pi: 1 })
   }
 
   const columns = useMemo(
@@ -228,26 +211,39 @@ function OverviewCustomer() {
           maxWidth: 60,
           textAlign: 'center'
         },
-        classCell: 'd-flex align-items-center justify-content-center'
+        classCell: 'd-flex align-items-center justify-content-center',
+        mobileOption: {
+          visible: true
+        }
       },
       {
         Header: 'Ngày tạo',
         accessor: originalRow =>
           moment(originalRow.CreateDate).format('HH:mm DD/MM/YYYY'),
         width: 180,
-        classCell: 'd-flex align-items-center'
+        classCell: 'd-flex align-items-center',
+        mobileOption: {
+          visible: true
+        }
       },
       {
         Header: 'Tên khách hàng',
         accessor: 'FullName',
         width: 250,
-        classCell: 'd-flex align-items-center'
+        classCell: 'd-flex align-items-center',
+        sortable: true,
+        mobileOption: {
+          visible: true
+        }
       },
       {
         Header: 'Số điện thoại',
         accessor: 'MobilePhone',
         width: 150,
-        classCell: 'd-flex align-items-center'
+        classCell: 'd-flex align-items-center',
+        mobileOption: {
+          visible: true
+        }
       },
       {
         Header: 'Email',
@@ -320,33 +316,13 @@ function OverviewCustomer() {
         width: 120
       }
     ],
-    [filters, loadingTable]
+    [filters]
   )
-
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      StaffID: filters.StaffID ? filters.StaffID.value : '',
-      GroupCustomerID: filters.GroupCustomerID
-        ? filters.GroupCustomerID.value
-        : '',
-      SourceName: filters.SourceName ? filters.SourceName.value : '',
-      ProvincesID: filters.ProvincesID ? filters.ProvincesID.value : '',
-      DistrictsID: filters.DistrictsID ? filters.DistrictsID.value : ''
-    }
-  }
 
   const getListCustomer = callback => {
     setLoadingTable(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListCustomer(newFilters)
+      .getListCustomer(BrowserHelpers.getRequestParams(filters))
       .then(({ data }) => {
         const { Members, PCount, TotalOnline, Total } = {
           Members: data?.result?.Members || [],
@@ -369,6 +345,16 @@ function OverviewCustomer() {
 
   const onPagesChange = ({ Pi, Ps }) => {
     setFilters({ ...filters, Pi, Ps })
+  }
+
+  const OpenModalMobile = cell => {
+    setInitialValuesMobile(cell)
+    setIsModalMobile(true)
+  }
+
+  const HideModalMobile = () => {
+    setInitialValuesMobile(null)
+    setIsModalMobile(false)
   }
 
   return (
@@ -399,7 +385,7 @@ function OverviewCustomer() {
         onHide={onHideFilter}
         onSubmit={onFilter}
         onRefresh={onRefresh}
-        loading={loading}
+        loading={loading || loadingTable}
         loadingExport={loadingExport}
         onExport={onExport}
       />
@@ -583,22 +569,23 @@ function OverviewCustomer() {
         </div>
         <div className="p-20px">
           <ReactTableV7
+            filters={filters}
             columns={columns}
             data={data}
             loading={loadingTable}
             pageCount={pageCount}
             onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+          />
+          <ModalViewMobile
+            show={isModalMobile}
+            onHide={HideModalMobile}
+            data={initialValuesMobile}
           />
         </div>
       </div>
-
-      {/* <ListCustomer
-        onPageChange={onPageChange}
-        onSizePerPageChange={onSizePerPageChange}
-        filters={filters}
-        ref={elementListRef}
-        onExport={onExport}
-      /> */}
     </div>
   )
 }
