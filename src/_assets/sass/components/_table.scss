@@ -25,7 +25,41 @@
         position: relative;
         &.sticky {
             overflow: auto;
-            border: 1px solid $gray-200;
+            border-width: 1px;
+            border-style: solid;
+            tr {
+                > th, > td {
+                    border-width: 0 .5px;
+                    padding: 0.85rem 0.75rem;
+                    &:first-child {
+                        border-left: 0;
+                    }
+                    &:last-child {
+                        border-right: 0
+                    }
+                }
+                
+            }
+            thead {
+                > tr {
+                    &:last-child {
+                        border-bottom: 0;
+                    }
+                }
+            }
+            tbody {
+                > tr {
+                    border-top: 0;
+                }
+            }
+            thead,
+            tbody {
+                > tr {
+                    &:first-child {
+                        border-top: 0;
+                    }
+                }
+            }
             .table-tanstack__header {
                 position: sticky;
                 z-index: 1;
@@ -46,44 +80,12 @@
                 }
             }
         }
-        .table-tanstack__header {
-            .tr {
-                .th {
-                    text-transform: uppercase;
-                    font-size: 0.9rem;
-                    font-weight: 600;
-                }
-            }
-        }
         .table-tanstack__body {
-            border-top: 0;
             position: relative;
-            flex-grow: 1;
-            .tr {
-                border-top: 1px solid $gray-200;
-                &:first-child {
-                    border-top: 0;
-                }
-                &:last-child {
-                    border-bottom: 1px solid $gray-200;
-                }
-                .td {
-                    border-right: 1px solid $gray-200;
-                    &:last-child {
-                        border-right: 0;
-                    }
-                }
-            }
         }
         .tr {
             .th {
-                padding: 12px 12px;
-                line-height: 20px;
-                border-right: 1px solid $gray-200;
                 position: relative;
-                &:last-child {
-                    border-right: 0;
-                }
             }
         }
         .sort-item {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import Chart2Column from 'src/features/Reports/components/Chart2Column'
@@ -188,8 +188,8 @@ function OverviewCustomer() {
   }
 
   const onRefresh = () => {
-    setLoading(true)
     getOverviewCustomer()
+    getListCustomer()
   }
 
   const onOpenFilter = () => {

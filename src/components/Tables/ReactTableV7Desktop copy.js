@@ -14,25 +14,6 @@ ReactTableV7Desktop.propTypes = {
   loading: PropTypes.bool
 }
 
-function useInstance(instance) {
-  const { allColumns } = instance
-
-  let rowSpanHeaders = []
-
-  allColumns.forEach((column, i) => {
-    const { id, enableRowSpan } = column
-
-    if (enableRowSpan !== undefined) {
-      rowSpanHeaders = [
-        ...rowSpanHeaders,
-        { id, topCellValue: null, topCellIndex: 0 }
-      ]
-    }
-  })
-
-  Object.assign(instance, { rowSpanHeaders })
-}
-
 const sizePerPageLists = [10, 25, 50, 100, 500, 1000]
 
 function ReactTableV7Desktop({
@@ -48,8 +29,6 @@ function ReactTableV7Desktop({
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    // rowSpanHeaders,
-    // rows,
     page,
     // canPreviousPage,
     // canNextPage,
@@ -74,8 +53,7 @@ function ReactTableV7Desktop({
     useSticky,
     useBlockLayout,
     useSortBy,
-    usePagination,
-    hooks => hooks.useInstance.push(useInstance)
+    usePagination
   )
   const elmHeader = useRef(null)
   const elmTable = useRef(null)
@@ -87,22 +65,22 @@ function ReactTableV7Desktop({
   return (
     <>
       <div className={clsx('position-relative', loading && 'loading')}>
-        <table
-          className="table sticky table-bordered table-tanstack mb-0"
+        <div
+          className="table sticky table-tanstack mb-0"
           {...getTableProps()}
           style={{ width: '100%', height: 495 }}
           ref={elmTable}
         >
-          <thead className="table-tanstack__header" ref={elmHeader}>
+          <div className="table-tanstack__header" ref={elmHeader}>
             {headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()} className="tr">
+              <div {...headerGroup.getHeaderGroupProps()} className="tr">
                 {headerGroup.headers.map(column => (
-                  <th
+                  <div
                     {...column.getHeaderProps([
                       { style: column.style },
                       { ...column.getSortByToggleProps() }
                     ])}
-                    className="th"
+                    className="th flex-fill"
                   >
                     {column.render('Header')}
                     {column.sortable && (
@@ -122,19 +100,19 @@ function ReactTableV7Desktop({
                         ></i>
                       </span>
                     )}
-                  </th>
+                  </div>
                 ))}
-              </tr>
+              </div>
             ))}
-          </thead>
-          <tbody {...getTableBodyProps()} className={`table-tanstack__body`}>
+          </div>
+          <div {...getTableBodyProps()} className={`table-tanstack__body`}>
             {page.map((row, i) => {
               prepareRow(row)
               return (
-                <tr {...row.getRowProps()} className="tr">
+                <div {...row.getRowProps()} className="tr">
                   {row.cells.map(cell => {
                     return (
-                      <td
+                      <div
                         {...cell.getCellProps([
                           {
                             style: {
@@ -152,15 +130,15 @@ function ReactTableV7Desktop({
                         className={clsx('td flex-fill', cell.column.classCell)}
                       >
                         {cell.render('Cell')}
-                      </td>
+                      </div>
                     )
                   })}
-                </tr>
+                </div>
               )
             })}
-            {(!page || page.length === 0 && !loading) && <tr><td><ElementEmpty /></td></tr>}
-          </tbody>
-        </table>
+            {(!page || page.length === 0) && !loading && <ElementEmpty />}
+          </div>
+        </div>
         <div
           className="table-tanstack-loading"
           style={{
