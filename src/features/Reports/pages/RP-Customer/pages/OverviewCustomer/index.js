@@ -203,117 +203,144 @@ function OverviewCustomer() {
   const columns = useMemo(
     () => [
       {
-        Header: 'STT',
-        accessor: (originalRow, rowIndex) =>
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
           filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
         width: 60,
-        style: {
-          maxWidth: 60,
-          textAlign: 'center'
-        },
-        classCell: 'd-flex align-items-center justify-content-center',
-        mobileOption: {
-          visible: true
-        }
+        sortable: false,
+        align: 'center'
       },
       {
-        Header: 'Ngày tạo',
-        accessor: originalRow =>
-          moment(originalRow.CreateDate).format('HH:mm DD/MM/YYYY'),
-        width: 180,
-        classCell: 'd-flex align-items-center',
-        mobileOption: {
-          visible: true
-        }
-      },
-      {
-        Header: 'Tên khách hàng',
-        accessor: 'FullName',
-        width: 250,
-        classCell: 'd-flex align-items-center',
-        sortable: true,
-        mobileOption: {
-          visible: true
-        }
-      },
-      {
-        Header: 'Số điện thoại',
-        accessor: 'MobilePhone',
+        key: 'CreateDate',
+        title: 'Ngày tạo',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
         width: 150,
-        classCell: 'd-flex align-items-center',
-        mobileOption: {
-          visible: true
-        }
+        sortable: false
       },
       {
-        Header: 'Email',
-        accessor: originalRow => originalRow.Email,
-        width: 200
+        key: 'FullName',
+        title: 'Tên khách hàng',
+        dataKey: 'FullName',
+        width: 200,
+        sortable: false
       },
       {
-        Header: 'Ngày sinh',
-        accessor: originalRow =>
-          originalRow.BirthDate &&
-          moment(originalRow.BirthDate).format('DD/MM/YYYY')
+        key: 'MobilePhone',
+        title: 'Số điện thoại',
+        dataKey: 'MobilePhone',
+        width: 150,
+        sortable: false
       },
       {
-        Header: 'Giới tính',
-        accessor: 'Gender'
+        key: 'Email',
+        title: 'Email',
+        dataKey: 'Email',
+        cellRenderer: ({ rowData }) => rowData.Email || 'Chưa có',
+        width: 200,
+        sortable: false
       },
       {
-        Header: 'Địa chỉ',
-        accessor: 'HomeAddress',
-        width: 250
+        key: 'BirthDate',
+        title: 'Ngày sinh',
+        dataKey: 'BirthDate',
+        cellRenderer: ({ rowData }) =>
+          rowData.BirthDate
+            ? moment(rowData.BirthDate).format('HH:mm DD/MM/YYYY')
+            : 'Chưa có',
+        width: 150,
+        sortable: false
       },
       {
-        Header: 'Quận huyện',
-        accessor: 'DistrictsName',
-        width: 200
+        key: 'Gender',
+        title: 'Giới tính',
+        dataKey: 'Gender',
+        width: 120,
+        sortable: false
       },
       {
-        Header: 'Tỉnh / Thành phố',
-        accessor: 'ProvincesName',
-        width: 200
+        key: 'HomeAddress',
+        title: 'Địa chỉ',
+        dataKey: 'HomeAddress',
+        width: 250,
+        sortable: false
       },
       {
-        Header: 'Cơ sở',
-        accessor: 'ByStockName',
-        width: 180
+        key: 'DistrictsName',
+        title: 'Quận huyện',
+        dataKey: 'DistrictsName',
+        width: 250,
+        sortable: false
       },
       {
-        Header: 'Nhóm khách hàng',
-        accessor: 'GroupCustomerName',
-        width: 180
+        key: 'ProvincesName',
+        title: 'Tỉnh / Thành phố',
+        dataKey: 'ProvincesName',
+        width: 250,
+        sortable: false
       },
       {
-        Header: 'Nguồn',
-        accessor: 'Source',
-        width: 100
+        key: 'ByStockName',
+        title: 'Cơ sở',
+        dataKey: 'ByStockName',
+        width: 180,
+        sortable: false
       },
       {
-        Header: 'Mã thẻ',
-        accessor: 'HandCardID',
-        width: 150
+        key: 'GroupCustomerName',
+        title: 'Nhóm khách hàng',
+        dataKey: 'GroupCustomerName',
+        width: 150,
+        sortable: false
       },
       {
-        Header: 'Nhân viên chăm sóc',
-        accessor: 'ByUserName',
-        width: 250
+        key: 'Source',
+        title: 'Nguồn',
+        dataKey: 'Source',
+        width: 100,
+        sortable: false
       },
       {
-        Header: 'Ví',
-        accessor: originalRow => PriceHelper.formatVND(originalRow.vi_dien_tu),
-        width: 120
+        key: 'HandCardID',
+        title: 'Mã thẻ',
+        dataKey: 'HandCardID',
+        width: 100,
+        sortable: false
       },
       {
-        Header: 'Công nợ',
-        accessor: originalRow => PriceHelper.formatVND(originalRow.cong_no),
-        width: 120
+        key: 'ByUserName',
+        title: 'Nhân viên chăm sóc',
+        dataKey: 'ByUserName',
+        width: 200,
+        sortable: false
       },
       {
-        Header: 'Thẻ tiền',
-        accessor: originalRow => PriceHelper.formatVND(originalRow.the_tien),
-        width: 120
+        key: 'vi_dien_tu',
+        title: 'Ví',
+        dataKey: 'vi_dien_tu',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.vi_dien_tu),
+        width: 120,
+        sortable: false
+      },
+      {
+        key: 'cong_no',
+        title: 'Công nợ',
+        dataKey: 'cong_no',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.cong_no),
+        width: 120,
+        sortable: false
+      },
+      {
+        key: 'the_tien',
+        title: 'Thẻ tiền',
+        dataKey: 'the_tien',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.the_tien),
+        width: 120,
+        sortable: false
       }
     ],
     [filters]
