@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterToggle from 'src/components/Filter/FilterToggle'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
@@ -10,10 +10,35 @@ import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import ModalViewMobile from './ModalViewMobile'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
-
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+import { uuidv4 } from '@nikitababko/id-generator'
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
+
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+  for (let [index, obj] of arrays.entries()) {
+    for (let [x, order] of obj.OrdersList.entries()) {
+      const newObj = {
+        ...order,
+        ...obj,
+        CoSoMuaHang: order.StockName,
+        NgayMuaHang: order.CreateDate,
+        rowIndex: index,
+        Id: uuidv4()
+      }
+      if (x !== 0) delete newObj.OrdersList
+      newArray.push(newObj)
+    }
+  }
+  //console.log(newArray.length)
+  return newArray
+}
 
 function ExpenseCustomer(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -41,6 +66,7 @@ function ExpenseCustomer(props) {
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
   const [PageTotal, setPageTotal] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
@@ -106,12 +132,14 @@ function ExpenseCustomer(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Members, Total } = {
+          const { Members, Total, PCount } = {
             Members: data?.result?.Members || [],
-            Total: data?.result?.Total || 0
+            Total: data?.result?.Total || 0,
+            PCount: data?.result?.PCount || 0
           }
-          setListData(Members)
+          setListData(convertArray(Members))
           setPageTotal(Total)
+          setPageCount(PCount)
           setLoading(false)
           isFilter && setIsFilter(false)
           callback && callback()
@@ -168,6 +196,221 @@ function ExpenseCustomer(props) {
       .catch(error => console.log(error))
   }
 
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowData }) =>
+          filters.Ps * (filters.Pi - 1) + (rowData.rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày tạo',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 150,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1
+      },
+      {
+        key: 'MemberFullName',
+        title: 'Tên khách hàng',
+        dataKey: 'MemberFullName',
+        width: 200,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1
+      },
+      {
+        key: 'MemberPhone',
+        title: 'Số điện thoại',
+        dataKey: 'MemberPhone',
+        width: 150,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1
+      },
+      {
+        key: 'StockName',
+        title: 'Cơ sở',
+        dataKey: 'StockName',
+        width: 200,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1
+      },
+      {
+        key: 'TongChiTieu',
+        title: 'Tồn tiền chi tiêu',
+        dataKey: 'TongChiTieu',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.TongChiTieu),
+        width: 150,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1
+      },
+      {
+        key: 'NgayMuaHang',
+        title: 'Thời gian mua hàng',
+        dataKey: 'NgayMuaHang',
+        cellRenderer: ({ rowData }) =>
+          rowData.NgayMuaHang
+            ? moment(rowData.NgayMuaHang).format('HH:mm DD/MM/YYYY')
+            : '',
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'CoSoMuaHang',
+        title: 'Cở sở mua hàng',
+        dataKey: 'CoSoMuaHang',
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'ID',
+        title: 'Mã đơn hàng',
+        dataKey: 'ID',
+        width: 120,
+        sortable: false
+      },
+      {
+        key: 'Prods',
+        title: 'Mặt hàng mua',
+        dataKey: 'Prods',
+        cellRenderer: ({ rowData }) =>
+          rowData.Prods && rowData.Prods.length > 0
+            ? rowData.Prods.map(prod => `${prod.name} (x${prod.qty})`).join(',')
+            : 'Không có mặt hàng.',
+        width: 250,
+        sortable: false
+      },
+      {
+        key: 'DoanhSo',
+        title: 'Doanh số',
+        dataKey: 'DoanhSo',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.DoanhSo),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'GiamGia',
+        title: 'Giảm giá',
+        dataKey: 'GiamGia',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.GiamGia),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'DaThanhToan',
+        title: 'Đã thanh toán',
+        dataKey: 'DaThanhToan',
+        cellRenderer: ({ rowData }) => (
+          <OverlayTrigger
+            rootClose
+            trigger="click"
+            key="top"
+            placement="top"
+            overlay={
+              <Popover id={`popover-positioned-top`}>
+                <Popover.Header
+                  className="py-10px text-uppercase fw-600"
+                  as="h3"
+                >
+                  Chi tiết thanh toán #{rowData.ID}
+                </Popover.Header>
+                <Popover.Body className="p-0">
+                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <span>Tiền mặt</span>
+                    <span>{PriceHelper.formatVND(rowData.TM)}</span>
+                  </div>
+                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <span>Chuyển khoản</span>
+                    <span>{PriceHelper.formatVND(rowData.CK)}</span>
+                  </div>
+                  <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                    <span>Quẹt thẻ</span>
+                    <span>{PriceHelper.formatVND(rowData.QT)}</span>
+                  </div>
+                </Popover.Body>
+              </Popover>
+            }
+          >
+            <div className="d-flex justify-content-between align-items-center w-100">
+              {PriceHelper.formatVND(rowData.DaThanhToan)}
+              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+            </div>
+          </OverlayTrigger>
+        ),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'TheTien',
+        title: 'Thẻ tiền',
+        dataKey: 'TheTien',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.DoanhThu),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Vi',
+        title: 'Ví',
+        dataKey: 'Vi',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.DoanhThu),
+        width: 150,
+        sortable: false
+      }
+    ],
+    [filters]
+  )
+
+  const rowRenderer = ({ rowData, rowIndex, cells, columns }) => {
+    const indexList = [0, 1, 2, 3, 4, 5]
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
+    }
+    return cells
+  }
+
+  //console.log(ListData)
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -205,6 +448,19 @@ function ExpenseCustomer(props) {
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
         </div>
         <div className="p-20px">
+          <ReactTableV7
+            rowKey="Id"
+            filters={filters}
+            columns={columns}
+            data={ListData}
+            loading={loading}
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowRenderer={rowRenderer}
+          />
           <ChildrenTables
             data={ListData}
             columns={[

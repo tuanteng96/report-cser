@@ -596,6 +596,7 @@ function OverviewCustomer() {
         </div>
         <div className="p-20px">
           <ReactTableV7
+            rowKey="MobilePhone"
             filters={filters}
             columns={columns}
             data={data}

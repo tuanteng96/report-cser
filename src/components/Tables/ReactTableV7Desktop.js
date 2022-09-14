@@ -158,7 +158,13 @@ function ReactTableV7Desktop({
                 </tr>
               )
             })}
-            {(!page || page.length === 0 && !loading) && <tr><td><ElementEmpty /></td></tr>}
+            {(!page || (page.length === 0 && !loading)) && (
+              <tr>
+                <td>
+                  <ElementEmpty />
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
         <div

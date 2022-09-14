@@ -20,13 +20,16 @@ function ReactBaseTable({
   onPagesChange,
   loading,
   filters,
-  pageCount
+  pageCount,
+  rowKey,
+  rowRenderer
 }) {
   const refElm = useRef(null)
   return (
     <div className="w-100" ref={refElm}>
       <Table
         fixed
+        rowKey={rowKey}
         width={refElm?.current?.offsetWidth || 0}
         height={500}
         columns={columns}
@@ -41,6 +44,7 @@ function ReactBaseTable({
           </>
         )}
         emptyRenderer={<ElementEmpty />}
+        rowRenderer={rowRenderer}
       />
       <div className="pagination d-flex justify-content-between align-items-center mt-15px">
         <Pagination
