@@ -589,6 +589,25 @@ function FilterToggle({
                           />
                         </div>
                       )}
+                      {'StatusServices' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Trạng thái</label>
+                          <Select
+                            isMulti
+                            menuPosition="fixed"
+                            isClearable={true}
+                            name="StatusServices"
+                            placeholder="Chọn trạng thái"
+                            classNamePrefix="select"
+                            options={StatusServiceMemberList}
+                            className="select-control"
+                            value={values?.StatusServices}
+                            onChange={otp => {
+                              setFieldValue('StatusServices', otp)
+                            }}
+                          />
+                        </div>
+                      )}
                       {'DayService' in values && (
                         <div className="form-group mb-20px">
                           <label>Số ngày không đến làm DV</label>
@@ -651,7 +670,7 @@ function FilterToggle({
                         </div>
                       )}
                       {'Frequency' in values && (
-                        <div className="form-group">
+                        <div className="form-group mb-20px">
                           <label>Tần suất sử dụng</label>
                           <Select
                             menuPosition="fixed"
@@ -688,23 +707,46 @@ function FilterToggle({
                           )}
                         </div>
                       )}
-                      {'StatusServices' in values && (
+                      {'FrequencyDateStart' in values && (
                         <div className="form-group mb-20px">
-                          <label>Trạng thái</label>
-                          <Select
-                            isMulti
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="StatusServices"
-                            placeholder="Chọn trạng thái"
-                            classNamePrefix="select"
-                            options={StatusServiceMemberList}
-                            className="select-control"
-                            value={values?.StatusServices}
-                            onChange={otp => {
-                              setFieldValue('StatusServices', otp)
-                            }}
-                          />
+                          <label>Thời gian</label>
+                          <div className="d-flex">
+                            <div className="flex-1">
+                              <DatePicker
+                                onChange={date => {
+                                  setFieldValue(
+                                    'FrequencyDateStart',
+                                    date,
+                                    false
+                                  )
+                                }}
+                                selected={values.FrequencyDateStart}
+                                // selectsEnd
+                                // startDate={values.DateStart}
+                                // endDate={values.DateEnd}
+                                className="form-control"
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="Bắt đầu"
+                              />
+                            </div>
+                            <div className="d-flex align-items-center justify-content-center w-35px">
+                              <i className="fa-regular text-black-50 fa-arrow-right-long"></i>
+                            </div>
+                            <div className="flex-1">
+                              <DatePicker
+                                onChange={date => {
+                                  setFieldValue('FrequencyDateEnd', date, false)
+                                }}
+                                selected={values.FrequencyDateEnd}
+                                // selectsEnd
+                                // startDate={values.DateStart}
+                                // endDate={values.DateEnd}
+                                className="form-control"
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="Kết thúc"
+                              />
+                            </div>
+                          </div>
                         </div>
                       )}
                       {'DayFromServices' in values && (

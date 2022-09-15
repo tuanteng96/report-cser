@@ -1,52 +1,44 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterToggle from 'src/components/Filter/FilterToggle'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
-import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import ModalViewMobile from './ModalViewMobile'
-import { PriceHelper } from 'src/helpers/PriceHelper'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { uuidv4 } from '@nikitababko/id-generator'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+import Text from 'react-texty'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Members: [
-    {
-      CreateDate: '2022-07-29T09:25:52.72',
-      Member: {
-        ID: '4236', // ID khách hàng
-        FullName: 'Nguyễn Tài Tuấn',
-        Phone: '0971021196'
-      },
-      StockID: '8975',
-      StockName: 'Cser Hà Nội',
-      LevelUp: 'Vip',
-      PriceLevelUp: 10000000, // Số tiền cần lên cấp
-      ProdsList: [
-        {
-          Id: 1234, // ID SP, dv
-          Title: 'Chăm sóc da 10 buổi',
-          CreateDate: '2022-07-29T09:25:52.72', // Ngày mua
-          Qty: 2,
-          UsedUpDate: '2022-07-29T09:25:52.72' // Ngày ước tính dùng hết
-        },
-        {
-          Id: 1234, // ID SP, dv
-          Title: 'Chăm sóc da 10 buổi',
-          CreateDate: '2022-07-29T09:25:52.72', // Ngày mua
-          Qty: 2,
-          UsedUpDate: '2022-07-29T09:25:52.72' // Ngày ước tính dùng hết
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+  for (let [index, obj] of arrays.entries()) {
+    if (obj.ProdsList && obj.ProdsList.length > 0) {
+      for (let [x, order] of obj.ProdsList.entries()) {
+        const newObj = {
+          ...order,
+          ...obj,
+          NgayMuaHang: order.CreateDate,
+          rowIndex: index,
+          Ids: uuidv4()
         }
-      ]
+        if (x !== 0) delete newObj.ProdsList
+        newArray.push(newObj)
+      }
+    } else {
+      newArray.push({ ...obj, rowIndex: index, Ids: uuidv4() })
     }
-  ]
+  }
+  return newArray
 }
 
 function ExpectedCustomer(props) {
@@ -59,7 +51,7 @@ function ExpectedCustomer(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     MemberID: '', // ID Khách hàng
     GroupCustomerID: '', // ID Nhóm khách hàng
     SourceName: '', // Nguồn
@@ -69,14 +61,13 @@ function ExpectedCustomer(props) {
     ExpiryDateEnd: null, // Hạn sử dụng đến ngày
     DayFromServices: '', // Số buổi còn lại từ
     DayToServices: '', // Số buổi còn lại đến
-    PriceLevelUpFrom: '', // Giá trị lên cấp từ
-    PriceLevelUpTo: '', // Giá trị lên cấp đến
-    LevelUp: '', // Cấp dự kiến lên
     TypeService: '' // Loại SP, DV
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
+  const [ListDataMobile, setListDataMobile] = useState([])
   const [PageTotal, setPageTotal] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
@@ -100,52 +91,23 @@ function ExpectedCustomer(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      ExpiryDateEnd: filters.ExpiryDateEnd
-        ? moment(filters.ExpiryDateEnd).format('DD/MM/yyyy')
-        : null,
-      ExpiryDateStart: filters.ExpiryDateStart
-        ? moment(filters.ExpiryDateStart).format('DD/MM/yyyy')
-        : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : '',
-      GroupCustomerID: filters.GroupCustomerID
-        ? filters.GroupCustomerID.value
-        : '',
-      SourceName: filters.SourceName ? filters.SourceName.value : '',
-      LevelUp: filters.LevelUp ? filters.LevelUp.value : '',
-      TypeService: filters.TypeService ? filters.TypeService.value : '',
-      UsedUpDateEnd: filters.UsedUpDateEnd
-        ? moment(filters.UsedUpDateEnd).format('DD/MM/yyyy')
-        : null,
-      UsedUpDateStart: filters.UsedUpDateStart
-        ? moment(filters.UsedUpDateStart).format('DD/MM/yyyy')
-        : null
-    }
-  }
-
   const getListExpectedCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListCustomerExpected(newFilters)
+      .getListCustomerExpected(BrowserHelpers.getRequestParams(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Members, Total } = {
-            Members: data?.result?.Members || JSONData.Members,
-            Total: data?.result?.Total || 0
+          const { Members, Total, PCount } = {
+            Members: data?.result?.Members || [],
+            Total: data?.result?.Total || 0,
+            PCount: data?.result?.PCount || 0
           }
-          setListData(Members)
+          setListData(convertArray(Members))
+          setListDataMobile(Members)
+          setPageCount(PCount)
           setPageTotal(Total)
           setLoading(false)
           isFilter && setIsFilter(false)
@@ -186,21 +148,150 @@ function ExpectedCustomer(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListCustomerExpected(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/khach-hang/du-kien',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
-          })
-      })
-      .catch(error => console.log(error))
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListCustomerExpected(
+          BrowserHelpers.getRequestParams(filters, { Total: PageTotal })
+        ),
+      UrlName: '/khach-hang/du-kien'
+    })
+  }
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowData }) =>
+          filters.Ps * (filters.Pi - 1) + rowData.rowIndex + 1,
+        width: 60,
+        sortable: false,
+        align: 'center',
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày tạo',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberFullName',
+        title: 'Tên khách hàng',
+        dataKey: 'MemberFullName',
+        width: 250,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberPhone',
+        title: 'Số điện thoại',
+        dataKey: 'MemberPhone',
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'StockName',
+        title: 'Cơ sở',
+        dataKey: 'StockName',
+        width: 250,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1
+      },
+      {
+        key: 'NgayMuaHang',
+        title: 'Thời gian mua',
+        dataKey: 'NgayMuaHang',
+        cellRenderer: ({ rowData }) =>
+          rowData?.NgayMuaHang
+            ? moment(rowData.NgayMuaHang).format('HH:mm DD/MM/YYYY')
+            : 'Chưa xác định',
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'Title',
+        title: 'Tên mặt hàng',
+        dataKey: 'Title',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.Title} {rowData.Qty && `(x${rowData.Qty})`}
+          </Text>
+        ),
+        width: 350,
+        sortable: false
+      },
+      {
+        key: 'UsedUpDate',
+        title: 'TG ước tính dùng hết',
+        dataKey: 'UsedUpDate',
+        cellRenderer: ({ rowData }) =>
+          rowData.UsedUpDate
+            ? moment(rowData.UsedUpDate).format('HH:mm DD/MM/YYYY')
+            : 'Chưa xác định',
+        width: 180,
+        sortable: false
+      }
+    ],
+    [filters]
+  )
+
+  const rowRenderer = ({ rowData, rowIndex, cells, columns }) => {
+    const indexList = [0, 1, 2, 3, 4]
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
+    }
+    return cells
   }
 
   return (
@@ -240,213 +331,21 @@ function ExpectedCustomer(props) {
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
         </div>
         <div className="p-20px">
-          <ChildrenTables
+          <ReactTableV7
+            rowKey="Ids"
+            overscanRowCount={12}
+            filters={filters}
+            columns={columns}
             data={ListData}
-            columns={[
-              {
-                text: 'STT',
-                headerStyle: {
-                  minWidth: '60px',
-                  width: '60px',
-                  textAlign: 'center'
-                },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                text: 'Ngày tạo',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                },
-                attrs: { 'data-title': 'Ngày tạo' }
-              },
-              {
-                text: 'Tên khách hàng',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                },
-                attrs: { 'data-title': 'Tên khách hàng' }
-              },
-              {
-                text: 'Số điện thoại',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                },
-                attrs: { 'data-title': 'Số điện thoại' }
-              },
-              {
-                text: 'Cơ sở',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                },
-                attrs: { 'data-title': 'Cơ sở' }
-              },
-              {
-                text: 'Cấp dự kiến',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                }
-              },
-              {
-                text: 'GT chi tiêu để lên cấp',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Thời gian mua',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Tên mặt hàng',
-                headerStyle: {
-                  minWidth: '250px',
-                  width: '250px'
-                }
-              },
-              {
-                text: 'TG ước tính dùng hết',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              }
-            ]}
-            options={{
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              sizePerPageList: [10, 25, 30, 50],
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              },
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              }
-            }}
-            optionsMoible={{
-              itemShow: 0,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  attrs: { 'data-title': 'STT' },
-                  formatter: (row, index) => (
-                    <span className="font-number">
-                      {filters.Ps * (filters.Pi - 1) + (index + 1)}
-                    </span>
-                  )
-                },
-                {
-                  attrs: { 'data-title': 'Ngày tạo' },
-                  formatter: row =>
-                    moment(row.CreateDate).format('HH:mm DD/MM/YYYY')
-                },
-                {
-                  attrs: { 'data-title': 'Tên khách hàng' },
-                  formatter: row => row?.MemberFullName || 'Chưa xác định'
-                },
-                {
-                  attrs: { 'data-title': 'Số điện thoại' },
-                  formatter: row => row?.MemberPhone || 'Chưa xác định'
-                },
-                {
-                  attrs: { 'data-title': 'Cơ sở' },
-                  formatter: row => row?.StockName
-                },
-                {
-                  attrs: { 'data-title': 'Cấp dự kiến' },
-                  formatter: row => row?.Level
-                },
-                {
-                  attrs: { 'data-title': 'GT Chi tiêu để lên cấp' },
-                  formatter: row => PriceHelper.formatVND(row?.PriceLevelUp)
-                }
-              ]
-            }}
+            dataMobile={ListDataMobile}
             loading={loading}
-          >
-            {ListData &&
-              ListData.map((item, index) => (
-                <Fragment key={index}>
-                  {item?.ProdsList &&
-                    item?.ProdsList.map((order, orderIndex) => (
-                      <tr key={orderIndex}>
-                        {orderIndex === 0 && (
-                          <Fragment>
-                            <td
-                              className="vertical-align-middle text-center"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              <span className="font-number">
-                                {filters.Ps * (filters.Pi - 1) + (index + 1)}
-                              </span>
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {moment(item.CreateDate).format(
-                                'HH:mm DD/MM/YYYY'
-                              )}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {item?.MemberFullName || 'Chưa xác định'}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {item?.MemberPhone || 'Chưa xác định'}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {item?.StockName || 'Chưa xác định'}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {item?.LevelUp || 'Chưa xác định'}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {PriceHelper.formatVND(item.PriceLevelUp)}
-                            </td>
-                          </Fragment>
-                        )}
-                        <td>
-                          {moment(order.CreateDate).format('HH:mm DD/MM/YYYY')}
-                        </td>
-                        <td>
-                          {order.Title} (x{order.Qty})
-                        </td>
-                        <td>
-                          {moment(order.UsedUpDate).format('HH:mm DD/MM/YYYY')}
-                        </td>
-                      </tr>
-                    ))}
-                </Fragment>
-              ))}
-          </ChildrenTables>
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowRenderer={rowRenderer}
+          />
         </div>
         <ModalViewMobile
           show={isModalMobile}

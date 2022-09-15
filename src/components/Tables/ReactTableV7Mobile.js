@@ -21,6 +21,7 @@ function ReactTableV7Mobile({
   loading,
   filters,
   optionMobile,
+  dataMobile,
   pageCount: controlledPageCount
 }) {
   return (
@@ -28,52 +29,111 @@ function ReactTableV7Mobile({
       {loading && <LoadingTable text="Đang tải dữ liệu ..." />}
       {!loading && (
         <>
-          {data && data.length > 0 ? (
+          {dataMobile ? (
             <>
-              {data.map((row, index) => (
-                <div
-                  className="border-top border-right border-left mb-15px"
-                  key={index}
-                >
-                  {columns &&
-                    columns
-                      .filter(column => column?.mobileOption?.visible)
-                      .map((cell, idx) => (
-                        <div
-                          className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom"
-                          key={idx}
-                        >
+              {dataMobile && dataMobile.length > 0 ? (
+                <>
+                  {dataMobile.map((row, index) => (
+                    <div
+                      className="border-top border-right border-left mb-15px"
+                      key={index}
+                    >
+                      {columns &&
+                        columns
+                          .filter(column => column?.mobileOptions?.visible)
+                          .map((cell, idx) => (
+                            <div
+                              className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom"
+                              key={idx}
+                            >
+                              <div className="text-uppercase fw-500 font-size-sm w-135px text-truncate">
+                                {cell.title}
+                              </div>
+                              <div className="flex-1 text-end fw-600 font-size-md">
+                                {typeof cell.cellRenderer !== 'function'
+                                  ? row[cell.dataKey]
+                                  : cell.cellRenderer({
+                                      rowData: { ...row, rowIndex: index }
+                                    })}
+                              </div>
+                            </div>
+                          ))}
+                      {optionMobile && optionMobile.CellModal && (
+                        <div className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom">
                           <div className="text-uppercase fw-500 font-size-sm w-135px text-truncate">
-                            {cell.Header}
+                            ...
                           </div>
                           <div className="flex-1 text-end fw-600 font-size-md">
-                            {typeof cell.accessor === 'string'
-                              ? row[cell.accessor]
-                              : cell.accessor(cell, index)}
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-xs"
+                              onClick={() => optionMobile.CellModal(row, index)}
+                            >
+                              Xem chi tiết
+                            </button>
                           </div>
                         </div>
-                      ))}
-                  {optionMobile && optionMobile.CellModal && (
-                    <div className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom">
-                      <div className="text-uppercase fw-500 font-size-sm w-135px text-truncate">
-                        ...
-                      </div>
-                      <div className="flex-1 text-end fw-600 font-size-md">
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-xs"
-                          onClick={() => optionMobile.CellModal(row, index)}
-                        >
-                          Xem chi tiết
-                        </button>
-                      </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))}
+                  ))}
+                </>
+              ) : (
+                <ElementEmpty />
+              )}
             </>
           ) : (
-            <ElementEmpty />
+            <>
+              {data && data.length > 0 ? (
+                <>
+                  {data.map((row, index) => (
+                    <div
+                      className="border-top border-right border-left mb-15px"
+                      key={index}
+                    >
+                      {columns &&
+                        columns
+                          .filter(column => column?.mobileOptions?.visible)
+                          .map((cell, idx) => (
+                            <div
+                              className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom"
+                              key={idx}
+                            >
+                              <div className="text-uppercase fw-500 font-size-sm w-135px text-truncate">
+                                {cell.title}
+                              </div>
+                              <div className="flex-1 text-end fw-600 font-size-md">
+                                {typeof cell.cellRenderer !== 'function'
+                                  ? row[cell.dataKey]
+                                  : cell.cellRenderer({
+                                      rowData: row,
+                                      rowIndex: index
+                                    })}
+                              </div>
+                            </div>
+                          ))}
+                      {optionMobile && optionMobile.CellModal && (
+                        <div className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom">
+                          <div className="text-uppercase fw-500 font-size-sm w-135px text-truncate">
+                            ...
+                          </div>
+                          <div className="flex-1 text-end fw-600 font-size-md">
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-xs"
+                              onClick={() => optionMobile.CellModal(row, index)}
+                            >
+                              Xem chi tiết
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <ElementEmpty />
+              )}
+            </>
           )}
         </>
       )}

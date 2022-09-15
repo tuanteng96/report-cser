@@ -5,6 +5,7 @@ import { ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap'
 import Table from 'react-base-table'
 import 'react-base-table/styles.css'
 import ElementEmpty from '../Empty/ElementEmpty'
+import Text from 'react-texty'
 
 ReactBaseTable.propTypes = {
   columns: PropTypes.array,
@@ -22,12 +23,23 @@ function ReactBaseTable({
   filters,
   pageCount,
   rowKey,
-  rowRenderer
+  rowRenderer,
+  ...props
 }) {
   const refElm = useRef(null)
+
+  const TableCell = ({ className, cellData }) => (
+    <Text className={className}>{cellData}</Text>
+  )
+
+  const TableHeaderCell = ({ className, column }) => (
+    <Text className={className}>{column.title}</Text>
+  )
+
   return (
     <div className="w-100" ref={refElm}>
       <Table
+        {...props}
         fixed
         rowKey={rowKey}
         width={refElm?.current?.offsetWidth || 0}
@@ -45,6 +57,7 @@ function ReactBaseTable({
         )}
         emptyRenderer={<ElementEmpty />}
         rowRenderer={rowRenderer}
+        components={{ TableCell, TableHeaderCell }}
       />
       <div className="pagination d-flex justify-content-between align-items-center mt-15px">
         <Pagination

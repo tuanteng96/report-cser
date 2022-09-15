@@ -210,7 +210,10 @@ function OverviewCustomer() {
           filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
         width: 60,
         sortable: false,
-        align: 'center'
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
       },
       {
         key: 'CreateDate',
@@ -219,14 +222,20 @@ function OverviewCustomer() {
         cellRenderer: ({ rowData }) =>
           moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
         width: 150,
-        sortable: false
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
       },
       {
         key: 'FullName',
         title: 'Tên khách hàng',
         dataKey: 'FullName',
         width: 200,
-        sortable: false
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
       },
       {
         key: 'MobilePhone',

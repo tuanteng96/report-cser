@@ -1,7 +1,6 @@
 import React from 'react'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import ReactBaseTable from './ReactBaseTable'
-import ReactTableV7Desktop from './ReactTableV7Desktop'
 import ReactTableV7Mobile from './ReactTableV7Mobile'
 
 function ReactTableV7(props) {

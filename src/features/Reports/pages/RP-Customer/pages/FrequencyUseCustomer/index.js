@@ -69,7 +69,10 @@ function FrequencyUseCustomer(props) {
     LastUsedFrom: null, // Ngày dùng cuối từ
     LastUsedTo: null, // Ngày dùng cuối đến
     Frequency: 'NGAY', // Tần suất SD
-    FrequencyDay: '' // Tuần suất theo ngày
+    FrequencyDay: '', // Tuần suất theo ngày
+    StatusServices: '',
+    FrequencyDateStart: '',
+    FrequencyDateEnd: ''
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])

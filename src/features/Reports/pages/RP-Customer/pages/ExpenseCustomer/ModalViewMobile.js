@@ -23,7 +23,7 @@ function ModalViewMobile({ show, onHide, data }) {
     >
       <div className="modal-view-head align-items-baseline px-15px py-8px">
         <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
-          {data?.Member?.FullName || 'Chưa có tên KH'}
+          {data?.MemberFullName || 'Chưa có tên KH'}
         </div>
         <div
           className="modal-view-close font-size-h3 w-20px text-center"
@@ -37,6 +37,20 @@ function ModalViewMobile({ show, onHide, data }) {
         className="scroll modal-view-body"
         style={{ position: 'relative' }}
       >
+        <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+          <div>Số điện thoại</div>
+          <div className="fw-600">{data?.MemberPhone}</div>
+        </div>
+        <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+          <div>Cơ sở</div>
+          <div className="fw-600">{data?.StockName}</div>
+        </div>
+        <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+          <div>Tồn tiền chi tiêu</div>
+          <div className="fw-600">
+            {PriceHelper.formatVND(data?.TongChiTieu)}
+          </div>
+        </div>
         <div className="px-15px">
           {data &&
             data.OrdersList &&
@@ -61,11 +75,11 @@ function ModalViewMobile({ show, onHide, data }) {
                 </div>
                 <div className="border-bottom border-bottom border-gray-200 p-12px">
                   <div>Tên mặt hàng</div>
-                  <div>
-                    {item.Prods && item.Prods.length > 0
-                      ? item.Prods.map(
-                          prod => `${prod.Title} (x${prod.Qty})`
-                        ).join(',')
+                  <div className="mt-5px">
+                    {item?.Prods && item?.Prods.length > 0
+                      ? item?.Prods.map(
+                          prod => `${prod.name} (x${prod.qty})`
+                        ).join(', ')
                       : 'Không có mặt hàng.'}
                   </div>
                 </div>
