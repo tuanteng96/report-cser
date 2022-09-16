@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
@@ -9,10 +9,13 @@ import { OverlayTrigger, Popover } from 'react-bootstrap'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import Text from 'react-texty'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
 
 function Returns(props) {
@@ -33,6 +36,7 @@ function Returns(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
   const [Total, setTotal] = useState({ ToPay: 0 })
+  const [pageCount, setPageCount] = useState(0)
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -68,20 +72,21 @@ function Returns(props) {
 
   const getListReturns = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListReturns(newFilters)
+      .getListReturns(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, ToPay } = {
+          const { Items, Total, ToPay, PCount } = {
             Items: data.result?.Items || [],
             Total: data.result?.Total || 0,
+            PCount: data?.result?.PCount || 0,
             ToPay: data.result?.ToPay || 0
           }
           setListData(Items)
+          setPageCount(PCount)
           setTotal({ ToPay })
           setLoading(false)
           setPageTotal(Total)
@@ -101,22 +106,110 @@ function Returns(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListReturns(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/ban-hang/tra-hang',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListReturns(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/ban-hang/tra-hang'
+    })
   }
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Id',
+        title: 'Mã đơn hàng',
+        dataKey: 'Id',
+        cellRenderer: ({ rowData }) => <div>#{rowData.Id}</div>,
+        width: 120,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'StockName',
+        title: 'Cơ sở',
+        dataKey: 'StockName',
+        cellRenderer: ({ rowData }) => rowData.StockName || 'Chưa có',
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày tạo',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberName',
+        title: 'Tên khách hàng',
+        dataKey: 'MemberName',
+        width: 200,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberPhone',
+        title: 'Số điện thoại',
+        dataKey: 'MemberPhone',
+        cellRenderer: ({ rowData }) => rowData.MemberPhone || 'Không có',
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'ToPay',
+        title: 'Giá trị',
+        dataKey: 'ToPay',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ToPay),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'Prod',
+        title: 'Đơn hàng trả lại',
+        dataKey: 'Prod',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>{`${
+            rowData.Prod ? `${rowData.Prod} ` : ''
+          }${rowData.Svr ? ',' : ''}${rowData.Svr || ''}`}</Text>
+        ),
+        width: 300,
+        sortable: false
+      }
+    ],
+    [filters]
+  )
 
   const onRefresh = () => {
     getListReturns()
@@ -209,169 +302,17 @@ function Returns(props) {
           </div>
         </div>
         <div className="p-20px">
-          <BaseTablesCustom
+          <ReactTableV7
+            rowKey="Id"
+            filters={filters}
+            columns={columns}
             data={ListData}
-            textDataNull="Không có dữ liệu."
-            optionsMoible={{
-              itemShow: 2,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  dataField: 'CreateDate',
-                  text: 'Ngày',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) =>
-                    moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
-                  attrs: { 'data-title': 'Ngày' },
-                  headerStyle: () => {
-                    return { minWidth: '150px', width: '150px' }
-                  }
-                },
-                {
-                  dataField: 'MemberName',
-                  text: 'Khách hàng',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.MemberName || 'Không có tên',
-                  attrs: { 'data-title': 'Khách hàng' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                },
-                {
-                  dataField: 'TotalValue',
-                  text: 'Tổng tiền',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) =>
-                    PriceHelper.formatVND(row.TotalValue),
-                  attrs: { 'data-title': 'Tổng tiền' },
-                  headerStyle: () => {
-                    return { minWidth: '180px', width: '180px' }
-                  }
-                }
-              ]
-            }}
-            options={{
-              custom: true,
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              alwaysShowAllBtns: true,
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              },
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              }
-            }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
-                },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'Id',
-                text: 'Mã đơn hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => <div>#{row.Id}</div>,
-                attrs: { 'data-title': 'ID' },
-                headerStyle: () => {
-                  return { minWidth: '120px', width: '120px' }
-                }
-              },
-              {
-                dataField: 'StockName',
-                text: 'Cơ sở',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.StockName || 'Chưa có',
-                attrs: { 'data-title': 'Cơ sở' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'CreateDate',
-                text: 'Ngày',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
-                attrs: { 'data-title': 'Ngày' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'MemberName',
-                text: 'Khách hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.MemberName || 'Không có tên',
-                attrs: { 'data-title': 'Khách hàng' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'MemberPhone',
-                text: 'Số điện thoại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.MemberPhone || 'Không có',
-                attrs: { 'data-title': 'Số điện thoại' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'ToPay',
-                text: 'Giá trị',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.ToPay),
-                attrs: { 'data-title': 'Cần thanh toán' },
-                headerStyle: () => {
-                  return { minWidth: '180px', width: '180px' }
-                }
-              },
-              {
-                dataField: 'Prod',
-                text: 'Đơn hàng trả lại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  `${row.Prod ? `${row.Prod} ` : ''}${row.Svr ? ',' : ''}${
-                    row.Svr || ''
-                  }`,
-                attrs: { 'data-title': 'Đơn hàng trả lại' },
-                headerStyle: () => {
-                  return { minWidth: '220px', width: '220px' }
-                }
-              }
-            ]}
             loading={loading}
-            keyField="Id"
-            className="table-responsive-attr"
-            classes="table-bordered"
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
           />
         </div>
         <ModalViewMobile

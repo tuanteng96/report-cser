@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
@@ -10,10 +10,50 @@ import { OverlayTrigger, Popover } from 'react-bootstrap'
 import ModalViewMobile from './ModalViewMobile'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { uuidv4 } from '@nikitababko/id-generator'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+
 moment.locale('vi')
+
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+
+  for (let [index, obj] of arrays.entries()) {
+    for (let [x, customer] of obj.ListCustomer.entries()) {
+      for (let [o, order] of customer.ListOrders.entries()) {
+        for (let [k, item] of order.OrderItems.entries()) {
+          const newObj = {
+            ...item,
+            OrderItemsId: item.Id,
+            ...order,
+            ...customer,
+            ...obj,
+            rowIndex: index,
+            Ids: uuidv4()
+          }
+          if (k !== 0) {
+            delete newObj.ListCustomer
+          }
+          if (x !== 0) {
+            delete newObj.ListOrders
+          }
+          if (o !== 0) {
+            delete newObj.OrderItems
+          }
+          newArray.push(newObj)
+        }
+      }
+    }
+  }
+  return newArray
+}
 
 function DebtPayment(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -29,6 +69,8 @@ function DebtPayment(props) {
     MemberID: ''
   })
   const [ListData, setListData] = useState([])
+  const [ListDataMobile, setListDataMobile] = useState([])
+  const [pageCount, setPageCount] = useState(0)
   const [TongTTNo, setTongTTNo] = useState(0)
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -55,38 +97,28 @@ function DebtPayment(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : ''
-    }
-  }
-
   const getListDebtPayment = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListDebtPayment(newFilters)
+      .getListDebtPayment(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, TTToanNo } = {
+          const { Items, Total, TTToanNo, PCount } = {
             Items: data.result?.Items || [],
             TTToanNo: data.result?.TTToanNo || 0,
-            Total: data.result?.Total || 0
+            Total: data.result?.Total || 0,
+            PCount: data?.result?.PCount || 0
           }
+          convertArray(Items)
           setListData(Items)
+          setListDataMobile(Items)
           setTongTTNo(TTToanNo)
           setLoading(false)
           setPageTotal(Total)
+          setPageCount(PCount)
           isFilter && setIsFilter(false)
           callback && callback()
         }
@@ -103,22 +135,123 @@ function DebtPayment(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListDebtPayment(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/ban-hang/thanh-toan-tra-no',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
-          })
-      })
-      .catch(error => console.log(error))
+    // setLoadingExport(true)
+    // const newFilters = GeneralNewFilter(
+    //   ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
+    // )
+    // reportsApi
+    //   .getListDebtPayment(newFilters)
+    //   .then(({ data }) => {
+    //     window?.EzsExportExcel &&
+    //       window?.EzsExportExcel({
+    //         Url: '/ban-hang/thanh-toan-tra-no',
+    //         Data: data,
+    //         hideLoading: () => setLoadingExport(false)
+    //       })
+    //   })
+    //   .catch(error => console.log(error))
   }
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'CreateDate',
+        title: 'Ngày',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) => AmountMember(rowData.ListCustomer),
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberName',
+        title: 'Tên khách hàng',
+        dataKey: 'MemberName',
+        width: 250,
+        sortable: false,
+        rowSpan: ({ rowData }) => rowData.OrderItems && rowData.OrderItems.length > 0 ? rowData.OrderItems.length : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberPhone',
+        title: 'Số điện thoại',
+        dataKey: 'MemberPhone',
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) => rowData.OrderItems && rowData.OrderItems.length > 0 ? rowData.OrderItems.length : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      // {
+      //   text: 'Tổng thanh toán nợ',
+      //   headerStyle: {
+      //     minWidth: '180px',
+      //     width: '180px'
+      //   }
+      // },
+      // {
+      //   text: 'Đơn hàng',
+      //   headerStyle: {
+      //     minWidth: '150px',
+      //     width: '150px'
+      //   }
+      // },
+      // {
+      //   text: 'Thanh toán nợ',
+      //   headerStyle: {
+      //     minWidth: '180px',
+      //     width: '180px'
+      //   }
+      // },
+      // {
+      //   text: 'Chi tiết',
+      //   headerStyle: {
+      //     minWidth: '120px',
+      //     width: '120px'
+      //   }
+      // },
+      // {
+      //   text: 'Thanh toán',
+      //   headerStyle: {
+      //     minWidth: '150px',
+      //     width: '150px'
+      //   }
+      // },
+      // {
+      //   text: 'Ví',
+      //   headerStyle: {
+      //     minWidth: '120px',
+      //     width: '120px'
+      //   }
+      // },
+      // {
+      //   text: 'Thẻ tiền',
+      //   headerStyle: {
+      //     minWidth: '120px',
+      //     width: '120px'
+      //   }
+      // },
+      // {
+      //   text: 'Sản phẩm',
+      //   headerStyle: {
+      //     minWidth: '220px',
+      //     width: '220px'
+      //   }
+      // }
+    ],
+    [filters]
+  )
 
   const onRefresh = () => {
     getListDebtPayment()
@@ -151,7 +284,7 @@ function DebtPayment(props) {
         totalArray += keyOrder?.OrderItems?.length || 0
       }
     }
-    return totalArray
+    return totalArray > 0 ? totalArray : 1
   }
   const AmountOrderItem = member => {
     var totalArray = 0
@@ -159,7 +292,32 @@ function DebtPayment(props) {
     for (let keyOrders of member.ListOrders) {
       totalArray += keyOrders?.OrderItems?.length || 0
     }
-    return totalArray
+    return totalArray > 0 ? totalArray : 1
+  }
+
+  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    // if (isScrolling)
+    //   return (
+    //     <div className="pl-15px d-flex align-items">
+    //       <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+    //     </div>
+    //   )
+    const indexList = [0, 1, 2]
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
+    }
+    return cells
   }
 
   return (
@@ -205,6 +363,22 @@ function DebtPayment(props) {
           </div>
         </div>
         <div className="p-20px">
+          <ReactTableV7
+            rowKey="Ids"
+            overscanRowCount={4}
+            useIsScrolling
+            filters={filters}
+            columns={columns}
+            data={convertArray(ListData)}
+            dataMobile={ListDataMobile}
+            loading={loading}
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowRenderer={rowRenderer}
+          />
           <ChildrenTables
             data={ListData}
             columns={[
