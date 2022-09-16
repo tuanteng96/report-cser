@@ -94,7 +94,7 @@ function ExpenseCustomer(props) {
   const getListExpenseCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     reportsApi
-      .getListCustomerExpense(BrowserHelpers.getRequestParams(filters))
+      .getListCustomerExpense(BrowserHelpers.getRequestParamsToggle(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -153,7 +153,7 @@ function ExpenseCustomer(props) {
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
         reportsApi.getListCustomerExpense(
-          BrowserHelpers.getRequestParams(filters, { Total: PageTotal })
+          BrowserHelpers.getRequestParamsToggle(filters, { Total: PageTotal })
         ),
       UrlName: '/khach-hang/chi-tieu'
     })
@@ -372,7 +372,13 @@ function ExpenseCustomer(props) {
     [filters]
   )
 
-  const rowRenderer = ({ rowData, rowIndex, cells, columns }) => {
+  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    if (isScrolling)
+      return (
+        <div className="pl-15px d-flex align-items">
+          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+        </div>
+      )
     const indexList = [0, 1, 2, 3, 4, 5]
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
@@ -430,6 +436,7 @@ function ExpenseCustomer(props) {
         <div className="p-20px">
           <ReactTableV7
             rowKey="Ids"
+            useIsScrolling
             overscanRowCount={4}
             filters={filters}
             columns={columns}

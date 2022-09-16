@@ -181,7 +181,9 @@ function OverviewCustomer() {
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
         reportsApi.getListCustomer(
-          BrowserHelpers.getRequestParams(filters, { Total: PageTotal.Total })
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal.Total
+          })
         ),
       UrlName: '/khach-hang/tong-quan'
     })
@@ -358,7 +360,7 @@ function OverviewCustomer() {
   const getListCustomer = callback => {
     setLoadingTable(true)
     reportsApi
-      .getListCustomer(BrowserHelpers.getRequestParams(filters))
+      .getListCustomer(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         const { Members, PCount, TotalOnline, Total } = {
           Members: data?.result?.Members || [],

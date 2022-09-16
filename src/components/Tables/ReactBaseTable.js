@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import Pagination from '@material-ui/lab/Pagination'
 import { ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap'
@@ -27,6 +27,11 @@ function ReactBaseTable({
   ...props
 }) {
   const refElm = useRef(null)
+  const tableRef = useRef(null)
+
+  useEffect(() => {
+    tableRef?.current?.scrollToRow(0, 'start')
+  }, [filters])
 
   const TableCell = ({ className, cellData }) => (
     <Text className={className}>{cellData}</Text>
@@ -39,6 +44,7 @@ function ReactBaseTable({
   return (
     <div className="w-100" ref={refElm}>
       <Table
+        ref={tableRef}
         {...props}
         fixed
         rowKey={rowKey}
@@ -55,9 +61,10 @@ function ReactBaseTable({
             )}
           </>
         )}
-        emptyRenderer={<ElementEmpty />}
+        emptyRenderer={() => !loading && <ElementEmpty />}
         rowRenderer={rowRenderer}
         components={{ TableCell, TableHeaderCell }}
+        ignoreFunctionInColumnCompare={false}
       />
       <div className="pagination d-flex justify-content-between align-items-center mt-15px">
         <Pagination

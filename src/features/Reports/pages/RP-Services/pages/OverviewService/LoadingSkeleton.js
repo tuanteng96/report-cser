@@ -15,7 +15,7 @@ function LoadingSkeleton(props) {
               color: '#0d6efd',
               borderColor: '#f1fafe'
             }}
-            height={50}
+            height={30}
             data={[15, 25, 15, 40, 20, 50]}
           />
           <div className="mt-30px d-flex align-items-baseline">
@@ -37,7 +37,7 @@ function LoadingSkeleton(props) {
               color: '#8fbd56',
               borderColor: '#f1fafe'
             }}
-            height={50}
+            height={30}
             data={[15, 25, 15, 40, 20, 50]}
           />
           <div className="mt-30px d-flex align-items-baseline">
@@ -59,7 +59,7 @@ function LoadingSkeleton(props) {
               color: '#8fbd56',
               borderColor: '#f1fafe'
             }}
-            height={50}
+            height={30}
             data={[15, 25, 15, 40, 20, 50]}
           />
           <div className="mt-30px d-flex align-items-baseline">

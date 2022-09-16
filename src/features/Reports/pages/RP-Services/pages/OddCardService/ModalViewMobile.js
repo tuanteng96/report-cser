@@ -67,7 +67,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             <div className="fw-600 text-uppercase text-muted font-size-smm flex-1 text-truncate">
               Chi tiết thực hiện
             </div>
-            <div className="fw-600 font-size-mdd w-60 text-start mt-5px">
+            <div className="fw-600 font-size-mdd w-100 text-start mt-5px">
               {transformDetail(data)}
             </div>
           </div>

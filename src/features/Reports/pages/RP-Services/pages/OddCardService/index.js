@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import FilterList from 'src/components/Filter/FilterList'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import Text from 'react-texty'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -24,7 +25,7 @@ function OddCardService(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     MemberID: '',
     ten_nghiep_vu: ''
   })
@@ -33,6 +34,7 @@ function OddCardService(props) {
   const [ListData, setListData] = useState([])
   const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
@@ -54,35 +56,22 @@ function OddCardService(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    const newObj = {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      MemberID: filters.MemberID ? filters.MemberID?.value : '',
-      ten_nghiep_vu: filters.ten_nghiep_vu ? filters.ten_nghiep_vu.value : ''
-    }
-    return newObj
-  }
   const getListOllCardSerive = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListOddService(newFilters)
+      .getListOddService(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total } = {
+          const { Items, Total, PCount } = {
             Items: data.result?.Items || [],
-            Total: data.result?.Total || 0
+            Total: data.result?.Total || 0,
+            PCount: data?.result?.PCount || 0
           }
           setListData(Items)
+          setPageCount(PCount)
           setLoading(false)
           setPageTotal(Total)
           isFilter && setIsFilter(false)
@@ -112,22 +101,91 @@ function OddCardService(props) {
     getListOllCardSerive()
   }
 
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày thực hiện',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'UserName',
+        title: 'Nhân viên thực hiện',
+        dataKey: 'UserName',
+        width: 300,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'StockTitle',
+        title: 'Cơ sở',
+        dataKey: 'StockTitle',
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Title',
+        title: 'Nghiệp vụ',
+        dataKey: 'Title',
+        width: 300,
+        sortable: false
+      },
+      {
+        key: 'OsDetail',
+        title: 'Chi tiết thực hiện',
+        dataKey: 'OsDetail',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>{transformDetail(rowData)}</Text>
+        ),
+        width: 300,
+        className: 'flex-fill',
+        sortable: false
+      }
+    ],
+    [filters]
+  )
+
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListOddService(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/khach-hang/chinh-sua-the',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListOddService(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/khach-hang/chinh-sua-the'
+    })
   }
 
   const OpenModalMobile = value => {
@@ -147,7 +205,7 @@ function OddCardService(props) {
       row.Title === 'Đơn hàng thay đổi khách hàng'
     ) {
       return (
-        <div>
+        <>
           Đơn hàng
           <code className="mx-6px font-size-md fw-600">#{row.OrderID}</code>
           được chuyển từ khách hàng
@@ -165,24 +223,24 @@ function OddCardService(props) {
             {row.OrderToSenderName || 'Chưa xác định'} -{' '}
             {row.OrderToSenderPhone || 'Chưa xác định'}
           </code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Tạo buổi bảo hành') {
       return (
-        <div>
+        <>
           Khách hàng
           <code className="font-size-md fw-600 mx-6px">
             {row.MemberName} - {row.MemberPhone}
           </code>
           tạo buổi bảo hành - dịch vụ thẻ
           <code className="font-size-md fw-600 ml-6px">{row.ProdTitle}</code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Chuyển nhượng thẻ') {
       return (
-        <div>
+        <>
           Chuyển nhựng
           <code className="font-size-md fw-600 mx-6px">
             {row.ProdTitle} - {row.OSUpdate} buổi
@@ -195,26 +253,24 @@ function OddCardService(props) {
           <code className="font-size-md fw-600 ml-6px">
             {row.ToMemberName} - {row.ToMemberPhone}
           </code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Kích hoạt bảo hành') {
       return (
-        <div>
-          <div>
-            khách hàng
-            <code className="fw-600 font-size-md mx-6px">
-              {row.MemberName} - {row.MemberPhone}
-            </code>
-            kích hoạt bảo hành - dịch vụ thẻ
-            <code className="fw-600 font-size-md ml-6px">{row.ProdTitle}</code>
-          </div>
-        </div>
+        <>
+          khách hàng
+          <code className="fw-600 font-size-md mx-6px">
+            {row.MemberName} - {row.MemberPhone}
+          </code>
+          kích hoạt bảo hành - dịch vụ thẻ
+          <code className="fw-600 font-size-md ml-6px">{row.ProdTitle}</code>
+        </>
       )
     }
     if (row.Title === 'Kết thúc dịch vụ' || row.Title === 'Kết thúc dich vụ') {
       return (
-        <div>
+        <>
           Khách hàng
           <code className="fw-600 font-size-md mx-6px">
             {row.MemberName} - {row.MemberPhone}
@@ -241,12 +297,12 @@ function OddCardService(props) {
           <code className="fw-600 font-size-md mx-6px">
             {PriceHelper.formatVND(row.TakeCash)}
           </code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Tặng buổi') {
       return (
-        <div>
+        <>
           Tặng
           <code className="font-size-md fw-600 mx-6px">{row.OSAdd} buổi</code>
           dịch vụ
@@ -255,12 +311,12 @@ function OddCardService(props) {
           <code className="font-size-md fw-600 ml-6px">
             {row.MemberName} - {row.MemberPhone}
           </code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Thay đổi ngày hết hạn') {
       return (
-        <div>
+        <>
           Khách hàng
           <code className="font-size-md fw-600 mx-6px">
             {row.MemberName} - {row.MemberPhone}
@@ -275,12 +331,12 @@ function OddCardService(props) {
           <code className="font-size-md fw-600 ml-6px">
             {moment(row?.OSToEndDate).format('HH:mm DD-MM-YYYY')}
           </code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Thêm buổi') {
       return (
-        <div>
+        <>
           Khách hàng
           <code className="font-size-md fw-600 mx-6px">
             {row.MemberName} - {row.MemberPhone}
@@ -291,12 +347,12 @@ function OddCardService(props) {
           </code>
           dịch vụ
           <code className="font-size-md fw-600 ml-6px">{row.ProdTitle}</code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Xóa buổi') {
       return (
-        <div>
+        <>
           Khách hàng
           <code className="font-size-md fw-600 mx-6px">
             {row.MemberName} - {row.MemberPhone}
@@ -311,12 +367,12 @@ function OddCardService(props) {
           <code className="font-size-md fw-600 ml-6px">
             {PriceHelper.formatVND(row.GiveMM)}
           </code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Thay đổi cơ sở') {
       return (
-        <div>
+        <>
           Khách hàng
           <code className="font-size-md fw-600 mx-6px">
             {row.MemberName} - {row.MemberPhone}
@@ -325,24 +381,24 @@ function OddCardService(props) {
           <code className="font-size-md fw-600 mx-6px">{row.ProdTitle}</code>
           tới cơ sở
           <code className="font-size-md fw-600 ml-6px">{row.ToStockTitle}</code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'Xóa đơn hàng') {
       return (
-        <div>
+        <>
           Xóa đơn hàng
           <code className="font-size-md fw-600 mx-6px">#{row.OrderID}</code>
           của khách hàng
           <code className="font-size-md fw-600 ml-6px">
             {row.MemberName} - {row.MemberPhone}
           </code>
-        </div>
+        </>
       )
     }
     if (row.Title === 'kết thúc dịch vụ') {
       return (
-        <div>
+        <>
           <div>
             Khách hàng
             <code className="font-size-md fw-600 mx-6px">
@@ -378,7 +434,7 @@ function OddCardService(props) {
               {PriceHelper.formatVND(row.TakeCash)}
             </code>
           </div>
-        </div>
+        </>
       )
     }
     return row.Title
@@ -421,107 +477,17 @@ function OddCardService(props) {
           <div className="fw-500 font-size-lg">Danh sách nghiệp vụ</div>
         </div>
         <div className="p-20px">
-          <BaseTablesCustom
+          <ReactTableV7
+            rowKey="ID"
+            filters={filters}
+            columns={columns}
             data={ListData}
-            textDataNull="Không có dữ liệu."
-            optionsMoible={{
-              itemShow: 4,
-              CallModal: row => OpenModalMobile(row)
-            }}
-            options={{
-              custom: true,
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              alwaysShowAllBtns: true,
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              },
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              }
-            }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
-                },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'CreateDate',
-                text: 'Ngày',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
-                attrs: { 'data-title': 'Ngày' },
-                headerStyle: () => {
-                  return { minWidth: '180px', width: '180px' }
-                }
-              },
-              {
-                dataField: 'UserName',
-                text: 'Nhân viên thực hiện',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.UserName || 'Chưa có',
-                attrs: { 'data-title': 'Nhân viên thực hiện' },
-                headerStyle: () => {
-                  return { minWidth: '300px', width: '300px' }
-                }
-              },
-              {
-                dataField: 'StockTitle',
-                text: 'Cơ sở',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.StockTitle,
-                attrs: { 'data-title': 'Cơ sở' },
-                headerStyle: () => {
-                  return { minWidth: '180px', width: '180px' }
-                }
-              },
-              {
-                dataField: 'Title',
-                text: 'Nghiệp vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.Title,
-                attrs: { 'data-title': 'Nghiệp vụ' },
-                headerStyle: () => {
-                  return { minWidth: '300px', width: '300px' }
-                }
-              },
-              {
-                dataField: 'Chi tiết',
-                text: 'Chi tiết thực hiện',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => transformDetail(row),
-                attrs: { 'data-title': 'Giá hiện tại' },
-                headerStyle: () => {
-                  return { minWidth: '300px' }
-                }
-              }
-            ]}
             loading={loading}
-            keyField="ID"
-            className="table-responsive-attr"
-            classes="table-bordered"
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
           />
         </div>
         <ModalViewMobile

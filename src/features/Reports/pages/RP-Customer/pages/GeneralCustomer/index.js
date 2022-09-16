@@ -79,7 +79,7 @@ function GeneralCustomer(props) {
   const getListGeneralCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     reportsApi
-      .getListCustomerGeneral(BrowserHelpers.getRequestParams(filters))
+      .getListCustomerGeneral(BrowserHelpers.getRequestParamsToggle(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -125,7 +125,7 @@ function GeneralCustomer(props) {
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
         reportsApi.getListCustomerGeneral(
-          BrowserHelpers.getRequestParams(filters, { Total: PageTotal })
+          BrowserHelpers.getRequestParamsToggle(filters, { Total: PageTotal })
         ),
       UrlName: '/khach-hang/tong-hop'
     })
