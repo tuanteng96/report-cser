@@ -16,6 +16,15 @@ export const BrowserHelpers = {
     }
     return ''
   },
+  getRequestParams: (filters, config) => {
+    let params = { ...filters }
+    if (config) {
+      if (config.Total < 1500) {
+        params.Ps = 1500
+      }
+    }
+    return params
+  },
   getRequestParamsList: (filters, config) => {
     let params = { ...filters }
     if (config) {
@@ -59,6 +68,16 @@ export const BrowserHelpers = {
     }
     if ('MemberID' in filters) {
       params.MemberID = filters.MemberID ? filters.MemberID.value : ''
+    }
+    if ('ServiceCardID' in filters) {
+      params.ServiceCardID = filters.ServiceCardID
+        ? filters.ServiceCardID.value
+        : ''
+    }
+    if ('ten_nghiep_vu' in filters) {
+      params.ten_nghiep_vu = filters.ten_nghiep_vu
+        ? filters.ten_nghiep_vu.value
+        : ''
     }
     if ('BrandOrderID' in filters) {
       params.BrandOrderID = filters.BrandOrderID
@@ -113,6 +132,21 @@ export const BrowserHelpers = {
         : filters.DateOrderStart
         ? moment(filters.DateOrderStart).format('DD/MM/yyyy')
         : null
+    }
+    if ('TagsTC' in filters) {
+      params.TagsTC = filters.TagsTC
+        ? filters.TagsTC.map(item => item.value).join(',')
+        : ''
+    }
+    if ('TypeCN' in filters) {
+      params.TypeCN = filters.TypeCN
+        ? filters.TypeCN.map(item => item.value).join(',')
+        : ''
+    }
+    if ('PaymentMethods' in filters) {
+      params.PaymentMethods = filters.PaymentMethods
+        ? filters.PaymentMethods.map(item => item.value).join(',')
+        : ''
     }
     if ('StatusServices' in filters) {
       params.StatusServices = filters.StatusServices

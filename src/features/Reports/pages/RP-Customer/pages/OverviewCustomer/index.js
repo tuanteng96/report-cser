@@ -94,7 +94,7 @@ function OverviewCustomer() {
   const [isModalMobile, setIsModalMobile] = useState(false)
   const { width } = useWindowSize()
 
-  // We'll start our table without any data
+  //
   const [data, setData] = useState([])
   const [loadingTable, setLoadingTable] = useState(false)
   const [pageCount, setPageCount] = useState(0)

@@ -1,20 +1,54 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
-import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWindowSize } from 'src/hooks/useWindowSize'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import { uuidv4 } from '@nikitababko/id-generator'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+
 moment.locale('vi')
+
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+  for (let [index, obj] of arrays.entries()) {
+    for (let [x, order] of obj.ListOrders.entries()) {
+      for (let [o, item] of order.ListDebt.entries()) {
+        const newObj = {
+          ...item,
+          ...order,
+          OrderId: order.Id,
+          OrderTongNo: order.TongNo,
+          ...obj,
+          rowIndex: index,
+          Id: uuidv4()
+        }
+        if (x === 0 && o === 0) {
+        } else {
+          delete newObj.ListOrders
+        }
+        if (o === 0) {
+        } else {
+          delete newObj.ListDebt
+        }
+        newArray.push(newObj)
+      }
+    }
+  }
+  return newArray
+}
 
 function Home(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -26,7 +60,7 @@ function Home(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     TypeCN: ''
   })
   const [StockName, setStockName] = useState('')
@@ -34,11 +68,13 @@ function Home(props) {
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [ListData, setListData] = useState([])
+  const [ListDataMobile, setListDataMobile] = useState([])
   const [Total, setTotal] = useState({
     DH_NO: 0,
     KH_NO: 0,
     TongNo: 0
   })
+  const [pageCount, setPageCount] = useState(0)
   const [PageTotal, setPageTotal] = useState(1)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -61,43 +97,29 @@ function Home(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      TypeCN:
-        filters.TypeCN && filters.TypeCN.length > 0
-          ? filters.TypeCN.map(item => item.value).join(',')
-          : ''
-    }
-  }
-
   const getListDebt = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListDebt(newFilters)
+      .getListDebt(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, TongNo, DH_NO, KH_NO } = {
+          const { Items, Total, PCount, TongNo, DH_NO, KH_NO } = {
             Items: data.result?.Items || [],
             TongNo: data.result?.TongNo || 0,
             DH_NO: (data.result?.DH_NO && data.result?.DH_NO.length) || 0,
             KH_NO: (data.result?.KH_NO && data.result?.KH_NO.length) || 0,
-            Total: data.result?.Total || 0
+            Total: data.result?.Total || 0,
+            PCount: data?.result?.PCount || 0
           }
-          setListData(Items)
+          setListData(convertArray(Items))
+          setListDataMobile(Items)
           setTotal({ TongNo, DH_NO, KH_NO })
           setLoading(false)
           setPageTotal(Total)
+          setPageCount(PCount)
           isFilter && setIsFilter(false)
           callback && callback()
         }
@@ -114,21 +136,15 @@ function Home(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListDebt(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/cong-no/danh-sach',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
-          })
-      })
-      .catch(error => console.log(error))
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListDebt(
+          BrowserHelpers.getRequestParamsList(filters, { Total: PageTotal })
+        ),
+      UrlName: '/cong-no/danh-sach'
+    })
   }
 
   const onRefresh = () => {
@@ -153,13 +169,167 @@ function Home(props) {
     setIsModalMobile(false)
   }
 
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowData }) => {
+          return filters.Ps * (filters.Pi - 1) + (rowData.rowIndex + 1)
+        },
+        width: 60,
+        sortable: false,
+        align: 'center',
+        rowSpan: ({ rowData }) => checkRowSpan(rowData.ListOrders),
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Member.FullName',
+        title: 'Ngày tạo',
+        dataKey: 'Member.FullName',
+        width: 250,
+        sortable: false,
+        rowSpan: ({ rowData }) => checkRowSpan(rowData.ListOrders),
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Member.Phone',
+        title: 'Số điện thoại',
+        dataKey: 'Member.Phone',
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) => checkRowSpan(rowData.ListOrders),
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'TongNo',
+        title: 'Tổng nợ',
+        dataKey: 'TongNo',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.TongNo),
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) => checkRowSpan(rowData.ListOrders),
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'OrderId',
+        title: 'ID đơn hàng',
+        dataKey: 'OrderId',
+        cellRenderer: ({ rowData }) => `#${rowData.OrderId}`,
+        width: 160,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ListDebt && rowData.ListDebt.length > 0
+            ? rowData.ListDebt.length
+            : 1
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày bán',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          rowData?.CreateDate
+            ? moment(rowData.CreateDate).format('DD/MM/YYYY')
+            : 'Chưa xác định',
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ListDebt && rowData.ListDebt.length > 0
+            ? rowData.ListDebt.length
+            : 1
+      },
+      {
+        key: 'OrderTongNo',
+        title: 'Tổng số tiền nợ',
+        dataKey: 'OrderTongNo',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.OrderTongNo),
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ListDebt && rowData.ListDebt.length > 0
+            ? rowData.ListDebt.length
+            : 1
+      },
+      {
+        key: 'ProdTitle',
+        title: 'Tên sản phẩm',
+        dataKey: 'ProdTitle',
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'Qty',
+        title: 'Số lượng',
+        dataKey: 'Qty',
+        width: 100,
+        sortable: false
+      },
+      {
+        key: 'ToPay',
+        title: 'Thành tiền',
+        dataKey: 'ToPay',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ToPay),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'ConNo',
+        title: 'Còn nợ',
+        dataKey: 'ConNo',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ConNo),
+        width: 180,
+        sortable: false
+      }
+    ],
+    [filters]
+  )
+
+  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    if (isScrolling)
+      return (
+        <div className="pl-15px d-flex align-items">
+          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+        </div>
+      )
+    const indexList = [0, 1, 2, 3, 4, 5, 6]
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
+    }
+    return cells
+  }
+
   const checkRowSpan = ListOrder => {
     var totalArray = 0
     if (!ListOrder) return totalArray
     for (let keyItem of ListOrder) {
       totalArray += keyItem?.ListDebt?.length || 0
     }
-    return totalArray
+    return totalArray > 1 ? totalArray : 1
   }
 
   return (
@@ -253,224 +423,22 @@ function Home(props) {
           )}
         </div>
         <div className="p-20px">
-          <ChildrenTables
+          <ReactTableV7
+            rowKey="Ids"
+            overscanRowCount={4}
+            useIsScrolling
+            filters={filters}
+            columns={columns}
             data={ListData}
-            columns={[
-              {
-                text: 'STT',
-                headerStyle: {
-                  minWidth: '60px',
-                  width: '60px',
-                  textAlign: 'center'
-                },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                text: 'Tên khách hàng',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                },
-                attrs: { 'data-title': 'Tên khách hàng' }
-              },
-              {
-                text: 'Số điện thoại',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                },
-                attrs: { 'data-title': 'Số điện thoại' }
-              },
-              {
-                text: 'Tổng nợ',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                },
-                attrs: { 'data-title': 'Tổng nợ' }
-              },
-              {
-                text: 'ID Đơn hàng',
-                headerStyle: {
-                  minWidth: '160px',
-                  width: '160px'
-                },
-                attrs: { 'data-title': 'Đơn hàng' }
-              },
-              {
-                text: 'Ngày bán',
-                headerStyle: {
-                  minWidth: '160px',
-                  width: '160px'
-                },
-                attrs: { 'data-title': 'Ngày bán' }
-              },
-              {
-                text: 'Tổng số tiền nợ',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                },
-                attrs: { 'data-title': 'Tổng số tiền nợ' }
-              },
-              {
-                text: 'Tên sản phẩm',
-                headerStyle: {
-                  minWidth: '250px',
-                  width: '250px'
-                }
-              },
-              {
-                text: 'Số lượng',
-                headerStyle: {
-                  minWidth: '100px',
-                  width: '100px'
-                }
-              },
-              {
-                text: 'Thành tiền',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Còn nợ',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              }
-            ]}
-            options={{
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              sizePerPageList: [10, 25, 30, 50],
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              },
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              }
-            }}
-            optionsMoible={{
-              itemShow: 0,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  attrs: { 'data-title': 'STT' },
-                  formatter: (row, index) => (
-                    <span className="font-number">
-                      {filters.Ps * (filters.Pi - 1) + (index + 1)}
-                    </span>
-                  )
-                },
-                {
-                  attrs: { 'data-title': 'Tên khách hàng' },
-                  formatter: row => row?.Member?.FullName || 'Chưa xác định'
-                },
-                {
-                  attrs: { 'data-title': 'Số điện thoại' },
-                  formatter: row => row?.Member?.Phone || 'Chưa xác định'
-                },
-                {
-                  attrs: { 'data-title': 'Tổng số tiền nợ' },
-                  formatter: row => PriceHelper.formatVND(row.TongNo)
-                }
-              ]
-            }}
+            dataMobile={ListDataMobile}
             loading={loading}
-          >
-            {ListData &&
-              ListData.map((item, index) => (
-                <Fragment key={index}>
-                  {item?.ListOrders &&
-                    item?.ListOrders.map((order, orderIndex) => (
-                      <Fragment key={orderIndex}>
-                        {order?.ListDebt &&
-                          order?.ListDebt.map((itemDebt, debtIndex) => (
-                            <tr key={debtIndex}>
-                              {orderIndex === 0 && debtIndex === 0 && (
-                                <Fragment>
-                                  <td
-                                    className="vertical-align-middle text-center"
-                                    rowSpan={checkRowSpan(
-                                      item?.ListOrders || []
-                                    )}
-                                  >
-                                    <span className="font-number">
-                                      {filters.Ps * (filters.Pi - 1) +
-                                        (index + 1)}
-                                    </span>
-                                  </td>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={checkRowSpan(
-                                      item?.ListOrders || []
-                                    )}
-                                  >
-                                    {item?.Member?.FullName || 'Chưa xác định'}
-                                  </td>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={checkRowSpan(
-                                      item?.ListOrders || []
-                                    )}
-                                  >
-                                    {item?.Member?.Phone || 'Chưa xác định'}
-                                  </td>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={checkRowSpan(
-                                      item?.ListOrders || []
-                                    )}
-                                  >
-                                    {PriceHelper.formatVND(item.TongNo)}
-                                  </td>
-                                </Fragment>
-                              )}
-
-                              {debtIndex === 0 && (
-                                <Fragment>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={order?.ListDebt.length}
-                                  >
-                                    #{order.Id}
-                                  </td>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={order?.ListDebt.length}
-                                  >
-                                    {moment(order.CreateDate).format(
-                                      'DD-MM-YYYY'
-                                    )}
-                                  </td>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={order?.ListDebt.length}
-                                  >
-                                    {PriceHelper.formatVND(order.TongNo)}
-                                  </td>
-                                </Fragment>
-                              )}
-
-                              <td>{itemDebt.ProdTitle}</td>
-                              <td>{itemDebt.Qty}</td>
-                              <td>{PriceHelper.formatVND(itemDebt.ToPay)}</td>
-                              <td>{PriceHelper.formatVND(itemDebt.ConNo)}</td>
-                            </tr>
-                          ))}
-                      </Fragment>
-                    ))}
-                </Fragment>
-              ))}
-          </ChildrenTables>
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowRenderer={rowRenderer}
+          />
         </div>
         <ModalViewMobile
           show={isModalMobile}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import FilterList from 'src/components/Filter/FilterList'
 import { useSelector } from 'react-redux'
@@ -7,8 +7,10 @@ import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import Text from 'react-texty'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -22,7 +24,7 @@ function PriceList(props) {
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     Key: '',
     CategoriesId: '',
     BrandId: '',
@@ -33,6 +35,7 @@ function PriceList(props) {
   const [ListData, setListData] = useState([])
   const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
@@ -76,18 +79,20 @@ function PriceList(props) {
     isLoading && setLoading(true)
     const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListPriceSell(newFilters)
+      .getListPriceSell(BrowserHelpers.getRequestParams(newFilters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total } = {
+          const { Items, Total, PCount } = {
             Items: data.result?.Items || [],
-            Total: data.result?.Total || 0
+            Total: data.result?.Total || 0,
+            PCount: data?.result?.PCount || 0
           }
           setListData(Items)
           setLoading(false)
+          setPageCount(PCount)
           setPageTotal(Total)
           isFilter && setIsFilter(false)
           callback && callback()
@@ -116,22 +121,167 @@ function PriceList(props) {
     getListPriceSell()
   }
 
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'ID',
+        title: 'ID',
+        dataKey: 'ID',
+        cellRenderer: ({ rowData }) => <div>#{rowData.ID}</div>,
+        width: 100,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Ten',
+        title: 'Tên mặt hàng',
+        dataKey: 'Ten',
+        width: 250,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MaSP',
+        title: 'Mã',
+        dataKey: 'MaSP',
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'NguyenGia',
+        title: 'Nguyên giá',
+        dataKey: 'NguyenGia',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NguyenGia),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'GiaKM',
+        title: 'Giá hiện tại',
+        dataKey: 'GiaKM',
+        cellRenderer: ({ rowData }) =>
+          rowData?.GiaKM > 0
+            ? PriceHelper.formatVND(rowData?.GiaKM)
+            : PriceHelper.formatVND(rowData?.NguyenGia),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'TonKho',
+        title: 'Tồn kho',
+        dataKey: 'TonKho',
+        cellRenderer: ({ rowData }) =>
+          rowData?.TonKho || rowData?.TonKho === 0
+            ? `${PriceHelper.formatVND(rowData?.TonKho)} ${
+                rowData?.DonVi || ''
+              }`
+            : '',
+        width: 100,
+        sortable: false
+      },
+      {
+        key: 'DanhMuc',
+        title: 'Danh mục',
+        dataKey: 'DanhMuc',
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'NhanHang',
+        title: 'Nhãn hàng',
+        dataKey: 'NhanHang',
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'hoa_hong_sale',
+        title: 'Hoa hồng Sale',
+        dataKey: 'hoa_hong_sale',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.hoa_hong_sale),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'hoa_hong_ktv',
+        title: 'Hoa hồng KTV',
+        dataKey: 'hoa_hong_ktv',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.hoa_hong_ktv),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'luong_ca',
+        title: 'Lương ca',
+        dataKey: 'luong_ca',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.luong_ca_dv_goc &&
+              rowData.luong_ca_dv_goc.map((o, index) => (
+                <span key={index}>
+                  {o.RootTitle} -{' '}
+                  {o.Luong_ca_cap_bac && o.Luong_ca_cap_bac.length > 0 ? (
+                    <div>
+                      {o.Luong_ca_cap_bac.map((x, idx) => (
+                        <code className="fw-600 font-size-md px-2" key={idx}>
+                          {x.LevelName} {PriceHelper.formatVND(x?.Salary)}
+                        </code>
+                      )).reduce((prev, curr) => [prev, ', ', curr])}
+                    </div>
+                  ) : (
+                    <code className="fw-600 font-size-md px-2px">
+                      Lương ca {PriceHelper.formatVND(o?.Luong_ca)}
+                    </code>
+                  )}
+                </span>
+              ))}
+          </Text>
+        ),
+        width: 300,
+        sortable: false,
+        className: 'flex-fill'
+      }
+    ],
+    [filters]
+  )
+
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListPriceSell(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/ban-hang/gia-ban-san-pham-dich-vu',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListPriceSell(
+          BrowserHelpers.getRequestParams(GeneralNewFilter(filters), {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/ban-hang/gia-ban-san-pham-dich-vu'
+    })
   }
 
   const OpenModalMobile = value => {
@@ -181,233 +331,17 @@ function PriceList(props) {
           <div className="fw-500 font-size-lg">Danh sách sản phẩm, dịch vụ</div>
         </div>
         <div className="p-20px">
-          <BaseTablesCustom
+          <ReactTableV7
+            rowKey="ID"
+            filters={filters}
+            columns={columns}
             data={ListData}
-            textDataNull="Không có dữ liệu."
-            optionsMoible={{
-              itemShow: 2,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  dataField: 'FullName',
-                  text: 'Tên mặt hàng',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.Ten || 'Không có tên',
-                  attrs: { 'data-title': 'Tên mặt hàng' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                },
-                {
-                  dataField: 'Mã',
-                  text: 'Mã',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.MaSP || 'Không có mã',
-                  attrs: { 'data-title': 'Mã' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                }
-              ]
-            }}
-            options={{
-              custom: true,
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              alwaysShowAllBtns: true,
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              },
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              }
-            }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
-                },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'ID',
-                text: 'ID',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => <div>#{row.ID}</div>,
-                attrs: { 'data-title': 'ID' },
-                headerStyle: () => {
-                  return { minWidth: '80px', width: '80px' }
-                }
-              },
-              {
-                dataField: 'Ten',
-                text: 'Tên mặt hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.Ten || 'Chưa có',
-                attrs: { 'data-title': 'Tên mặt hàng' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'MaSP',
-                text: 'Mã',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.MaSP,
-                attrs: { 'data-title': 'Mã' },
-                headerStyle: () => {
-                  return { minWidth: '120px', width: '120px' }
-                }
-              },
-              {
-                dataField: 'NguyenGia',
-                text: 'Nguyên giá',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row?.NguyenGia),
-                attrs: { 'data-title': 'Nguyên giá' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'GiaKM',
-                text: 'Giá hiện tại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.GiaKM > 0
-                    ? PriceHelper.formatVND(row?.GiaKM)
-                    : PriceHelper.formatVND(row?.NguyenGia),
-                attrs: { 'data-title': 'Giá hiện tại' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'TonKho',
-                text: 'Tồn kho',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.TonKho || row?.TonKho === 0
-                    ? `${PriceHelper.formatVND(row?.TonKho)} ${
-                        row?.DonVi || ''
-                      }`
-                    : '',
-                attrs: { 'data-title': 'Tồn kho' },
-                headerStyle: () => {
-                  return { minWidth: '100px', width: '100px' }
-                }
-              },
-              {
-                dataField: 'DanhMuc',
-                text: 'Danh mục',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.DanhMuc,
-                attrs: { 'data-title': 'Danh mục' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'NhanHang',
-                text: 'Nhãn hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.NhanHang,
-                attrs: { 'data-title': 'Nhãn hàng' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'hoa_hong_sale',
-                text: 'Hoa hồng Sale',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVND(row?.hoa_hong_sale),
-                attrs: { 'data-title': 'Hoa hồng Sale' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'hoa_hong_ktv',
-                text: 'Hoa hồng KTV',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVND(row?.hoa_hong_ktv),
-                attrs: { 'data-title': 'Hoa hồng KTV' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'luong_ca',
-                text: 'Lương ca',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => (
-                  <div>
-                    {row.luong_ca_dv_goc &&
-                      row.luong_ca_dv_goc.map((o, index) => (
-                        <div key={index}>
-                          {o.RootTitle} -{' '}
-                          {o.Luong_ca_cap_bac &&
-                          o.Luong_ca_cap_bac.length > 0 ? (
-                            <div>
-                              {o.Luong_ca_cap_bac.map((x, idx) => (
-                                <code
-                                  className="fw-600 font-size-md px-2"
-                                  key={idx}
-                                >
-                                  {x.LevelName}{' '}
-                                  {PriceHelper.formatVND(x?.Salary)}
-                                </code>
-                              )).reduce((prev, curr) => [prev, ', ', curr])}
-                            </div>
-                          ) : (
-                            <code className="fw-600 font-size-md px-2px">
-                              Lương ca {PriceHelper.formatVND(o?.Luong_ca)}
-                            </code>
-                          )}
-                        </div>
-                      ))}
-                  </div>
-                ),
-                attrs: { 'data-title': 'Lương ca' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              }
-            ]}
             loading={loading}
-            keyField="ID"
-            className="table-responsive-attr"
-            classes="table-bordered"
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
           />
         </div>
         <ModalViewMobile

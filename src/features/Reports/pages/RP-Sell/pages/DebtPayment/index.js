@@ -1,21 +1,20 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import FilterList from 'src/components/Filter/FilterList'
 import { PriceHelper } from 'src/helpers/PriceHelper'
-import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import ModalViewMobile from './ModalViewMobile'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { uuidv4 } from '@nikitababko/id-generator'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import Text from 'react-texty'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 moment.locale('vi')
 
@@ -33,18 +32,23 @@ const convertArray = arrays => {
             ...item,
             OrderItemsId: item.Id,
             ...order,
+            TTToanNoOrder: order.TTToanNo,
             ...customer,
+            TTToanNoCustomer: customer.TTToanNo,
             ...obj,
             rowIndex: index,
             Ids: uuidv4()
           }
-          if (k !== 0) {
+          if (x === 0 && o === 0 && k === 0) {
+          } else {
             delete newObj.ListCustomer
           }
-          if (x !== 0) {
+          if (o === 0 && k === 0) {
+          } else {
             delete newObj.ListOrders
           }
-          if (o !== 0) {
+          if (k === 0) {
+          } else {
             delete newObj.OrderItems
           }
           newArray.push(newObj)
@@ -65,7 +69,7 @@ function DebtPayment(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     MemberID: ''
   })
   const [ListData, setListData] = useState([])
@@ -135,21 +139,17 @@ function DebtPayment(props) {
   }
 
   const onExport = () => {
-    // setLoadingExport(true)
-    // const newFilters = GeneralNewFilter(
-    //   ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    // )
-    // reportsApi
-    //   .getListDebtPayment(newFilters)
-    //   .then(({ data }) => {
-    //     window?.EzsExportExcel &&
-    //       window?.EzsExportExcel({
-    //         Url: '/ban-hang/thanh-toan-tra-no',
-    //         Data: data,
-    //         hideLoading: () => setLoadingExport(false)
-    //       })
-    //   })
-    //   .catch(error => console.log(error))
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListDebtPayment(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
+          })
+        ),
+      UrlName: '/ban-hang/thanh-toan-tra-no'
+    })
   }
 
   const onPagesChange = ({ Pi, Ps }) => {
@@ -177,7 +177,7 @@ function DebtPayment(props) {
         dataKey: 'MemberName',
         width: 250,
         sortable: false,
-        rowSpan: ({ rowData }) => rowData.OrderItems && rowData.OrderItems.length > 0 ? rowData.OrderItems.length : 1,
+        rowSpan: ({ rowData }) => AmountOrderItems(rowData.ListOrders),
         mobileOptions: {
           visible: true
         }
@@ -188,69 +188,134 @@ function DebtPayment(props) {
         dataKey: 'MemberPhone',
         width: 180,
         sortable: false,
-        rowSpan: ({ rowData }) => rowData.OrderItems && rowData.OrderItems.length > 0 ? rowData.OrderItems.length : 1,
+        rowSpan: ({ rowData }) => AmountOrderItems(rowData.ListOrders),
         mobileOptions: {
           visible: true
         }
       },
-      // {
-      //   text: 'Tổng thanh toán nợ',
-      //   headerStyle: {
-      //     minWidth: '180px',
-      //     width: '180px'
-      //   }
-      // },
-      // {
-      //   text: 'Đơn hàng',
-      //   headerStyle: {
-      //     minWidth: '150px',
-      //     width: '150px'
-      //   }
-      // },
-      // {
-      //   text: 'Thanh toán nợ',
-      //   headerStyle: {
-      //     minWidth: '180px',
-      //     width: '180px'
-      //   }
-      // },
-      // {
-      //   text: 'Chi tiết',
-      //   headerStyle: {
-      //     minWidth: '120px',
-      //     width: '120px'
-      //   }
-      // },
-      // {
-      //   text: 'Thanh toán',
-      //   headerStyle: {
-      //     minWidth: '150px',
-      //     width: '150px'
-      //   }
-      // },
-      // {
-      //   text: 'Ví',
-      //   headerStyle: {
-      //     minWidth: '120px',
-      //     width: '120px'
-      //   }
-      // },
-      // {
-      //   text: 'Thẻ tiền',
-      //   headerStyle: {
-      //     minWidth: '120px',
-      //     width: '120px'
-      //   }
-      // },
-      // {
-      //   text: 'Sản phẩm',
-      //   headerStyle: {
-      //     minWidth: '220px',
-      //     width: '220px'
-      //   }
-      // }
+      {
+        key: 'TTToanNoCustomer',
+        title: 'Tổng thanh toán nợ',
+        dataKey: 'TTToanNoCustomer',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.TTToanNoCustomer),
+        rowSpan: ({ rowData }) => AmountOrderItems(rowData.ListOrders),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Id',
+        title: 'ID Đơn hàng',
+        dataKey: 'Id',
+        cellRenderer: ({ rowData }) => `${rowData.Id}`,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderItems && rowData.OrderItems.length > 0
+            ? rowData.OrderItems.length
+            : 1,
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'TTToanNoOrder',
+        title: 'Thanh toán nợ',
+        dataKey: 'TTToanNoOrder',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.TTToanNoOrder),
+        rowSpan: ({ rowData }) =>
+          rowData.OrderItems && rowData.OrderItems.length > 0
+            ? rowData.OrderItems.length
+            : 1,
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'ToPay',
+        title: 'Chi tiết',
+        dataKey: 'ToPay',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ToPay),
+        width: 120,
+        sortable: false
+      },
+      {
+        key: 'ToPay',
+        title: 'Thanh toán',
+        dataKey: 'ToPay',
+        cellRenderer: ({ rowData }) => (
+          <OverlayTrigger
+            rootClose
+            trigger="click"
+            key="top"
+            placement="top"
+            overlay={
+              <Popover id={`popover-positioned-top`}>
+                <Popover.Header
+                  className="py-10px text-uppercase fw-600"
+                  as="h3"
+                >
+                  Chi tiết thanh toán #{rowData.OrderItemsId}
+                </Popover.Header>
+                <Popover.Body className="p-0">
+                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <span>Tiền mặt</span>
+                    <span>{PriceHelper.formatVND(rowData.DaThToan_TM)}</span>
+                  </div>
+                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <span>Chuyển khoản</span>
+                    <span>{PriceHelper.formatVND(rowData.DaThToan_CK)}</span>
+                  </div>
+                  <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                    <span>Quẹt thẻ</span>
+                    <span>{PriceHelper.formatVND(rowData.DaThToan_QT)}</span>
+                  </div>
+                </Popover.Body>
+              </Popover>
+            }
+          >
+            <div className="d-flex justify-content-between align-items-center w-100">
+              {PriceHelper.formatVND(rowData.DaThToan)}
+              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+            </div>
+          </OverlayTrigger>
+        ),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'DaThToan_Vi',
+        title: 'Ví',
+        dataKey: 'DaThToan_Vi',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.DaThToan_Vi),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'DaThToan_ThTien',
+        title: 'Thẻ tiền',
+        dataKey: 'DaThToan_ThTien',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.DaThToan_ThTien),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Prod',
+        title: 'Đơn hàng trả lại',
+        dataKey: 'Prod',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.lines.map(line => line.ProdTitle).join(', ')}
+          </Text>
+        ),
+        width: 350,
+        sortable: false,
+        className: 'flex-fill'
+      }
     ],
-    [filters]
+    []
   )
 
   const onRefresh = () => {
@@ -286,23 +351,23 @@ function DebtPayment(props) {
     }
     return totalArray > 0 ? totalArray : 1
   }
-  const AmountOrderItem = member => {
+  const AmountOrderItems = ListOrders => {
     var totalArray = 0
-    if (!member) return totalArray
-    for (let keyOrders of member.ListOrders) {
+    if (!ListOrders) return totalArray
+    for (let keyOrders of ListOrders) {
       totalArray += keyOrders?.OrderItems?.length || 0
     }
     return totalArray > 0 ? totalArray : 1
   }
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    // if (isScrolling)
-    //   return (
-    //     <div className="pl-15px d-flex align-items">
-    //       <div className="spinner spinner-primary w-40px"></div> Đang tải ...
-    //     </div>
-    //   )
-    const indexList = [0, 1, 2]
+    if (isScrolling)
+      return (
+        <div className="pl-15px d-flex align-items">
+          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+        </div>
+      )
+    const indexList = [0, 1, 2, 3, 4, 5]
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
       if (rowSpan > 1) {
@@ -379,262 +444,6 @@ function DebtPayment(props) {
             }}
             rowRenderer={rowRenderer}
           />
-          <ChildrenTables
-            data={ListData}
-            columns={[
-              {
-                text: 'Ngày',
-                headerStyle: {
-                  minWidth: '160px',
-                  width: '160px'
-                },
-                attrs: { 'data-title': 'Ngày' }
-              },
-              {
-                text: 'Khách hàng',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                }
-              },
-              {
-                text: 'Số điện thoại',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Tổng thanh toán nợ',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Đơn hàng',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                }
-              },
-              {
-                text: 'Thanh toán nợ',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Chi tiết',
-                headerStyle: {
-                  minWidth: '120px',
-                  width: '120px'
-                }
-              },
-              {
-                text: 'Thanh toán',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                }
-              },
-              {
-                text: 'Ví',
-                headerStyle: {
-                  minWidth: '120px',
-                  width: '120px'
-                }
-              },
-              {
-                text: 'Thẻ tiền',
-                headerStyle: {
-                  minWidth: '120px',
-                  width: '120px'
-                }
-              },
-              {
-                text: 'Sản phẩm',
-                headerStyle: {
-                  minWidth: '220px',
-                  width: '220px'
-                }
-              }
-            ]}
-            options={{
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              sizePerPageList: [10, 25, 30, 50],
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              },
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              }
-            }}
-            optionsMoible={{
-              itemShow: 0,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  attrs: { 'data-title': 'Ngày' },
-                  formatter: row => moment(row.CreateDate).format('DD-MM-YYYY')
-                },
-                {
-                  attrs: { 'data-title': 'Tổng khách hàng' },
-                  formatter: row => row.ListCustomer.length
-                },
-                {
-                  attrs: { 'data-title': 'Tổng thanh toán nợ' },
-                  formatter: row => PriceHelper.formatVND(row.TTToanNo)
-                }
-              ]
-            }}
-            loading={loading}
-          >
-            {ListData &&
-              ListData.map((item, itemIndex) => (
-                <Fragment key={itemIndex}>
-                  {item.ListCustomer.map((member, memberIndex) => (
-                    <Fragment key={memberIndex}>
-                      {member.ListOrders.map((orders, ordersIndex) => (
-                        <Fragment key={ordersIndex}>
-                          {orders.OrderItems.map(
-                            (orderItem, orderItemIndex) => (
-                              <tr key={orderItemIndex}>
-                                {memberIndex === 0 &&
-                                  ordersIndex === 0 &&
-                                  orderItemIndex === 0 && (
-                                    <td
-                                      className="vertical-align-middle"
-                                      rowSpan={AmountMember(item.ListCustomer)}
-                                    >
-                                      {moment(item.CreateDate).format(
-                                        'DD-MM-YYYY'
-                                      )}
-                                    </td>
-                                  )}
-                                {ordersIndex === 0 && orderItemIndex === 0 && (
-                                  <Fragment>
-                                    <td
-                                      className="vertical-align-middle"
-                                      rowSpan={AmountOrderItem(member)}
-                                    >
-                                      {member.MemberName}
-                                    </td>
-                                    <td
-                                      className="vertical-align-middle"
-                                      rowSpan={AmountOrderItem(member)}
-                                    >
-                                      {member.MemberPhone}
-                                    </td>
-                                    <td
-                                      className="vertical-align-middle"
-                                      rowSpan={AmountOrderItem(member)}
-                                    >
-                                      {PriceHelper.formatVND(member.TTToanNo)}
-                                    </td>
-                                  </Fragment>
-                                )}
-                                {orders.OrderItems.length > 0 &&
-                                  orderItemIndex === 0 && (
-                                    <Fragment>
-                                      <td
-                                        className="vertical-align-middle"
-                                        rowSpan={orders.OrderItems.length}
-                                      >
-                                        #{orders.Id}
-                                      </td>
-                                      <td
-                                        className="vertical-align-middle"
-                                        rowSpan={orders.OrderItems.length}
-                                      >
-                                        {PriceHelper.formatVND(orders.TTToanNo)}
-                                      </td>
-                                    </Fragment>
-                                  )}
-                                <td>
-                                  {PriceHelper.formatVND(orderItem.ToPay)}
-                                </td>
-                                <td>
-                                  <OverlayTrigger
-                                    rootClose
-                                    trigger="click"
-                                    key="top"
-                                    placement="top"
-                                    overlay={
-                                      <Popover id={`popover-positioned-top`}>
-                                        <Popover.Header
-                                          className="py-10px text-uppercase fw-600"
-                                          as="h3"
-                                        >
-                                          Chi tiết thanh toán #{orderItem.Id}
-                                        </Popover.Header>
-                                        <Popover.Body className="p-0">
-                                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                                            <span>Tiền mặt</span>
-                                            <span>
-                                              {PriceHelper.formatVND(
-                                                orderItem.DaThToan_TM
-                                              )}
-                                            </span>
-                                          </div>
-                                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                                            <span>Chuyển khoản</span>
-                                            <span>
-                                              {PriceHelper.formatVND(
-                                                orderItem.DaThToan_CK
-                                              )}
-                                            </span>
-                                          </div>
-                                          <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                                            <span>Quẹt thẻ</span>
-                                            <span>
-                                              {PriceHelper.formatVND(
-                                                orderItem.DaThToan_QT
-                                              )}
-                                            </span>
-                                          </div>
-                                        </Popover.Body>
-                                      </Popover>
-                                    }
-                                  >
-                                    <div className="d-flex justify-content-between align-items-center">
-                                      {PriceHelper.formatVND(
-                                        orderItem.DaThToan
-                                      )}
-                                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
-                                    </div>
-                                  </OverlayTrigger>
-                                </td>
-                                <td>
-                                  {PriceHelper.formatVND(orderItem.DaThToan_Vi)}
-                                </td>
-                                <td>
-                                  {PriceHelper.formatVND(
-                                    orderItem.DaThToan_ThTien
-                                  )}
-                                </td>
-                                <td>
-                                  {orderItem.lines
-                                    .map(line => line.ProdTitle)
-                                    .join(', ')}
-                                </td>
-                              </tr>
-                            )
-                          )}
-                        </Fragment>
-                      ))}
-                    </Fragment>
-                  ))}
-                </Fragment>
-              ))}
-          </ChildrenTables>
         </div>
         <ModalViewMobile
           show={isModalMobile}

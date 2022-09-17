@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import ModalViewMobile from './ModalViewMobile'
@@ -28,7 +27,7 @@ function Returns(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10 // Số lượng item
+    Ps: 15 // Số lượng item
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -57,18 +56,6 @@ function Returns(props) {
     getListReturns()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
-
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null
-    }
-  }
 
   const getListReturns = (isLoading = true, callback) => {
     isLoading && setLoading(true)
@@ -205,7 +192,8 @@ function Returns(props) {
           }${rowData.Svr ? ',' : ''}${rowData.Svr || ''}`}</Text>
         ),
         width: 300,
-        sortable: false
+        sortable: false,
+        className: "flex-fill"
       }
     ],
     [filters]

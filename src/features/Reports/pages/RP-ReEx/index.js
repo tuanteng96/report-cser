@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from '../../components/IconMenuMobile'
 import _ from 'lodash'
-import ListReEx from './ListReEx'
 import FilterList from 'src/components/Filter/FilterList'
 import Chart2Column from '../../components/Chart2Column'
 import reportsApi from 'src/api/reports.api'
@@ -10,10 +9,15 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import { AssetsHelpers } from 'src/helpers/AssetsHelpers'
 import LoadingSkeleton from './LoadingSkeleton'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { JsonFilter } from 'src/Json/JsonFilter'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import ModalViewMobile from './ModalViewMobile'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
 
 const optionsObj = {
@@ -56,7 +60,7 @@ function RPReEx(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     PaymentMethods: '', // TM, CK, QT
     TypeTC: '', // Thu hay chi
     TagsTC: '' // ID nhân viên
@@ -66,9 +70,25 @@ function RPReEx(props) {
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [loadingList, setLoadingList] = useState(false)
-  const [ListData, setListData] = useState(null)
   const [dataChart, setDataChart] = useState(objData)
   const [OverviewData, setOverviewData] = useState(null)
+
+  //
+  const [Data, setData] = useState([])
+  const [PageTotal, setPageTotal] = useState(0)
+  const [Total, setTotal] = useState({
+    TONG_CHI: 0,
+    CHI_CKL: 0,
+    CHI_QT: 0,
+    CHI_TM: 0,
+    TONG_THU: 0,
+    THU_TM: 0,
+    THU_QT: 0,
+    THU_CK: 0
+  })
+  const [pageCount, setPageCount] = useState(0)
+  const [initialValuesMobile, setInitialValuesMobile] = useState(null)
+  const [isModalMobile, setIsModalMobile] = useState(false)
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -85,7 +105,7 @@ function RPReEx(props) {
   useEffect(() => {
     getOverviewReEx()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
+  }, [filters.StockID, filters.DateStart, filters.DateEnd])
 
   const getOverviewReEx = (isLoading = true, callback) => {
     isLoading && setLoading(true)
@@ -137,46 +157,55 @@ function RPReEx(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      PaymentMethods:
-        filters.PaymentMethods && filters.PaymentMethods.length > 0
-          ? filters.PaymentMethods.map(item => item.value).join(',')
-          : '',
-      TagsTC:
-        filters.TagsTC && filters.TagsTC.length > 0
-          ? filters.TagsTC.map(item => item.value).join(',')
-          : ''
-    }
-  }
-
   const getListReEx = (isLoading = true, callback) => {
     isLoading && setLoadingList(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListReEx(newFilters)
+      .getListReEx(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
-        setListData(data.result)
+        const {
+          Items,
+          PCount,
+          Total,
+          TONG_CHI,
+          CHI_CK,
+          CHI_QT,
+          CHI_TM,
+          TONG_THU,
+          THU_TM,
+          THU_QT,
+          THU_CK
+        } = {
+          Items: data?.result?.Items || [],
+          PCount: data?.result?.PCount || 0,
+          TotalOnline: data?.result?.TotalOnline || 0,
+          Total: data?.result?.Total || 0,
+          TONG_CHI: data?.result?.TONG_CHI || 0,
+          CHI_CK: data?.result?.CHI_CK || 0,
+          CHI_QT: data?.result?.CHI_QT || 0,
+          CHI_TM: data?.result?.CHI_TM || 0,
+          TONG_THU: data?.result?.TONG_THU || 0,
+          THU_TM: data?.result?.THU_TM || 0,
+          THU_QT: data?.result?.THU_QT || 0,
+          THU_CK: data?.result?.THU_CK || 0
+        }
+        setData(Items)
+        setTotal({
+          TONG_CHI,
+          CHI_CK,
+          CHI_QT,
+          CHI_TM,
+          TONG_THU,
+          THU_TM,
+          THU_QT,
+          THU_CK
+        })
+        setPageTotal(Total)
+        setPageCount(PCount)
         setLoadingList(false)
         !loading && isFilter && setIsFilter(false)
         callback && callback()
       })
       .catch(error => console.log(error))
-  }
-
-  const onSizePerPageChange = PsNew => {
-    setFilters({ ...filters, Ps: PsNew, Pi: 1 })
-  }
-
-  const onPageChange = PiNew => {
-    setFilters({ ...filters, Pi: PiNew })
   }
 
   const onOpenFilter = () => {
@@ -195,27 +224,158 @@ function RPReEx(props) {
     }
   }
 
-  const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, ListData.Total)
-    )
-    reportsApi
-      .getListReEx(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/thu-chi-va-so-quy',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
-          })
-      })
-      .catch(error => console.log(error))
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
   }
+
+  const onExport = () => {
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListReEx(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
+          })
+        ),
+      UrlName: '/thu-chi-va-so-quy'
+    })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'TM',
+        title: 'Tiền mặt',
+        dataKey: 'TM',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVNDPositive(rowData.TM),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CK',
+        title: 'Chuyển khoản',
+        dataKey: 'CK',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVNDPositive(rowData.CK),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'QT',
+        title: 'Quẹt thẻ',
+        dataKey: 'QT',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVNDPositive(rowData.QT),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Tag',
+        title: 'Tag',
+        dataKey: 'Tag',
+        cellRenderer: ({ rowData }) => `${TransferTags(rowData.Tag)}`,
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'Content',
+        title: 'Nội dung',
+        dataKey: 'Content',
+        width: 350,
+        sortable: false
+      },
+      {
+        key: 'StockName',
+        title: 'Cơ sở',
+        dataKey: 'StockName',
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'Member.FullName',
+        title: 'Khách hàng',
+        dataKey: 'Member.FullName',
+        width: 250,
+        sortable: false
+      },
+      {
+        key: 'Staff.FullName',
+        title: 'Nhân viên tạo',
+        dataKey: 'Staff.FullName',
+        width: 250,
+        sortable: false
+      }
+    ],
+    [filters]
+  )
 
   const onRefresh = () => {
     getOverviewReEx()
     getListReEx()
+  }
+
+  const OpenModalMobile = value => {
+    setInitialValuesMobile(value)
+    setIsModalMobile(true)
+  }
+
+  const HideModalMobile = () => {
+    setInitialValuesMobile(null)
+    setIsModalMobile(false)
+  }
+
+  const rowClassName = ({ rowData, rowIndex, cells, columns }) => {
+    if (!rowData.Tag) return ''
+    const index = JsonFilter.TagsTCList.findIndex(
+      item => item.value === rowData.Tag
+    )
+    if (index > -1 && JsonFilter.TagsTCList[index].type === 1) {
+      return 'bg-danger-o-90'
+    }
+  }
+
+  const TransferTags = value => {
+    const index = JsonFilter.TagsTCList.findIndex(item => item.value === value)
+    if (index > -1) {
+      return JsonFilter.TagsTCList[index].label
+    }
+    return value
   }
 
   return (
@@ -326,13 +486,126 @@ function RPReEx(props) {
           </div>
         </div>
       </div>
-      <ListReEx
-        filters={filters}
-        onSizePerPageChange={onSizePerPageChange}
-        onPageChange={onPageChange}
-        loading={loadingList}
-        DataResult={ListData}
-      />
+      <div className="bg-white rounded mt-25px">
+        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between flex-column flex-md-row">
+          <div className="fw-500 font-size-lg">Danh sách thu chi & sổ quỹ</div>
+          <div className="d-flex">
+            <div className="fw-500 d-flex align-items-center">
+              Tổng thu
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Header
+                      className="py-10px text-uppercase fw-600"
+                      as="h3"
+                    >
+                      Chi tiết tổng thu
+                    </Popover.Header>
+                    <Popover.Body className="p-0">
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Tiền mặt</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(Total.THU_TM)}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Chuyển khoản</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(Total.THU_CK)}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                        <span>Quẹt thẻ</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(Total.THU_QT)}
+                        </span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {PriceHelper.formatVNDPositive(Total.TONG_THU)}
+                  </span>
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                </div>
+              </OverlayTrigger>
+            </div>
+            <div className="fw-500 d-flex align-items-center ml-25px">
+              Tổng chi
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Header
+                      className="py-10px text-uppercase fw-600"
+                      as="h3"
+                    >
+                      Chi tiết tổng chi
+                    </Popover.Header>
+                    <Popover.Body className="p-0">
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Tiền mặt</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(Total.CHI_TM)}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Chuyển khoản</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(Total.CHI_CK)}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                        <span>Quẹt thẻ</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(Total.CHI_QT)}
+                        </span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                    {PriceHelper.formatVNDPositive(Total.TONG_CHI)}
+                  </span>
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-danger ml-5px"></i>
+                </div>
+              </OverlayTrigger>
+            </div>
+          </div>
+        </div>
+        <div className="p-20px">
+          <ReactTableV7
+            rowKey="Id"
+            filters={filters}
+            columns={columns}
+            data={Data}
+            loading={loadingList}
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowClassName={rowClassName}
+          />
+        </div>
+        <ModalViewMobile
+          show={isModalMobile}
+          onHide={HideModalMobile}
+          data={initialValuesMobile}
+          TransferTags={TransferTags}
+        />
+      </div>
     </div>
   )
 }

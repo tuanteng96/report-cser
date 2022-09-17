@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import FilterList from 'src/components/Filter/FilterList'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 moment.locale('vi')
 
 const ten_nghiep_vu2 = true
@@ -26,7 +26,7 @@ function SaleReduced(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     MemberID: '',
     ten_nghiep_vu: ''
   })
@@ -35,6 +35,7 @@ function SaleReduced(props) {
   const [ListData, setListData] = useState([])
   const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [TotalSaleRuduced, setTotalSaleRuduced] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -57,37 +58,24 @@ function SaleReduced(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    const newObj = {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      MemberID: filters.MemberID ? filters.MemberID?.value : '',
-      ten_nghiep_vu: filters.ten_nghiep_vu ? filters.ten_nghiep_vu.value : ''
-    }
-    return newObj
-  }
   const getListSaleReduced = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListSaleReduced(newFilters)
+      .getListSaleReduced(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, tong_ds_giam_tru } = {
+          const { Items, Total, PCount, tong_ds_giam_tru } = {
             Items: data.result?.Items || [],
+            PCount: data?.result?.PCount || 0,
             Total: data.result?.Total || 0,
             tong_ds_giam_tru: data.result?.tong_ds_giam_tru || 0
           }
           setListData(Items)
           setTotalSaleRuduced(tong_ds_giam_tru)
+          setPageCount(PCount)
           setLoading(false)
           setPageTotal(Total)
           isFilter && setIsFilter(false)
@@ -117,22 +105,106 @@ function SaleReduced(props) {
     getListSaleReduced()
   }
 
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'StockTitle',
+        title: 'Cơ sở',
+        dataKey: 'StockTitle',
+        width: 200,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberName',
+        title: 'Tên khách hàng',
+        dataKey: 'MemberName',
+        width: 250,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberPhone',
+        title: 'Số điện thoại',
+        dataKey: 'MemberPhone',
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'ProdTitle',
+        title: 'Thẻ dịch vụ',
+        dataKey: 'ProdTitle',
+        width: 300,
+        sortable: false
+      },
+      {
+        key: 'OSUpdate',
+        title: 'Số buổi',
+        dataKey: 'OSUpdate',
+        width: 100,
+        sortable: false
+      },
+      {
+        key: 'OrderToToPayAdj',
+        title: 'Doanh số giảm trừ',
+        dataKey: 'OrderToToPayAdj',
+        cellRenderer: ({ rowData }) =>
+          rowData?.Title === 'Xóa buổi'
+            ? PriceHelper.formatVND(rowData?.GiveMM)
+            : PriceHelper.formatVND(rowData?.OrderToToPayAdj),
+        width: 200,
+        sortable: false,
+        className: 'flex-fill'
+      }
+    ],
+    [filters]
+  )
+
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListSaleReduced(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/ban-hang/doanh-so-giam-tru',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListSaleReduced(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/ban-hang/doanh-so-giam-tru'
+    })
   }
 
   const OpenModalMobile = value => {
@@ -179,7 +251,7 @@ function SaleReduced(props) {
         ten_nghiep_vu2={ten_nghiep_vu2}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">
             Danh sách - Kết thúc thẻ, xóa buổi
           </div>
@@ -191,132 +263,17 @@ function SaleReduced(props) {
           </div>
         </div>
         <div className="p-20px">
-          <BaseTablesCustom
+          <ReactTableV7
+            rowKey="MobilePhone"
+            filters={filters}
+            columns={columns}
             data={ListData}
-            textDataNull="Không có dữ liệu."
-            optionsMoible={{
-              itemShow: 4,
-              CallModal: row => OpenModalMobile(row)
-            }}
-            options={{
-              custom: true,
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              alwaysShowAllBtns: true,
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              },
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              }
-            }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
-                },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'CreateDate',
-                text: 'Ngày',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
-                attrs: { 'data-title': 'Ngày' },
-                headerStyle: () => {
-                  return { minWidth: '180px', width: '180px' }
-                }
-              },
-              {
-                dataField: 'StockTitle',
-                text: 'Cơ sở',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.StockTitle,
-                attrs: { 'data-title': 'Cơ sở' },
-                headerStyle: () => {
-                  return { minWidth: '180px', width: '180px' }
-                }
-              },
-              {
-                dataField: 'MemberName',
-                text: 'Tên khách hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.MemberName,
-                attrs: { 'data-title': 'Tên khách hàng' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'MemberPhone',
-                text: 'Số điện thoại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.MemberPhone,
-                attrs: { 'data-title': 'Số điện thoại' },
-                headerStyle: () => {
-                  return { minWidth: '180px', width: '180px' }
-                }
-              },
-              {
-                dataField: 'ProdTitle',
-                text: 'Thẻ dịch vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.ProdTitle,
-                attrs: { 'data-title': 'Thẻ dịch vụ' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'OSUpdate',
-                text: 'Số buổi',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.OSUpdate,
-                attrs: { 'data-title': 'Số buổi' },
-                headerStyle: () => {
-                  return { minWidth: '100px', width: '100px' }
-                }
-              },
-              {
-                dataField: 'DS',
-                text: 'Doanh số giảm trừ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.Title === 'Xóa buổi'
-                    ? PriceHelper.formatVND(row?.GiveMM)
-                    : PriceHelper.formatVND(row?.OrderToToPayAdj),
-                attrs: { 'data-title': 'Doanh số giảm trừ' },
-                headerStyle: () => {
-                  return { minWidth: '180px' }
-                }
-              }
-            ]}
             loading={loading}
-            keyField="ID"
-            className="table-responsive-attr"
-            classes="table-bordered"
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
           />
         </div>
         <ModalViewMobile
