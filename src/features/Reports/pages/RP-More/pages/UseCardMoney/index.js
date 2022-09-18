@@ -12,6 +12,7 @@ import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 moment.locale('vi')
 
 function UseCardMoney(props) {
@@ -24,7 +25,7 @@ function UseCardMoney(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     MemberID: '',
     TypeTT: ''
   })
@@ -35,6 +36,7 @@ function UseCardMoney(props) {
   const [ListData, setListData] = useState([])
   const [TotalValue, setTotalValue] = useState(0)
   const [PageTotal, setPageTotal] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
@@ -55,42 +57,26 @@ function UseCardMoney(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : '',
-      TypeTT:
-        filters.TypeTT && filters.TypeTT.length > 0
-          ? filters.TypeTT.map(item => item.value).join(',')
-          : ''
-    }
-  }
-
   const getListCardService = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListTotalUseCard(newFilters)
+      .getListTotalUseCard(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, TongTien } = {
+          const { Items, Total, PCount, TongTien } = {
             Items: data.result?.Items || [],
             Total: data.result?.Total || [],
-            TongTien: data.result?.TongTien || 0
+            TongTien: data.result?.TongTien || 0,
+            PCount: data?.result?.PCount || 0
           }
           setListData(Items)
           setTotalValue(TongTien)
           setLoading(false)
           setPageTotal(Total)
+          setPageCount(PCount)
           isFilter && setIsFilter(false)
           callback && callback()
         }
@@ -119,21 +105,17 @@ function UseCardMoney(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListTotalUseCard(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/khac/bao-cao-su-dung-the-tien',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListTotalUseCard(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/khac/bao-cao-su-dung-the-tien'
+    })
   }
 
   const OpenModalMobile = value => {

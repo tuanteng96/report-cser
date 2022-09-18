@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import FilterList from 'src/components/Filter/FilterList'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ModalViewMobile from './ModalViewMobile'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
 
 function CustomerUseApp(props) {
@@ -25,7 +25,7 @@ function CustomerUseApp(props) {
     DateStart: moment().startOf('month').toDate(),
     DateEnd: moment().endOf('month').toDate(),
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     apptype: '',
     onoff: ''
   })
@@ -38,6 +38,7 @@ function CustomerUseApp(props) {
     Android: 0,
     IOS: 0
   })
+  const [pageCount, setPageCount] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
@@ -59,39 +60,26 @@ function CustomerUseApp(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      apptype: filters.apptype ? filters.apptype.value : '',
-      onoff: filters.onoff ? filters.onoff.value : ''
-    }
-  }
-
   const getListCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListUseCustomerApp(newFilters)
+      .getListUseCustomerApp(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, Android, IOS } = {
+          const { Items, Total, PCount, Android, IOS } = {
             Items: data.result?.Items || [],
             Total: data.result?.Total || 0,
             Android: data.result?.Android || 0,
-            IOS: data.result?.IOS || 0
+            IOS: data.result?.IOS || 0,
+            PCount: data?.result?.PCount || 0
           }
           setListData(Items)
           setLoading(false)
           setPageTotal(Total)
+          setPageCount(PCount)
           setTotal({ Android, IOS })
           isFilter && setIsFilter(false)
           callback && callback()
@@ -121,22 +109,96 @@ function CustomerUseApp(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListUseCustomerApp(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/khach-hang/su-dung-app',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListUseCustomerApp(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/khach-hang/su-dung-app'
+    })
   }
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberID',
+        title: 'ID',
+        dataKey: 'MemberID',
+        cellRenderer: ({ rowData }) => rowData.MemberID ? `#${rowData.MemberID}` : 'Không xác định',
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'FullName',
+        title: 'Tên khách hàng',
+        dataKey: 'FullName',
+        width: 250,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MobilePhone',
+        title: 'Số điện thoại',
+        dataKey: 'MobilePhone',
+        width: 200,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'App',
+        title: 'Thiết bị cài đặt',
+        dataKey: 'App',
+        cellRenderer: ({ rowData }) =>
+          BrowserHelpers.getOperatingSystem(rowData?.App?.app),
+        width: 250,
+        sortable: false
+      },
+      {
+        key: 'Status',
+        title: 'Trạng thái',
+        dataKey: 'Status',
+        cellRenderer: ({ rowData }) =>
+          rowData?.LogoutDate ? (
+            <span className="text-danger fw-700 text-italic">
+              Offline - {moment(rowData?.LogoutDate).format('HH:mm DD-MM-YYYY')}
+            </span>
+          ) : (
+            <span className="text-success fw-700 text-italic">Online</span>
+          ),
+        className: 'flex-fill',
+        width: 250
+      }
+    ],
+    [filters]
+  )
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
@@ -215,141 +277,17 @@ function CustomerUseApp(props) {
           </div>
         </div>
         <div className="p-20px">
-          <BaseTablesCustom
+          <ReactTableV7
+            rowKey="MemberID"
+            filters={filters}
+            columns={columns}
             data={ListData}
-            textDataNull="Không có dữ liệu."
-            optionsMoible={{
-              itemShow: 2,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  dataField: 'FullName',
-                  text: 'Khách hàng',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.FullName || 'Không có tên',
-                  attrs: { 'data-title': 'Khách hàng' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                },
-                {
-                  dataField: 'MobilePhone',
-                  text: 'Số điện thoại',
-                  //headerAlign: "center",
-                  //style: { textAlign: "center" },
-                  formatter: (cell, row) => row.MobilePhone || 'Không có tên',
-                  attrs: { 'data-title': 'Số điện thoại' },
-                  headerStyle: () => {
-                    return { minWidth: '200px', width: '200px' }
-                  }
-                }
-              ]
-            }}
-            options={{
-              custom: true,
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              alwaysShowAllBtns: true,
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              },
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              }
-            }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
-                },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'MemberID',
-                text: 'ID',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => <div>#{row.MemberID}</div>,
-                attrs: { 'data-title': 'ID' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'FullName',
-                text: 'Tên khách hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.FullName || 'Chưa có',
-                attrs: { 'data-title': 'Tên khách hàng' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'Phone',
-                text: 'Số điện thoại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.MobilePhone || 'Chưa có',
-                attrs: { 'data-title': 'Số điện thoại' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'App',
-                text: 'Thiết bị cài đặt',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  BrowserHelpers.getOperatingSystem(row?.App?.app),
-                attrs: { 'data-title': 'Thiết bị cài đặt' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'Status',
-                text: 'Trạng thái',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  row?.LogoutDate ? (
-                    <span className="text-danger fw-700 text-italic">
-                      Offline -{' '}
-                      {moment(row?.LogoutDate).format('HH:mm DD-MM-YYYY')}
-                    </span>
-                  ) : (
-                    <span className="text-success fw-700 text-italic">
-                      Online
-                    </span>
-                  ),
-                attrs: { 'data-title': 'Trạng thái' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              }
-            ]}
             loading={loading}
-            keyField="MemberID"
-            className="table-responsive-attr"
-            classes="table-bordered"
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
           />
         </div>
         <ModalViewMobile

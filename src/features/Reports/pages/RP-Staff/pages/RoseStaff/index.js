@@ -1,19 +1,55 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
-import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import ModalViewMobile from './ModalViewMobile'
 import reportsApi from 'src/api/reports.api'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import { uuidv4 } from '@nikitababko/id-generator'
+import Text from 'react-texty'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+
 moment.locale('vi')
+
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+
+  for (let [index, obj] of arrays.entries()) {
+    for (let [o, Staff] of obj.StaffsList.entries()) {
+      for (let [k, order] of Staff.OrdersList.entries()) {
+        const newObj = {
+          ...order,
+          ...Staff,
+          TongStaff: Staff.Tong,
+          TongThucStaff: Staff.TongThuc,
+          ...obj,
+          rowIndex: index,
+          Ids: uuidv4()
+        }
+        if (o === 0 && k === 0) {
+        } else {
+          delete newObj.StaffsList
+        }
+        if (k === 0) {
+        } else {
+          delete newObj.OrdersList
+        }
+        newArray.push(newObj)
+      }
+    }
+  }
+  return newArray
+}
 
 function RoseStaff(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -25,7 +61,7 @@ function RoseStaff(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     MemberID: '', // ID khách hàng
     StaffID: '', // ID nhân viên
     OrderID: '',
@@ -38,6 +74,8 @@ function RoseStaff(props) {
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [ListData, setListData] = useState([])
+  const [ListDataMobile, setListDataMobile] = useState([])
+  const [pageCount, setPageCount] = useState(0)
   const [TotalHoaHong, setTotalHoaHong] = useState({
     TongHoaHong: 0,
     KhauTru: 0,
@@ -64,44 +102,36 @@ function RoseStaff(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      StaffID: filters.StaffID ? filters.StaffID.value : '',
-      MemberID: filters.MemberID ? filters.MemberID.value : '',
-      CategoriesId: filters.CategoriesId ? filters.CategoriesId.value : '',
-      BrandId: filters.BrandId ? filters.BrandId.value : '',
-      ProductId: filters.ProductId ? filters.ProductId.value : ''
-    }
-  }
-
   const getListRose = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListStaffRose(newFilters)
+      .getListStaffRose(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, TongHoaHong, TongThucHoahong, KhauTru } = {
+          const {
+            Items,
+            Total,
+            PCount,
+            TongHoaHong,
+            TongThucHoahong,
+            KhauTru
+          } = {
             Items: data.result?.Items || [],
             TongHoaHong: data.result?.TongHoaHong || 0,
             KhauTru: data.result?.KhauTru || 0,
             TongThucHoahong: data.result?.TongThucHoahong || 0,
-            Total: data.result?.Total || 0
+            Total: data.result?.Total || 0,
+            PCount: data?.result?.PCount || 0
           }
-          setListData(Items)
+          setListData(convertArray(Items))
+          setListDataMobile(Items)
           setTotalHoaHong({ TongHoaHong, TongThucHoahong, KhauTru })
           setLoading(false)
           setPageTotal(Total)
+          setPageCount(PCount)
           isFilter && setIsFilter(false)
           callback && callback()
         }
@@ -130,21 +160,131 @@ function RoseStaff(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListStaffRose(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/nhan-vien/hoa-hong',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListStaffRose(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/nhan-vien/hoa-hong'
+    })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'CreateDate',
+        title: 'Ngày',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('DD/MM/YYYY'),
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) => AmountMember(rowData.StaffsList),
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'TongThuc',
+        title: 'Tổng hoa hồng',
+        dataKey: 'TongThuc',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.TongThuc),
+        width: 150,
+        sortable: false,
+        rowSpan: ({ rowData }) => AmountMember(rowData.StaffsList),
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Staff.FullName',
+        title: 'Nhân viên',
+        dataKey: 'Staff.FullName',
+        width: 250,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1
+      },
+      {
+        key: 'TongThucStaff',
+        title: 'Hoa hồng',
+        dataKey: 'TongThucStaff',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.TongThucStaff),
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1,
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'ID',
+        title: 'Đơn hàng',
+        dataKey: 'ID',
+        cellRenderer: ({ rowData }) => `#${rowData.ID}`,
+        width: 120,
+        sortable: false,
+        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+      },
+      {
+        key: 'Member.FullName',
+        title: 'Khách hàng',
+        dataKey: 'Member.FullName',
+        width: 250,
+        sortable: false,
+        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+      },
+      {
+        key: 'Member.Phone',
+        title: 'Số điện thoại',
+        dataKey: 'Member.Phone',
+        width: 150,
+        sortable: false,
+        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+      },
+      {
+        key: 'GiaTriThuc',
+        title: 'Hoa hồng',
+        dataKey: 'GiaTriThuc',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTriThuc),
+        width: 150,
+        sortable: false,
+        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+      },
+      {
+        key: 'Lines',
+        title: 'Chi tiết',
+        dataKey: 'Lines',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.Lines.map(
+              line =>
+                `${line.ProdTitle} ( ${
+                  line.GiaTri > 0
+                    ? PriceHelper.formatVND(line.GiaTri)
+                    : `- ${PriceHelper.formatVND(line.KhauTru)}`
+                } )`
+            ).join(', ')}
+          </Text>
+        ),
+        width: 350,
+        sortable: false,
+        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+      }
+    ],
+    [filters]
+  )
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
   }
 
   const OpenModalMobile = value => {
@@ -163,15 +303,32 @@ function RoseStaff(props) {
     for (let keyItem of item) {
       totalArray += keyItem.OrdersList.length
     }
-    return totalArray
+    return totalArray > 0 ? totalArray : 1
   }
 
-  const CustomStyles = item => {
-    const styles = {}
-    if (item.tra_lai_don_hang) {
-      styles.background = '#ffb2c1'
+  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    if (isScrolling)
+      return (
+        <div className="pl-15px d-flex align-items">
+          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+        </div>
+      )
+    const indexList = [0, 1, 2, 3]
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
     }
-    return styles
+    return cells
   }
 
   return (
@@ -255,193 +412,22 @@ function RoseStaff(props) {
           </div>
         </div>
         <div className="p-20px">
-          <ChildrenTables
+          <ReactTableV7
+            rowKey="Ids"
+            overscanRowCount={4}
+            useIsScrolling
+            filters={filters}
+            columns={columns}
             data={ListData}
-            columns={[
-              {
-                text: 'Ngày',
-                headerStyle: {
-                  minWidth: '160px',
-                  width: '160px'
-                },
-                attrs: { 'data-title': 'Ngày' }
-              },
-              {
-                text: 'Tổng hoa hồng',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                }
-              },
-              {
-                text: 'Nhân viên',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                }
-              },
-              {
-                text: 'Hoa hồng',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                }
-              },
-              {
-                text: 'Đơn hàng',
-                headerStyle: {
-                  minWidth: '120px',
-                  width: '120px'
-                }
-              },
-              {
-                text: 'Khách hàng',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                }
-              },
-              {
-                text: 'Số điện thoại',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                }
-              },
-              {
-                text: 'Hoa hồng',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                }
-              },
-              {
-                text: 'Chi tiết',
-                headerStyle: {
-                  minWidth: '350px',
-                  width: '350px'
-                }
-              }
-            ]}
-            options={{
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              sizePerPageList: [10, 25, 30, 50],
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              },
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              }
-            }}
-            optionsMoible={{
-              itemShow: 1,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  attrs: { 'data-title': 'Tổng khách hàng' },
-                  formatter: row => row.StaffsList.length
-                },
-                {
-                  attrs: { 'data-title': 'Tổng hoa hồng' },
-                  formatter: row => PriceHelper.formatVND(row.TongThuc)
-                }
-              ]
-            }}
+            dataMobile={ListDataMobile}
             loading={loading}
-          >
-            {ListData &&
-              ListData.map((item, index) => (
-                <Fragment key={index}>
-                  {item.StaffsList.map((staff, staffIndex) => (
-                    <Fragment key={staffIndex}>
-                      {staff.OrdersList &&
-                        staff.OrdersList.map((order, orderIndex) => (
-                          <Fragment key={orderIndex}>
-                            <tr>
-                              {staffIndex === 0 && orderIndex === 0 && (
-                                <Fragment>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={AmountMember(item.StaffsList)}
-                                  >
-                                    {moment(item.CreateDate).format(
-                                      'DD-MM-YYYY'
-                                    )}
-                                  </td>
-                                  <td
-                                    className="vertical-align-middle fw-600"
-                                    rowSpan={AmountMember(item.StaffsList)}
-                                  >
-                                    {PriceHelper.formatVND(item.TongThuc)}
-                                  </td>
-                                </Fragment>
-                              )}
-                              {orderIndex === 0 && (
-                                <Fragment>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={staff.OrdersList.length}
-                                  >
-                                    {staff.Staff?.FullName || 'Chưa có'}
-                                  </td>
-                                  <td
-                                    className="vertical-align-middle"
-                                    rowSpan={staff.OrdersList.length}
-                                  >
-                                    {PriceHelper.formatVND(staff.TongThuc)}
-                                  </td>
-                                </Fragment>
-                              )}
-                              <td
-                                className="vertical-align-middle"
-                                style={CustomStyles(order)}
-                              >
-                                #{order.ID}
-                              </td>
-                              <td
-                                className="vertical-align-middle"
-                                style={CustomStyles(order)}
-                              >
-                                {order?.Member?.FullName || 'Chưa có'}
-                              </td>
-                              <td
-                                className="vertical-align-middle"
-                                style={CustomStyles(order)}
-                              >
-                                {order?.Member?.Phone || 'Chưa có'}
-                              </td>
-                              <td
-                                className="vertical-align-middle"
-                                style={CustomStyles(order)}
-                              >
-                                {PriceHelper.formatVND(order.GiaTriThuc)}
-                              </td>
-                              <td style={CustomStyles(order)}>
-                                {order.Lines.map(
-                                  line =>
-                                    `${line.ProdTitle} ( ${
-                                      line.GiaTri > 0
-                                        ? PriceHelper.formatVND(line.GiaTri)
-                                        : `- ${PriceHelper.formatVND(
-                                            line.KhauTru
-                                          )}`
-                                    } )`
-                                ).join(', ')}
-                              </td>
-                            </tr>
-                          </Fragment>
-                        ))}
-                    </Fragment>
-                  ))}
-                </Fragment>
-              ))}
-          </ChildrenTables>
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowRenderer={rowRenderer}
+          />
         </div>
         <ModalViewMobile
           show={isModalMobile}

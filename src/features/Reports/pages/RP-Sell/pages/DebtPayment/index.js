@@ -116,8 +116,7 @@ function DebtPayment(props) {
             Total: data.result?.Total || 0,
             PCount: data?.result?.PCount || 0
           }
-          convertArray(Items)
-          setListData(Items)
+          setListData(convertArray(Items))
           setListDataMobile(Items)
           setTongTTNo(TTToanNo)
           setLoading(false)
@@ -240,9 +239,9 @@ function DebtPayment(props) {
         sortable: false
       },
       {
-        key: 'ToPay',
+        key: 'DaThToan',
         title: 'Thanh toán',
-        dataKey: 'ToPay',
+        dataKey: 'DaThToan',
         cellRenderer: ({ rowData }) => (
           <OverlayTrigger
             rootClose
@@ -434,7 +433,7 @@ function DebtPayment(props) {
             useIsScrolling
             filters={filters}
             columns={columns}
-            data={convertArray(ListData)}
+            data={ListData}
             dataMobile={ListDataMobile}
             loading={loading}
             pageCount={pageCount}

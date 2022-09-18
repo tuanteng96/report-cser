@@ -228,7 +228,7 @@ function SalaryServices(props) {
               </Popover>
             }
           >
-            <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex justify-content-between align-items-center w-100">
               {PriceHelper.formatVND(rowData.LuongCa_PPhi.Tong_Luong)}
               <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning pl-5px"></i>
             </div>

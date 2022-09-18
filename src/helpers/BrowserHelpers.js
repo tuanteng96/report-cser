@@ -42,8 +42,23 @@ export const BrowserHelpers = {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null
     }
+    if ('Mon' in filters) {
+      params.Mon = filters.Mon ? moment(filters.Mon).format('MM/yyyy') : null
+    }
     if ('StaffID' in filters) {
       params.StaffID = filters.StaffID ? filters.StaffID.value : ''
+    }
+    if ('CategoriesId' in filters) {
+      params.CategoriesId = filters.CategoriesId ? filters.CategoriesId.value : ''
+    }
+    if ('CategoriesTK' in filters) {
+      params.CategoriesTK = filters.CategoriesTK ? filters.CategoriesTK.value : ''
+    }
+    if ('BrandId' in filters) {
+      params.BrandId = filters.BrandId ? filters.BrandId.value : ''
+    }
+    if ('ProductId' in filters) {
+      params.ProductId = filters.ProductId ? filters.ProductId.value : ''
     }
     if ('GroupCustomerID' in filters) {
       params.GroupCustomerID = filters.GroupCustomerID
@@ -89,6 +104,11 @@ export const BrowserHelpers = {
         ? filters.ProductOrderID.value
         : ''
     }
+    if ('ProdIDs' in filters) {
+      params.ProdIDs = filters.ProdIDs
+        ? filters.ProdIDs.map(item => item.value).join(',')
+        : ''
+    }
     if ('TypeOrder' in filters) {
       params.TypeOrder = filters.TypeOrder
         ? filters.TypeOrder.map(item => item.value).join(',')
@@ -97,6 +117,11 @@ export const BrowserHelpers = {
     if ('StarRating' in filters) {
       params.StarRating = filters.StarRating
         ? filters.StarRating.map(item => item.value).join(',')
+        : ''
+    }
+    if ('TypeTT' in filters) {
+      params.TypeTT = filters.TypeTT
+        ? filters.TypeTT.map(item => item.value).join(',')
         : ''
     }
     if ('ProvincesID' in filters) {
@@ -110,6 +135,12 @@ export const BrowserHelpers = {
     }
     if ('Warranty' in filters) {
       params.Warranty = filters.Warranty ? filters.Warranty.value : ''
+    }
+    if ('onoff' in filters) {
+      params.onoff = filters.onoff ? filters.onoff.value : ''
+    }
+    if ('apptype' in filters) {
+      params.apptype = filters.apptype ? filters.apptype.value : ''
     }
     if ('BirthDateStart' in filters) {
       params.BirthDateStart = filters.BirthDateStart
