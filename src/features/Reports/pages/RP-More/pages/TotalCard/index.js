@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import FilterList from 'src/components/Filter/FilterList'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWindowSize } from 'src/hooks/useWindowSize'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import Text from 'react-texty'
+import clsx from 'clsx'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import clsx from 'clsx'
+
 moment.locale('vi')
 
 function TotalCard(props) {
@@ -27,7 +29,7 @@ function TotalCard(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     MemberID: '',
     MoneyCardID: '',
     StatusTT: ''
@@ -39,6 +41,7 @@ function TotalCard(props) {
   const [ListData, setListData] = useState([])
   const [Total, setTotal] = useState({})
   const [PageTotal, setPageTotal] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
   const { width } = useWindowSize()
@@ -60,39 +63,22 @@ function TotalCard(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : '',
-      MoneyCardID: filters.MoneyCardID ? filters.MoneyCardID.value : '',
-      StatusTT:
-        filters.StatusTT && filters.StatusTT.length > 0
-          ? filters.StatusTT.map(item => item.value).join(',')
-          : ''
-    }
-  }
-
   const getListCardService = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListTotalCard(newFilters)
+      .getListTotalCard(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total } = {
+          const { Items, Total, PCount } = {
             Items: data.result?.Items || [],
-            Total: data.result?.Total || 0
+            Total: data.result?.Total || 0,
+            PCount: data.result?.PCount || 0
           }
           setTotal(data.result)
+          setPageCount(PCount)
           setListData(Items)
           setLoading(false)
           setPageTotal(Total)
@@ -124,21 +110,17 @@ function TotalCard(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListTotalCard(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/khac/bao-cao-the-tien',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListTotalCard(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/khac/bao-cao-the-tien'
+    })
   }
 
   const OpenModalMobile = value => {
@@ -151,12 +133,174 @@ function TotalCard(props) {
     setIsModalMobile(false)
   }
 
-  const rowStyle = (row, rowIndex) => {
-    const styles = {}
-    if (row?.IsExpired) {
-      styles.backgroundColor = 'rgb(255 160 160)'
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Id',
+        title: 'ID',
+        dataKey: 'Id',
+        cellRenderer: ({ rowData }) => <div>#{rowData.Id}</div>,
+        width: 100,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'TenTheTien',
+        title: 'Tên thẻ tiền',
+        dataKey: 'TenTheTien',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            <span className={clsx(rowData?.IsLock && 'text-danger')}>
+              {rowData.TenTheTien} {rowData?.IsLock ? `- Đã khóa` : ''}
+            </span>
+          </Text>
+        ),
+        width: 220,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CreateDate',
+        title: 'Thời gian mua',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 200,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'GiaBan',
+        title: 'Giá bán',
+        dataKey: 'GiaBan',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.GiaBan),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'TongGiaTri',
+        title: 'Tổng giá trị',
+        dataKey: 'TongGiaTri',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.TongGiaTri),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'GiaTriChiTieuSP',
+        title: 'Giá trị chi tiêu SP',
+        dataKey: 'GiaTriChiTieuSP',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTriChiTieuSP),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'GiaTriChiTieuDV',
+        title: 'Giá trị chi tiêu DV',
+        dataKey: 'GiaTriChiTieuDV',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTriChiTieuDV),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'TongChiTieu',
+        title: 'Tổng chi tiêu',
+        dataKey: 'TongChiTieu',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.TongChiTieu),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'DaChiTieuSP',
+        title: 'Đã chi tiêu SP',
+        dataKey: 'DaChiTieuSP',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.DaChiTieuSP),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'DaChiTieuDV',
+        title: 'Đã chi tiêu DV',
+        dataKey: 'DaChiTieuDV',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.DaChiTieuDV),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'TongConLai',
+        title: 'Tổng còn lại',
+        dataKey: 'TongConLai',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.TongConLai),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'ConLaiSP',
+        title: 'Còn lại sản phẩm',
+        dataKey: 'ConLaiSP',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ConLaiSP),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'ConLaiDV',
+        title: 'Còn lại dịch vụ',
+        dataKey: 'ConLaiDV',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ConLaiDV),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Member.FullName',
+        title: 'Tên khách hàng',
+        dataKey: 'Member.FullName',
+        width: 220,
+        sortable: false
+      },
+      {
+        key: 'Member.Phone',
+        title: 'Tên khách hàng',
+        dataKey: 'Member.Phone',
+        width: 180,
+        sortable: false
+      }
+    ],
+    [filters]
+  )
+
+  const rowClassName = ({ rowData }) => {
+    if (rowData?.IsExpired) {
+      return 'bg-danger-o-90'
     }
-    return styles
   }
 
   return (
@@ -271,235 +415,18 @@ function TotalCard(props) {
           )}
         </div>
         <div className="p-20px">
-          <BaseTablesCustom
+          <ReactTableV7
+            rowKey="Id"
+            filters={filters}
+            columns={columns}
             data={ListData}
-            textDataNull="Không có dữ liệu."
-            optionsMoible={{
-              itemShow: 4,
-              CallModal: row => OpenModalMobile(row)
-            }}
-            options={{
-              custom: true,
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              alwaysShowAllBtns: true,
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              },
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              }
-            }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
-                },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'Id',
-                text: 'ID',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => <div>#{row.Id}</div>,
-                attrs: { 'data-title': 'ID' },
-                headerStyle: () => {
-                  return { minWidth: '100px', width: '100px' }
-                }
-              },
-              {
-                dataField: 'TenTheTien',
-                text: 'Tên thẻ tiền',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => (
-                  <div>
-                    <span className="pr-5px">{row.TenTheTien}</span>
-                    {row?.IsLock && (
-                      <span className={clsx({ 'text-danger': row?.IsLock })}>
-                        -
-                        <span className="fw-600 font-size-smm pl-5px">
-                          Đã Khóa
-                        </span>
-                      </span>
-                    )}
-                  </div>
-                ),
-                attrs: { 'data-title': 'Tên thẻ tiền' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'CreateDate',
-                text: 'Thời gian mua',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
-                attrs: { 'data-title': 'Tên thẻ tiền' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'GiaBan',
-                text: 'Giá bán',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.GiaBan),
-                attrs: { 'data-title': 'Giá bán' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'TongGiaTri',
-                text: 'Tổng giá trị',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.TongGiaTri),
-                attrs: { 'data-title': 'Tổng giá trị' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'GiaTriChiTieuSP',
-                text: 'Giá trị chi tiêu SP',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVND(row.GiaTriChiTieuSP),
-                attrs: { 'data-title': 'Giá trị chi tiêu SP' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'GiaTriChiTieuDV',
-                text: 'Giá trị chi tiêu DV',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVND(row.GiaTriChiTieuDV),
-                attrs: { 'data-title': 'Giá trị chi tiêu DV' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'TongChiTieu',
-                text: 'Tổng chi tiêu',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVND(row.TongChiTieu),
-                attrs: { 'data-title': 'Tổng chi tiêu' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'DaChiTieuSP',
-                text: 'Đã chi tiêu SP',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVND(row.DaChiTieuSP),
-                attrs: { 'data-title': 'Đã chi tiêu SP' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'DaChiTieuDV',
-                text: 'Đã chi tiêu DV',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  PriceHelper.formatVND(row.DaChiTieuDV),
-                attrs: { 'data-title': 'Đã chi tiêu DV' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'TongConLai',
-                text: 'Tổng còn lại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.TongConLai),
-                attrs: { 'data-title': 'Tổng còn lại' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'ConLaiSP',
-                text: 'Còn lại sản phẩm',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.ConLaiSP),
-                attrs: { 'data-title': 'Còn lại sản phẩm' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'ConLaiDV',
-                text: 'Còn lại dịch vụ',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => PriceHelper.formatVND(row.ConLaiDV),
-                attrs: { 'data-title': 'Còn lại dịch vụ' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'FullName',
-                text: 'Khách hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.FullName || 'Chưa có',
-                attrs: { 'data-title': 'Khách hàng' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              },
-              {
-                dataField: 'Phone',
-                text: 'Số điện thoại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row?.Member?.Phone || 'Chưa có',
-                attrs: { 'data-title': 'Số điện thoại' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              }
-            ]}
             loading={loading}
-            keyField="Id"
-            className="table-responsive-attr"
-            classes="table-bordered"
-            rowStyle={rowStyle}
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowClassName={rowClassName}
           />
         </div>
         <ModalViewMobile

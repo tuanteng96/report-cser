@@ -4,7 +4,6 @@ import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import reportsApi from 'src/api/reports.api'
 import ModalViewMobile from './ModalViewMobile'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
@@ -319,7 +318,8 @@ function PayrollStaff(props) {
         key: 'TAM_UNG',
         title: 'Tạm ứng',
         dataKey: 'TAM_UNG',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.TAM_UNG - rowData?.HOAN_UNG),
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.TAM_UNG - rowData?.HOAN_UNG),
         width: 150,
         sortable: false,
         footerRenderer: () => (
@@ -374,7 +374,7 @@ function PayrollStaff(props) {
         )
       }
     ],
-    [filters]
+    [filters, Total]
   )
 
   const onPagesChange = ({ Pi, Ps }) => {
@@ -397,12 +397,12 @@ function PayrollStaff(props) {
     }
     const groupCells = []
     columns.forEach((column, columnIndex) => {
-      console.log(cells[columnIndex])
       groupCells.push(
         <div
           className={clsx(
             cells[columnIndex].props.className,
-            !column.footerRenderer && 'bg-stripes', 'bg-gray-200'
+            !column.footerRenderer && 'bg-stripes',
+            'bg-gray-200'
           )}
           key={`header-group-cell-${column.key}`}
           style={{ ...cells[columnIndex].props.style }}

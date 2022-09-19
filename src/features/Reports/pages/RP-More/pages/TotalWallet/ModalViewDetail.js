@@ -1,24 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'react-bootstrap'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import reportsApi from 'src/api/reports.api'
-import BaseTablesCustom from 'src/components/Tables/BaseTablesCustom'
 import { JsonFilter } from 'src/Json/JsonFilter'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
 
 function ModalViewDetail({ show, onHide, Member }) {
   const [ListData, setListData] = useState([])
-  const [PageTotal, setPageTotal] = useState(0)
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     MemberID: '',
     Pi: 1,
-    Ps: 10
+    Ps: 15
   })
+  const [PCount, setPCount] = useState(0)
 
   useEffect(() => {
     if (show && Member) {
@@ -31,7 +32,7 @@ function ModalViewDetail({ show, onHide, Member }) {
         Ps: 10
       })
       setListData([])
-      setPageTotal(0)
+      setPCount(0)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Member, show])
@@ -47,16 +48,89 @@ function ModalViewDetail({ show, onHide, Member }) {
     reportsApi
       .getListTotalWalletDetail(filters)
       .then(({ data }) => {
-        const { Items, Total } = {
+        const { Items, PCount } = {
           Items: data.result?.Items || [],
-          Total: data.result?.Total || 0
+          PCount: data.result?.PCount || 0
         }
         setListData(Items)
-        setPageTotal(Total)
+        setPCount(PCount)
         setLoading(false)
       })
       .catch(error => console.log(error))
   }
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) =>
+          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Id',
+        title: 'ID',
+        dataKey: 'Id',
+        cellRenderer: ({ rowData }) => <div>#{rowData.Id}</div>,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        },
+        width: 120
+      },
+      {
+        key: 'TotalValue',
+        title: 'Giá trị',
+        dataKey: 'TotalValue',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVNDPositive(rowData.TotalValue),
+        mobileOptions: {
+          visible: true
+        },
+        width: 160,
+        sortable: false
+      },
+      {
+        key: 'Tag',
+        title: 'Loại',
+        dataKey: 'Tag',
+        cellRenderer: ({ rowData }) => getTags(rowData.Tag),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'StockName',
+        title: 'Ngày',
+        dataKey: 'StockName',
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'Content',
+        title: 'Nội dung',
+        dataKey: 'Content',
+        width: 200,
+        sortable: false
+      }
+    ],
+    [filters]
+  )
 
   const getTags = tag => {
     const index = JsonFilter.TagWLList.findIndex(item => item.value === tag)
@@ -64,6 +138,10 @@ function ModalViewDetail({ show, onHide, Member }) {
       return JsonFilter.TagWLList[index].label
     }
     return tag
+  }
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
   }
 
   return (
@@ -74,119 +152,14 @@ function ModalViewDetail({ show, onHide, Member }) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-15px">
-        <BaseTablesCustom
+        <ReactTableV7
+          rowKey="CreateDate"
+          filters={filters}
+          columns={columns}
           data={ListData}
-          textDataNull="Không có dữ liệu."
-          optionsMoible={{
-            itemShow: 7,
-            hideBtnDetail: true
-          }}
-          options={{
-            custom: true,
-            totalSize: PageTotal,
-            page: filters.Pi,
-            sizePerPage: filters.Ps,
-            alwaysShowAllBtns: true,
-            onSizePerPageChange: sizePerPage => {
-              setListData([])
-              const Ps = sizePerPage
-              setFilters({ ...filters, Ps: Ps, Pi: 1 })
-            },
-            onPageChange: page => {
-              setListData([])
-              const Pi = page
-              setFilters({ ...filters, Pi: Pi })
-            }
-          }}
-          columns={[
-            {
-              dataField: '',
-              text: 'STT',
-              formatter: (cell, row, rowIndex) => (
-                <span className="font-number">
-                  {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                </span>
-              ),
-              headerStyle: () => {
-                return { width: '60px' }
-              },
-              headerAlign: 'center',
-              style: { textAlign: 'center' },
-              attrs: { 'data-title': 'STT' }
-            },
-            {
-              dataField: 'Id',
-              text: 'ID',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => <div>#{row.Id}</div>,
-              attrs: { 'data-title': 'ID' },
-              headerStyle: () => {
-                return { minWidth: '100px', width: '100px' }
-              }
-            },
-            {
-              dataField: 'TotalValue',
-              text: 'Giá trị',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) =>
-                PriceHelper.formatVNDPositive(row.TotalValue),
-              attrs: { 'data-title': 'Giá trị' },
-              headerStyle: () => {
-                return { minWidth: '160px', width: '160px' }
-              }
-            },
-            {
-              dataField: 'Tag',
-              text: 'Loại',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => getTags(row.Tag),
-              attrs: { 'data-title': 'Loại' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'CreateDate',
-              text: 'Ngày',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) =>
-                moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
-              attrs: { 'data-title': 'Ngày' },
-              headerStyle: () => {
-                return { minWidth: '150px', width: '150px' }
-              }
-            },
-            {
-              dataField: 'StockName',
-              text: 'Cơ sở',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row?.StockName,
-              attrs: { 'data-title': 'Cơ sở' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'Content',
-              text: 'Nội dung',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row?.Content,
-              attrs: { 'data-title': 'Nội dung' },
-              headerStyle: () => {
-                return { minWidth: '200px', width: '200px' }
-              }
-            }
-          ]}
           loading={loading}
-          keyField="Id"
-          className="table-responsive-attr"
-          classes="table-bordered"
+          pageCount={PCount}
+          onPagesChange={onPagesChange}
         />
       </Modal.Body>
     </Modal>

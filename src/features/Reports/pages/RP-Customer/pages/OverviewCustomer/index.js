@@ -14,6 +14,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import ModalViewMobile from './ModalViewMobile'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import Text from 'react-texty'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -233,7 +234,7 @@ function OverviewCustomer() {
         key: 'FullName',
         title: 'Tên khách hàng',
         dataKey: 'FullName',
-        width: 200,
+        width: 220,
         sortable: false,
         mobileOptions: {
           visible: true
@@ -277,56 +278,85 @@ function OverviewCustomer() {
         title: 'Địa chỉ',
         dataKey: 'HomeAddress',
         width: 250,
-        sortable: false
+        sortable: false,
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>{rowData.HomeAddress || 'Chưa có'}</Text>
+        )
       },
       {
         key: 'DistrictsName',
         title: 'Quận huyện',
         dataKey: 'DistrictsName',
         width: 250,
-        sortable: false
+        sortable: false,
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.DistrictsName || 'Chưa có'}
+          </Text>
+        )
       },
       {
         key: 'ProvincesName',
         title: 'Tỉnh / Thành phố',
         dataKey: 'ProvincesName',
         width: 250,
-        sortable: false
+        sortable: false,
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.ProvincesName || 'Chưa có'}
+          </Text>
+        )
       },
       {
         key: 'ByStockName',
         title: 'Cơ sở',
         dataKey: 'ByStockName',
-        width: 180,
+        width: 220,
         sortable: false
       },
       {
         key: 'GroupCustomerName',
         title: 'Nhóm khách hàng',
         dataKey: 'GroupCustomerName',
-        width: 150,
-        sortable: false
+        width: 200,
+        sortable: false,
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.GroupCustomerName || 'Chưa có'}
+          </Text>
+        )
       },
       {
         key: 'Source',
         title: 'Nguồn',
         dataKey: 'Source',
-        width: 100,
-        sortable: false
+        width: 150,
+        sortable: false,
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.Source || 'Không xác định'}
+          </Text>
+        )
       },
       {
         key: 'HandCardID',
         title: 'Mã thẻ',
         dataKey: 'HandCardID',
-        width: 100,
-        sortable: false
+        width: 150,
+        sortable: false,
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>{rowData.HandCardID || 'Chưa có'}</Text>
+        )
       },
       {
         key: 'ByUserName',
         title: 'Nhân viên chăm sóc',
         dataKey: 'ByUserName',
         width: 200,
-        sortable: false
+        sortable: false,
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>{rowData.ByUserName || 'Chưa có'}</Text>
+        )
       },
       {
         key: 'vi_dien_tu',

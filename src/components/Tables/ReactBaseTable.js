@@ -36,14 +36,18 @@ function ReactBaseTable({
 
   useEffect(() => {
     setWidth(refElm?.current?.offsetWidth || 0)
-  },[refElm])
+  }, [refElm])
 
   const TableCell = ({ className, cellData }) => (
-    <Text className={className}>{cellData}</Text>
+    <Text tooltipMaxWidth={280} className={className}>
+      {cellData}
+    </Text>
   )
 
   const TableHeaderCell = ({ className, column }) => (
-    <Text className={className}>{column.title}</Text>
+    <Text tooltipMaxWidth={280} className={className}>
+      {column.title}
+    </Text>
   )
 
   return (

@@ -208,8 +208,8 @@ function WarningMaterials(props) {
     setIsModalMobile(false)
   }
 
-  const rowClassName = ({rowData}) => {
-    if(rowData.LUnit > 0) {
+  const rowClassName = ({ rowData }) => {
+    if (rowData.LUnit > 0) {
       return 'bg-danger-o-90'
     }
   }

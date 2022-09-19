@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
@@ -6,14 +6,47 @@ import FilterList from 'src/components/Filter/FilterList'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
 import { PriceHelper } from 'src/helpers/PriceHelper'
-import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import ModalViewMobile from './ModalViewMobile'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import Text from 'react-texty'
+import { uuidv4 } from '@nikitababko/id-generator'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+
 moment.locale('vi')
+
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+
+  for (let [index, obj] of arrays.entries()) {
+    for (let [o, member] of obj.MemberList.entries()) {
+      for (let [k, use] of member.UsageHistory.entries()) {
+        const newObj = {
+          ...use,
+          ...member,
+          ...obj,
+          rowIndex: index,
+          Ids: uuidv4()
+        }
+        if (o === 0 && k === 0) {
+        } else {
+          delete newObj.MemberList
+        }
+        if (k === 0) {
+        } else {
+          delete newObj.UsageHistory
+        }
+        newArray.push(newObj)
+      }
+    }
+  }
+  return newArray
+}
 
 function UseCardMoney(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -34,6 +67,7 @@ function UseCardMoney(props) {
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [ListData, setListData] = useState([])
+  const [ListDataMobile, setListDataMobile] = useState([])
   const [TotalValue, setTotalValue] = useState(0)
   const [PageTotal, setPageTotal] = useState(0)
   const [pageCount, setPageCount] = useState(0)
@@ -72,7 +106,9 @@ function UseCardMoney(props) {
             TongTien: data.result?.TongTien || 0,
             PCount: data?.result?.PCount || 0
           }
+          console.log(convertArray(Items))
           setListData(Items)
+          setListDataMobile(Items)
           setTotalValue(TongTien)
           setLoading(false)
           setPageTotal(Total)
@@ -128,6 +164,101 @@ function UseCardMoney(props) {
     setIsModalMobile(false)
   }
 
+  const columns = useMemo(
+    () => [
+      {
+        key: 'CreateDate',
+        title: 'Ngày',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('DD/MM/YYYY'),
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) => AmountUse(rowData.MemberList),
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'FullName',
+        title: 'Khách hàng',
+        dataKey: 'FullName',
+        width: 250,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.UsageHistory && rowData.UsageHistory.length > 0
+            ? rowData.UsageHistory.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Phone',
+        title: 'Số điện thoại',
+        dataKey: 'Phone',
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.UsageHistory && rowData.UsageHistory.length > 0
+            ? rowData.UsageHistory.length
+            : 1
+      },
+      {
+        key: 'Type',
+        title: 'Sử dụng / Hoàn',
+        dataKey: 'Type',
+        cellRenderer: ({ rowData }) => translateType(rowData.Type),
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'Code',
+        title: 'Mã thẻ tiền',
+        dataKey: 'Code',
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Title',
+        title: 'Tên thẻ tiền',
+        dataKey: 'Title',
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'Value',
+        title: 'Số tiền',
+        dataKey: 'Value',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Value),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Value',
+        title: 'Sản phẩm / Dịch vụ',
+        dataKey: 'Value',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.ProdLists &&
+              rowData.ProdLists.map(
+                item => `${item.Title}{' '}
+            (x${item.Qty})`
+              ).join(', ')}
+          </Text>
+        ),
+        width: 250,
+        sortable: false,
+        className: 'flex-fill'
+      }
+    ],
+    []
+  )
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
+  }
+
   const AmountUse = item => {
     var totalArray = 0
     if (!item) return totalArray
@@ -151,6 +282,31 @@ function UseCardMoney(props) {
       return 'Trả hàng'
     }
     return types
+  }
+
+  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    if (isScrolling)
+      return (
+        <div className="pl-15px d-flex align-items">
+          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+        </div>
+      )
+    const indexList = [0, 1, 2]
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
+    }
+    return cells
   }
 
   return (
@@ -198,147 +354,22 @@ function UseCardMoney(props) {
           </div>
         </div>
         <div className="p-20px">
-          <ChildrenTables
-            data={ListData}
-            columns={[
-              {
-                text: 'Ngày',
-                headerStyle: {
-                  minWidth: '160px',
-                  width: '160px'
-                },
-                attrs: { 'data-title': 'Ngày' }
-              },
-              {
-                text: 'Khách hàng',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                }
-              },
-              {
-                text: 'Số điện thoại',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Sử dụng / Hoàn',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Mã thẻ tiền',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                }
-              },
-              {
-                text: 'Tên thẻ tiền',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Số tiền',
-                headerStyle: {
-                  minWidth: '120px',
-                  width: '120px'
-                }
-              },
-              {
-                text: 'Sản phẩm / Dịch vụ',
-                headerStyle: {
-                  minWidth: '220px',
-                  width: '220px'
-                }
-              }
-            ]}
-            options={{
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              sizePerPageList: [10, 25, 30, 50],
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              },
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              }
-            }}
-            optionsMoible={{
-              itemShow: 0,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  attrs: { 'data-title': 'Ngày' },
-                  formatter: row => moment(row.CreateDate).format('DD-MM-YYYY')
-                },
-                {
-                  attrs: { 'data-title': 'Tổng khách hàng' },
-                  formatter: row => row.MemberList.length
-                }
-              ]
-            }}
+          <ReactTableV7
+            rowKey="Ids"
+            overscanRowCount={4}
+            useIsScrolling
+            filters={filters}
+            columns={columns}
+            data={convertArray(ListData)}
+            dataMobile={ListDataMobile}
             loading={loading}
-          >
-            {ListData &&
-              ListData.map((item, itemIndex) => (
-                <Fragment key={itemIndex}>
-                  {item.MemberList.map((member, memberIndex) => (
-                    <Fragment key={memberIndex}>
-                      {member.UsageHistory.map((use, useIndex) => (
-                        <tr key={useIndex}>
-                          {memberIndex === 0 && useIndex === 0 && (
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={AmountUse(item.MemberList)}
-                            >
-                              {moment(item.CreateDate).format('DD-MM-YYYY')}
-                            </td>
-                          )}
-                          {useIndex === 0 && (
-                            <Fragment>
-                              <td
-                                className="vertical-align-middle"
-                                rowSpan={member.UsageHistory.length}
-                              >
-                                {member.FullName}
-                              </td>
-                              <td
-                                className="vertical-align-middle"
-                                rowSpan={member.UsageHistory.length}
-                              >
-                                {member.Phone}
-                              </td>
-                            </Fragment>
-                          )}
-                          <td>{translateType(use.Type)}</td>
-                          <td>{use.Code}</td>
-                          <td>{use.Title}</td>
-                          <td>{PriceHelper.formatVND(use.Value)}</td>
-                          <td>
-                            {use.ProdLists &&
-                              use.ProdLists.map(
-                                item => `${item.Title} (x${item.Qty})`
-                              ).join(', ')}
-                          </td>
-                        </tr>
-                      ))}
-                    </Fragment>
-                  ))}
-                </Fragment>
-              ))}
-          </ChildrenTables>
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowRenderer={rowRenderer}
+          />
         </div>
         <ModalViewMobile
           show={isModalMobile}

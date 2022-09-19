@@ -145,7 +145,8 @@ function CustomerUseApp(props) {
         key: 'MemberID',
         title: 'ID',
         dataKey: 'MemberID',
-        cellRenderer: ({ rowData }) => rowData.MemberID ? `#${rowData.MemberID}` : 'Không xác định',
+        cellRenderer: ({ rowData }) =>
+          rowData.MemberID ? `#${rowData.MemberID}` : 'Không xác định',
         width: 150,
         sortable: false,
         mobileOptions: {
@@ -278,7 +279,7 @@ function CustomerUseApp(props) {
         </div>
         <div className="p-20px">
           <ReactTableV7
-            rowKey="MemberID"
+            rowKey="CreateDate"
             filters={filters}
             columns={columns}
             data={ListData}

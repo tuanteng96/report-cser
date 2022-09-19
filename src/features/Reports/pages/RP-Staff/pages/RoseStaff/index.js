@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
@@ -231,7 +231,8 @@ function RoseStaff(props) {
         cellRenderer: ({ rowData }) => `#${rowData.ID}`,
         width: 120,
         sortable: false,
-        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       },
       {
         key: 'Member.FullName',
@@ -239,7 +240,8 @@ function RoseStaff(props) {
         dataKey: 'Member.FullName',
         width: 250,
         sortable: false,
-        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       },
       {
         key: 'Member.Phone',
@@ -247,7 +249,8 @@ function RoseStaff(props) {
         dataKey: 'Member.Phone',
         width: 150,
         sortable: false,
-        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       },
       {
         key: 'GiaTriThuc',
@@ -257,7 +260,8 @@ function RoseStaff(props) {
           PriceHelper.formatVND(rowData.GiaTriThuc),
         width: 150,
         sortable: false,
-        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       },
       {
         key: 'Lines',
@@ -277,10 +281,11 @@ function RoseStaff(props) {
         ),
         width: 350,
         sortable: false,
-        className: ({rowData }) => rowData.tra_lai_don_hang ? "bg-danger-o-90" : ''
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       }
     ],
-    [filters]
+    []
   )
 
   const onPagesChange = ({ Pi, Ps }) => {

@@ -49,10 +49,14 @@ export const BrowserHelpers = {
       params.StaffID = filters.StaffID ? filters.StaffID.value : ''
     }
     if ('CategoriesId' in filters) {
-      params.CategoriesId = filters.CategoriesId ? filters.CategoriesId.value : ''
+      params.CategoriesId = filters.CategoriesId
+        ? filters.CategoriesId.value
+        : ''
     }
     if ('CategoriesTK' in filters) {
-      params.CategoriesTK = filters.CategoriesTK ? filters.CategoriesTK.value : ''
+      params.CategoriesTK = filters.CategoriesTK
+        ? filters.CategoriesTK.value
+        : ''
     }
     if ('BrandId' in filters) {
       params.BrandId = filters.BrandId ? filters.BrandId.value : ''
@@ -83,6 +87,9 @@ export const BrowserHelpers = {
     }
     if ('MemberID' in filters) {
       params.MemberID = filters.MemberID ? filters.MemberID.value : ''
+    }
+    if ('MoneyCardID' in filters) {
+      params.MoneyCardID = filters.MoneyCardID ? filters.MoneyCardID.value : ''
     }
     if ('ServiceCardID' in filters) {
       params.ServiceCardID = filters.ServiceCardID
@@ -124,6 +131,11 @@ export const BrowserHelpers = {
         ? filters.TypeTT.map(item => item.value).join(',')
         : ''
     }
+    if ('StatusTT' in filters) {
+      params.StatusTT = filters.StatusTT
+        ? filters.StatusTT.map(item => item.value).join(',')
+        : ''
+    }
     if ('ProvincesID' in filters) {
       params.ProvincesID = filters.ProvincesID ? filters.ProvincesID.value : ''
     }
@@ -163,6 +175,11 @@ export const BrowserHelpers = {
         : filters.DateOrderStart
         ? moment(filters.DateOrderStart).format('DD/MM/yyyy')
         : null
+    }
+    if ('TagWL' in filters) {
+      params.TagWL = filters.TagWL
+        ? filters.TagWL.map(item => item.value).join(',')
+        : ''
     }
     if ('TagsTC' in filters) {
       params.TagsTC = filters.TagsTC

@@ -270,14 +270,14 @@ function SalaryServices(props) {
       },
       {
         key: 'DV_Goc.ProdTitle',
-        title: 'Số điện thoại',
+        title: 'Dịch vụ gốc',
         dataKey: 'DV_Goc.ProdTitle',
         width: 250,
         sortable: false
       },
       {
         key: 'The_DV.CardTitle',
-        title: 'Số điện thoại',
+        title: 'Thẻ dịch vụ',
         dataKey: 'The_DV.CardTitle',
         width: 250,
         sortable: false

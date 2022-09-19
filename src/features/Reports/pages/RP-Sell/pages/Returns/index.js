@@ -193,7 +193,7 @@ function Returns(props) {
         ),
         width: 300,
         sortable: false,
-        className: "flex-fill"
+        className: 'flex-fill'
       }
     ],
     [filters]

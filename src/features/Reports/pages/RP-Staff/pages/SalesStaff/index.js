@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
@@ -134,6 +134,7 @@ function SalesStaff(props) {
           setTotalSales({ TongDoanhSo, TongThucDoanhSo, KhauTru })
           setLoading(false)
           setPageTotal(Total)
+          setPageCount(PCount)
           isFilter && setIsFilter(false)
           callback && callback()
         }
@@ -297,7 +298,7 @@ function SalesStaff(props) {
           rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       }
     ],
-    [filters]
+    []
   )
 
   const onPagesChange = ({ Pi, Ps }) => {
@@ -336,14 +337,6 @@ function SalesStaff(props) {
       }
     }
     return cells
-  }
-
-  const CustomStyles = item => {
-    const styles = {}
-    if (item.tra_lai_don_hang) {
-      styles.background = '#ffb2c1'
-    }
-    return styles
   }
 
   return (

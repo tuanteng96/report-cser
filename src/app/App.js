@@ -7,9 +7,9 @@ function App({ store, persistor }) {
   return (
     <Provider store={store}>
       <AuthInit>
-      <ScrollToTop>
-        <RouterPage />
-      </ScrollToTop>
+        <ScrollToTop>
+          <RouterPage />
+        </ScrollToTop>
       </AuthInit>
     </Provider>
   )
