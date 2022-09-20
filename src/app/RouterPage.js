@@ -171,7 +171,9 @@ function RouterPage(props) {
         <Route path="bao-cao-the-tien" element={<TotalCard />} />
         <Route path="bao-cao-su-dung-the-tien" element={<UseCardMoney />} />
       </Route>
-      <Route path="/app23/index.html" element={<Navigate to="/" replace />} />
+      {!window?.isDesktop && (
+        <Route path="/app23/index.html" element={<Navigate to="/" replace />} />
+      )}
     </Routes>
   )
 }

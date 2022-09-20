@@ -38,6 +38,7 @@
                 const IfameBody = JSON.parse(data || '');
                 window.Info = IfameBody.Info;
                 window.token = IfameBody.token;
+                window.isDesktop = IfameBody.isDesktop || false
             }
         }))
     </script>
