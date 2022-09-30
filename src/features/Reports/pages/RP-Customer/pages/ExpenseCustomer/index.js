@@ -356,7 +356,7 @@ function ExpenseCustomer(props) {
         key: 'TheTien',
         title: 'Thẻ tiền',
         dataKey: 'TheTien',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.DoanhThu),
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.TheTien),
         width: 150,
         sortable: false
       },
@@ -364,7 +364,7 @@ function ExpenseCustomer(props) {
         key: 'Vi',
         title: 'Ví',
         dataKey: 'Vi',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.DoanhThu),
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Vi),
         width: 150,
         sortable: false
       }
