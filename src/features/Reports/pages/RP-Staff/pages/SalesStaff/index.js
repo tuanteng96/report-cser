@@ -70,7 +70,8 @@ function SalesStaff(props) {
     //ServiceCardID: '',
     CategoriesId: '', // ID 1 danh mục
     BrandId: '', //ID 1 nhãn hàng
-    ProductId: '' // ID 1 SP, DV, NVL, ...
+    ProductId: '', // ID 1 SP, DV, NVL, ...
+    KpiType: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)

@@ -1,7 +1,9 @@
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { DevHelpers } from 'src/helpers/DevHelpers'
 import { LayoutSplashScreen } from 'src/layout/_core/SplashScreen'
-import { setProfile } from './AuthSlice'
+import { setGlobalConfig, setProfile } from './AuthSlice'
 
 function AuthInit(props) {
   const [showSplashScreen, setShowSplashScreen] = useState(true)
@@ -22,6 +24,22 @@ function AuthInit(props) {
   }
   useEffect(() => {
     async function requestUser() {
+      await axios
+        .get(
+          `${
+            DevHelpers.isDevelopment()
+              ? process.env.REACT_APP_API_URL
+              : window.API || ''
+          }/brand/global/Global.json`
+        )
+        .then(({ data }) => {
+          dispatch(
+            setGlobalConfig({
+              GlobalConfig: data
+            })
+          )
+        })
+        .catch(err => console.log(err))
       checkInfo(() => {
         dispatch(
           setProfile({

@@ -48,6 +48,9 @@ export const BrowserHelpers = {
     if ('StaffID' in filters) {
       params.StaffID = filters.StaffID ? filters.StaffID.value : ''
     }
+    if ('KpiType' in filters) {
+      params.KpiType = filters.KpiType ? filters.KpiType.value : ''
+    }
     if ('CategoriesId' in filters) {
       params.CategoriesId = filters.CategoriesId
         ? filters.CategoriesId.value

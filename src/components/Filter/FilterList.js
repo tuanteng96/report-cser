@@ -75,10 +75,23 @@ function FilterList({
   onRefresh,
   onExport
 }) {
-  const { Stocks } = useSelector(({ auth }) => ({
-    Stocks: auth.Info.Stocks
+  const { Stocks, KPT_Max_Type } = useSelector(({ auth }) => ({
+    Stocks: auth.Info.Stocks,
+    KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0
   }))
   const [StocksList, setStocksList] = useState([])
+  const [KpiTypeList, setKpiTypeList] = useState([])
+
+  useEffect(() => {
+    const newKpiTypeList = []
+    for (let i = 1; i <= KPT_Max_Type; i++) {
+      newKpiTypeList.push({
+        value: i,
+        label: `Loại ${i}`
+      })
+    }
+    setKpiTypeList(newKpiTypeList)
+  }, [KPT_Max_Type])
 
   useEffect(() => {
     const newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
@@ -741,6 +754,24 @@ function FilterList({
                           setFieldValue('BrandIds', otp, false)
                         }}
                         value={values.BrandIds}
+                      />
+                    </div>
+                  )}
+                  {'KpiType' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại KPI</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="KpiType"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={KpiTypeList}
+                        className="select-control"
+                        value={values.KpiType}
+                        onChange={otp => {
+                          setFieldValue('KpiType', otp)
+                        }}
                       />
                     </div>
                   )}

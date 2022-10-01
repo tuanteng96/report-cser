@@ -24,14 +24,15 @@ if (DevHelpers.isDevelopment()) {
     CrStockID: ''
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMjAxMDMwMTAyMDE0MzgiLCJuYmYiOjE2NjQ1MDM5NTAsImV4cCI6MTY2NTEwODc1MCwiaWF0IjoxNjY0NTAzOTUwfQ.dPOWW5fo515grwZiLAdH7Wh6GI0QZu8J06HrHE2x-OE'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMjAxMDMwMTAyMDE0NTAiLCJuYmYiOjE2NjQ1OTQ5OTMsImV4cCI6MTY2NTE5OTc5MywiaWF0IjoxNjY0NTk0OTkzfQ.5Xh3Cqx6gBAfjqxQoBgS5_CXgBQmSEAhtRljQEwVYwk'
 }
 
 const Auth = createSlice({
   name: 'auth',
   initialState: {
     Info: null,
-    Token: null
+    Token: null,
+    GlobalConfig: null
   },
   reducers: {
     setProfile: (state, { payload }) => {
@@ -40,11 +41,17 @@ const Auth = createSlice({
         Token: payload.token,
         Info: payload.Info
       }
+    },
+    setGlobalConfig: (state, { payload }) => {
+      return {
+        ...state,
+        GlobalConfig: payload.GlobalConfig
+      }
     }
   },
   extraReducers: {}
 })
 
 const { reducer, actions } = Auth
-export const { setProfile } = actions
+export const { setProfile, setGlobalConfig } = actions
 export default reducer
