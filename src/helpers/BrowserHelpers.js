@@ -45,6 +45,11 @@ export const BrowserHelpers = {
     if ('Mon' in filters) {
       params.Mon = filters.Mon ? moment(filters.Mon).format('MM/yyyy') : null
     }
+    if ('AllServiceID' in filters) {
+      params.AllServiceID = filters.AllServiceID
+        ? filters.AllServiceID.value
+        : ''
+    }
     if ('StaffID' in filters) {
       params.StaffID = filters.StaffID ? filters.StaffID.value : ''
     }

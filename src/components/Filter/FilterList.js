@@ -23,6 +23,7 @@ import AsyncSelectCardMoney from '../Selects/AsyncSelectCardMoney'
 import AsyncSelectCategoriesFull from '../Selects/AsyncSelectCategoriesFull'
 
 import vi from 'date-fns/locale/vi' // the locale you want
+import AsyncSelectServices from '../Selects/AsyncSelectServices'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -217,6 +218,22 @@ function FilterList({
                         onChange={otp => {
                           setFieldValue('StockID', otp ? otp.value : '')
                         }}
+                      />
+                    </div>
+                  )}
+                  {'AllServiceID' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Dịch vụ</label>
+                      <AsyncSelectServices
+                        closeMenuOnScroll={true}
+                        menuPlacement="top"
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="AllServiceID"
+                        onChange={otp => {
+                          setFieldValue('AllServiceID', otp, false)
+                        }}
+                        value={values.AllServiceID}
                       />
                     </div>
                   )}

@@ -64,6 +64,10 @@ const MenuList = [
       {
         Title: 'Báo cáo nghiệp vụ',
         Href: '/dich-vu/bao-cao-nghiep-vu'
+      },
+      {
+        Title: 'Dịch vụ điểm này, sử dụng điểm khác',
+        Href: '/dich-vu/dv-diem-sd-diem-khac'
       }
     ]
   },

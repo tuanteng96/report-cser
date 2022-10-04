@@ -41,6 +41,7 @@ import OverviewService from 'src/features/Reports/pages/RP-Services/pages/Overvi
 import RPServices from 'src/features/Reports/pages/RP-Services'
 import OddCardService from 'src/features/Reports/pages/RP-Services/pages/OddCardService'
 import SaleReduced from 'src/features/Reports/pages/RP-Sell/pages/SaleReduced'
+import UsedElsewhere from 'src/features/Reports/pages/RP-Services/pages/UsedElsewhere'
 
 function RouterPage(props) {
   return (
@@ -80,6 +81,7 @@ function RouterPage(props) {
         <Route index element={<Navigate to="tong-quan" replace />} />
         <Route path="tong-quan" element={<OverviewService />} />
         <Route path="bao-cao-nghiep-vu" element={<OddCardService />} />
+        <Route path="dv-diem-sd-diem-khac" element={<UsedElsewhere />} />
       </Route>
       <Route
         path="/ban-hang"
