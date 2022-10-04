@@ -247,7 +247,7 @@ function UsedElsewhere(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase font-size-xl fw-600 text-truncate max-w-250px max-w-md-auto d-block">
+          <span className="text-uppercase font-size-xl fw-600 text-truncate max-w-250px max-w-md-auto d-block d-md-inline">
             Dịch vụ điểm này, sử dụng điểm khác
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
