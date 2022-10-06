@@ -208,7 +208,7 @@ function GeneralCustomer(props) {
         dataKey: 'BirthDate',
         cellRenderer: ({ rowData }) =>
           rowData.BirthDate
-            ? moment(rowData.BirthDate).format('HH:mm DD/MM/YYYY')
+            ? moment(rowData.BirthDate).format('DD/MM/YYYY')
             : 'Chưa có',
         width: 150,
         sortable: false
