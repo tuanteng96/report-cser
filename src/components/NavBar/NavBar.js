@@ -48,6 +48,10 @@ const MenuList = [
       {
         Title: 'Tần suất sử dụng',
         Href: '/khach-hang/tan-suat-su-dung'
+      },
+      {
+        Title: 'Chuyển đổi',
+        Href: '/khach-hang/chuyen-doi'
       }
     ]
   },

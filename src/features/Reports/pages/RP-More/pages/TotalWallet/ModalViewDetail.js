@@ -29,7 +29,7 @@ function ModalViewDetail({ show, onHide, Member }) {
       setFilters({
         MemberID: '',
         Pi: 1,
-        Ps: 10
+        Ps: 15
       })
       setListData([])
       setPCount(0)

@@ -25,7 +25,7 @@ function Gift(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1,
-    Ps: 10
+    Ps: 15
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)

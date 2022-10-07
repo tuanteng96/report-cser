@@ -42,6 +42,7 @@ import RPServices from 'src/features/Reports/pages/RP-Services'
 import OddCardService from 'src/features/Reports/pages/RP-Services/pages/OddCardService'
 import SaleReduced from 'src/features/Reports/pages/RP-Sell/pages/SaleReduced'
 import UsedElsewhere from 'src/features/Reports/pages/RP-Services/pages/UsedElsewhere'
+import ConvertCustomer from 'src/features/Reports/pages/RP-Customer/pages/ConvertCustomer'
 
 function RouterPage(props) {
   return (
@@ -69,6 +70,7 @@ function RouterPage(props) {
         <Route path="su-dung-dich-vu" element={<UseServiceCustomer />} />
         <Route path="du-kien" element={<ExpectedCustomer />} />
         <Route path="tan-suat-su-dung" element={<FrequencyUseCustomer />} />
+        <Route path="chuyen-doi" element={<ConvertCustomer />} />
       </Route>
       <Route
         path="/dich-vu"

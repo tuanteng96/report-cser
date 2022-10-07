@@ -28,7 +28,7 @@ function GeneralCustomer(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     BirthDateStart: null,
     BirthDateEnd: null,
     GroupCustomerID: '', // ID Nhóm khách hàng

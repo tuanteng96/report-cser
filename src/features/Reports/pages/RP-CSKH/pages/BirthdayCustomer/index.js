@@ -12,29 +12,6 @@ import moment from 'moment'
 import 'moment/locale/vi'
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Items: [
-    {
-      Id: 12372, // ID khách hàng
-      FullName: 'Nguyễn Tài Tuấn',
-      Phone: '0971021196',
-      Birthday: '2022-06-21T16:59:43.113',
-      Address: 'Triệu Sơn, Thanh Hóa',
-      Gender: 0 // 0 => Nam, 1 => Nữ
-    },
-    {
-      Id: 12373, // ID khách hàng
-      FullName: 'Nguyễn Tài Tuấn 2',
-      Phone: '0971021196',
-      Birthday: '2022-06-22T16:59:43.113',
-      Address: 'Triệu Sơn, Thanh Hóa',
-      Gender: 0 // 0 => Nam, 1 => Nữ
-    }
-  ]
-}
-
 function BirthdayCustomer(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -45,7 +22,7 @@ function BirthdayCustomer(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10 // Số lượng item
+    Ps: 15 // Số lượng item
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -91,8 +68,8 @@ function BirthdayCustomer(props) {
           setLoading(false)
         } else {
           const { Items, Total } = {
-            Items: data.result?.Items || JSONData.Items,
-            Total: data.result?.Total || JSONData.Total
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0
           }
           setListData(Items)
           setLoading(false)
@@ -120,7 +97,9 @@ function BirthdayCustomer(props) {
     }
   }
 
-  const onRefresh = () => {}
+  const onRefresh = () => {
+    getListCustomer()
+  }
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)

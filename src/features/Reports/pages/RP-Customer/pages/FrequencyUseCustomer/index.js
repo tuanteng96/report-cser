@@ -59,7 +59,7 @@ function FrequencyUseCustomer(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 10, // Số lượng item
+    Ps: 15, // Số lượng item
     MemberID: '', // ID Khách hàng
     GroupCustomerID: '', // ID Nhóm khách hàng
     SourceName: '', // Nguồn
