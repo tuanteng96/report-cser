@@ -102,7 +102,7 @@ function SellProfit(props) {
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
-        reportsApi.getListReturns(
+        reportsApi.getListProfit(
           BrowserHelpers.getRequestParamsList(filters, {
             Total: PageTotal
           })
