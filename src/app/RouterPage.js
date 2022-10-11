@@ -43,6 +43,7 @@ import OddCardService from 'src/features/Reports/pages/RP-Services/pages/OddCard
 import SaleReduced from 'src/features/Reports/pages/RP-Sell/pages/SaleReduced'
 import UsedElsewhere from 'src/features/Reports/pages/RP-Services/pages/UsedElsewhere'
 import ConvertCustomer from 'src/features/Reports/pages/RP-Customer/pages/ConvertCustomer'
+import SellProfit from 'src/features/Reports/pages/RP-Sell/pages/SellProfit'
 
 function RouterPage(props) {
   return (
@@ -101,6 +102,7 @@ function RouterPage(props) {
         <Route path="top-ban-hang-doanh-so" element={<TopProducts />} />
         <Route path="bang-gia" element={<PriceList />} />
         <Route path="doanh-so-giam-tru" element={<SaleReduced />} />
+        <Route path="loi-nhuan" element={<SellProfit />} />
       </Route>
       <Route
         path="/thu-chi-va-so-quy"

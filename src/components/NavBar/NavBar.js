@@ -108,6 +108,10 @@ const MenuList = [
       {
         Title: 'Bảng giá',
         Href: '/ban-hang/bang-gia'
+      },
+      {
+        Title: 'Lợi nhuận',
+        Href: '/ban-hang/loi-nhuan'
       }
     ]
   },

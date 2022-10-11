@@ -90,6 +90,9 @@ const reportsApi = {
   getListReturns: data => {
     return http.post(`${SubApi}/ban-hang/tra-hang`, JSON.stringify(data))
   },
+  getListProfit: data => {
+    return http.post(`${SubApi}/loi-nhuan/danh-sach`, JSON.stringify(data))
+  },
   getListDebtPayment: data => {
     return http.post(
       `${SubApi}/ban-hang/thanh-toan-tra-no`,
