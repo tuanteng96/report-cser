@@ -182,6 +182,14 @@ function SaleDetails(props) {
     setIsFilter(false)
   }
 
+  const sumTotalDS = data => {
+    return data
+      ? data.reduce((accumulator, object) => {
+          return accumulator + object.SumTopay
+        }, 0)
+      : 0
+  }
+
   return (
     <div className="py-main h-100 d-flex flex-column">
       <div className="subheader d-flex justify-content-between align-items-center flex-shrink-1">
@@ -273,10 +281,25 @@ function SaleDetails(props) {
             <div className="col-lg-4 mb-15px mb-lg-0 h-100">
               <div className="bg-white rounded h-100">
                 <div className="px-20px px-20px pt-20px">
-                  <div className="fw-500 font-size-lg">Sản phẩm / NVL</div>
-                  <div className="text-muted font-size-smm">
-                    Tổng {(dataResult.SP_NVL && dataResult.SP_NVL.length) || 0}{' '}
-                    sản phẩm, NVL
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <div className="fw-500 font-size-lg">Sản phẩm / NVL</div>
+                      <div className="text-muted font-size-smm">
+                        Tổng{' '}
+                        {(dataResult.SP_NVL && dataResult.SP_NVL.length) || 0}{' '}
+                        sản phẩm, NVL
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-number fw-600 font-size-lg">
+                        {PriceHelper.formatVNDPositive(
+                          sumTotalDS(dataResult.SP_NVL)
+                        )}
+                      </div>
+                      <div className="text-muted font-size-smm text-center">
+                        Tổng doanh số
+                      </div>
+                    </div>
                   </div>
                   <div className="mt-12px">
                     <div className="d-flex justify-content-between py-12px">
@@ -329,10 +352,25 @@ function SaleDetails(props) {
             <div className="col-lg-4 mb-15px mb-lg-0 h-100">
               <div className="bg-white rounded h-100">
                 <div className="px-20px px-20px pt-20px">
-                  <div className="fw-500 font-size-lg">Dịch vụ / Phụ phí</div>
-                  <div className="text-muted font-size-smm">
-                    Tổng {(dataResult.DV_PP && dataResult.DV_PP.length) || 0}{' '}
-                    dịch vụ, Phụ phí
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <div className="fw-500 font-size-lg">Dịch vụ / PP</div>
+                      <div className="text-muted font-size-smm">
+                        Tổng{' '}
+                        {(dataResult.DV_PP && dataResult.DV_PP.length) || 0}{' '}
+                        dịch vụ, Phụ phí
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-number fw-600 font-size-lg">
+                        {PriceHelper.formatVNDPositive(
+                          sumTotalDS(dataResult.DV_PP)
+                        )}
+                      </div>
+                      <div className="text-muted font-size-smm text-center">
+                        Tổng doanh số
+                      </div>
+                    </div>
                   </div>
                   <div className="mt-12px">
                     <div className="d-flex justify-content-between py-12px">
@@ -386,9 +424,24 @@ function SaleDetails(props) {
             <div className="col-lg-4 h-100">
               <div className="bg-white rounded h-100">
                 <div className="px-20px px-20px pt-20px">
-                  <div className="fw-500 font-size-lg">Thẻ tiền</div>
-                  <div className="text-muted font-size-smm">
-                    Tổng {(dataResult.TT && dataResult.TT.length) || 0} thẻ tiền
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <div className="fw-500 font-size-lg">Thẻ tiền</div>
+                      <div className="text-muted font-size-smm">
+                        Tổng {(dataResult.TT && dataResult.TT.length) || 0} thẻ
+                        tiền
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-number fw-600 font-size-lg">
+                        {PriceHelper.formatVNDPositive(
+                          sumTotalDS(dataResult.TT)
+                        )}
+                      </div>
+                      <div className="text-muted font-size-smm text-center">
+                        Tổng doanh số
+                      </div>
+                    </div>
                   </div>
                   <div className="mt-12px">
                     <div className="d-flex justify-content-between py-12px">
