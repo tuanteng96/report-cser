@@ -22,12 +22,13 @@ function ConvertCustomer(props) {
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     Pi: 1, // Trang hiện tại
-    Ps: 15 // Số lượng item
+    Ps: 1500 // Số lượng item
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
   const [ListData, setListData] = useState([])
+  const [ListStocks, setListStocks] = useState([])
   const [PageTotal, setPageTotal] = useState(0)
   const [pageCount, setPageCount] = useState(0)
   const [loadingExport, setLoadingExport] = useState(false)
@@ -60,13 +61,15 @@ function ConvertCustomer(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Members, Total, PCount } = {
+          const { Members, Total, PCount, LstStocks } = {
             Members: data?.result?.Items || [],
             Total: data?.result?.Total || 0,
             TotalOnline: data?.result?.TotalOnline || 0,
-            PCount: data?.result?.PCount || 0
+            PCount: data?.result?.PCount || 0,
+            LstStocks: data?.result?.Stocks || []
           }
           setListData(Members)
+          setListStocks(LstStocks)
           setPageCount(PCount)
           setLoading(false)
           setPageTotal(Total)
@@ -165,6 +168,42 @@ function ConvertCustomer(props) {
     return newColumns
   }, [ListData])
 
+  const getTotal = () => {
+    const { StockID } = {
+      StockID: filters.StockID === '' ? -1 : filters.StockID
+    }
+    const totalAll = ListStocks.reduce((n, { Total }) => n + Total, 0)
+    const totalTransfer = ListStocks.reduce(
+      (n, { TransferTotal }) => n + TransferTotal,
+      0
+    )
+    const index = ListStocks.findIndex(x => x.ID === StockID)
+    if (index > -1) {
+      return (
+        <>
+          Đã chuyển đổi
+          <span className="fw-600 font-number pl-5px">
+            {ListStocks[index].TransferTotal}
+          </span>
+          <span className="px-3px">/</span>
+          <span className="fw-600 font-number pr-5px">
+            {ListStocks[index].Total}
+          </span>
+          khách hàng
+        </>
+      )
+    }
+    return (
+      <>
+        Đã chuyển đổi
+        <span className="fw-600 font-number pl-5px">{totalTransfer}</span>
+        <span className="px-3px">/</span>
+        <span className="fw-600 font-number pr-5px">{totalAll}</span>
+        khách hàng
+      </>
+    )
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -200,6 +239,7 @@ function ConvertCustomer(props) {
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách chuyển đổi</div>
+          <div>{getTotal()}</div>
         </div>
         <div className="p-20px">
           <ReactTableV7
