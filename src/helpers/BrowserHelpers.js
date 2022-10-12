@@ -374,6 +374,40 @@ export const BrowserHelpers = {
         ? moment(filters.UsedUpDateStart).format('DD/MM/yyyy')
         : null
     }
+    if ('LastUsedFrom' in filters) {
+      params.LastUsedFrom = filters.LastUsedFrom
+        ? moment(filters.LastUsedFrom).format('DD/MM/yyyy')
+        : null
+    }
+    if ('LastUsedTo' in filters) {
+      params.LastUsedTo = filters.LastUsedTo
+        ? moment(filters.LastUsedTo).format('DD/MM/yyyy')
+        : null
+    }
+    if ('FrequencyDateStart' in filters) {
+      params.FrequencyDateStart = filters.FrequencyDateStart
+        ? moment(filters.FrequencyDateStart).format('DD/MM/yyyy')
+        : null
+    }
+    if ('FrequencyDateEnd' in filters) {
+      params.FrequencyDateEnd = filters.FrequencyDateEnd
+        ? moment(filters.FrequencyDateEnd).format('DD/MM/yyyy')
+        : null
+    }
+    if ('CateServiceIDs' in filters) {
+      params.CateServiceIDs = filters.CateServiceIDs
+        ? filters.CateServiceIDs.map(item => item.value).join(',')
+        : ''
+    }
+    if ('Frequency' in filters) {
+      params.Frequency = filters.Frequency ? filters.Frequency.value : ''
+    }
+    if ('FrequencyDay' in filters) {
+      params.FrequencyDay = filters.FrequencyDay
+    }
+    if ('DayService' in filters) {
+      params.DayService = filters.DayService
+    }
     return params
   }
 }

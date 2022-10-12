@@ -1,52 +1,40 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import FilterToggle from 'src/components/Filter/FilterToggle'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
-import ChildrenTables from 'src/components/Tables/ChildrenTables'
 import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import ModalViewMobile from './ModalViewMobile'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import { uuidv4 } from '@nikitababko/id-generator'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
 
-const JSONData = {
-  Total: 1,
-  PCount: 1,
-  Members: [
-    {
-      CreateDate: '2022-07-29T09:25:52.72',
-      Member: {
-        ID: '4236', // ID khách hàng
-        FullName: 'Nguyễn Tài Tuấn',
-        Phone: '0971021196'
-      },
-      StockID: '8975',
-      StockName: 'Cser Hà Nội',
-      TanSuatSD: 3,
-      ProdsList: [
-        {
-          Id: 1234, // ID Sp, Dv
-          CreateDate: '2022-07-29T09:25:52.72', // Thời gian Mua
-          Title: 'Chăm sóc da 10 buổi',
-          LastUsedTime: '2022-07-29T09:25:52.72', // Thời gian dùng gần nhất
-          Qty: 2,
-          TanSuatSD: 2
-        },
-        {
-          Id: 1234, // ID Sp, Dv
-          Title: 'Chăm sóc da 10 buổi',
-          CreateDate: '2022-07-29T09:25:52.72', // Thời gian Mua
-          LastUsedTime: '2022-07-29T09:25:52.72', // Thời gian dùng gần nhất
-          Qty: 2,
-          TanSuatSD: 1
-        }
-      ]
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+  for (let [index, obj] of arrays.entries()) {
+    for (let [x, order] of obj.ProdsList.entries()) {
+      const newObj = {
+        ...order,
+        CreateDateProd: order.CreateDate,
+        TanSuatSDProd: order.TanSuatSD,
+        ...obj,
+        rowIndex: index,
+        Ids: uuidv4()
+      }
+      if (x !== 0) delete newObj.ProdsList
+      newArray.push(newObj)
     }
-  ]
+  }
+  return newArray
 }
 
 function FrequencyUseCustomer(props) {
@@ -71,12 +59,14 @@ function FrequencyUseCustomer(props) {
     Frequency: 'NGAY', // Tần suất SD
     FrequencyDay: '', // Tuần suất theo ngày
     StatusServices: '',
-    FrequencyDateStart: '',
-    FrequencyDateEnd: ''
+    FrequencyDateStart: null,
+    FrequencyDateEnd: null
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
+  const [ListDataMobile, setListDataMobile] = useState([])
   const [PageTotal, setPageTotal] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
@@ -100,54 +90,26 @@ function FrequencyUseCustomer(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const GeneralNewFilter = filters => {
-    return {
-      ...filters,
-      DateStart: filters.DateStart
-        ? moment(filters.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.DateEnd
-        ? moment(filters.DateEnd).format('DD/MM/yyyy')
-        : null,
-      LastUsedFrom: filters.LastUsedFrom
-        ? moment(filters.LastUsedFrom).format('DD/MM/yyyy')
-        : null,
-      LastUsedTo: filters.LastUsedTo
-        ? moment(filters.LastUsedTo).format('DD/MM/yyyy')
-        : null,
-      MemberID: filters.MemberID ? filters.MemberID.value : '',
-      GroupCustomerID: filters.GroupCustomerID
-        ? filters.GroupCustomerID.value
-        : '',
-      SourceName: filters.SourceName ? filters.SourceName.value : '',
-      CateServiceIDs:
-        filters.CateServiceIDs && filters.CateServiceIDs.length > 0
-          ? filters.CateServiceIDs.map(item => item.value).join(',')
-          : '',
-      ServiceIDs:
-        filters.ServiceIDs && filters.ServiceIDs.length > 0
-          ? filters.ServiceIDs.map(item => item.value).join(',')
-          : '',
-      Frequency: filters.Frequency ? filters.Frequency.value : ''
-    }
-  }
-
   const getListFrequencyUseCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    const newFilters = GeneralNewFilter(filters)
     reportsApi
-      .getListCustomerFrequencyUse(newFilters)
+      .getListCustomerFrequencyUse(
+        BrowserHelpers.getRequestParamsToggle(filters)
+      )
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Members, Total } = {
-            Members: data?.result?.Members || JSONData.Members,
-            Total: data?.result?.Total || 0
+          const { Members, Total, PCount } = {
+            Members: data?.result?.Members || [],
+            Total: data?.result?.Total || 0,
+            PCount: data?.result?.PCount || 0
           }
-          setListData(Members)
+          setListData(convertArray(Members))
+          setListDataMobile(Members)
           setPageTotal(Total)
+          setPageCount(PCount)
           setLoading(false)
           isFilter && setIsFilter(false)
           callback && callback()
@@ -188,21 +150,175 @@ function FrequencyUseCustomer(props) {
   }
 
   const onExport = () => {
-    setLoadingExport(true)
-    const newFilters = GeneralNewFilter(
-      ArrayHeplers.getFilterExport({ ...filters }, PageTotal)
-    )
-    reportsApi
-      .getListCustomerFrequencyUse(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/khach-hang/tan-suat-su-dung',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListCustomerFrequencyUse(
+          BrowserHelpers.getRequestParamsToggle(filters, {
+            Total: PageTotal
           })
-      })
-      .catch(error => console.log(error))
+        ),
+      UrlName: '/khach-hang/tan-suat-su-dung'
+    })
+  }
+
+  console.log(ListData)
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowData }) =>
+          filters.Ps * (filters.Pi - 1) + (rowData.rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày tạo',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 150,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberFullName',
+        title: 'Tên khách hàng',
+        dataKey: 'MemberFullName',
+        width: 220,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MemberPhone',
+        title: 'Số điện thoại',
+        dataKey: 'MemberPhone',
+        width: 180,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'StockName',
+        title: 'Cơ sở',
+        dataKey: 'StockName',
+        width: 200,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1
+      },
+      {
+        key: 'TanSuatSD',
+        title: 'Tần xuất sử dụng',
+        dataKey: 'TanSuatSD',
+        width: 200,
+        sortable: false,
+        cellRenderer: ({ rowData }) => rowData.TanSuatSD,
+        rowSpan: ({ rowData }) =>
+          rowData.ProdsList && rowData.ProdsList.length > 0
+            ? rowData.ProdsList.length
+            : 1
+      },
+      {
+        key: 'CreateDate',
+        title: 'Thời gian mua',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          rowData.CreateDate
+            ? moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY')
+            : '',
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'Title',
+        title: 'Tên dịch vụ',
+        dataKey: 'Title',
+        width: 250,
+        sortable: false
+      },
+      {
+        key: '',
+        title: 'TG dùng gần nhất',
+        dataKey: 'Status',
+        cellRenderer: ({ rowData }) =>
+          rowData.CreateDateProd
+            ? moment(rowData.CreateDateProd).format('HH:mm DD/MM/YYYY')
+            : '',
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'TanSuatSDProd',
+        title: 'Tần xuất sử dụng',
+        dataKey: 'TanSuatSDProd',
+        width: 150,
+        cellRenderer: ({ rowData }) => rowData.TanSuatSDProd,
+        sortable: false
+      }
+    ],
+    [filters]
+  )
+
+  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    if (isScrolling)
+      return (
+        <div className="pl-15px d-flex align-items">
+          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+        </div>
+      )
+    const indexList = [0, 1, 2, 3, 4, 5]
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
+    }
+    return cells
+  }
+
+  const onPagesChange = ({ Pi, Ps }) => {
+    setFilters({ ...filters, Pi, Ps })
   }
 
   return (
@@ -242,208 +358,22 @@ function FrequencyUseCustomer(props) {
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
         </div>
         <div className="p-20px">
-          <ChildrenTables
+          <ReactTableV7
+            rowKey="Ids"
+            useIsScrolling
+            overscanRowCount={4}
+            filters={filters}
+            columns={columns}
             data={ListData}
-            columns={[
-              {
-                text: 'STT',
-                headerStyle: {
-                  minWidth: '60px',
-                  width: '60px',
-                  textAlign: 'center'
-                },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                text: 'Ngày tạo',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                },
-                attrs: { 'data-title': 'Ngày tạo' }
-              },
-              {
-                text: 'Tên khách hàng',
-                headerStyle: {
-                  minWidth: '200px',
-                  width: '200px'
-                },
-                attrs: { 'data-title': 'Tên khách hàng' }
-              },
-              {
-                text: 'Số điện thoại',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px'
-                },
-                attrs: { 'data-title': 'Số điện thoại' }
-              },
-              {
-                text: 'Cơ sở',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                },
-                attrs: { 'data-title': 'Cơ sở' }
-              },
-              {
-                text: 'Tần suất sử dụng',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px',
-                  textAlign: 'center'
-                }
-              },
-              {
-                text: 'Thời gian mua',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Tên dịch vụ',
-                headerStyle: {
-                  minWidth: '250px',
-                  width: '250px'
-                }
-              },
-              {
-                text: 'TG dùng gần nhất',
-                headerStyle: {
-                  minWidth: '180px',
-                  width: '180px'
-                }
-              },
-              {
-                text: 'Tần suất sử dụng',
-                headerStyle: {
-                  minWidth: '150px',
-                  width: '150px',
-                  textAlign: 'center'
-                }
-              }
-            ]}
-            options={{
-              totalSize: PageTotal,
-              page: filters.Pi,
-              sizePerPage: filters.Ps,
-              sizePerPageList: [10, 25, 30, 50],
-              onPageChange: page => {
-                setListData([])
-                const Pi = page
-                setFilters({ ...filters, Pi: Pi })
-              },
-              onSizePerPageChange: sizePerPage => {
-                setListData([])
-                const Ps = sizePerPage
-                setFilters({ ...filters, Ps: Ps, Pi: 1 })
-              }
-            }}
-            optionsMoible={{
-              itemShow: 0,
-              CallModal: row => OpenModalMobile(row),
-              columns: [
-                {
-                  attrs: { 'data-title': 'STT' },
-                  formatter: (row, index) => (
-                    <span className="font-number">
-                      {filters.Ps * (filters.Pi - 1) + (index + 1)}
-                    </span>
-                  )
-                },
-                {
-                  attrs: { 'data-title': 'Ngày tạo' },
-                  formatter: row =>
-                    moment(row.CreateDate).format('HH:mm DD/MM/YYYY')
-                },
-                {
-                  attrs: { 'data-title': 'Tên khách hàng' },
-                  formatter: row => row?.Member?.FullName || 'Chưa xác định'
-                },
-                {
-                  attrs: { 'data-title': 'Số điện thoại' },
-                  formatter: row => row?.Member?.Phone || 'Chưa xác định'
-                },
-                {
-                  attrs: { 'data-title': 'Cơ sở' },
-                  formatter: row => row?.StockName
-                },
-                {
-                  attrs: { 'data-title': 'Tần suất sử dụng' },
-                  formatter: row => row?.TanSuatSD
-                }
-              ]
-            }}
+            dataMobile={ListDataMobile}
             loading={loading}
-          >
-            {ListData &&
-              ListData.map((item, index) => (
-                <Fragment key={index}>
-                  {item?.ProdsList &&
-                    item?.ProdsList.map((order, orderIndex) => (
-                      <tr key={orderIndex}>
-                        {orderIndex === 0 && (
-                          <Fragment>
-                            <td
-                              className="vertical-align-middle text-center"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              <span className="font-number">
-                                {filters.Ps * (filters.Pi - 1) + (index + 1)}
-                              </span>
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {moment(item.CreateDate).format(
-                                'HH:mm DD/MM/YYYY'
-                              )}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {item?.Member?.FullName || 'Chưa xác định'}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {item?.Member?.Phone || 'Chưa xác định'}
-                            </td>
-                            <td
-                              className="vertical-align-middle"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {item?.StockName || 'Chưa xác định'}
-                            </td>
-                            <td
-                              className="vertical-align-middle text-center"
-                              rowSpan={item?.ProdsList.length}
-                            >
-                              {item?.TanSuatSD || 'Chưa xác định'}
-                            </td>
-                          </Fragment>
-                        )}
-                        <td>
-                          {moment(order.CreateDate).format('HH:mm DD/MM/YYYY')}
-                        </td>
-                        <td>
-                          {order.Title} (x{order.Qty})
-                        </td>
-                        <td>
-                          {moment(order.LastUsedTime).format(
-                            'HH:mm DD/MM/YYYY'
-                          )}
-                        </td>
-                        <td className="text-center">{order.TanSuatSD}</td>
-                      </tr>
-                    ))}
-                </Fragment>
-              ))}
-          </ChildrenTables>
+            pageCount={pageCount}
+            onPagesChange={onPagesChange}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
+            rowRenderer={rowRenderer}
+          />
         </div>
         <ModalViewMobile
           show={isModalMobile}

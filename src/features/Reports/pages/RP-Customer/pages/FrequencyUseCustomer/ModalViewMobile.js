@@ -22,7 +22,7 @@ function ModalViewMobile({ show, onHide, data }) {
     >
       <div className="modal-view-head align-items-baseline px-15px py-8px">
         <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
-          {data?.Member?.FullName || 'Chưa có tên KH'}
+          {data?.MemberFullName || 'Chưa có tên KH'}
         </div>
         <div
           className="modal-view-close font-size-h3 w-20px text-center"
