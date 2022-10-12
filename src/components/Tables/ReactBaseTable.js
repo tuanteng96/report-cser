@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import Pagination from '@material-ui/lab/Pagination'
 import { ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap'
-import Table from 'react-base-table'
+import Table, { AutoResizer } from 'react-base-table'
 import 'react-base-table/styles.css'
 import ElementEmpty from '../Empty/ElementEmpty'
 import Text from 'react-texty'
@@ -52,29 +52,34 @@ function ReactBaseTable({
 
   return (
     <div className="w-100" ref={refElm}>
-      <Table
-        ref={tableRef}
-        {...props}
-        fixed
-        rowKey={rowKey}
-        width={width}
-        height={500}
-        columns={columns}
-        data={data}
-        overlayRenderer={() => (
-          <>
-            {loading && (
-              <div className="BaseTable-loading">
-                <div className="spinner spinner-primary"></div>
-              </div>
-            )}
-          </>
-        )}
-        emptyRenderer={() => !loading && <ElementEmpty />}
-        rowRenderer={rowRenderer}
-        components={{ TableCell, TableHeaderCell }}
-        ignoreFunctionInColumnCompare={false}
-      />
+      <div className="w-100 h-500px">
+        <AutoResizer>
+          {({ width, height }) => (
+            <Table
+              {...props}
+              fixed
+              rowKey={rowKey}
+              width={width}
+              height={height}
+              columns={columns}
+              data={data}
+              overlayRenderer={() => (
+                <>
+                  {loading && (
+                    <div className="BaseTable-loading">
+                      <div className="spinner spinner-primary"></div>
+                    </div>
+                  )}
+                </>
+              )}
+              emptyRenderer={() => !loading && <ElementEmpty />}
+              rowRenderer={rowRenderer}
+              components={{ TableCell, TableHeaderCell }}
+              ignoreFunctionInColumnCompare={false}
+            />
+          )}
+        </AutoResizer>
+      </div>
       <div className="pagination d-flex justify-content-between align-items-center mt-15px">
         <Pagination
           count={pageCount}

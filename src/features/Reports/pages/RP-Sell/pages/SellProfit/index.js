@@ -138,22 +138,46 @@ function SellProfit(props) {
         key: 'ProdTitle',
         title: 'Sản phẩm / Nguyên vật liệu',
         dataKey: 'ProdTitle',
-        width: 450,
+        width: 350,
         sortable: false,
         mobileOptions: {
           visible: true
         }
       },
       {
-        key: 'ToPay',
-        title: 'Lợi nhuận',
-        dataKey: 'ToPay',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ToPay),
-        width: 200,
+        key: 'RealQty',
+        title: 'Số lượng Thực tế',
+        dataKey: 'RealQty',
+        width: 150,
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        align: 'right'
+      },
+      {
+        key: 'RealPay',
+        title: 'Doanh thu thực',
+        dataKey: 'RealPay',
+        width: 150,
+        sortable: false,
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.RealPay),
+        mobileOptions: {
+          visible: true
+        },
+        align: 'right'
+      },
+      {
+        key: 'Revenue',
+        title: 'Lợi nhuận',
+        dataKey: 'Revenue',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Revenue),
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        },
+        align: 'right'
       }
     ],
     [filters]
@@ -176,24 +200,48 @@ function SellProfit(props) {
       },
       {
         key: 'ProdTitle',
-        title: 'Phụ phí / Dịch vụ',
+        title: 'Dịch vụ / Phụ phí',
         dataKey: 'ProdTitle',
-        width: 450,
+        width: 320,
         sortable: false,
         mobileOptions: {
           visible: true
         }
       },
       {
-        key: 'Cost',
-        title: 'Lợi nhuận',
-        dataKey: 'Cost',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Cost),
-        width: 200,
+        key: 'RealQty',
+        title: 'Số lượng Thực tế',
+        dataKey: 'RealQty',
+        width: 150,
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        align: 'right'
+      },
+      {
+        key: 'RealPay',
+        title: 'Doanh thu theo buổi',
+        dataKey: 'RealPay',
+        width: 180,
+        sortable: false,
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.RealPay),
+        mobileOptions: {
+          visible: true
+        },
+        align: 'right'
+      },
+      {
+        key: 'Revenue',
+        title: 'Lợi nhuận',
+        dataKey: 'Revenue',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Revenue),
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        },
+        align: 'right'
       }
     ],
     [filters]
@@ -247,7 +295,9 @@ function SellProfit(props) {
               <div className="font-number fw-600 font-size-lg">
                 Tổng
                 <span className="text-success pl-5px">
-                  {PriceHelper.formatVND(getTotal(ListData.san_pham, 'ToPay'))}
+                  {PriceHelper.formatVND(
+                    getTotal(ListData.san_pham, 'Revenue')
+                  )}
                 </span>
               </div>
             </div>
@@ -273,7 +323,7 @@ function SellProfit(props) {
               <div className="font-number fw-600 font-size-lg">
                 Tổng
                 <span className="text-success pl-5px">
-                  {PriceHelper.formatVND(getTotal(ListData.dich_vu, 'Cost'))}
+                  {PriceHelper.formatVND(getTotal(ListData.dich_vu, 'Revenue'))}
                 </span>
               </div>
             </div>
