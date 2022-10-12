@@ -83,6 +83,7 @@ function CustomerUseApp(props) {
           setTotal({ Android, IOS })
           isFilter && setIsFilter(false)
           callback && callback()
+          PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))

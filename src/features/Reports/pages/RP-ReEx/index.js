@@ -147,6 +147,7 @@ function RPReEx(props) {
           setLoading(false)
           !loadingList && isFilter && setIsFilter(false)
           callback && callback()
+          PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))

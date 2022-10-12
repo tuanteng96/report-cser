@@ -106,8 +106,7 @@ function UseCardMoney(props) {
             TongTien: data.result?.TongTien || 0,
             PCount: data?.result?.PCount || 0
           }
-          console.log(convertArray(Items))
-          setListData(Items)
+          setListData(convertArray(Items))
           setListDataMobile(Items)
           setTotalValue(TongTien)
           setLoading(false)
@@ -115,6 +114,7 @@ function UseCardMoney(props) {
           setPageCount(PCount)
           isFilter && setIsFilter(false)
           callback && callback()
+          PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))
@@ -360,7 +360,7 @@ function UseCardMoney(props) {
             useIsScrolling
             filters={filters}
             columns={columns}
-            data={convertArray(ListData)}
+            data={ListData}
             dataMobile={ListDataMobile}
             loading={loading}
             pageCount={pageCount}

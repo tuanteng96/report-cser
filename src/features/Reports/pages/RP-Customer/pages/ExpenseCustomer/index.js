@@ -112,6 +112,7 @@ function ExpenseCustomer(props) {
           setLoading(false)
           isFilter && setIsFilter(false)
           callback && callback()
+          PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))

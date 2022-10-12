@@ -82,6 +82,7 @@ function TotalWallet(props) {
           setPageCount(PCount)
           isFilter && setIsFilter(false)
           callback && callback()
+          PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))
