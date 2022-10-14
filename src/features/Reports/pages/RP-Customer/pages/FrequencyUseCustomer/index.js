@@ -12,8 +12,13 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { JsonFilter } from 'src/Json/JsonFilter'
 
 moment.locale('vi')
+
+var thisYear = new Date().getFullYear()
+var start = new Date('1/1/' + thisYear)
+var defaultStart = moment(start.valueOf()).toDate()
 
 const convertArray = arrays => {
   const newArray = []
@@ -56,10 +61,10 @@ function FrequencyUseCustomer(props) {
     DayService: '', // Khoảng thời gian không đến làm dịch vụ
     LastUsedFrom: null, // Ngày dùng cuối từ
     LastUsedTo: null, // Ngày dùng cuối đến
-    Frequency: 'NGAY', // Tần suất SD
+    Frequency: JsonFilter.FrequencyList[1], // Tần suất SD
     FrequencyDay: '', // Tuần suất theo ngày
     StatusServices: '',
-    FrequencyDateStart: null,
+    FrequencyDateStart: defaultStart,
     FrequencyDateEnd: null
   })
   const [StockName, setStockName] = useState('')
