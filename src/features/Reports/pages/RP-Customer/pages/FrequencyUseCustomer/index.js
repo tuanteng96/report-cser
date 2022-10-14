@@ -65,7 +65,7 @@ function FrequencyUseCustomer(props) {
     FrequencyDay: '', // Tuần suất theo ngày
     StatusServices: '',
     FrequencyDateStart: defaultStart,
-    FrequencyDateEnd: moment().format().toDate()
+    FrequencyDateEnd: moment().toDate()
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
