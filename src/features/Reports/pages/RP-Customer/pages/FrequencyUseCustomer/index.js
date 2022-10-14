@@ -163,8 +163,6 @@ function FrequencyUseCustomer(props) {
     })
   }
 
-  console.log(ListData)
-
   const columns = useMemo(
     () => [
       {
@@ -241,7 +239,7 @@ function FrequencyUseCustomer(props) {
       },
       {
         key: 'TanSuatSD',
-        title: 'Tần xuất sử dụng',
+        title: 'Tần suất sử dụng',
         dataKey: 'TanSuatSD',
         width: 200,
         sortable: false,
@@ -252,12 +250,12 @@ function FrequencyUseCustomer(props) {
             : 1
       },
       {
-        key: 'CreateDate',
+        key: 'CreateDateProd',
         title: 'Thời gian mua',
-        dataKey: 'CreateDate',
+        dataKey: 'CreateDateProd',
         cellRenderer: ({ rowData }) =>
-          rowData.CreateDate
-            ? moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY')
+          rowData.CreateDateProd
+            ? moment(rowData.CreateDateProd).format('HH:mm DD/MM/YYYY')
             : '',
         width: 180,
         sortable: false
@@ -270,19 +268,19 @@ function FrequencyUseCustomer(props) {
         sortable: false
       },
       {
-        key: '',
+        key: 'LastUsedTime',
         title: 'TG dùng gần nhất',
-        dataKey: 'Status',
+        dataKey: 'LastUsedTime',
         cellRenderer: ({ rowData }) =>
-          rowData.CreateDateProd
-            ? moment(rowData.CreateDateProd).format('HH:mm DD/MM/YYYY')
+          rowData.LastUsedTime
+            ? moment(rowData.LastUsedTime).format('HH:mm DD/MM/YYYY')
             : '',
         width: 150,
         sortable: false
       },
       {
         key: 'TanSuatSDProd',
-        title: 'Tần xuất sử dụng',
+        title: 'Tần suất sử dụng',
         dataKey: 'TanSuatSDProd',
         width: 150,
         cellRenderer: ({ rowData }) => rowData.TanSuatSDProd,
