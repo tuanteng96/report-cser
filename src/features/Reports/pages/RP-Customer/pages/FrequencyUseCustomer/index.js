@@ -61,11 +61,11 @@ function FrequencyUseCustomer(props) {
     DayService: '', // Khoảng thời gian không đến làm dịch vụ
     LastUsedFrom: null, // Ngày dùng cuối từ
     LastUsedTo: null, // Ngày dùng cuối đến
-    Frequency: JsonFilter.FrequencyList[1], // Tần suất SD
+    Frequency: JsonFilter.FrequencyList[2], // Tần suất SD
     FrequencyDay: '', // Tuần suất theo ngày
     StatusServices: '',
     FrequencyDateStart: defaultStart,
-    FrequencyDateEnd: null
+    FrequencyDateEnd: moment().format().toDate()
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
