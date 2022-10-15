@@ -37,7 +37,8 @@ function Sales(props) {
     Voucher: '', // Trạng thái
     Payment: '', // Bảo hành
     IsMember: '', // Loại khách hàng
-    MemberID: '' // ID khách hàng
+    MemberID: '', // ID khách hàng
+    SourceName: ''
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
