@@ -33,7 +33,7 @@ const convertArray = arrays => {
           OrderTongNo: order.TongNo,
           ...obj,
           rowIndex: index,
-          Id: uuidv4()
+          Ids: uuidv4()
         }
         if (x === 0 && o === 0) {
         } else {
@@ -426,7 +426,7 @@ function Home(props) {
         <div className="p-20px">
           <ReactTableV7
             rowKey="Ids"
-            overscanRowCount={4}
+            overscanRowCount={50}
             useIsScrolling
             filters={filters}
             columns={columns}

@@ -421,7 +421,7 @@ function SalesStaff(props) {
         <div className="p-20px">
           <ReactTableV7
             rowKey="Ids"
-            overscanRowCount={4}
+            overscanRowCount={50}
             useIsScrolling
             filters={filters}
             columns={columns}

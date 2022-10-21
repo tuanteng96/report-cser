@@ -17,7 +17,17 @@ const MenuList = [
     Title: 'Báo cáo ngày',
     TitleKey: 'BAO_CAO_NGAY',
     IconClass: 'fa-regular fa-chart-pie icon',
-    Href: '/'
+    Href: '/bao-cao-ngay',
+    Children: [
+      {
+        Title: 'Tổng quan',
+        Href: '/bao-cao-ngay/tong-quan'
+      },
+      {
+        Title: 'Khách hàng',
+        Href: '/bao-cao-ngay/khach-hang'
+      }
+    ]
   },
   {
     Title: 'Khách hàng',

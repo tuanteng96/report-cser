@@ -44,18 +44,25 @@ import SaleReduced from 'src/features/Reports/pages/RP-Sell/pages/SaleReduced'
 import UsedElsewhere from 'src/features/Reports/pages/RP-Services/pages/UsedElsewhere'
 import ConvertCustomer from 'src/features/Reports/pages/RP-Customer/pages/ConvertCustomer'
 import SellProfit from 'src/features/Reports/pages/RP-Sell/pages/SellProfit'
+import DaysCustomer from 'src/features/Reports/pages/RP-Day/pages/DaysCustomer'
+import DaysOverview from 'src/features/Reports/pages/RP-Day/pages/DaysOverview'
 
 function RouterPage(props) {
   return (
     <Routes>
+      <Route index element={<Navigate to="/bao-cao-ngay/tong-quan" replace />} />
       <Route
-        path="/"
+        path="/bao-cao-ngay"
         element={
           <LayoutReport>
             <RPDay />
           </LayoutReport>
         }
-      ></Route>
+      >
+        <Route index element={<Navigate to="tong-quan" replace />} />
+        <Route path="tong-quan" element={<DaysOverview />} />
+        <Route path="khach-hang" element={<DaysCustomer />} />
+      </Route>
       <Route
         path="/khach-hang"
         element={

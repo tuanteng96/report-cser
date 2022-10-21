@@ -1,6 +1,6 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
-import ChartWidget from '../../components/ChartWidget'
+import ChartWidget from 'src/features/Reports/components/ChartWidget'
 
 function LoadingSkeleton() {
   return (

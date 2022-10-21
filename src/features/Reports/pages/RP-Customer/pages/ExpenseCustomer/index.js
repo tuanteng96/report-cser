@@ -240,7 +240,7 @@ function ExpenseCustomer(props) {
       },
       {
         key: 'TongChiTieu',
-        title: 'Tồn tiền chi tiêu',
+        title: 'Tổng tiền chi tiêu',
         dataKey: 'TongChiTieu',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(rowData.TongChiTieu),
@@ -438,7 +438,7 @@ function ExpenseCustomer(props) {
           <ReactTableV7
             rowKey="Ids"
             useIsScrolling
-            overscanRowCount={4}
+            overscanRowCount={50}
             filters={filters}
             columns={columns}
             data={ListData}

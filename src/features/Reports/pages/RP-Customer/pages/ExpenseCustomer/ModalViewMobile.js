@@ -46,7 +46,7 @@ function ModalViewMobile({ show, onHide, data }) {
           <div className="fw-600">{data?.StockName}</div>
         </div>
         <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
-          <div>Tồn tiền chi tiêu</div>
+          <div>Tổng tiền chi tiêu</div>
           <div className="fw-600">
             {PriceHelper.formatVND(data?.TongChiTieu)}
           </div>

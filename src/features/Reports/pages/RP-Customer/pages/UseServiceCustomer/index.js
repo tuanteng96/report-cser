@@ -339,7 +339,7 @@ function UseServiceCustomer(props) {
           <ReactTableV7
             rowKey="Ids"
             useIsScrolling
-            overscanRowCount={4}
+            overscanRowCount={50}
             filters={filters}
             columns={columns}
             data={ListData}
