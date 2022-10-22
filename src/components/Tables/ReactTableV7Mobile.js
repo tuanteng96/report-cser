@@ -137,47 +137,49 @@ function ReactTableV7Mobile({
           )}
         </>
       )}
-      <div className="pagination d-flex justify-content-between align-items-center mt-15px">
-        <Pagination
-          count={controlledPageCount}
-          page={filters.Pi}
-          siblingCount={1}
-          boundaryCount={1}
-          variant="outlined"
-          shape="rounded"
-          onChange={(event, value) => {
-            onPagesChange({
-              Pi: value,
-              Ps: filters.Ps
-            })
-          }}
-        />
-        <div className="d-flex align-items-center text-gray-500">
-          <DropdownButton
-            as={ButtonGroup}
-            key="secondary"
-            id={`dropdown-variants-Secondary`}
-            variant=" font-weight-boldest"
-            title={filters.Ps}
-          >
-            {sizePerPageLists.map((item, index) => (
-              <Dropdown.Item
-                key={index}
-                eventKey={index}
-                active={item === filters.Ps}
-                onClick={() => {
-                  onPagesChange({
-                    Pi: 1,
-                    Ps: item
-                  })
-                }}
-              >
-                {item}
-              </Dropdown.Item>
-            ))}
-          </DropdownButton>
+      {filters && (
+        <div className="pagination d-flex justify-content-between align-items-center mt-15px">
+          <Pagination
+            count={controlledPageCount}
+            page={filters.Pi}
+            siblingCount={1}
+            boundaryCount={1}
+            variant="outlined"
+            shape="rounded"
+            onChange={(event, value) => {
+              onPagesChange({
+                Pi: value,
+                Ps: filters.Ps
+              })
+            }}
+          />
+          <div className="d-flex align-items-center text-gray-500">
+            <DropdownButton
+              as={ButtonGroup}
+              key="secondary"
+              id={`dropdown-variants-Secondary`}
+              variant=" font-weight-boldest"
+              title={filters.Ps}
+            >
+              {sizePerPageLists.map((item, index) => (
+                <Dropdown.Item
+                  key={index}
+                  eventKey={index}
+                  active={item === filters.Ps}
+                  onClick={() => {
+                    onPagesChange({
+                      Pi: 1,
+                      Ps: item
+                    })
+                  }}
+                >
+                  {item}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

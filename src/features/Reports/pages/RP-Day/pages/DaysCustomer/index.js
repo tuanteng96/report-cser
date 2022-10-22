@@ -30,7 +30,40 @@ const jsonData = [
       {
         Ids: uuidv4(),
         id: `0-detail`,
-        content: 'lorem.paragraphs()'
+        MajorList: [
+          {
+            Order: {
+              ID: '83254',
+              Prods: [
+                {
+                  Title: 'Kem trị nám',
+                  Qty: 5
+                },
+                {
+                  Title: 'Triệt lông',
+                  Qty: 3
+                }
+              ],
+              GiaTriDonHang: 1580000,
+              ThanhToan: 1280000,
+              Vi: 500000,
+              TheTien: 300000,
+              No: 300000,
+              HoaHong: [
+                {
+                  FullName: 'Linh',
+                  Bonus: 50000
+                }
+              ],
+              DoanhSo: [
+                {
+                  FullName: 'Đức Hướng',
+                  Bonus: 25000
+                }
+              ]
+            }
+          }
+        ]
       }
     ]
   },
@@ -51,14 +84,189 @@ const jsonData = [
       {
         Ids: uuidv4(),
         id: `1-detail`,
-        content: 'lorem.paragraphs()'
+        MajorList: [
+          {
+            Order: {
+              ID: '83254',
+              Prods: [
+                {
+                  Title: 'Kem trị nám',
+                  Qty: 5
+                },
+                {
+                  Title: 'Triệt lông',
+                  Qty: 3
+                }
+              ],
+              GiaTriDonHang: 1580000,
+              ThanhToan: 1280000,
+              Vi: 500000,
+              TheTien: 300000,
+              No: 300000,
+              HoaHong: [
+                {
+                  FullName: 'Linh',
+                  Bonus: 50000
+                }
+              ],
+              DoanhSo: [
+                {
+                  FullName: 'Đức Hướng',
+                  Bonus: 25000
+                }
+              ]
+            }
+          }
+        ]
       }
     ]
   }
 ]
 
-const DetailRenderer = ({ rowData, cells }) => {
-  return '123'
+const DetailRenderer = props => {
+  const data = props.rowData.MajorList
+  const columns = useMemo(
+    () => [
+      {
+        key: 'ID',
+        title: 'Đơn hàng',
+        dataKey: 'ID',
+        cellRenderer: ({ rowData }) => `Đơn hàng mới #${rowData.Order.ID}`,
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Prods',
+        title: 'Sản phẩm',
+        dataKey: 'Prods',
+        cellRenderer: ({ rowData }) =>
+          rowData.Order.Prods.map(item => `${item.Title} (x${item.Qty})`).join(
+            ', '
+          ),
+        width: 220,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'GiaTriDonHang',
+        title: 'Giá bán đơn hàng',
+        dataKey: 'GiaTriDonHang',
+        cellRenderer: ({ rowData }) => (
+          <div>
+            <div>Giá trị đơn hàng</div>
+            <div>{PriceHelper.formatVND(rowData.Order.GiaTriDonHang)}</div>
+          </div>
+        ),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'ThanhToan',
+        title: 'Thanh toán',
+        dataKey: 'ThanhToan',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.Order.ThanhToan),
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'Vi',
+        title: 'Thanh toán ví',
+        dataKey: 'Vi',
+        cellRenderer: ({ rowData }) => (
+          <div>
+            <div>Thanh toán ví</div>
+            <div>{PriceHelper.formatVND(rowData.Order.Vi)}</div>
+          </div>
+        ),
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'TheTien',
+        title: 'Thanh toán thẻ tiền',
+        dataKey: 'TheTien',
+        cellRenderer: ({ rowData }) => (
+          <div>
+            <div>Thanh toán thẻ tiền</div>
+            <div>{PriceHelper.formatVND(rowData.Order.TheTien)}</div>
+          </div>
+        ),
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'No',
+        title: 'Còn nợ',
+        dataKey: 'No',
+        cellRenderer: ({ rowData }) => (
+          <div>
+            <div>Còn nợ</div>
+            <div>{PriceHelper.formatVND(rowData.Order.No)}</div>
+          </div>
+        ),
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'HoaHong',
+        title: 'Hoa hồng',
+        dataKey: 'HoaHong',
+        cellRenderer: ({ rowData }) => (
+          <div>
+            <div>Hoa hồng</div>
+            {rowData.Order.HoaHong.map((item, index) => (
+              <div key={index}>
+                {item.FullName} {PriceHelper.formatVND(item.Bonus)}
+              </div>
+            ))}
+          </div>
+        ),
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'DoanhSo',
+        title: 'Doanh số',
+        dataKey: 'DoanhSo',
+        cellRenderer: ({ rowData }) => (
+          <div>
+            <div>Doanh số</div>
+            {rowData.Order.DoanhSo.map((item, index) => (
+              <div key={index}>
+                {item.FullName} {PriceHelper.formatVND(item.Bonus)}
+              </div>
+            ))}
+          </div>
+        ),
+        width: 200,
+        sortable: false
+      }
+    ],
+    []
+  )
+
+  return (
+    <div className="p-15px w-100">
+      <ReactTableV7
+        rowKey="Ids"
+        columns={columns}
+        data={data}
+        loading={false}
+        pageCount={1}
+        estimatedRowHeight={50}
+        headerHeight={0}
+      />
+    </div>
+  )
 }
 
 function DaysCustomer(props) {
@@ -199,40 +407,36 @@ function DaysCustomer(props) {
   )
 
   const rowRenderer = ({ rowData, cells }) => {
-    if (rowData.content)
+    if (rowData.MajorList)
       return <DetailRenderer rowData={rowData} cells={cells} />
     return cells
   }
 
-  const ExpandIcon = props => {
-    let { expandable, expanded, onExpand } = props
-    let cls = 'table__expandicon'
+  // const ExpandIcon = props => {
+  //   let { expandable, expanded, onExpand } = props
+  //   let cls = 'table__expandicon'
 
-    if (expandable === false) {
-      return null
-    }
+  //   if (expandable === false) {
+  //     return null
+  //   }
 
-    if (expanded === true) {
-      cls += ' expanded'
-    }
+  //   if (expanded === true) {
+  //     cls += ' expanded'
+  //   }
 
-    return (
-      <span
-        className={cls}
-        onClick={() => {
-          onExpand(!expanded)
-        }}
-      />
-    )
-  }
+  //   return (
+  //     <span
+  //       className={cls}
+  //       onClick={() => {
+  //         onExpand(!expanded)
+  //       }}
+  //     />
+  //   )
+  // }
 
-  const Cell = cellProps => {
-    const renderer = <div>123</div>
-    return renderer(cellProps)
-  }
-
-  const components = {
-    ExpandIcon: Cell
+  const AdvanceExpandIcon = cellProps => {
+    console.log(cellProps)
+    return <div></div>
   }
 
   return (
@@ -280,7 +484,13 @@ function DaysCustomer(props) {
             pageCount={pageCount}
             onPagesChange={onPagesChange}
             rowRenderer={rowRenderer}
-            components={components}
+            estimatedRowHeight={50}
+            // components={{
+            //   ExpandIcon: AdvanceExpandIcon
+            // }}
+            rowEventHandlers={{
+              onClick: ({ event }) => console.log(event)
+            }}
             // optionMobile={{
             //   CellModal: cell => OpenModalMobile(cell)
             // }}

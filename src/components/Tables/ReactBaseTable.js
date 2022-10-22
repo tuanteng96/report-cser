@@ -24,6 +24,8 @@ function ReactBaseTable({
   pageCount,
   rowKey,
   rowRenderer,
+  components,
+  maxHeight,
   ...props
 }) {
   const tableRef = useRef(null)
@@ -68,57 +70,59 @@ function ReactBaseTable({
               )}
               emptyRenderer={() => !loading && <ElementEmpty />}
               rowRenderer={rowRenderer}
-              components={{ TableCell, TableHeaderCell }}
+              components={{ TableCell, TableHeaderCell, ...components }}
               ignoreFunctionInColumnCompare={false}
             />
           )}
         </AutoResizer>
       </div>
-      <div className="pagination d-flex justify-content-between align-items-center mt-15px">
-        <Pagination
-          count={pageCount}
-          page={filters.Pi}
-          siblingCount={1}
-          boundaryCount={1}
-          variant="outlined"
-          shape="rounded"
-          onChange={(event, value) => {
-            onPagesChange({
-              Pi: value,
-              Ps: filters.Ps
-            })
-          }}
-        />
-        <div className="d-flex align-items-center text-gray-500">
-          Hiển thị
-          <div className="px-8px">
-            <DropdownButton
-              as={ButtonGroup}
-              key="secondary"
-              id={`dropdown-variants-Secondary`}
-              variant=" font-weight-boldest"
-              title={filters.Ps}
-            >
-              {sizePerPageLists.map((item, index) => (
-                <Dropdown.Item
-                  key={index}
-                  eventKey={index}
-                  active={item === filters.Ps}
-                  onClick={() => {
-                    onPagesChange({
-                      Pi: 1,
-                      Ps: item
-                    })
-                  }}
-                >
-                  {item}
-                </Dropdown.Item>
-              ))}
-            </DropdownButton>
+      {filters && (
+        <div className="pagination d-flex justify-content-between align-items-center mt-15px">
+          <Pagination
+            count={pageCount}
+            page={filters.Pi}
+            siblingCount={1}
+            boundaryCount={1}
+            variant="outlined"
+            shape="rounded"
+            onChange={(event, value) => {
+              onPagesChange({
+                Pi: value,
+                Ps: filters.Ps
+              })
+            }}
+          />
+          <div className="d-flex align-items-center text-gray-500">
+            Hiển thị
+            <div className="px-8px">
+              <DropdownButton
+                as={ButtonGroup}
+                key="secondary"
+                id={`dropdown-variants-Secondary`}
+                variant=" font-weight-boldest"
+                title={filters.Ps}
+              >
+                {sizePerPageLists.map((item, index) => (
+                  <Dropdown.Item
+                    key={index}
+                    eventKey={index}
+                    active={item === filters.Ps}
+                    onClick={() => {
+                      onPagesChange({
+                        Pi: 1,
+                        Ps: item
+                      })
+                    }}
+                  >
+                    {item}
+                  </Dropdown.Item>
+                ))}
+              </DropdownButton>
+            </div>
+            trên trang
           </div>
-          trên trang
         </div>
-      </div>
+      )}
     </div>
   )
 }
