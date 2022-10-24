@@ -1,14 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import { useSelector } from 'react-redux'
 import Filter from 'src/components/Filter/Filter'
 import _ from 'lodash'
 import { uuidv4 } from '@nikitababko/id-generator'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+import ModalViewMobile from './ModalViewMobile'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 moment.locale('vi')
 
@@ -20,8 +21,6 @@ const jsonData = [
     FullName: 'Nguyễn Tài Tuấn',
     Phone: '0971021196',
     TongThanhToan: 1580000,
-    Vi: 500000,
-    TheTien: 80000,
     No: 300000,
     CK: 300000,
     TM: 200000,
@@ -44,7 +43,7 @@ const jsonData = [
                   Qty: 3
                 }
               ],
-              GiaTriDonHang: 1580000,
+              GiaBanDonHang: 1580000,
               ThanhToan: 1280000,
               Vi: 500000,
               TheTien: 300000,
@@ -62,6 +61,92 @@ const jsonData = [
                 }
               ]
             }
+          },
+          {
+            PayDebt: {
+              ID: '83254',
+              Prods: [
+                {
+                  Title: 'Kem trị nám',
+                  Qty: 5
+                },
+                {
+                  Title: 'Triệt lông',
+                  Qty: 3
+                }
+              ],
+              ThanhToan: 1280000,
+              Vi: 500000,
+              TheTien: 300000,
+              No: 300000,
+              HoaHong: [
+                {
+                  FullName: 'Linh',
+                  Bonus: 50000
+                }
+              ],
+              DoanhSo: [
+                {
+                  FullName: 'Đức Hướng',
+                  Bonus: 25000
+                }
+              ]
+            }
+          },
+          {
+            Returns: {
+              ID: '83254',
+              Prods: [
+                {
+                  Title: 'Kem trị nám',
+                  Qty: 5
+                },
+                {
+                  Title: 'Triệt lông',
+                  Qty: 3
+                }
+              ],
+              GiaTriDonTra: 1280000,
+              HoanTienMat: 500000,
+              HoanVi: 500000,
+              HoanTheTien: 300000,
+              HoaHongGiam: [
+                {
+                  FullName: 'Linh',
+                  Bonus: 50000
+                }
+              ],
+              DoanhSoGiam: [
+                {
+                  FullName: 'Đức Hướng',
+                  Bonus: 25000
+                }
+              ]
+            }
+          },
+          {
+            Services: [
+              {
+                Type: 'Thực hiện dịch vụ',
+                Title: 'Chăm sóc da mặt',
+                PhuPhi: 'Phụ phí làm ngoài giờ',
+                HoaHong: [
+                  {
+                    FullName: 'Linh',
+                    Bonus: 50000
+                  }
+                ]
+              },
+              {
+                Title: 'Giảm béo công nghệ Laser',
+                HoaHong: [
+                  {
+                    FullName: 'Linh',
+                    Bonus: 50000
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
@@ -73,9 +158,6 @@ const jsonData = [
     FullName: 'Nguyễn Tài Tuấn',
     Phone: '0971021196',
     TongThanhToan: 1580000,
-    Vi: 500000,
-    TheTien: 80000,
-    No: 300000,
     CK: 300000,
     TM: 200000,
     QT: 150000,
@@ -98,7 +180,7 @@ const jsonData = [
                   Qty: 3
                 }
               ],
-              GiaTriDonHang: 1580000,
+              GiaBanDonHang: 1580000,
               ThanhToan: 1280000,
               Vi: 500000,
               TheTien: 300000,
@@ -125,146 +207,234 @@ const jsonData = [
 
 const DetailRenderer = props => {
   const data = props.rowData.MajorList
-  const columns = useMemo(
-    () => [
-      {
-        key: 'ID',
-        title: 'Đơn hàng',
-        dataKey: 'ID',
-        cellRenderer: ({ rowData }) => `Đơn hàng mới #${rowData.Order.ID}`,
-        width: 150,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'Prods',
-        title: 'Sản phẩm',
-        dataKey: 'Prods',
-        cellRenderer: ({ rowData }) =>
-          rowData.Order.Prods.map(item => `${item.Title} (x${item.Qty})`).join(
-            ', '
-          ),
-        width: 220,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'GiaTriDonHang',
-        title: 'Giá bán đơn hàng',
-        dataKey: 'GiaTriDonHang',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            <div>Giá trị đơn hàng</div>
-            <div>{PriceHelper.formatVND(rowData.Order.GiaTriDonHang)}</div>
-          </div>
-        ),
-        width: 180,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'ThanhToan',
-        title: 'Thanh toán',
-        dataKey: 'ThanhToan',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.Order.ThanhToan),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'Vi',
-        title: 'Thanh toán ví',
-        dataKey: 'Vi',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            <div>Thanh toán ví</div>
-            <div>{PriceHelper.formatVND(rowData.Order.Vi)}</div>
-          </div>
-        ),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'TheTien',
-        title: 'Thanh toán thẻ tiền',
-        dataKey: 'TheTien',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            <div>Thanh toán thẻ tiền</div>
-            <div>{PriceHelper.formatVND(rowData.Order.TheTien)}</div>
-          </div>
-        ),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'No',
-        title: 'Còn nợ',
-        dataKey: 'No',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            <div>Còn nợ</div>
-            <div>{PriceHelper.formatVND(rowData.Order.No)}</div>
-          </div>
-        ),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'HoaHong',
-        title: 'Hoa hồng',
-        dataKey: 'HoaHong',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            <div>Hoa hồng</div>
-            {rowData.Order.HoaHong.map((item, index) => (
-              <div key={index}>
-                {item.FullName} {PriceHelper.formatVND(item.Bonus)}
-              </div>
-            ))}
-          </div>
-        ),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'DoanhSo',
-        title: 'Doanh số',
-        dataKey: 'DoanhSo',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            <div>Doanh số</div>
-            {rowData.Order.DoanhSo.map((item, index) => (
-              <div key={index}>
-                {item.FullName} {PriceHelper.formatVND(item.Bonus)}
-              </div>
-            ))}
-          </div>
-        ),
-        width: 200,
-        sortable: false
-      }
-    ],
-    []
-  )
-
   return (
     <div className="p-15px w-100">
-      <ReactTableV7
-        rowKey="Ids"
-        columns={columns}
-        data={data}
-        loading={false}
-        pageCount={1}
-        estimatedRowHeight={50}
-        headerHeight={0}
-      />
+      <div className="table-responsive">
+        <table className="table table-bordered mb-0">
+          <tbody>
+            {data &&
+              data.map((item, index) => (
+                <Fragment key={index}>
+                  {item.Order && (
+                    <tr>
+                      <td className="vertical-align-middle min-w-200px w-200px">
+                        <div>Đơn hàng mới</div>
+                        <span className="fw-600 pl-5px">#{item.Order.ID}</span>
+                      </td>
+                      <td className="vertical-align-middle min-w-300px w-300px">
+                        <div>Sản phẩm / Dịch vụ</div>
+                        <div className="fw-600">
+                          {item.Order.Prods.map(
+                            item => `${item.Title} (x${item.Qty})`
+                          ).join(', ')}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Giá bán đơn hàng</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.Order.GiaBanDonHang)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Thanh toán</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.Order.ThanhToan)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Thanh toán ví</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.Order.Vi)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Thanh toán thẻ tiền</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.Order.TheTien)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Còn nợ</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.Order.No)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Hoa hồng</div>
+                        {item.Order.HoaHong.map((item, index) => (
+                          <div className="fw-600" key={index}>
+                            {item.FullName} {PriceHelper.formatVND(item.Bonus)}
+                          </div>
+                        ))}
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Doanh số</div>
+                        {item.Order.DoanhSo.map((item, index) => (
+                          <div className="fw-600" key={index}>
+                            {item.FullName} {PriceHelper.formatVND(item.Bonus)}
+                          </div>
+                        ))}
+                      </td>
+                    </tr>
+                  )}
+                  {item.PayDebt && (
+                    <tr>
+                      <td className="vertical-align-middle min-w-200px w-200px">
+                        <div>Thanh toán nợ</div>
+                        <span className="fw-600 pl-5px">
+                          #{item.PayDebt.ID}
+                        </span>
+                      </td>
+                      <td className="vertical-align-middle min-w-300px w-300px">
+                        <div>Sản phẩm / Dịch vụ</div>
+                        <div className="fw-600">
+                          {item.PayDebt.Prods.map(
+                            item => `${item.Title} (x${item.Qty})`
+                          ).join(', ')}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px"></td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Thanh toán</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.PayDebt.ThanhToan)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Thanh toán ví</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.PayDebt.Vi)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Thanh toán thẻ tiền</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.PayDebt.TheTien)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Còn nợ</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.PayDebt.No)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Hoa hồng</div>
+                        {item.PayDebt.HoaHong.map((item, index) => (
+                          <div className="fw-600" key={index}>
+                            {item.FullName} {PriceHelper.formatVND(item.Bonus)}
+                          </div>
+                        ))}
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Doanh số</div>
+                        {item.PayDebt.DoanhSo.map((item, index) => (
+                          <div className="fw-600" key={index}>
+                            {item.FullName} {PriceHelper.formatVND(item.Bonus)}
+                          </div>
+                        ))}
+                      </td>
+                    </tr>
+                  )}
+                  {item.Returns && (
+                    <tr>
+                      <td className="vertical-align-middle min-w-200px w-200px">
+                        <div>Đơn trả hàng</div>
+                        <span className="fw-600 pl-5px">
+                          #{item.Returns.ID}
+                        </span>
+                      </td>
+                      <td className="vertical-align-middle min-w-300px w-300px">
+                        <div>Sản phẩm / Dịch vụ</div>
+                        <div className="fw-600">
+                          {item.Returns.Prods.map(
+                            item => `${item.Title} (x${item.Qty})`
+                          ).join(', ')}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Giá trị đơn trả</div>
+                        <div className="fw-600 text-danger">
+                          {PriceHelper.formatVND(item.Returns.GiaTriDonTra)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Hoàn tiền mặt</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.Returns.HoanTienMat)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Hoàn ví</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.Returns.HoanVi)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Hoàn thẻ tiền</div>
+                        <div className="fw-600">
+                          {PriceHelper.formatVND(item.Returns.HoanTheTien)}
+                        </div>
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px"></td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div>Hoa hồng giảm</div>
+                        {item.Returns.HoaHongGiam.map((item, index) => (
+                          <div className="fw-600" key={index}>
+                            {item.FullName} {PriceHelper.formatVND(item.Bonus)}
+                          </div>
+                        ))}
+                      </td>
+                      <td className="vertical-align-middle min-w-180px w-180px">
+                        <div className="fw-600">Doanh số giảm</div>
+                        {item.Returns.DoanhSoGiam.map((item, index) => (
+                          <div className="fw-600" key={index}>
+                            {item.FullName} {PriceHelper.formatVND(item.Bonus)}
+                          </div>
+                        ))}
+                      </td>
+                    </tr>
+                  )}
+                  {item.Services &&
+                    item.Services.map((service, idx) => (
+                      <tr key={idx}>
+                        {service.Type && (
+                          <td
+                            className="vertical-align-middle min-w-200px w-200px fw-600"
+                            rowSpan={item.Services.length}
+                          >
+                            {service.Type}
+                          </td>
+                        )}
+
+                        <td className="vertical-align-middle min-w-300px w-300px">
+                          <div>Sản phẩm / Dịch vụ</div>
+                          <div className="fw-600">{service.Title}</div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div className="fw-600">{service.PhuPhi}</div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px"></td>
+                        <td className="vertical-align-middle min-w-180px w-180px"></td>
+                        <td className="vertical-align-middle min-w-180px w-180px"></td>
+                        <td className="vertical-align-middle min-w-180px w-180px"></td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Hoa hồng</div>
+                          {service.HoaHong.map((item, index) => (
+                            <div className="fw-600" key={index}>
+                              {item.FullName}{' '}
+                              {PriceHelper.formatVND(item.Bonus)}
+                            </div>
+                          ))}
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px"></td>
+                      </tr>
+                    ))}
+                </Fragment>
+              ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
@@ -285,6 +455,8 @@ function DaysCustomer(props) {
     Ps: 15, // Số lượng item
     MemberID: '' // ID Khách hàng
   })
+  const [initialValuesMobile, setInitialValuesMobile] = useState(null)
+  const [isModalMobile, setIsModalMobile] = useState(false)
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -357,7 +529,8 @@ function DaysCustomer(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        className: 'flex-1'
       },
       {
         key: 'Phone',
@@ -377,30 +550,6 @@ function DaysCustomer(props) {
           PriceHelper.formatVND(rowData.TongThanhToan),
         width: 200,
         sortable: false
-      },
-      {
-        key: 'Vi',
-        title: 'Thanh toán ví',
-        dataKey: 'Vi',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Vi),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'TheTien',
-        title: 'Thanh toán thẻ tiền',
-        dataKey: 'TheTien',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.TheTien),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'No',
-        title: 'Còn nợ',
-        dataKey: 'No',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.TheTien),
-        width: 200,
-        sortable: false
       }
     ],
     [filters]
@@ -412,31 +561,38 @@ function DaysCustomer(props) {
     return cells
   }
 
-  // const ExpandIcon = props => {
-  //   let { expandable, expanded, onExpand } = props
-  //   let cls = 'table__expandicon'
+  const ExpandIcon = props => {
+    let { expandable, expanded, onExpand } = props
+    let cls = 'table__expandicon'
 
-  //   if (expandable === false) {
-  //     return null
-  //   }
+    if (expandable === false) {
+      return null
+    }
 
-  //   if (expanded === true) {
-  //     cls += ' expanded'
-  //   }
+    if (expanded === true) {
+      cls += ' expanded'
+    }
 
-  //   return (
-  //     <span
-  //       className={cls}
-  //       onClick={() => {
-  //         onExpand(!expanded)
-  //       }}
-  //     />
-  //   )
-  // }
+    return (
+      <div
+        className={cls}
+        onClick={() => {
+          onExpand(!expanded)
+        }}
+      >
+        <i className="fa-solid fa-caret-right"></i>
+      </div>
+    )
+  }
 
-  const AdvanceExpandIcon = cellProps => {
-    console.log(cellProps)
-    return <div></div>
+  const OpenModalMobile = value => {
+    setInitialValuesMobile(value)
+    setIsModalMobile(true)
+  }
+
+  const HideModalMobile = () => {
+    setInitialValuesMobile(null)
+    setIsModalMobile(false)
   }
 
   return (
@@ -444,7 +600,7 @@ function DaysCustomer(props) {
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
           <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Khách hàng
+            Báo cáo chi tiết
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
@@ -475,7 +631,7 @@ function DaysCustomer(props) {
         </div>
         <div className="p-20px">
           <ReactTableV7
-            expandColumnKey={columns[0].key}
+            expandColumnKey={columns[2].key}
             rowKey="Ids"
             filters={filters}
             columns={columns}
@@ -485,17 +641,19 @@ function DaysCustomer(props) {
             onPagesChange={onPagesChange}
             rowRenderer={rowRenderer}
             estimatedRowHeight={50}
-            // components={{
-            //   ExpandIcon: AdvanceExpandIcon
-            // }}
-            rowEventHandlers={{
-              onClick: ({ event }) => console.log(event)
+            components={{
+              ExpandIcon: ExpandIcon
             }}
-            // optionMobile={{
-            //   CellModal: cell => OpenModalMobile(cell)
-            // }}
+            optionMobile={{
+              CellModal: cell => OpenModalMobile(cell)
+            }}
           />
         </div>
+        <ModalViewMobile
+          show={isModalMobile}
+          onHide={HideModalMobile}
+          data={initialValuesMobile}
+        />
       </div>
     </div>
   )

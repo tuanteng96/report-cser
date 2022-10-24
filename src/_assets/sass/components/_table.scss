@@ -178,6 +178,52 @@
         .BaseTable__row-cell {
             padding: 14.5px 7.5px;
         }
+        .BaseTable__header-cell {
+            .table__expandicon {
+                display: none;
+            }
+        }
+        .BaseTable__row {
+            &.BaseTable__row--expanded {
+                background-color: #f3f3f3;
+            }
+            &.BaseTable__row--expanded+.BaseTable__row {
+                &:first-child {
+                    background: #000;
+                }
+                &:hover {
+                    background: $white;
+                }
+            }
+            .BaseTable__row-cell {
+                position: relative;
+            }
+            .table__expandicon {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                top: 0;
+                cursor: pointer;
+                ~.BaseTable__row-cell-text {
+                    padding-left: 12px;
+                }
+                &.expanded {
+                    i {
+                        transform: translateY(-50%) rotate(90deg);
+                    }
+                }
+                i {
+                    position: absolute;
+                    top: 50%;
+                    left: 6px;
+                    transform: translateY(-50%) rotate(0deg);
+                    font-size: 12px;
+                    color: #404040;
+                    transition: transform 200ms ease;
+                }
+            }
+        }
     }
 }
 
