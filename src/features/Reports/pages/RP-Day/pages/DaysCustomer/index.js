@@ -148,56 +148,19 @@ const jsonData = [
               }
             ]
           }
-        ]
-      }
-    ]
-  },
-  {
-    Ids: uuidv4(),
-    CreateDate: '2022-10-21T15:50:00',
-    FullName: 'Nguyễn Tài Tuấn',
-    Phone: '0971021196',
-    TongThanhToan: 1580000,
-    CK: 300000,
-    TM: 200000,
-    QT: 150000,
-    rowIndex: 1,
-    children: [
-      {
-        Ids: uuidv4(),
-        id: `1-detail`,
-        MajorList: [
+        ],
+        More: [
           {
-            Order: {
-              ID: '83254',
-              Prods: [
-                {
-                  Title: 'Kem trị nám',
-                  Qty: 5
-                },
-                {
-                  Title: 'Triệt lông',
-                  Qty: 3
-                }
-              ],
-              GiaBanDonHang: 1580000,
-              ThanhToan: 1280000,
-              Vi: 500000,
-              TheTien: 300000,
-              No: 300000,
-              HoaHong: [
-                {
-                  FullName: 'Linh',
-                  Bonus: 50000
-                }
-              ],
-              DoanhSo: [
-                {
-                  FullName: 'Đức Hướng',
-                  Bonus: 25000
-                }
-              ]
-            }
+            Title: 'Nạp ví',
+            Value: 1000000,
+            PhatSinhThuChi: 1000000,
+            Desc: 'Đặt cọc dịch vụ tắm trắng công nghệ cao'
+          },
+          {
+            Title: 'Chi ví trả tiền mặt',
+            Value: -1000000,
+            PhatSinhThuChi: 1000000,
+            Desc: 'Hoàn khách không đặt cọc nữa'
           }
         ]
       }
@@ -206,14 +169,14 @@ const jsonData = [
 ]
 
 const DetailRenderer = props => {
-  const data = props.rowData.MajorList
+  const { MajorList } = props.rowData
   return (
     <div className="p-15px w-100">
       <div className="table-responsive">
         <table className="table table-bordered mb-0">
           <tbody>
-            {data &&
-              data.map((item, index) => (
+            {MajorList &&
+              MajorList.map((item, index) => (
                 <Fragment key={index}>
                   {item.Order && (
                     <tr>
@@ -453,7 +416,7 @@ function DaysCustomer(props) {
     StockID: CrStockID || '', // ID Stock
     Pi: 1, // Trang hiện tại
     Ps: 15, // Số lượng item
-    MemberID: '' // ID Khách hàng
+    Date: new Date() // ID Khách hàng
   })
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)

@@ -61,20 +61,6 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                     className="scroll h-100 p-20px"
                     style={{ position: 'relative' }}
                   >
-                    {'Date' in values && (
-                      <div className="mb-20px form-group">
-                        <label>Ngày</label>
-                        <DatePicker
-                          onChange={date => {
-                            setFieldValue('Date', date, false)
-                          }}
-                          selected={values.Date}
-                          placeholderText="Chọn ngày"
-                          className="form-control"
-                          dateFormat="dd/MM/yyyy"
-                        />
-                      </div>
-                    )}
                     {'StockID' in values && (
                       <div className="form-group mb-20px">
                         <label>Cơ sở của bạn</label>
@@ -91,6 +77,20 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           onChange={otp => {
                             setFieldValue('StockID', otp ? otp.value : '')
                           }}
+                        />
+                      </div>
+                    )}
+                    {'Date' in values && (
+                      <div className="mb-20px form-group">
+                        <label>Ngày</label>
+                        <DatePicker
+                          onChange={date => {
+                            setFieldValue('Date', date, false)
+                          }}
+                          selected={values.Date}
+                          placeholderText="Chọn ngày"
+                          className="form-control"
+                          dateFormat="dd/MM/yyyy"
                         />
                       </div>
                     )}
