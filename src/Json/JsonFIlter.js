@@ -448,5 +448,23 @@ export const JsonFilter = {
       value: 'Xóa buổi',
       label: 'Xóa buổi'
     }
+  ],
+  ViewTypeList: [
+    {
+      value: 'DON_HANG',
+      label: 'Đơn hàng'
+    },
+    {
+      value: 'SD_DICH_VU',
+      label: 'Sử dụng dịch vụ'
+    },
+    {
+      value: 'DAT_LICH',
+      label: 'Đặt lịch'
+    },
+    {
+      value: 'NGHIEP_VU_KHAC',
+      label: 'Nghiệp vụ khác'
+    }
   ]
 }

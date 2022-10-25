@@ -3,8 +3,9 @@ import clsx from 'clsx'
 import DatePicker from 'react-datepicker'
 import Select from 'react-select'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Formik, Form } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import { useSelector } from 'react-redux'
+import { JsonFilter } from 'src/Json/JsonFilter'
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
@@ -39,7 +40,8 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
       >
         {formikProps => {
           // errors, touched, handleChange, handleBlur
-          const { values, setFieldValue } = formikProps
+          const { values, setFieldValue } =
+            formikProps
 
           return (
             <Form>
@@ -92,6 +94,26 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           className="form-control"
                           dateFormat="dd/MM/yyyy"
                         />
+                      </div>
+                    )}
+                    {'ViewType' in values && (
+                      <div>
+                        {JsonFilter.ViewTypeList.map((item, index) => (
+                          <label
+                            className="checkbox d-flex mb-10px"
+                            key={index}
+                          >
+                            <Field
+                              type="checkbox"
+                              name="ViewType"
+                              value={item.value}
+                            />
+                            <span className="checkbox-icon"></span>
+                            <span className="fw-500 cursor-pointer">
+                              {item.label}
+                            </span>
+                          </label>
+                        ))}
                       </div>
                     )}
                   </PerfectScrollbar>
