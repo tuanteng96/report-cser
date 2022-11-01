@@ -43,7 +43,7 @@ function ReactTableV7Mobile({
                           .filter(column => column?.mobileOptions?.visible)
                           .map((cell, idx) => (
                             <div
-                              className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom"
+                              className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom position-relative"
                               key={idx}
                             >
                               <div className="text-uppercase fw-500 font-size-sm w-135px text-truncate">
@@ -95,10 +95,10 @@ function ReactTableV7Mobile({
                           .filter(column => column?.mobileOptions?.visible)
                           .map((cell, idx) => (
                             <div
-                              className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom"
+                              className="d-flex justify-content-between align-items-center px-12px py-12px border-bottom position-relative"
                               key={idx}
                             >
-                              <div className="text-uppercase fw-500 font-size-sm w-135px text-truncate">
+                              <div className="text-uppercase fw-500 font-size-sm w-135px text-truncate position-relative zindex-1">
                                 {cell.title}
                               </div>
                               <div className="flex-1 text-end fw-600 font-size-md">
