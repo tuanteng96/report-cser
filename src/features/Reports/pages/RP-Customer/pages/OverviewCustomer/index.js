@@ -141,7 +141,7 @@ function OverviewCustomer() {
       .getOverviewCustomer(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
-          PermissionHelpers.ErrorAccess(data.error)
+          //PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
           setDataChart(prevState => ({
@@ -163,7 +163,7 @@ function OverviewCustomer() {
           setLoading(false)
           !loadingTable && isFilter && setIsFilter(false)
           callback && callback()
-          PermissionHelpers.HideErrorAccess()
+          //PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))
@@ -393,21 +393,28 @@ function OverviewCustomer() {
     reportsApi
       .getListCustomer(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
-        const { Members, PCount, TotalOnline, Total } = {
-          Members: data?.result?.Members || [],
-          PCount: data?.result?.PCount || 0,
-          TotalOnline: data?.result?.TotalOnline || 0,
-          Total: data?.result?.Total || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoadingTable(false)
         }
-        setData(Members)
-        setPageTotal({
-          Total: Total,
-          TotalOnline: TotalOnline
-        })
-        setPageCount(PCount)
-        setLoadingTable(false)
-        !loading && isFilter && setIsFilter(false)
-        callback && callback()
+        else {
+          const { Members, PCount, TotalOnline, Total } = {
+            Members: data?.result?.Members || [],
+            PCount: data?.result?.PCount || 0,
+            TotalOnline: data?.result?.TotalOnline || 0,
+            Total: data?.result?.Total || 0
+          }
+          setData(Members)
+          setPageTotal({
+            Total: Total,
+            TotalOnline: TotalOnline
+          })
+          setPageCount(PCount)
+          setLoadingTable(false)
+          !loading && isFilter && setIsFilter(false)
+          callback && callback()
+          PermissionHelpers.HideErrorAccess()
+        }
       })
       .catch(error => console.log(error))
   }

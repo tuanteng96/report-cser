@@ -118,7 +118,7 @@ function RPReEx(props) {
       .getOverviewReEx(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
-          PermissionHelpers.ErrorAccess(data.error)
+          //PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
           setDataChart(prevState => ({
@@ -147,7 +147,7 @@ function RPReEx(props) {
           setLoading(false)
           !loadingList && isFilter && setIsFilter(false)
           callback && callback()
-          PermissionHelpers.HideErrorAccess()
+          //PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))
@@ -163,48 +163,55 @@ function RPReEx(props) {
     reportsApi
       .getListReEx(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
-        const {
-          Items,
-          PCount,
-          Total,
-          TONG_CHI,
-          CHI_CK,
-          CHI_QT,
-          CHI_TM,
-          TONG_THU,
-          THU_TM,
-          THU_QT,
-          THU_CK
-        } = {
-          Items: data?.result?.Items || [],
-          PCount: data?.result?.PCount || 0,
-          TotalOnline: data?.result?.TotalOnline || 0,
-          Total: data?.result?.Total || 0,
-          TONG_CHI: data?.result?.TONG_CHI || 0,
-          CHI_CK: data?.result?.CHI_CK || 0,
-          CHI_QT: data?.result?.CHI_QT || 0,
-          CHI_TM: data?.result?.CHI_TM || 0,
-          TONG_THU: data?.result?.TONG_THU || 0,
-          THU_TM: data?.result?.THU_TM || 0,
-          THU_QT: data?.result?.THU_QT || 0,
-          THU_CK: data?.result?.THU_CK || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoadingList(false)
         }
-        setData(Items)
-        setTotal({
-          TONG_CHI,
-          CHI_CK,
-          CHI_QT,
-          CHI_TM,
-          TONG_THU,
-          THU_TM,
-          THU_QT,
-          THU_CK
-        })
-        setPageTotal(Total)
-        setPageCount(PCount)
-        setLoadingList(false)
-        !loading && isFilter && setIsFilter(false)
-        callback && callback()
+        else {
+          const {
+            Items,
+            PCount,
+            Total,
+            TONG_CHI,
+            CHI_CK,
+            CHI_QT,
+            CHI_TM,
+            TONG_THU,
+            THU_TM,
+            THU_QT,
+            THU_CK
+          } = {
+            Items: data?.result?.Items || [],
+            PCount: data?.result?.PCount || 0,
+            TotalOnline: data?.result?.TotalOnline || 0,
+            Total: data?.result?.Total || 0,
+            TONG_CHI: data?.result?.TONG_CHI || 0,
+            CHI_CK: data?.result?.CHI_CK || 0,
+            CHI_QT: data?.result?.CHI_QT || 0,
+            CHI_TM: data?.result?.CHI_TM || 0,
+            TONG_THU: data?.result?.TONG_THU || 0,
+            THU_TM: data?.result?.THU_TM || 0,
+            THU_QT: data?.result?.THU_QT || 0,
+            THU_CK: data?.result?.THU_CK || 0
+          }
+          setData(Items)
+          setTotal({
+            TONG_CHI,
+            CHI_CK,
+            CHI_QT,
+            CHI_TM,
+            TONG_THU,
+            THU_TM,
+            THU_QT,
+            THU_CK
+          })
+          setPageTotal(Total)
+          setPageCount(PCount)
+          setLoadingList(false)
+          !loading && isFilter && setIsFilter(false)
+          callback && callback()
+          PermissionHelpers.HideErrorAccess()
+        }
       })
       .catch(error => console.log(error))
   }

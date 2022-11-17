@@ -114,7 +114,7 @@ function Sales(props) {
       .getOverviewSell(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
-          PermissionHelpers.ErrorAccess(data.error)
+          //PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
           setDataSell({
@@ -150,7 +150,7 @@ function Sales(props) {
           setLoading(false)
           !loadingTable && isFilter && setIsFilter(false)
           callback && callback()
-          PermissionHelpers.HideErrorAccess()
+          //PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))
@@ -161,56 +161,62 @@ function Sales(props) {
     reportsApi
       .getListSell(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
-        const {
-          Items,
-          Total,
-          PCount,
-          ConNo,
-          DaThToan,
-          DaThToan_CK,
-          DaThToan_QT,
-          DaThToan_TM,
-          DaThToan_ThTien,
-          DaThToan_Vi,
-          ReducedValue,
-          ToPay,
-          TotalValue,
-          Value
-        } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0,
-          PCount: data?.result?.PCount || 0,
-          ConNo: data.result?.ConNo || 0,
-          DaThToan: data.result?.DaThToan || 0,
-          DaThToan_CK: data.result?.DaThToan_CK || 0,
-          DaThToan_QT: data.result?.DaThToan_QT || 0,
-          DaThToan_TM: data.result?.DaThToan_TM || 0,
-          DaThToan_ThTien: data.result?.DaThToan_ThTien || 0,
-          DaThToan_Vi: data.result?.DaThToan_Vi || 0,
-          ReducedValue: data.result?.ReducedValue || 0,
-          ToPay: data.result?.ToPay || 0,
-          TotalValue: data.result?.TotalValue || 0,
-          Value: data.result?.Value || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoadingTable(false)
+        } else {
+          const {
+            Items,
+            Total,
+            PCount,
+            ConNo,
+            DaThToan,
+            DaThToan_CK,
+            DaThToan_QT,
+            DaThToan_TM,
+            DaThToan_ThTien,
+            DaThToan_Vi,
+            ReducedValue,
+            ToPay,
+            TotalValue,
+            Value
+          } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0,
+            PCount: data?.result?.PCount || 0,
+            ConNo: data.result?.ConNo || 0,
+            DaThToan: data.result?.DaThToan || 0,
+            DaThToan_CK: data.result?.DaThToan_CK || 0,
+            DaThToan_QT: data.result?.DaThToan_QT || 0,
+            DaThToan_TM: data.result?.DaThToan_TM || 0,
+            DaThToan_ThTien: data.result?.DaThToan_ThTien || 0,
+            DaThToan_Vi: data.result?.DaThToan_Vi || 0,
+            ReducedValue: data.result?.ReducedValue || 0,
+            ToPay: data.result?.ToPay || 0,
+            TotalValue: data.result?.TotalValue || 0,
+            Value: data.result?.Value || 0
+          }
+          setListData(Items)
+          setTotal({
+            ConNo,
+            DaThToan,
+            DaThToan_CK,
+            DaThToan_QT,
+            DaThToan_TM,
+            DaThToan_ThTien,
+            DaThToan_Vi,
+            ReducedValue,
+            ToPay,
+            TotalValue,
+            Value
+          })
+          setLoadingTable(false)
+          setPageTotal(Total)
+          setPageCount(PCount)
+          !loading && isFilter && setIsFilter(false)
+          callback && callback()
+          PermissionHelpers.HideErrorAccess()
         }
-        setListData(Items)
-        setTotal({
-          ConNo,
-          DaThToan,
-          DaThToan_CK,
-          DaThToan_QT,
-          DaThToan_TM,
-          DaThToan_ThTien,
-          DaThToan_Vi,
-          ReducedValue,
-          ToPay,
-          TotalValue,
-          Value
-        })
-        setLoadingTable(false)
-        setPageTotal(Total)
-        setPageCount(PCount)
-        !loading && isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

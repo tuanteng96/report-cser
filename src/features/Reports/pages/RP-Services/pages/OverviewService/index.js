@@ -158,7 +158,7 @@ function OverviewService(props) {
       .getOverviewServices(newFilters)
       .then(({ data }) => {
         if (data.isRight) {
-          PermissionHelpers.ErrorAccess(data.error)
+          //PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
           setDataChart(prevState => ({
@@ -186,7 +186,7 @@ function OverviewService(props) {
           setLoading(false)
           !loadingTable && isFilter && setIsFilter(false)
           callback && callback()
-          PermissionHelpers.HideErrorAccess()
+          //PermissionHelpers.HideErrorAccess()
         }
       })
       .catch(error => console.log(error))
@@ -197,30 +197,36 @@ function OverviewService(props) {
     reportsApi
       .getListServices(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
-        const {
-          Items,
-          Total,
-          PCount,
-          Totalbuoicuoi,
-          Totalbuoidau,
-          Totalisfirst,
-          Totalrequest
-        } = {
-          Items: data.result?.Items || [],
-          Total: data.result?.Total || 0,
-          Totalbuoicuoi: data.result?.Totalbuoicuoi || 0,
-          Totalbuoidau: data.result?.Totalbuoidau || 0,
-          Totalisfirst: data.result?.Totalisfirst || 0,
-          Totalrequest: data.result?.Totalrequest || 0,
-          PCount: data?.result?.PCount || 0
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoadingTable(false)
+        } else {
+          const {
+            Items,
+            Total,
+            PCount,
+            Totalbuoicuoi,
+            Totalbuoidau,
+            Totalisfirst,
+            Totalrequest
+          } = {
+            Items: data.result?.Items || [],
+            Total: data.result?.Total || 0,
+            Totalbuoicuoi: data.result?.Totalbuoicuoi || 0,
+            Totalbuoidau: data.result?.Totalbuoidau || 0,
+            Totalisfirst: data.result?.Totalisfirst || 0,
+            Totalrequest: data.result?.Totalrequest || 0,
+            PCount: data?.result?.PCount || 0
+          }
+          setListData(Items)
+          setTotal({ Totalbuoicuoi, Totalbuoidau, Totalisfirst, Totalrequest })
+          setPageCount(PCount)
+          setLoadingTable(false)
+          setPageTotal(Total)
+          !loading && isFilter && setIsFilter(false)
+          callback && callback()
+          PermissionHelpers.HideErrorAccess()
         }
-        setListData(Items)
-        setTotal({ Totalbuoicuoi, Totalbuoidau, Totalisfirst, Totalrequest })
-        setPageCount(PCount)
-        setLoadingTable(false)
-        setPageTotal(Total)
-        !loading && isFilter && setIsFilter(false)
-        callback && callback()
       })
       .catch(error => console.log(error))
   }

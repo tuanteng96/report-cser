@@ -167,7 +167,7 @@ function RouterPage(props) {
           </LayoutReport>
         }
       >
-        <Route index element={<Navigate to="khach-hang-sinh-nhat" replace />} />
+        <Route index element={<Navigate to="bao-cao-cai-dat-app" replace />} />
         <Route path="khach-hang-sinh-nhat" element={<BirthdayCustomer />} />
         <Route path="bao-cao-cai-dat-app" element={<CustomerUseApp />} />
       </Route>
