@@ -445,8 +445,7 @@ function DaysCustomer(props) {
     StockID: CrStockID || '', // ID Stock
     Pi: 1, // Trang hiện tại
     Ps: 15, // Số lượng item
-    DateStart: new Date(),
-    DateEnd: new Date(),
+    Date: new Date(),
     ViewType: [
       JsonFilter.ViewTypeList[0].value,
       JsonFilter.ViewTypeList[1].value,
@@ -477,10 +476,11 @@ function DaysCustomer(props) {
     isLoading && setLoading(true)
     const newFilters = {
       ...filters,
-      DateStart: moment(filters.DateStart).format('DD/MM/yyyy'), // moment(filters.Date).format('DD/MM/yyyy')
-      DateEnd: moment(filters.DateEnd).format('DD/MM/yyyy'),
+      DateStart: filters.Date ? moment(filters.Date).format('DD/MM/yyyy') : '', // moment(filters.Date).format('DD/MM/yyyy')
+      DateEnd: filters.Date ? moment(filters.Date).format('DD/MM/yyyy') : '',
       ViewType: filters.ViewType ? filters.ViewType.join(',') : ''
     }
+    delete newFilters.Date;
     reportsApi
       .getMemberDay(newFilters)
       .then(({ data }) => {

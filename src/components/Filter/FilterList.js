@@ -221,6 +221,20 @@ function FilterList({
                       />
                     </div>
                   )}
+                  {'Date' in values && (
+                    <div className="mb-20px form-group">
+                      <label>Ngày</label>
+                      <DatePicker
+                        onChange={date => {
+                          setFieldValue('Date', date, false)
+                        }}
+                        selected={values.Date}
+                        placeholderText="Chọn ngày"
+                        className="form-control"
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  )}
                   {'ViewType' in values && (
                     <div>
                       {JsonFilter.ViewTypeList.map((item, index) => (
