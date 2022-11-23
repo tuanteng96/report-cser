@@ -199,26 +199,72 @@ const DetailRenderer = ({ filters, ...props }) => {
                             <td className="vertical-align-middle min-w-180px w-180px"></td>
                             <td className="vertical-align-middle min-w-180px w-180px">
                               <div>Thanh toán</div>
-                              <div className="fw-600">
+                              <div className="fw-600 d-flex justify-content-between">
                                 {PriceHelper.formatVND(item.PayDebt.ThanhToan)}
+                                <OverlayTrigger
+                                  rootClose
+                                  trigger="click"
+                                  key="top"
+                                  placement="top"
+                                  overlay={
+                                    <Popover id={`popover-positioned-top`}>
+                                      <Popover.Header
+                                        className="py-10px text-uppercase fw-600"
+                                        as="h3"
+                                      >
+                                        Chi tiết thanh toán
+                                      </Popover.Header>
+                                      <Popover.Body className="p-0">
+                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                          <span>Tiền mặt</span>
+                                          <span>
+                                            {PriceHelper.formatVNDPositive(
+                                              item.PayDebt.ThanhToan_TienMat
+                                            )}
+                                          </span>
+                                        </div>
+                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                          <span>Chuyển khoản</span>
+                                          <span>
+                                            {PriceHelper.formatVNDPositive(
+                                              item.PayDebt.ThanhToan_CK
+                                            )}
+                                          </span>
+                                        </div>
+                                        <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                          <span>Quẹt thẻ</span>
+                                          <span>
+                                            {PriceHelper.formatVNDPositive(
+                                              item.PayDebt.ThanhToan_QT
+                                            )}
+                                          </span>
+                                        </div>
+                                      </Popover.Body>
+                                    </Popover>
+                                  }
+                                >
+                                  <div className="d-flex justify-content-between align-items-center">
+                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                                  </div>
+                                </OverlayTrigger>
                               </div>
                             </td>
                             <td className="vertical-align-middle min-w-180px w-180px">
                               <div>Thanh toán ví</div>
                               <div className="fw-600">
-                                {PriceHelper.formatVND(item.PayDebt.Vi)}
+                                {PriceHelper.formatVNDPositive(item.PayDebt.Vi)}
                               </div>
                             </td>
                             <td className="vertical-align-middle min-w-180px w-180px">
                               <div>Thanh toán thẻ tiền</div>
                               <div className="fw-600">
-                                {PriceHelper.formatVND(item.PayDebt.TheTien)}
+                                {PriceHelper.formatVNDPositive(item.PayDebt.TheTien)}
                               </div>
                             </td>
                             <td className="vertical-align-middle min-w-180px w-180px">
                               <div>Còn nợ</div>
                               <div className="fw-600">
-                                {PriceHelper.formatVND(item.PayDebt.No)}
+                                {PriceHelper.formatVNDPositive(item.PayDebt.No)}
                               </div>
                             </td>
                             <td className="vertical-align-middle min-w-180px w-180px">

@@ -233,7 +233,7 @@ function ModalViewMobile({ show, onHide, data }) {
                           <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
                             <div className="w-120px">Thanh toán ví</div>
                             <div className="fw-600 text-end flex-1">
-                              {PriceHelper.formatVND(item.PayDebt.Vi)}
+                              {PriceHelper.formatVNDPositive(item.PayDebt.Vi)}
                             </div>
                           </div>
                           <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
