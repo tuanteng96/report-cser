@@ -6,6 +6,9 @@ const reportsApi = {
   getAllDay: data => {
     return http.post(`${SubApi}/bao-cao-ngay/danh-sach`, JSON.stringify(data))
   },
+  getMemberDay: data => {
+    return http.post(`${SubApi}/khach-hang/chi-tiet-ngay`, JSON.stringify(data))
+  },
   getOverviewCustomer: data => {
     return http.post(`${SubApi}/khach-hang/tong-quan`, JSON.stringify(data))
   },

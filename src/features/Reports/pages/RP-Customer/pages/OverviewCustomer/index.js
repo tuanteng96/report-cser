@@ -396,8 +396,7 @@ function OverviewCustomer() {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoadingTable(false)
-        }
-        else {
+        } else {
           const { Members, PCount, TotalOnline, Total } = {
             Members: data?.result?.Members || [],
             PCount: data?.result?.PCount || 0,

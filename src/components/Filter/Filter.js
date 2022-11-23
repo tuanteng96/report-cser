@@ -40,8 +40,7 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
       >
         {formikProps => {
           // errors, touched, handleChange, handleBlur
-          const { values, setFieldValue } =
-            formikProps
+          const { values, setFieldValue } = formikProps
 
           return (
             <Form>
@@ -79,6 +78,34 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                           onChange={otp => {
                             setFieldValue('StockID', otp ? otp.value : '')
                           }}
+                        />
+                      </div>
+                    )}
+                    {'DateStart' in values && (
+                      <div className="mb-20px form-group">
+                        <label>Ngày bắt đầu</label>
+                        <DatePicker
+                          onChange={date => {
+                            setFieldValue('DateStart', date, false)
+                          }}
+                          selected={values.DateStart}
+                          placeholderText="Chọn ngày"
+                          className="form-control"
+                          dateFormat="dd/MM/yyyy"
+                        />
+                      </div>
+                    )}
+                    {'DateEnd' in values && (
+                      <div className="mb-20px form-group">
+                        <label>Ngày kết thúc</label>
+                        <DatePicker
+                          onChange={date => {
+                            setFieldValue('DateEnd', date, false)
+                          }}
+                          selected={values.DateEnd}
+                          placeholderText="Chọn ngày"
+                          className="form-control"
+                          dateFormat="dd/MM/yyyy"
                         />
                       </div>
                     )}

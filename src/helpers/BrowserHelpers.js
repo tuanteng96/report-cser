@@ -247,6 +247,9 @@ export const BrowserHelpers = {
         ? moment(filters.UsedUpDateStart).format('DD/MM/yyyy')
         : null
     }
+    if ('ViewType' in filters) {
+      params.ViewType = filters.ViewType ? filters.ViewType.join(',') : ''
+    }
     return params
   },
   getRequestParamsToggle: (filters, config) => {

@@ -459,10 +459,6 @@ export const JsonFilter = {
       label: 'Sử dụng dịch vụ'
     },
     {
-      value: 'DAT_LICH',
-      label: 'Đặt lịch'
-    },
-    {
       value: 'NGHIEP_VU_KHAC',
       label: 'Nghiệp vụ khác'
     }

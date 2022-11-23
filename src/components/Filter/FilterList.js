@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import Select, { components } from 'react-select'
-import { Formik, Form } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import { useSelector } from 'react-redux'
 import AsyncSelectProvinces from '../Selects/AsyncSelectProvinces'
 import AsyncSelectDistrics from '../Selects/AsyncSelectDistrics'
@@ -219,6 +219,23 @@ function FilterList({
                           setFieldValue('StockID', otp ? otp.value : '')
                         }}
                       />
+                    </div>
+                  )}
+                  {'ViewType' in values && (
+                    <div>
+                      {JsonFilter.ViewTypeList.map((item, index) => (
+                        <label className="checkbox d-flex mb-10px" key={index}>
+                          <Field
+                            type="checkbox"
+                            name="ViewType"
+                            value={item.value}
+                          />
+                          <span className="checkbox-icon"></span>
+                          <span className="fw-500 cursor-pointer">
+                            {item.label}
+                          </span>
+                        </label>
+                      ))}
                     </div>
                   )}
                   {'AllServiceID' in values && (

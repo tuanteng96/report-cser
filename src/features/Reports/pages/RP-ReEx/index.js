@@ -166,8 +166,7 @@ function RPReEx(props) {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoadingList(false)
-        }
-        else {
+        } else {
           const {
             Items,
             PCount,

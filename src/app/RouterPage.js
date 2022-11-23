@@ -50,7 +50,10 @@ import DaysOverview from 'src/features/Reports/pages/RP-Day/pages/DaysOverview'
 function RouterPage(props) {
   return (
     <Routes>
-      <Route index element={<Navigate to="/bao-cao-ngay/tong-quan" replace />} />
+      <Route
+        index
+        element={<Navigate to="/bao-cao-ngay/tong-quan" replace />}
+      />
       <Route
         path="/bao-cao-ngay"
         element={
