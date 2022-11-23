@@ -449,7 +449,8 @@ function DaysCustomer(props) {
     DateEnd: new Date(),
     ViewType: [
       JsonFilter.ViewTypeList[0].value,
-      JsonFilter.ViewTypeList[1].value
+      JsonFilter.ViewTypeList[1].value,
+      JsonFilter.ViewTypeList[2].value
     ]
   })
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
@@ -571,7 +572,7 @@ function DaysCustomer(props) {
         key: 'FullName',
         title: 'Tên khách hàng',
         dataKey: 'FullName',
-        width: 200,
+        width: 280,
         sortable: false,
         mobileOptions: {
           visible: true
@@ -604,7 +605,7 @@ function DaysCustomer(props) {
         cellRenderer: ({ rowData }) =>
           rowData.CheckIn
             ? moment(rowData.CheckIn).format('HH:mm DD/MM/YYYY')
-            : 'Không',
+            : '',
         width: 200,
         sortable: false
       },
@@ -615,9 +616,23 @@ function DaysCustomer(props) {
         cellRenderer: ({ rowData }) =>
           rowData.CheckOut
             ? moment(rowData.CheckOut).format('HH:mm DD/MM/YYYY')
-            : 'Không',
+            : '',
         width: 200,
         sortable: false
+      },
+      {
+        key: '#',
+        title: '#',
+        dataKey: '#',
+        cellRenderer: ({ rowData }) => (
+          <button className="btn btn-primary btn-xs" type="button">
+            <span className="open">Xem chi tiết</span>
+            <span className="hide">Ẩn chi tiết</span>
+          </button>
+        ),
+        width: 150,
+        sortable: false,
+        align: 'center'
       }
     ],
     [filters]
@@ -703,7 +718,7 @@ function DaysCustomer(props) {
         </div>
         <div className="p-20px">
           <ReactTableV7
-            expandColumnKey={columns[2].key}
+            expandColumnKey={columns[7].key}
             rowKey="Ids"
             filters={filters}
             columns={columns}

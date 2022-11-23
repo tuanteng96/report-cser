@@ -459,6 +459,10 @@ export const JsonFilter = {
       label: 'Sử dụng dịch vụ'
     },
     {
+      value: 'THANH_TOAN_NO',
+      label: 'Thanh toán nợ'
+    },
+    {
       value: 'NGHIEP_VU_KHAC',
       label: 'Nghiệp vụ khác'
     }

@@ -58,7 +58,7 @@ function ModalViewMobile({ show, onHide, data }) {
           <div className="fw-600">
             {data?.CheckIn
               ? moment(data?.CheckIn).format('HH:mm DD/MM/YYYY')
-              : 'Không'}
+              : ''}
           </div>
         </div>
         <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
@@ -66,7 +66,7 @@ function ModalViewMobile({ show, onHide, data }) {
           <div className="fw-600">
             {data?.CheckOut
               ? moment(data?.CheckOut).format('HH:mm DD/MM/YYYY')
-              : 'Không'}
+              : ''}
           </div>
         </div>
         {data?.children &&
