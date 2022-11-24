@@ -1,5 +1,6 @@
 import moment from 'moment'
 import 'moment/locale/vi'
+import store from 'src/redux/store'
 moment.locale('vi')
 
 export const BrowserHelpers = {
@@ -19,6 +20,8 @@ export const BrowserHelpers = {
   getRequestParams: (filters, config) => {
     let params = { ...filters }
     if (config) {
+      const { auth } = store.getState()
+      console.log(auth)
       if (config.Total < 1500) {
         params.Ps = 1500
       }
@@ -28,7 +31,14 @@ export const BrowserHelpers = {
   getRequestParamsList: (filters, config) => {
     let params = { ...filters }
     if (config) {
-      if (config.Total < 1500) {
+      const { auth } = store.getState()
+      const { AmountExport } = {
+        AmountExport: auth?.GlobalConfig?.Admin?.AmountExport
+      }
+      if (AmountExport && Number(AmountExport) > 0) {
+        params.Ps = Number(AmountExport)
+      }
+      if (!AmountExport && config.Total < 1500) {
         params.Ps = 1500
       }
     }
