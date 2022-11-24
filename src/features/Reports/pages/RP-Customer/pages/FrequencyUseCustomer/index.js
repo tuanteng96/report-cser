@@ -26,17 +26,25 @@ const convertArray = arrays => {
     return newArray
   }
   for (let [index, obj] of arrays.entries()) {
-    for (let [x, order] of obj.ProdsList.entries()) {
-      const newObj = {
-        ...order,
-        CreateDateProd: order.CreateDate,
-        TanSuatSDProd: order.TanSuatSD,
-        ...obj,
-        rowIndex: index,
-        Ids: uuidv4()
+    if (obj.ProdsList && obj.ProdsList.length > 0) {
+      for (let [x, order] of obj.ProdsList.entries()) {
+        const newObj = {
+          ...order,
+          CreateDateProd: order.CreateDate,
+          TanSuatSDProd: order.TanSuatSD,
+          ...obj,
+          rowIndex: index,
+          Ids: uuidv4()
+        }
+        if (x !== 0) delete newObj.ProdsList
+        newArray.push(newObj)
       }
-      if (x !== 0) delete newObj.ProdsList
-      newArray.push(newObj)
+    } else {
+      newArray.push({
+        rowIndex: index,
+        Ids: uuidv4(),
+        ...obj
+      })
     }
   }
   return newArray

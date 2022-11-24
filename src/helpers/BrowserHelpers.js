@@ -42,6 +42,15 @@ export const BrowserHelpers = {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null
     }
+    if ('Date' in filters) {
+      params.DateStart = filters.Date
+        ? moment(filters.Date).format('DD/MM/yyyy')
+        : null
+      params.DateEnd = filters.Date
+        ? moment(filters.Date).format('DD/MM/yyyy')
+        : null
+      delete params.Date
+    }
     if ('Mon' in filters) {
       params.Mon = filters.Mon ? moment(filters.Mon).format('MM/yyyy') : null
     }

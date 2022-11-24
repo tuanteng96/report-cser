@@ -37,7 +37,15 @@ const converArray = arr => {
 }
 
 const DetailRenderer = ({ filters, ...props }) => {
-  const { MajorList, More } = props.rowData
+  const { MajorList, More } = {
+    MajorList: [
+      ...props.rowData.MajorList.filter(x => x.Order),
+      ...props.rowData.MajorList.filter(x => x.PayDebt),
+      ...props.rowData.MajorList.filter(x => x.Returns),
+      ...props.rowData.MajorList.filter(x => x.Services)
+    ],
+    More: props.rowData.More
+  }
   const showDH_SĐV =
     _.includes(filters.ViewType, 'DON_HANG') ||
     _.includes(filters.ViewType, 'SD_DICH_VU')
@@ -258,7 +266,9 @@ const DetailRenderer = ({ filters, ...props }) => {
                             <td className="vertical-align-middle min-w-180px w-180px">
                               <div>Thanh toán thẻ tiền</div>
                               <div className="fw-600">
-                                {PriceHelper.formatVNDPositive(item.PayDebt.TheTien)}
+                                {PriceHelper.formatVNDPositive(
+                                  item.PayDebt.TheTien
+                                )}
                               </div>
                             </td>
                             <td className="vertical-align-middle min-w-180px w-180px">
@@ -426,51 +436,53 @@ const DetailRenderer = ({ filters, ...props }) => {
           </div>
         </div>
       )}
-      {_.includes(filters.ViewType, 'NGHIEP_VU_KHAC') && (
-        <div className="mb-15px">
-          <div className="mb-8px text-uppercase fw-600 font-size-md">
-            <span className="text-danger">(*)</span> Nghiệp vụ khác
-          </div>
-          <div className="table-responsive">
-            <table className="table table-bordered mb-0">
-              <thead>
-                <tr>
-                  <th className="min-w-250px w-250px">Tên nghiệp vụ</th>
-                  <th className="min-w-200px w-200px">Giá trị</th>
-                  <th className="min-w-200px w-200px">
-                    Phát sinh thu / Chi TM
-                  </th>
-                  <th className="min-w-250px w-250px">Chi tiết</th>
-                </tr>
-              </thead>
-              <tbody>
-                {More && More.length > 0 ? (
-                  More.map((item, index) => (
-                    <tr key={index}>
-                      <td className="min-w-250px w-250px">
-                        {item.Title || 'Chưa xác định'}
-                      </td>
-                      <td className="min-w-200px w-200px">
-                        {PriceHelper.formatVND(item.Value)}
-                      </td>
-                      <td className="min-w-200px w-200px">
-                        {PriceHelper.formatVND(item.PhatSinhThuChi)}
-                      </td>
-                      <td className="min-w-250px w-250px">{item.Desc}</td>
-                    </tr>
-                  ))
-                ) : (
+      {_.includes(filters.ViewType, 'NGHIEP_VU_KHAC') &&
+        More &&
+        More.length > 0 && (
+          <div className="mb-15px">
+            <div className="mb-8px text-uppercase fw-600 font-size-md">
+              <span className="text-danger">(*)</span> Nghiệp vụ khác
+            </div>
+            <div className="table-responsive">
+              <table className="table table-bordered mb-0">
+                <thead>
                   <tr>
-                    <td className="text-center" colSpan={4}>
-                      Không có dữ liệu
-                    </td>
+                    <th className="min-w-250px w-250px">Tên nghiệp vụ</th>
+                    <th className="min-w-200px w-200px">Giá trị</th>
+                    <th className="min-w-200px w-200px">
+                      Phát sinh thu / Chi TM
+                    </th>
+                    <th className="min-w-250px w-250px">Chi tiết</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {More && More.length > 0 ? (
+                    More.map((item, index) => (
+                      <tr key={index}>
+                        <td className="min-w-250px w-250px">
+                          {item.Title || 'Chưa xác định'}
+                        </td>
+                        <td className="min-w-200px w-200px">
+                          {PriceHelper.formatVND(item.Value)}
+                        </td>
+                        <td className="min-w-200px w-200px">
+                          {PriceHelper.formatVND(item.PhatSinhThuChi)}
+                        </td>
+                        <td className="min-w-250px w-250px">{item.Desc}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td className="text-center" colSpan={4}>
+                        Không có dữ liệu
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   )
 }
@@ -495,7 +507,8 @@ function DaysCustomer(props) {
     ViewType: [
       JsonFilter.ViewTypeList[0].value,
       JsonFilter.ViewTypeList[1].value,
-      JsonFilter.ViewTypeList[2].value
+      JsonFilter.ViewTypeList[2].value,
+      JsonFilter.ViewTypeList[3].value
     ]
   })
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
@@ -526,7 +539,7 @@ function DaysCustomer(props) {
       DateEnd: filters.Date ? moment(filters.Date).format('DD/MM/yyyy') : '',
       ViewType: filters.ViewType ? filters.ViewType.join(',') : ''
     }
-    delete newFilters.Date;
+    delete newFilters.Date
     reportsApi
       .getMemberDay(newFilters)
       .then(({ data }) => {
