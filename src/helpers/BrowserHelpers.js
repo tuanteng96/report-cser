@@ -21,8 +21,13 @@ export const BrowserHelpers = {
     let params = { ...filters }
     if (config) {
       const { auth } = store.getState()
-      console.log(auth)
-      if (config.Total < 1500) {
+      const { AmountExport } = {
+        AmountExport: auth?.GlobalConfig?.Admin?.AmountExport
+      }
+      if (AmountExport && Number(AmountExport) > 0) {
+        params.Ps = Number(AmountExport)
+      }
+      if (!AmountExport && config.Total < 1500) {
         params.Ps = 1500
       }
     }
@@ -274,7 +279,14 @@ export const BrowserHelpers = {
   getRequestParamsToggle: (filters, config) => {
     let params = { ...filters }
     if (config) {
-      if (config.Total < 1500) {
+      const { auth } = store.getState()
+      const { AmountExport } = {
+        AmountExport: auth?.GlobalConfig?.Admin?.AmountExport
+      }
+      if (AmountExport && Number(AmountExport) > 0) {
+        params.Ps = Number(AmountExport)
+      }
+      if (!AmountExport && config.Total < 1500) {
         params.Ps = 1500
       }
     }
