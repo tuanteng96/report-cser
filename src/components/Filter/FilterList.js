@@ -235,7 +235,7 @@ function FilterList({
                       />
                     </div>
                   )}
-                  {'ViewType' in values && (
+                  {/* {'ViewType' in values && (
                     <div>
                       {JsonFilter.ViewTypeList.map((item, index) => (
                         <label className="checkbox d-flex mb-10px" key={index}>
@@ -251,7 +251,7 @@ function FilterList({
                         </label>
                       ))}
                     </div>
-                  )}
+                  )} */}
                   {'AllServiceID' in values && (
                     <div className="form-group mb-20px">
                       <label>Dịch vụ</label>

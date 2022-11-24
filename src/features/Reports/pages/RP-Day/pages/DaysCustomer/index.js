@@ -48,7 +48,8 @@ const DetailRenderer = ({ filters, ...props }) => {
   }
   const showDH_SĐV =
     _.includes(filters.ViewType, 'DON_HANG') ||
-    _.includes(filters.ViewType, 'SD_DICH_VU')
+    _.includes(filters.ViewType, 'SD_DICH_VU') ||
+    _.includes(filters.ViewType, 'THANH_TOAN_NO')
   return (
     <div className="p-15px w-100">
       {showDH_SĐV && (
