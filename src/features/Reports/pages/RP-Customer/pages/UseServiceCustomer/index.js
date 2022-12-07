@@ -51,6 +51,8 @@ function UseServiceCustomer(props) {
     GroupCustomerID: '', // ID Nhóm khách hàng
     SourceName: '', // Nguồn
     ServiceIDs: '', // ID dịch vụ
+    OSFrom: '',
+    OSTo: '',
     StatusServices: [JsonFilter.StatusServiceMemberList[0]],
     //TypeServices: '',
     DayFromServices: '', // Số buổi còn lại từ

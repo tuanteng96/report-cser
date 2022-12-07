@@ -459,7 +459,9 @@ function FilterToggle({
                     'CateServiceIDs' in values ||
                     'DayService' in values ||
                     'LastUsedFrom' in values ||
-                    'Frequency' in values) && (
+                    'Frequency' in values ||
+                    'OSFrom' in values ||
+                    'OSTo' in values) && (
                     <div className="p-20px border-top">
                       {'TypeService' in values && (
                         <div className="form-group mb-20px">
@@ -589,6 +591,42 @@ function FilterToggle({
                           />
                         </div>
                       )}
+                      {('OSFrom' in values || 'OSTo' in values) && (
+                        <div className="mb-20px form-group">
+                          <label>Thời gian bắt đầu / Kết thúc</label>
+                          <div className="d-flex">
+                            <div className="mr-5px">
+                              <DatePicker
+                                onChange={date => {
+                                  setFieldValue('OSFrom', date, false)
+                                }}
+                                selected={values.OSFrom}
+                                // selectsStart
+                                // startDate={values.DateStart}
+                                // endDate={values.DateEnd}
+                                placeholderText="Ngày bắt đầu"
+                                className="form-control"
+                                dateFormat="dd/MM/yyyy"
+                              />
+                            </div>
+                            <div className="ml-5px">
+                              <DatePicker
+                                onChange={date => {
+                                  setFieldValue('OSTo', date, false)
+                                }}
+                                selected={values.OSTo}
+                                // selectsEnd
+                                // startDate={values.DateStart}
+                                // endDate={values.DateEnd}
+                                placeholderText="Ngày kết thúc"
+                                className="form-control"
+                                dateFormat="dd/MM/yyyy"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       {'StatusServices' in values && (
                         <div className="form-group mb-20px">
                           <label>Trạng thái</label>

@@ -300,6 +300,16 @@ export const BrowserHelpers = {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null
     }
+    if ('OSFrom' in filters) {
+      params.OSFrom = filters.OSFrom
+        ? moment(filters.OSFrom).format('DD/MM/yyyy')
+        : null
+    }
+    if ('OSTo' in filters) {
+      params.OSTo = filters.OSTo
+        ? moment(filters.OSTo).format('DD/MM/yyyy')
+        : null
+    }
     if ('StaffID' in filters) {
       params.StaffID = filters.StaffID ? filters.StaffID.value : ''
     }
