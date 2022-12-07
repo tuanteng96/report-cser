@@ -46,6 +46,7 @@ import ConvertCustomer from 'src/features/Reports/pages/RP-Customer/pages/Conver
 import SellProfit from 'src/features/Reports/pages/RP-Sell/pages/SellProfit'
 import DaysCustomer from 'src/features/Reports/pages/RP-Day/pages/DaysCustomer'
 import DaysOverview from 'src/features/Reports/pages/RP-Day/pages/DaysOverview'
+import ActualSell from 'src/features/Reports/pages/RP-Sell/pages/ActualSell'
 
 function RouterPage(props) {
   return (
@@ -113,6 +114,7 @@ function RouterPage(props) {
         <Route path="bang-gia" element={<PriceList />} />
         <Route path="doanh-so-giam-tru" element={<SaleReduced />} />
         <Route path="loi-nhuan" element={<SellProfit />} />
+        <Route path="doanh-so-thuc-thu" element={<ActualSell />} />
       </Route>
       <Route
         path="/thu-chi-va-so-quy"
