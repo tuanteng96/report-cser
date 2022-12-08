@@ -6,6 +6,7 @@ import Table, { AutoResizer } from 'react-base-table'
 import 'react-base-table/styles.css'
 import ElementEmpty from '../Empty/ElementEmpty'
 import Text from 'react-texty'
+import clsx from 'clsx'
 
 ReactBaseTable.propTypes = {
   columns: PropTypes.array,
@@ -48,7 +49,10 @@ function ReactBaseTable({
 
   return (
     <div className="w-100">
-      <div className="w-100 h-500px">
+      <div
+        className={clsx('w-100', !maxHeight && 'h-500px')}
+        style={{ height: maxHeight ? maxHeight + 'px' : '500px' }}
+      >
         <AutoResizer>
           {({ width, height }) => (
             <Table

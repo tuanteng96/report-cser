@@ -122,6 +122,10 @@ const MenuList = [
       {
         Title: 'Lợi nhuận',
         Href: '/ban-hang/loi-nhuan'
+      },
+      {
+        Title: 'Doanh số thực thu',
+        Href: '/ban-hang/doanh-so-thuc-thu'
       }
     ]
   },

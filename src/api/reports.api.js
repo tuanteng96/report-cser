@@ -108,6 +108,12 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getListActualSell: data => {
+    return http.post(
+      `${SubApi}/ban-hang/bao-cao-thuc-thu`,
+      JSON.stringify(data)
+    )
+  },
   getOverviewReEx: data => {
     return http.post(
       `${SubApi}/bao-cao-thu-chi/tong-quan`,

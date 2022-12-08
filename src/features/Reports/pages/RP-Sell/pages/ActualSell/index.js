@@ -5,37 +5,15 @@ import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import reportsApi from 'src/api/reports.api'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
+import { uuidv4 } from '@nikitababko/id-generator'
 
-const newListData = [
-  {
-    Type: 'Tổng thu bán hàng',
-    Total: 5000000,
-    TM_CK_QT: 200000,
-    Wallet_MoneyCard: 30000,
-    No: 20000
-  },
-  {
-    Type: 'Sản phẩm & NVL',
-    Total: 5000000,
-    TM_CK_QT: 200000,
-    Wallet_MoneyCard: 30000,
-    No: 20000
-  },
-  {
-    Type: 'Dịch vụ & Phụ phí',
-    Total: 5000000,
-    TM_CK_QT: 200000,
-    Wallet_MoneyCard: 30000,
-    No: 20000
-  },
-  {
-    Type: 'Thẻ tiền',
-    Total: 5000000,
-    TM_CK_QT: 200000,
-    Wallet_MoneyCard: 30000,
-    No: 20000
-  }
-]
+import moment from 'moment'
+import 'moment/locale/vi'
+
+moment.locale('vi')
 
 function ActualSell(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -46,16 +24,171 @@ function ActualSell(props) {
     StockID: CrStockID || '', // ID Stock
     Pi: 1, // Trang hiện tại
     Ps: 15, // Số lượng item
-    Key: '',
-    CategoriesId: '',
-    BrandId: '',
-    TypeCNHng: ''
+    DateStart: moment().startOf('month').toDate(),
+    DateEnd: moment().endOf('month').toDate()
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
-  const [ListData, setListData] = useState(newListData)
+  const [ListData, setListData] = useState({
+    Total: [],
+    NewForSale: [],
+    Pay: []
+  })
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
+
+  useEffect(() => {
+    const index = Stocks.findIndex(
+      item => Number(item.ID) === Number(filters.StockID)
+    )
+    if (index > -1) {
+      setStockName(Stocks[index].Title)
+    } else {
+      setStockName('Tất cả cơ sở')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
+
+  useEffect(() => {
+    getListActual()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
+
+  const convertoPrecision = number => {
+    if (isNaN(number)) return false
+    return Number(number.toFixed(2))
+  }
+
+  const getListActual = (isLoading = true, callback) => {
+    isLoading && setLoading(true)
+    reportsApi
+      .getListActualSell(BrowserHelpers.getRequestParamsList(filters))
+      .then(({ data }) => {
+        if (data.isRight) {
+          PermissionHelpers.ErrorAccess(data.error)
+          setLoading(false)
+        } else {
+          if (data.result) {
+            const newList = { Total: [], NewForSale: [], Pay: [] }
+            for (var key in data.result) {
+              let newArray = []
+              const item = data.result[key]
+              var TONG_TM_CK_QT = 0
+              var TONG_Wallet_MoneyCard = 0
+              for (var x in data.result[key]) {
+                TONG_TM_CK_QT +=
+                  (data.result[key][x]?.ck || 0) +
+                  (data.result[key][x]?.qt || 0) +
+                  (data.result[key][x]?.tm || 0)
+                TONG_Wallet_MoneyCard +=
+                  (data.result[key][x]?.vi || 0) +
+                  (data.result[key][x]?.tt || 0)
+              }
+              newArray = [
+                {
+                  Type: 'Tổng thu bán hàng',
+                  Total: item.tong_thu,
+                  TM_CK_QT: TONG_TM_CK_QT,
+                  Wallet_MoneyCard: TONG_Wallet_MoneyCard,
+                  ID: uuidv4()
+                },
+                {
+                  Type: 'Sản phẩm & NVL',
+                  Total: item?.sp_nvl?.tong || 0,
+                  TM_CK_QT:
+                    item?.sp_nvl?.ck + item?.sp_nvl?.qt + item?.sp_nvl?.tm,
+                  Wallet_MoneyCard: item?.sp_nvl?.vi + item?.sp_nvl?.tt,
+                  ID: uuidv4(),
+                  TotalPercent: convertoPrecision(
+                    (item?.sp_nvl?.tong / item.tong_thu) * 100
+                  ),
+                  TM_CK_QTPercent: convertoPrecision(
+                    ((item?.sp_nvl?.ck + item?.sp_nvl?.qt + item?.sp_nvl?.tm) /
+                      TONG_TM_CK_QT) *
+                      100
+                  ),
+                  Wallet_MoneyCardPercent: convertoPrecision(
+                    ((item?.sp_nvl?.vi + item?.sp_nvl?.tt) /
+                      TONG_Wallet_MoneyCard) *
+                      100
+                  )
+                },
+                {
+                  Type: 'Dịch vụ & Phụ phí',
+                  Total: item?.dv_pp?.tong || 0,
+                  TM_CK_QT: item?.dv_pp?.ck + item?.dv_pp?.qt + item?.dv_pp?.tm,
+                  Wallet_MoneyCard: item?.dv_pp?.vi + item?.dv_pp?.tt,
+                  ID: uuidv4(),
+                  TotalPercent: convertoPrecision(
+                    (item?.dv_pp?.tong / item.tong_thu) * 100
+                  ),
+                  TM_CK_QTPercent: convertoPrecision(
+                    ((item?.dv_pp?.ck + item?.dv_pp?.qt + item?.dv_pp?.tm) /
+                      TONG_TM_CK_QT) *
+                      100
+                  ),
+                  Wallet_MoneyCardPercent: convertoPrecision(
+                    ((item?.dv_pp?.vi + item?.dv_pp?.tt) /
+                      TONG_Wallet_MoneyCard) *
+                      100
+                  )
+                },
+                {
+                  Type: 'Thẻ tiền',
+                  Total: item?.the_tien?.tong || 0,
+                  TM_CK_QT:
+                    item?.the_tien?.ck +
+                    item?.the_tien?.qt +
+                    item?.the_tien?.tm,
+                  Wallet_MoneyCard: item?.the_tien?.vi + item?.the_tien?.tt,
+                  ID: uuidv4(),
+                  TotalPercent: convertoPrecision(
+                    (item?.the_tien?.tong / item.tong_thu) * 100
+                  ),
+                  TM_CK_QTPercent: convertoPrecision(
+                    ((item?.the_tien?.ck +
+                      item?.the_tien?.qt +
+                      item?.the_tien?.tm) /
+                      TONG_TM_CK_QT) *
+                      100
+                  ),
+                  Wallet_MoneyCardPercent: convertoPrecision(
+                    ((item?.the_tien?.vi + item?.the_tien?.tt) /
+                      TONG_Wallet_MoneyCard) *
+                      100
+                  )
+                },
+                {
+                  Type: 'Bán mới',
+                  Total: 0,
+                  TM_CK_QT: 0,
+                  ID: uuidv4(),
+                  Wallet_MoneyCard: 0,
+                  TM_CK_QTPercent: 0,
+                  Wallet_MoneyCardPercent: 0,
+                  colSpan: 3
+                }
+              ]
+              if (key === 'tong') {
+                newList.Total = newArray
+              }
+              if (key === 'ban_moi') {
+                newList.NewForSale = newArray
+              }
+              if (key === 'thu_no') {
+                newList.Pay = newArray
+              }
+            }
+            setListData(newList)
+          }
+          setLoading(false)
+          isFilter && setIsFilter(false)
+          callback && callback()
+          PermissionHelpers.HideErrorAccess()
+        }
+      })
+      .catch(error => console.log(error))
+  }
 
   const onOpenFilter = () => {
     setIsFilter(true)
@@ -67,15 +200,29 @@ function ActualSell(props) {
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
-      //onRefresh()
+      onRefresh()
     } else {
       setFilters({ ...values, Pi: 1 })
     }
   }
 
-  const onRefresh = () => {}
+  const onRefresh = () => {
+    getListActual()
+  }
 
-  const onExport = () => {}
+  const onExport = () => {
+    PermissionHelpers.ExportExcel({
+      FuncStart: () => setLoadingExport(true),
+      FuncEnd: () => setLoadingExport(false),
+      FuncApi: () =>
+        reportsApi.getListActualSell(
+          BrowserHelpers.getRequestParamsList(filters, {
+            Total: 1000
+          })
+        ),
+      UrlName: '/ban-hang/doanh-so-thuc-thu'
+    })
+  }
 
   const columns = useMemo(
     () => [
@@ -83,20 +230,24 @@ function ActualSell(props) {
         key: 'Type',
         title: 'Loại',
         dataKey: 'Type',
-        width: 160,
+        width: 200,
         sortable: false,
         //align: 'center',
         mobileOptions: {
           visible: true
         },
-        frozen: 'left'
+        //frozen: 'left',
+        colSpan: ({ rowData }) => (rowData.colSpan ? rowData.colSpan : 1)
       },
       {
         key: 'Total',
         title: 'Tổng',
         dataKey: 'Total',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.Total),
-        width: 130,
+        cellRenderer: ({ rowData }) =>
+          `${PriceHelper.formatVND(rowData?.Total)} ${
+            rowData.TotalPercent ? ` - ${rowData.TotalPercent}%` : ''
+          }`,
+        width: 200,
         sortable: false,
         mobileOptions: {
           visible: true
@@ -106,8 +257,11 @@ function ActualSell(props) {
         key: 'TM_CK_QT',
         title: 'TM/CK/QT',
         dataKey: 'TM_CK_QT',
-        width: 130,
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.TM_CK_QT),
+        width: 200,
+        cellRenderer: ({ rowData }) =>
+          `${PriceHelper.formatVND(rowData?.TM_CK_QT)}${
+            rowData.TM_CK_QTPercent ? ` - ${rowData.TM_CK_QTPercent}%` : ''
+          }`,
         sortable: false,
         mobileOptions: {
           visible: true
@@ -118,27 +272,55 @@ function ActualSell(props) {
         title: 'Ví, Thẻ tiền',
         dataKey: 'Wallet_MoneyCard',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData?.Wallet_MoneyCard),
-        width: 130,
+          `${PriceHelper.formatVND(rowData?.Wallet_MoneyCard)}${
+            rowData.Wallet_MoneyCardPercent
+              ? ` - ${rowData.Wallet_MoneyCardPercent}%`
+              : ''
+          }`,
+        width: 200,
         sortable: false,
         mobileOptions: {
           visible: true
-        }
-      },
-      {
-        key: 'No',
-        title: 'Nợ phát sinh',
-        dataKey: 'No',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.No),
-        width: 130,
-        sortable: false,
-        mobileOptions: {
-          visible: true
+        },
+        style: {
+          'flex-grow': '1'
         }
       }
+      // {
+      //   key: 'No',
+      //   title: 'Nợ phát sinh',
+      //   dataKey: 'No',
+      //   cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.No),
+      //   width: 130,
+      //   sortable: false,
+      //   mobileOptions: {
+      //     visible: true
+      //   }
+      // }
     ],
     []
   )
+
+  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    const span = columns[0].colSpan({ rowData, rowIndex })
+    if (span > 1) {
+      let width = cells[0].props.style.width
+
+      for (let i = 1; i < 4; i++) {
+        width += cells[0 + i]?.props?.style?.width || 0
+        cells[0 + i] = null
+      }
+      const style = {
+        ...cells[0].props.style,
+        width,
+        backgroundColor: 'lightgray',
+        display: 'flex',
+        justifyContent: 'center'
+      }
+      cells[0] = React.cloneElement(cells[0], { style })
+    }
+    return cells
+  }
 
   return (
     <div className="py-main">
@@ -173,7 +355,7 @@ function ActualSell(props) {
         onExport={onExport}
       />
       <div className="row">
-        <div className="col-md-4">
+        <div className="col-xxl-6">
           <div className="bg-white rounded overflow-hidden">
             <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
               <div className="fw-500 font-size-lg text-primary text-uppercase">
@@ -184,9 +366,11 @@ function ActualSell(props) {
               <ReactTableV7
                 rowKey="ID"
                 columns={columns}
-                data={ListData}
+                data={ListData.Total}
                 loading={loading}
                 pageCount={1}
+                maxHeight={250}
+                rowRenderer={rowRenderer}
                 //onPagesChange={onPagesChange}
                 // optionMobile={{
                 //   CellModal: cell => OpenModalMobile(cell)
@@ -195,7 +379,7 @@ function ActualSell(props) {
             </div>
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-xxl-6 mt-15px mt-xxl-0">
           <div className="bg-white rounded">
             <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
               <div className="fw-500 font-size-lg text-success text-uppercase">
@@ -206,9 +390,10 @@ function ActualSell(props) {
               <ReactTableV7
                 rowKey="ID"
                 columns={columns}
-                data={ListData}
+                data={ListData.NewForSale}
                 loading={loading}
                 pageCount={1}
+                maxHeight={250}
                 //onPagesChange={onPagesChange}
                 // optionMobile={{
                 //   CellModal: cell => OpenModalMobile(cell)
@@ -217,7 +402,7 @@ function ActualSell(props) {
             </div>
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-xxl-6 mt-15px">
           <div className="bg-white rounded">
             <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
               <div className="fw-500 font-size-lg text-danger text-uppercase">
@@ -228,9 +413,10 @@ function ActualSell(props) {
               <ReactTableV7
                 rowKey="ID"
                 columns={columns}
-                data={ListData}
+                data={ListData.Pay}
                 loading={loading}
                 pageCount={1}
+                maxHeight={250}
                 //onPagesChange={onPagesChange}
                 // optionMobile={{
                 //   CellModal: cell => OpenModalMobile(cell)
