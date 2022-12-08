@@ -9,6 +9,7 @@ import reportsApi from 'src/api/reports.api'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import { uuidv4 } from '@nikitababko/id-generator'
+import Text from 'react-texty'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -157,16 +158,6 @@ function ActualSell(props) {
                       TONG_Wallet_MoneyCard) *
                       100
                   )
-                },
-                {
-                  Type: 'Bán mới',
-                  Total: 0,
-                  TM_CK_QT: 0,
-                  ID: uuidv4(),
-                  Wallet_MoneyCard: 0,
-                  TM_CK_QTPercent: 0,
-                  Wallet_MoneyCardPercent: 0,
-                  colSpan: 3
                 }
               ]
               if (key === 'tong') {
@@ -236,18 +227,23 @@ function ActualSell(props) {
         mobileOptions: {
           visible: true
         },
-        //frozen: 'left',
-        colSpan: ({ rowData }) => (rowData.colSpan ? rowData.colSpan : 1)
+        frozen: 'left'
       },
       {
         key: 'Total',
         title: 'Tổng',
         dataKey: 'Total',
-        cellRenderer: ({ rowData }) =>
-          `${PriceHelper.formatVND(rowData?.Total)} ${
-            rowData.TotalPercent ? ` - ${rowData.TotalPercent}%` : ''
-          }`,
-        width: 200,
+        cellRenderer: ({ rowData }) => (
+          <div className="d-flex justify-content-between w-100">
+            <Text tooltipMaxWidth={280} className="flex-1 pr-5px">
+              {PriceHelper.formatVND(rowData?.Total)}
+            </Text>
+            <div className="w-65px">
+              {rowData.TotalPercent && <code>{rowData.TotalPercent} %</code>}
+            </div>
+          </div>
+        ),
+        width: 220,
         sortable: false,
         mobileOptions: {
           visible: true
@@ -257,11 +253,19 @@ function ActualSell(props) {
         key: 'TM_CK_QT',
         title: 'TM/CK/QT',
         dataKey: 'TM_CK_QT',
-        width: 200,
-        cellRenderer: ({ rowData }) =>
-          `${PriceHelper.formatVND(rowData?.TM_CK_QT)}${
-            rowData.TM_CK_QTPercent ? ` - ${rowData.TM_CK_QTPercent}%` : ''
-          }`,
+        width: 220,
+        cellRenderer: ({ rowData }) => (
+          <div className="d-flex justify-content-between w-100">
+            <Text tooltipMaxWidth={280} className="flex-1 pr-5px">
+              {PriceHelper.formatVND(rowData?.TM_CK_QT)}
+            </Text>
+            <div className="w-65px">
+              {rowData.TM_CK_QTPercent && (
+                <code>{rowData.TM_CK_QTPercent} %</code>
+              )}
+            </div>
+          </div>
+        ),
         sortable: false,
         mobileOptions: {
           visible: true
@@ -271,19 +275,25 @@ function ActualSell(props) {
         key: 'Wallet_MoneyCard',
         title: 'Ví, Thẻ tiền',
         dataKey: 'Wallet_MoneyCard',
-        cellRenderer: ({ rowData }) =>
-          `${PriceHelper.formatVND(rowData?.Wallet_MoneyCard)}${
-            rowData.Wallet_MoneyCardPercent
-              ? ` - ${rowData.Wallet_MoneyCardPercent}%`
-              : ''
-          }`,
-        width: 200,
+        cellRenderer: ({ rowData }) => (
+          <div className="d-flex justify-content-between w-100">
+            <Text tooltipMaxWidth={280} className="flex-1 pr-5px">
+              {PriceHelper.formatVND(rowData?.Wallet_MoneyCard)}
+            </Text>
+            <div className="w-65px">
+              {rowData.Wallet_MoneyCardPercent && (
+                <code>{rowData.Wallet_MoneyCardPercent} %</code>
+              )}
+            </div>
+          </div>
+        ),
+        width: 220,
         sortable: false,
         mobileOptions: {
           visible: true
         },
         style: {
-          'flex-grow': '1'
+          flexGrow: '1'
         }
       }
       // {
@@ -300,27 +310,6 @@ function ActualSell(props) {
     ],
     []
   )
-
-  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    const span = columns[0].colSpan({ rowData, rowIndex })
-    if (span > 1) {
-      let width = cells[0].props.style.width
-
-      for (let i = 1; i < 4; i++) {
-        width += cells[0 + i]?.props?.style?.width || 0
-        cells[0 + i] = null
-      }
-      const style = {
-        ...cells[0].props.style,
-        width,
-        backgroundColor: 'lightgray',
-        display: 'flex',
-        justifyContent: 'center'
-      }
-      cells[0] = React.cloneElement(cells[0], { style })
-    }
-    return cells
-  }
 
   return (
     <div className="py-main">
@@ -355,7 +344,7 @@ function ActualSell(props) {
         onExport={onExport}
       />
       <div className="row">
-        <div className="col-xxl-6">
+        <div className="col-xxxl-6">
           <div className="bg-white rounded overflow-hidden">
             <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
               <div className="fw-500 font-size-lg text-primary text-uppercase">
@@ -370,7 +359,6 @@ function ActualSell(props) {
                 loading={loading}
                 pageCount={1}
                 maxHeight={250}
-                rowRenderer={rowRenderer}
                 //onPagesChange={onPagesChange}
                 // optionMobile={{
                 //   CellModal: cell => OpenModalMobile(cell)
@@ -379,7 +367,7 @@ function ActualSell(props) {
             </div>
           </div>
         </div>
-        <div className="col-xxl-6 mt-15px mt-xxl-0">
+        <div className="col-xxxl-6 mt-15px mt-xxxl-0">
           <div className="bg-white rounded">
             <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
               <div className="fw-500 font-size-lg text-success text-uppercase">
@@ -402,7 +390,7 @@ function ActualSell(props) {
             </div>
           </div>
         </div>
-        <div className="col-xxl-6 mt-15px">
+        <div className="col-xxxl-6 mt-15px">
           <div className="bg-white rounded">
             <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
               <div className="fw-500 font-size-lg text-danger text-uppercase">

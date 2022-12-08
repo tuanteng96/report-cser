@@ -44,6 +44,15 @@ router-outlet {
   display: none;
 }
 
+//
+
+code {
+  background-color: #f3f6f9;
+  padding: 0.15rem 0.42rem;
+  font-weight: 400;
+  border-radius: 0.42rem;
+}
+
 // General Links
 a:hover,
 a:active,
