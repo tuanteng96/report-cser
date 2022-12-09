@@ -25,8 +25,8 @@ function ActualSell(props) {
     StockID: CrStockID || '', // ID Stock
     Pi: 1, // Trang hiện tại
     Ps: 15, // Số lượng item
-    DateStart: moment().startOf('month').toDate(),
-    DateEnd: moment().endOf('month').toDate()
+    DateStart: new Date(),
+    DateEnd: new Date()
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -239,7 +239,11 @@ function ActualSell(props) {
               {PriceHelper.formatVND(rowData?.Total)}
             </Text>
             <div className="w-65px">
-              {rowData.TotalPercent && <code>{rowData.TotalPercent} %</code>}
+              {rowData.TotalPercent ? (
+                <code>{rowData.TotalPercent} %</code>
+              ) : (
+                ''
+              )}
             </div>
           </div>
         ),
@@ -260,8 +264,10 @@ function ActualSell(props) {
               {PriceHelper.formatVND(rowData?.TM_CK_QT)}
             </Text>
             <div className="w-65px">
-              {rowData.TM_CK_QTPercent && (
+              {rowData.TM_CK_QTPercent ? (
                 <code>{rowData.TM_CK_QTPercent} %</code>
+              ) : (
+                ''
               )}
             </div>
           </div>
@@ -281,8 +287,10 @@ function ActualSell(props) {
               {PriceHelper.formatVND(rowData?.Wallet_MoneyCard)}
             </Text>
             <div className="w-65px">
-              {rowData.Wallet_MoneyCardPercent && (
+              {rowData.Wallet_MoneyCardPercent ? (
                 <code>{rowData.Wallet_MoneyCardPercent} %</code>
+              ) : (
+                ''
               )}
             </div>
           </div>
