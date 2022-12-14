@@ -172,6 +172,14 @@ function PriceList(props) {
         }
       },
       {
+        key: 'gia_goc',
+        title: 'Giá gốc',
+        dataKey: 'gia_goc',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.gia_goc),
+        width: 150,
+        sortable: false
+      },
+      {
         key: 'NguyenGia',
         title: 'Nguyên giá',
         dataKey: 'NguyenGia',
