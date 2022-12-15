@@ -242,7 +242,7 @@ function UseCardMoney(props) {
           <Text tooltipMaxWidth={300}>
             {rowData.ProdLists &&
               rowData.ProdLists.map(
-                item => `${item.Title}{' '}
+                item => `${item.Title} 
             (x${item.Qty})`
               ).join(', ')}
           </Text>
