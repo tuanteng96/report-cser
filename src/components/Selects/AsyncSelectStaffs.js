@@ -37,7 +37,7 @@ function AsyncSelectStaffs({ onChange, value, StocksList, ...props }) {
       }
     }
 
-    if (StocksList) {
+    if (StocksList && StocksList.findIndex(o => !o.value) === -1) {
       newData = newData.filter(o => StocksList.some(x => x.ID === o.groupid))
     }
 
