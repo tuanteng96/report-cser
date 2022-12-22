@@ -81,10 +81,9 @@ function FilterToggle({
         let newListItems = []
         let Groups = PermissionReport?.jdata?.groups || []
         for (let group of Groups) {
-          if (group) {
-            for (let item of group) {
-              const ps = item?.items || []
-              newListItems = [...newListItems, ...ps]
+          if (group.items) {
+            for (let item of group.items) {
+              newListItems.push(item)
             }
           }
         }
