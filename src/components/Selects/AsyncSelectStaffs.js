@@ -5,16 +5,21 @@ import moreApi from 'src/api/more.api'
 import { isArray } from 'lodash'
 
 AsyncSelectStaffs.propTypes = {
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  StocksList: PropTypes.array
 }
 
-function AsyncSelectStaffs({ onChange, value, ...props }) {
+AsyncSelectStaffs.defaultProps = {
+  StocksList: null
+}
+
+function AsyncSelectStaffs({ onChange, value, StocksList, ...props }) {
   const getAllStaffs = async (search, loadedOptions, { page }) => {
     const { data } = await moreApi.getAllStaffStock(search)
     const { Items } = {
       Items: data.data || []
     }
-    const newData = []
+    let newData = []
 
     if (Items && isArray(Items)) {
       for (let key of Items) {
@@ -31,6 +36,11 @@ function AsyncSelectStaffs({ onChange, value, ...props }) {
         }
       }
     }
+
+    if (StocksList) {
+      newData = newData.filter(o => StocksList.some(x => x.ID === o.groupid))
+    }
+
     return {
       options: newData,
       hasMore: false,
@@ -43,6 +53,7 @@ function AsyncSelectStaffs({ onChange, value, ...props }) {
   return (
     <AsyncPaginate
       {...props}
+      key={StocksList}
       className="select-control"
       classNamePrefix="select"
       loadOptions={getAllStaffs}

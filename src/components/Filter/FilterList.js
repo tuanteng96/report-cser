@@ -24,6 +24,7 @@ import AsyncSelectCategoriesFull from '../Selects/AsyncSelectCategoriesFull'
 
 import vi from 'date-fns/locale/vi' // the locale you want
 import AsyncSelectServices from '../Selects/AsyncSelectServices'
+import { useLocation } from 'react-router-dom'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -76,12 +77,22 @@ function FilterList({
   onRefresh,
   onExport
 }) {
-  const { Stocks, KPT_Max_Type } = useSelector(({ auth }) => ({
-    Stocks: auth.Info.Stocks,
-    KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0
-  }))
+  const { Stocks, KPT_Max_Type, PermissionReport } = useSelector(
+    ({ auth }) => ({
+      Stocks: auth.Info?.Stocks
+        ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
+            ...item,
+            label: item.Title || item.label,
+            value: item.ID || item.value
+          }))
+        : [],
+      PermissionReport: auth.Info?.rightsSum?.report,
+      KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0
+    })
+  )
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
+  const { pathname } = useLocation()
 
   useEffect(() => {
     const newKpiTypeList = []
@@ -95,17 +106,39 @@ function FilterList({
   }, [KPT_Max_Type])
 
   useEffect(() => {
-    const newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
-    setStocksList(() =>
-      newStocks
-        .filter(item => item.ID !== 778)
-        .map(item => ({
-          ...item,
-          label: item.Title || item.label,
-          value: item.ID || item.value
-        }))
-    )
-  }, [Stocks])
+    let newStocks = [...Stocks]
+    if (PermissionReport?.hasRight) {
+      if (!PermissionReport?.jdata) {
+        newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+      } else {
+        let newListItems = []
+        let Groups = PermissionReport?.jdata?.groups || []
+        for (let group of Groups) {
+          if (group) {
+            for (let item of group) {
+              const ps = item?.items || []
+              newListItems = [...newListItems, ...ps]
+            }
+          }
+        }
+        const index = newListItems.findIndex(o => o.url === pathname)
+        if (index > -1) {
+          if (newListItems[index].stocks) {
+            const StocksPermission = newListItems[index].stocks
+              .split(',')
+              .map(o => Number(o))
+            newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
+          } else {
+            newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+          }
+        } else {
+          newStocks = []
+        }
+      }
+    }
+    setStocksList(newStocks)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [PermissionReport, pathname])
 
   const filterTypeTC = (inputValue, optionFilter) => {
     if (optionFilter !== '') {
@@ -218,6 +251,7 @@ function FilterList({
                         onChange={otp => {
                           setFieldValue('StockID', otp ? otp.value : '')
                         }}
+                        noOptionsMessage={() => 'Không có cơ sở'}
                       />
                     </div>
                   )}
@@ -650,6 +684,7 @@ function FilterList({
                           setFieldValue('StaffID', otp, false)
                         }}
                         value={values.StaffID}
+                        StocksList={StocksList}
                       />
                     </div>
                   )}

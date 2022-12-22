@@ -1,11 +1,7 @@
-import { setStocks } from 'src/features/Auth/AuthSlice'
-
 export default function setupAxios(axios, store) {
   // Request interceptor for API calls
   axios.interceptors.request.use(
     config => {
-      console.log(config)
-      console.log(store.getState())
       const {
         auth: { Token }
       } = store.getState()
@@ -13,8 +9,6 @@ export default function setupAxios(axios, store) {
       if (Token) {
         config.headers.Authorization = `Bearer ${Token}`
       }
-
-      store.dispatch(setStocks('adad'))
 
       return config
     },

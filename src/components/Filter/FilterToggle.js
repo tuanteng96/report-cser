@@ -15,6 +15,7 @@ import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import AsyncSelectCategoriesSV from '../Selects/AsyncSelectCategoriesSV'
+import { useLocation } from 'react-router-dom'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -57,23 +58,54 @@ function FilterToggle({
   onRefresh,
   onExport
 }) {
-  const { Stocks } = useSelector(({ auth }) => ({
-    Stocks: auth.Info.Stocks
-  }))
-  const [StocksList, setStocksList] = useState([])
-
-  useEffect(() => {
-    const newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
-    setStocksList(() =>
-      newStocks
-        .filter(item => item.ID !== 778)
-        .map(item => ({
+  const { Stocks, PermissionReport } = useSelector(({ auth }) => ({
+    Stocks: auth.Info?.Stocks
+      ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
           ...item,
           label: item.Title || item.label,
           value: item.ID || item.value
         }))
-    )
-  }, [Stocks])
+      : [],
+    PermissionReport: auth.Info?.rightsSum?.report
+  }))
+  const [StocksList, setStocksList] = useState([])
+
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    let newStocks = [...Stocks]
+    if (PermissionReport?.hasRight) {
+      if (!PermissionReport?.jdata) {
+        newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+      } else {
+        let newListItems = []
+        let Groups = PermissionReport?.jdata?.groups || []
+        for (let group of Groups) {
+          if (group) {
+            for (let item of group) {
+              const ps = item?.items || []
+              newListItems = [...newListItems, ...ps]
+            }
+          }
+        }
+        const index = newListItems.findIndex(o => o.url === pathname)
+        if (index > -1) {
+          if (newListItems[index].stocks) {
+            const StocksPermission = newListItems[index].stocks
+              .split(',')
+              .map(o => Number(o))
+            newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
+          } else {
+            newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+          }
+        } else {
+          newStocks = []
+        }
+      }
+    }
+    setStocksList(newStocks)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [PermissionReport, pathname])
 
   return (
     <div className={clsx('filter-box', show && 'show')}>
