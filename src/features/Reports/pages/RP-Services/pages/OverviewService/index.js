@@ -336,23 +336,23 @@ function OverviewService(props) {
         sortable: false
       },
       {
-        key: 'SessionCost',
+        key: 'SessionPrice',
         title: 'Giá buổi',
-        dataKey: 'SessionCost',
+        dataKey: 'SessionPrice',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.SessionCost),
+          PriceHelper.formatVND(rowData.SessionPrice), //SessionCost
         width: 180,
         sortable: false
       },
-      {
-        key: 'SessionCostExceptGift',
-        title: 'Giá buổi (Tặng)',
-        dataKey: 'SessionCostExceptGift',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.SessionCostExceptGift),
-        width: 180,
-        sortable: false
-      },
+      // {
+      //   key: 'SessionCostExceptGift',
+      //   title: 'Giá buổi (Tặng)',
+      //   dataKey: 'SessionCostExceptGift',
+      //   cellRenderer: ({ rowData }) =>
+      //     PriceHelper.formatVND(rowData.SessionCostExceptGift),
+      //   width: 180,
+      //   sortable: false
+      // },
       {
         key: 'SessionIndex',
         title: 'Buổi',

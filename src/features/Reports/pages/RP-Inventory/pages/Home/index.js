@@ -11,6 +11,7 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { PriceHelper } from 'src/helpers/PriceHelper'
 
 moment.locale('vi')
 
@@ -178,6 +179,14 @@ function Home(props) {
         }
       },
       {
+        key: 'ImportPrice',
+        title: 'Giá nhập',
+        dataKey: 'ImportPrice',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.ImportPrice),
+        width: 180,
+        sortable: false
+      },
+      {
         key: 'QtyBefore',
         title: 'Tồn trước',
         dataKey: 'QtyBefore',
@@ -208,7 +217,14 @@ function Home(props) {
         cellRenderer: ({ rowData }) => rowData?.Qty || 0,
         width: 150,
         sortable: false,
-        className: 'flex-fill'
+      },
+      {
+        key: 'TotalValue',
+        title: 'Tổng giá trị tồn',
+        dataKey: 'TotalValue',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.TotalValue),
+        width: 200,
+        sortable: false
       }
     ],
     [filters]
