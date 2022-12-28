@@ -235,6 +235,18 @@ function OverviewService(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
+  const checkPriceCost = ({CostMerthod, Cost1, Cost2, Cost3}) => {
+    if(CostMerthod === 1) {
+      return PriceHelper.formatVND(Cost1)
+    }
+    if(CostMerthod === 2) {
+      return PriceHelper.formatVND(Cost1)
+    }
+    if(CostMerthod === 3) {
+      return PriceHelper.formatVND(Cost3)
+    }
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -339,8 +351,7 @@ function OverviewService(props) {
         key: 'SessionPrice',
         title: 'Giá buổi',
         dataKey: 'SessionPrice',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.SessionPrice), //SessionCost
+        cellRenderer: ({ rowData }) => checkPriceCost(rowData), //SessionCost
         width: 180,
         sortable: false
       },

@@ -294,7 +294,7 @@ function FilterToggle({
                           menuPosition="fixed"
                           isClearable={true}
                           name="StatusMonetCard"
-                          placeholder="Chọn tình trạng ví"
+                          placeholder="Chọn tình trạng thẻ tiền"
                           classNamePrefix="select"
                           options={StatusWalletList}
                           className="select-control"
