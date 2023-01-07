@@ -235,14 +235,14 @@ function OverviewService(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
-  const checkPriceCost = ({CostMerthod, Cost1, Cost2, Cost3}) => {
-    if(CostMerthod === 1) {
+  const checkPriceCost = ({ CostMerthod, Cost1, Cost2, Cost3 }) => {
+    if (CostMerthod === 1) {
       return PriceHelper.formatVND(Cost1)
     }
-    if(CostMerthod === 2) {
+    if (CostMerthod === 2) {
       return PriceHelper.formatVND(Cost1)
     }
-    if(CostMerthod === 3) {
+    if (CostMerthod === 3) {
       return PriceHelper.formatVND(Cost3)
     }
   }

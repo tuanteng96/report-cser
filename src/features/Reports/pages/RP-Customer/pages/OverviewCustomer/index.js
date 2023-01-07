@@ -242,6 +242,17 @@ function OverviewCustomer() {
         }
       },
       {
+        key: 'Id',
+        title: 'ID',
+        dataKey: 'Id',
+        cellRenderer: ({ rowData }) => `#${rowData.Id}`,
+        width: 120,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'MobilePhone',
         title: 'Số điện thoại',
         dataKey: 'MobilePhone',

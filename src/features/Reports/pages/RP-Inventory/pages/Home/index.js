@@ -182,7 +182,8 @@ function Home(props) {
         key: 'ImportPrice',
         title: 'Giá nhập',
         dataKey: 'ImportPrice',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.ImportPrice),
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.ImportPrice),
         width: 180,
         sortable: false
       },
@@ -216,13 +217,14 @@ function Home(props) {
         dataKey: 'Qty',
         cellRenderer: ({ rowData }) => rowData?.Qty || 0,
         width: 150,
-        sortable: false,
+        sortable: false
       },
       {
         key: 'TotalValue',
         title: 'Tổng giá trị tồn',
         dataKey: 'TotalValue',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.TotalValue),
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.TotalValue),
         width: 200,
         sortable: false
       }

@@ -308,6 +308,14 @@ function Sales(props) {
         sortable: false
       },
       {
+        key: 'MemberSource',
+        title: 'Nguồn khách hàng',
+        dataKey: 'MemberSource',
+        cellRenderer: ({ rowData }) => rowData.MemberSource || 'Không xác định',
+        width: 200,
+        sortable: false
+      },
+      {
         key: 'Value',
         title: 'Nguyên giá',
         dataKey: 'Value',
