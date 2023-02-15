@@ -321,6 +321,14 @@ function RPReEx(props) {
         sortable: false
       },
       {
+        key: 'CustomType',
+        title: 'Phân loại',
+        dataKey: 'CustomType',
+        cellRenderer: ({ rowData }) => rowData.CustomType,
+        width: 180,
+        sortable: false
+      },
+      {
         key: 'Content',
         title: 'Nội dung',
         dataKey: 'Content',
