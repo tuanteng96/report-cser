@@ -208,7 +208,8 @@ function OverviewService(props) {
             Totalbuoicuoi,
             Totalbuoidau,
             Totalisfirst,
-            Totalrequest
+            Totalrequest,
+            TotalGiabuoi
           } = {
             Items: data.result?.Items || [],
             Total: data.result?.Total || 0,
@@ -216,10 +217,17 @@ function OverviewService(props) {
             Totalbuoidau: data.result?.Totalbuoidau || 0,
             Totalisfirst: data.result?.Totalisfirst || 0,
             Totalrequest: data.result?.Totalrequest || 0,
+            TotalGiabuoi: data.result?.TotalGiabuoi || 0,
             PCount: data?.result?.PCount || 0
           }
           setListData(Items)
-          setTotal({ Totalbuoicuoi, Totalbuoidau, Totalisfirst, Totalrequest })
+          setTotal({
+            Totalbuoicuoi,
+            Totalbuoidau,
+            Totalisfirst,
+            Totalrequest,
+            TotalGiabuoi
+          })
           setPageCount(PCount)
           setLoadingTable(false)
           setPageTotal(Total)
@@ -716,6 +724,10 @@ function OverviewService(props) {
                       </Popover.Header>
                       <Popover.Body className="p-0">
                         <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>Tổng giá buổi</span>
+                          <span>{Total.TotalGiabuoi}</span>
+                        </div>
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                           <span>KH buổi đầu thẻ</span>
                           <span>{Total.Totalbuoidau}</span>
                         </div>
@@ -741,6 +753,12 @@ function OverviewService(props) {
             </div>
             {width >= 1200 && (
               <Fragment>
+                <div className="fw-500 pr-15px">
+                  Tổng giá buổi{' '}
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {Total.TotalGiabuoi}
+                  </span>
+                </div>
                 <div className="fw-500 pr-15px">
                   KH buổi đầu thẻ{' '}
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
