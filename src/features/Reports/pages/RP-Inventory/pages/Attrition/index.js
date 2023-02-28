@@ -12,6 +12,7 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { PriceHelper } from 'src/helpers/PriceHelper'
 
 moment.locale('vi')
 
@@ -32,6 +33,7 @@ function Attrition(props) {
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
+  const [TotalValue, setTotalValue] = useState(0)
   const [PageTotal, setPageTotal] = useState(0)
   const [pageCount, setPageCount] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -65,12 +67,14 @@ function Attrition(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, PCount } = {
+          const { Items, TotalVal, Total, PCount } = {
             Items: data.result?.Items || [],
+            TotalVal: data.result?.TotalValue || 0,
             Total: data.result?.Total || 0,
             PCount: data?.result?.PCount || 0
           }
           setListData(Items)
+          setTotalValue(TotalVal)
           setLoading(false)
           setPageTotal(Total)
           setPageCount(PCount)
@@ -156,6 +160,18 @@ function Attrition(props) {
         }
       },
       {
+        key: 'ProdPriceBase',
+        title: 'Giá gốc',
+        dataKey: 'ProdPriceBase',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.ProdPriceBase),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'Unit',
         title: 'Sử dụng',
         dataKey: 'Unit',
@@ -175,6 +191,17 @@ function Attrition(props) {
         sortable: false
       },
       {
+        key: 'Total',
+        title: 'Tổng',
+        dataKey: 'Total',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Total),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'UsageList',
         title: 'Tỉ lệ vào các dịch vụ',
         dataKey: 'UsageList',
@@ -182,7 +209,10 @@ function Attrition(props) {
           <Text tooltipMaxWidth={300}>
             {rowData?.UsageList
               ? rowData?.UsageList.map(
-                  item => `${item.Title} (${item?.Unit} ${item?.SUnit})`
+                  item =>
+                    `${item.Title || 'Chưa xác định'} (${item?.Unit} ${
+                      item?.SUnit
+                    })`
                 ).join(', ')
               : 'Chưa xác định'}
           </Text>
@@ -240,6 +270,12 @@ function Attrition(props) {
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách tiêu hao</div>
+          <div className="fw-500">
+            Tổng
+            <span className="font-size-xl fw-600 text-success pl-5px font-number">
+              {PriceHelper.formatVND(TotalValue)}
+            </span>
+          </div>
         </div>
         <div className="p-20px">
           <ReactTableV7
