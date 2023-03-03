@@ -149,6 +149,9 @@ function ExpenseCustomer(props) {
   }
 
   const onExport = () => {
+    console.log(
+      BrowserHelpers.getRequestParamsToggle(filters, { Total: PageTotal })
+    )
     PermissionHelpers.ExportExcel({
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),

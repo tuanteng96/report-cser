@@ -30,6 +30,7 @@ export const BrowserHelpers = {
       if (!AmountExport && config.Total < 1500) {
         params.Ps = 1500
       }
+      params.Pi = 1
     }
     return params
   },
@@ -46,6 +47,7 @@ export const BrowserHelpers = {
       if (!AmountExport && config.Total < 1500) {
         params.Ps = 1500
       }
+      params.Pi = 1
     }
     if ('DateStart' in filters) {
       params.DateStart = filters.DateStart
@@ -289,6 +291,7 @@ export const BrowserHelpers = {
       if (!AmountExport && config.Total < 1500) {
         params.Ps = 1500
       }
+      params.Pi = 1
     }
     if ('DateStart' in filters) {
       params.DateStart = filters.DateStart
