@@ -24,6 +24,7 @@ const convertArray = arrays => {
     return newArray
   }
   for (let [index, obj] of arrays.entries()) {
+    if(index === 0 ) console.log(obj)
     for (let [x, order] of obj.OrdersList.entries()) {
       const newObj = {
         ...order,
@@ -46,7 +47,7 @@ function ExpenseCustomer(props) {
     Stocks: auth?.Info?.Stocks || []
   }))
   const [filters, setFilters] = useState({
-    StockID: CrStockID || '', // ID Stock
+    StockID: CrStockID || 8975, // ID Stock
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
@@ -149,9 +150,6 @@ function ExpenseCustomer(props) {
   }
 
   const onExport = () => {
-    console.log(
-      BrowserHelpers.getRequestParamsToggle(filters, { Total: PageTotal })
-    )
     PermissionHelpers.ExportExcel({
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),

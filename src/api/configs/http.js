@@ -3,6 +3,7 @@ import queryString from 'query-string'
 import { DevHelpers } from 'src/helpers/DevHelpers'
 
 const http = axios.create({
+  withCredentials: true,
   baseURL: DevHelpers.isDevelopment()
     ? process.env.REACT_APP_API_URL
     : window.API || '',

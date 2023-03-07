@@ -14,7 +14,7 @@ ReactBaseTable.propTypes = {
   loading: PropTypes.bool
 }
 
-const sizePerPageLists = [10, 25, 50, 100, 500, 1000]
+const sizePerPageLists = [15, 25, 50, 100, 500, 1000]
 
 function ReactBaseTable({
   columns,
