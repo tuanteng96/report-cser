@@ -38,7 +38,8 @@ function Sales(props) {
     Payment: '', // Bảo hành
     IsMember: '', // Loại khách hàng
     MemberID: '', // ID khách hàng
-    SourceName: ''
+    SourceName: '',
+    ShipCode: ''
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -448,6 +449,13 @@ function Sales(props) {
           </span>
         ),
         width: 150,
+        sortable: false
+      },
+      {
+        key: 'ShipCode',
+        title: 'Ship Code',
+        dataKey: 'ShipCode',
+        width: 180,
         sortable: false
       },
       {

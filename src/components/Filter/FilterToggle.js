@@ -317,15 +317,19 @@ function FilterToggle({
                         <div className="form-group mb-20px">
                           <label>Cơ sở mua hàng</label>
                           <Select
+                            isClearable
                             name="StockOrderID"
                             placeholder="Chọn cơ cở"
                             classNamePrefix="select"
-                            options={StocksList}
+                            options={
+                              StocksList && StocksList.filter(x => x.value)
+                            }
                             className="select-control"
                             value={StocksList.filter(
                               item =>
+                                values?.StockOrderID &&
                                 Number(item.value) ===
-                                Number(values?.StockOrderID)
+                                  Number(values?.StockOrderID)
                             )}
                             onChange={otp => {
                               setFieldValue(

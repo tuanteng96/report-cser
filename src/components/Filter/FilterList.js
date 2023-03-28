@@ -370,6 +370,20 @@ function FilterList({
                       />
                     </div>
                   )}
+                  {'ShipCode' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Nhập Ship Code</label>
+                      <input
+                        type="text"
+                        name="ShipCode"
+                        value={values.ShipCode}
+                        className="form-control"
+                        placeholder="Nhập Ship Code ..."
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </div>
+                  )}
                   {'TypeCNHng' in values && (
                     <div className="form-group mb-20px">
                       <label>Loại</label>
