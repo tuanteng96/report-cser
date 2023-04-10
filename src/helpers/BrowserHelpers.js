@@ -276,6 +276,11 @@ export const BrowserHelpers = {
     if ('ViewType' in filters) {
       params.ViewType = filters.ViewType ? filters.ViewType.join(',') : ''
     }
+    if ('CustomType' in filters) {
+      params.CustomType = filters.CustomType
+        ? filters.CustomType.map(item => item.value).join(',')
+        : ''
+    }
     return params
   },
   getRequestParamsToggle: (filters, config) => {

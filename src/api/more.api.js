@@ -67,6 +67,8 @@ const moreApi = {
   },
   getAllProductNVL: data => {
     return http.post(`${SubApi}/more/danh-sach-sp-nvl`, JSON.stringify(data))
-  }
+  },
+  getNameConfig: name =>
+    http.get(`/api/v3/config?cmd=getnames&names=${name}&ignore_root=1`)
 }
 export default moreApi

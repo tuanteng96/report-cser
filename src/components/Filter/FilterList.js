@@ -25,6 +25,7 @@ import AsyncSelectCategoriesFull from '../Selects/AsyncSelectCategoriesFull'
 import vi from 'date-fns/locale/vi' // the locale you want
 import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import { useLocation } from 'react-router-dom'
+import SelectCustomType from '../Selects/SelectCustomType'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -519,6 +520,21 @@ function FilterList({
                         )}
                         onChange={otp => {
                           setFieldValue('TopType', otp ? otp.value : '')
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'CustomType' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Phân loại Thu Chi</label>
+                      <SelectCustomType
+                        isMulti
+                        isClearable={true}
+                        name="CustomType"
+                        placeholder="Chọn loại Thu Chi"
+                        value={values.CustomType}
+                        onChange={otp => {
+                          setFieldValue('CustomType', otp)
                         }}
                       />
                     </div>

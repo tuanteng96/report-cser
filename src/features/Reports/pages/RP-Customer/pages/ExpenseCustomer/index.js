@@ -24,7 +24,7 @@ const convertArray = arrays => {
     return newArray
   }
   for (let [index, obj] of arrays.entries()) {
-    if(index === 0 ) console.log(obj)
+    if (index === 0) console.log(obj)
     for (let [x, order] of obj.OrdersList.entries()) {
       const newObj = {
         ...order,

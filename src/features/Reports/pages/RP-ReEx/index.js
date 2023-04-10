@@ -63,7 +63,8 @@ function RPReEx(props) {
     Ps: 15, // Số lượng item
     PaymentMethods: '', // TM, CK, QT
     TypeTC: '', // Thu hay chi
-    TagsTC: '' // ID nhân viên
+    TagsTC: '', // ID nhân viên
+    CustomType: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
