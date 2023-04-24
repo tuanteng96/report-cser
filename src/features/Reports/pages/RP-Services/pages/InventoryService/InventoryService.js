@@ -31,7 +31,10 @@ function InventoryService(props) {
     Ps: 15, // Số lượng item
     TenDichvu: '',
     MaDonHang: '',
-    Loai: ''
+    Loai: {
+      label: 'Còn',
+      value: 'Con'
+    }
   })
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
