@@ -308,6 +308,7 @@ function FilterList({
                     <div className="form-group mb-20px">
                       <label>Dịch vụ</label>
                       <AsyncSelectSVCard
+                        isMulti
                         closeMenuOnScroll={true}
                         menuPlacement="top"
                         isClearable={true}
