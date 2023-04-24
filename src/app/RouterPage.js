@@ -47,6 +47,7 @@ import SellProfit from 'src/features/Reports/pages/RP-Sell/pages/SellProfit'
 import DaysCustomer from 'src/features/Reports/pages/RP-Day/pages/DaysCustomer'
 import DaysOverview from 'src/features/Reports/pages/RP-Day/pages/DaysOverview'
 import ActualSell from 'src/features/Reports/pages/RP-Sell/pages/ActualSell'
+import InventoryService from 'src/features/Reports/pages/RP-Services/pages/InventoryService/InventoryService'
 
 function RouterPage(props) {
   return (
@@ -96,6 +97,7 @@ function RouterPage(props) {
         <Route path="tong-quan" element={<OverviewService />} />
         <Route path="bao-cao-nghiep-vu" element={<OddCardService />} />
         <Route path="dv-diem-sd-diem-khac" element={<UsedElsewhere />} />
+        <Route path="ton-dich-vu" element={<InventoryService />} />
       </Route>
       <Route
         path="/ban-hang"

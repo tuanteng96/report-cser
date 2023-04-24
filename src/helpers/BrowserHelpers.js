@@ -281,6 +281,12 @@ export const BrowserHelpers = {
         ? filters.CustomType.map(item => item.value).join(',')
         : ''
     }
+    if ('TenDichvu' in filters) {
+      params.TenDichvu = filters.TenDichvu ? filters.TenDichvu.label : ''
+    }
+    if ('Loai' in filters) {
+      params.Loai = filters.Loai ? filters.Loai.value : ''
+    }
     return params
   },
   getRequestParamsToggle: (filters, config) => {

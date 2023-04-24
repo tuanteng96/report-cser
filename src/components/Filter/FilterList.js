@@ -26,6 +26,7 @@ import vi from 'date-fns/locale/vi' // the locale you want
 import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import { useLocation } from 'react-router-dom'
 import SelectCustomType from '../Selects/SelectCustomType'
+import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -47,7 +48,8 @@ const {
   BrowserTypeList,
   BrowserStatusList,
   TypeNVList,
-  TypeNVList2
+  TypeNVList2,
+  TypeInventory
 } = JsonFilter
 
 const CustomOption = ({ children, data, ...props }) => {
@@ -302,6 +304,22 @@ function FilterList({
                       />
                     </div>
                   )}
+                  {'TenDichvu' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Dịch vụ</label>
+                      <AsyncSelectSVCard
+                        closeMenuOnScroll={true}
+                        menuPlacement="top"
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="TenDichvu"
+                        onChange={otp => {
+                          setFieldValue('TenDichvu', otp, false)
+                        }}
+                        value={values.TenDichvu}
+                      />
+                    </div>
+                  )}
                   {'TypeCN' in values && (
                     <div className="form-group mb-20px">
                       <label>Loại</label>
@@ -317,6 +335,24 @@ function FilterList({
                         value={values.TypeCN}
                         onChange={otp => {
                           setFieldValue('TypeCN', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'Loai' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="Loai"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={TypeInventory}
+                        className="select-control"
+                        value={values.Loai}
+                        onChange={otp => {
+                          setFieldValue('Loai', otp)
                         }}
                       />
                     </div>
@@ -728,6 +764,20 @@ function FilterList({
                           setFieldValue('ServiceCardID', otp, false)
                         }}
                         value={values.ServiceCardID}
+                      />
+                    </div>
+                  )}
+                  {'MaDonHang' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Mã đơn hàng</label>
+                      <input
+                        type="text"
+                        name="MaDonHang"
+                        value={values.MaDonHang}
+                        className="form-control"
+                        placeholder="Nhập mã đơn hàng"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
                       />
                     </div>
                   )}

@@ -52,6 +52,11 @@ const moreApi = {
       `/api/gl/select2?cmd=prod&combo=0&fee=0&ignore_all=1&srv=1&q=${key}`
     )
   },
+  getAllServiceCard: key => {
+    return http.get(
+      `/api/gl/select2?cmd=prod&fee=0&ignore_all=1&srv=1&q&no_root=1&q=${key}`
+    )
+  },
   getAllCardMoney: key => {
     return http.get(
       `/api/gl/select2?cmd=prod&cate_name=the_tien&ignore_all=1&q=${key}`

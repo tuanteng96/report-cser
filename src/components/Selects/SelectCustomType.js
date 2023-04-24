@@ -35,7 +35,7 @@ function SelectCustomType(props) {
       classNamePrefix="select"
       options={CustomTypeList}
       className="select-control"
-      menuPlacement='top'
+      menuPlacement="top"
       {...props}
     />
   )

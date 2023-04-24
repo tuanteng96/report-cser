@@ -466,5 +466,15 @@ export const JsonFilter = {
       value: 'NGHIEP_VU_KHAC',
       label: 'Nghiệp vụ khác'
     }
+  ],
+  TypeInventory: [
+    {
+      label: 'Sử dụng hết',
+      value: 'Het'
+    },
+    {
+      label: 'Còn',
+      value: 'Con'
+    }
   ]
 }

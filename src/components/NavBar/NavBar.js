@@ -82,6 +82,10 @@ const MenuList = [
       {
         Title: 'Dịch vụ điểm này, sử dụng điểm khác',
         Href: '/dich-vu/dv-diem-sd-diem-khac'
+      },
+      {
+        Title: 'Tồn dịch vụ',
+        Href: '/dich-vu/ton-dich-vu'
       }
     ]
   },

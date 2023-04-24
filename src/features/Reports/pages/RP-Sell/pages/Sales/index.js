@@ -366,6 +366,14 @@ function Sales(props) {
         sortable: false
       },
       {
+        key: 'Khau_tru',
+        title: 'Khấu trừ Trả hàng - KT',
+        dataKey: 'Khau_tru',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Khau_tru),
+        width: 180,
+        sortable: false
+      },
+      {
         key: 'DaThToan',
         title: 'Đã thanh toán',
         dataKey: 'DaThToan',
