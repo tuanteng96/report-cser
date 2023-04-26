@@ -218,15 +218,15 @@ function InventoryService(props) {
                 <Popover.Body className="p-0">
                   <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                     <span>Tiền mặt</span>
-                    <span>{PriceHelper.formatVND(rowData?.TM)}</span>
+                    <span>{PriceHelper.formatVND(rowData?.tien_mat)}</span>
                   </div>
                   <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                     <span>Chuyển khoản</span>
-                    <span>{PriceHelper.formatVND(rowData?.CK)}</span>
+                    <span>{PriceHelper.formatVND(rowData?.ck)}</span>
                   </div>
                   <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
                     <span>Quẹt thẻ</span>
-                    <span>{PriceHelper.formatVND(rowData?.QT)}</span>
+                    <span>{PriceHelper.formatVND(rowData?.qt)}</span>
                   </div>
                 </Popover.Body>
               </Popover>
