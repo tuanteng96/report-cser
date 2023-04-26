@@ -283,7 +283,7 @@ export const BrowserHelpers = {
     }
     if ('TenDichvu' in filters) {
       params.TenDichvu = filters.TenDichvu
-        ? filters.TenDichvu.map(item => item.label).join(',')
+        ? filters.TenDichvu.map(item => item.value).join(',')
         : ''
     }
     if ('Loai' in filters) {
