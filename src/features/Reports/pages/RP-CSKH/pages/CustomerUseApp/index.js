@@ -195,6 +195,15 @@ function CustomerUseApp(props) {
           ) : (
             <span className="text-success fw-700 text-italic">Online</span>
           ),
+        width: 250
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày cài đặt',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          rowData?.CreateDate &&
+          moment(rowData?.CreateDate).format('HH:mm DD-MM-YYYY'),
         className: 'flex-fill',
         width: 250
       }
