@@ -289,6 +289,35 @@ export const BrowserHelpers = {
     if ('Loai' in filters) {
       params.Loai = filters.Loai ? filters.Loai.value : ''
     }
+    if ('StatusAtHome' in filters) {
+      params.StatusAtHome = filters.StatusAtHome
+        ? filters.StatusAtHome.value
+        : ''
+    }
+    if ('StatusBook' in filters) {
+      params.StatusBook = filters.StatusBook ? filters.StatusBook.value : ''
+    }
+    if ('StatusMember' in filters) {
+      params.StatusMember = filters.StatusMember
+        ? filters.StatusMember.value
+        : ''
+    }
+    if ('UserID' in filters) {
+      params.UserID = filters.UserID
+        ? filters.UserID.map(item => item.value).join(',')
+        : ''
+    }
+    if ('StatusBooking' in filters) {
+      params.Status = filters?.StatusBooking
+        ? filters.StatusBooking.map(item => item.value).join(',')
+        : ''
+      delete params.StatusBooking
+    }
+    if ('UserServiceIDs' in filters) {
+      params.UserServiceIDs = filters?.UserServiceIDs
+        ? filters.UserServiceIDs.map(item => item.value).join(',')
+        : ''
+    }
     return params
   },
   getRequestParamsToggle: (filters, config) => {

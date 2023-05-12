@@ -63,6 +63,9 @@ const reportsApi = {
   getInventoryService: data => {
     return http.post(`${SubApi}/dich-vu/ton-dich-vu`, JSON.stringify(data))
   },
+  getBookService: data => {
+    return http.post(`${SubApi}/dich-vu/bao-cao-dat-lich`, JSON.stringify(data))
+  },
   getListOllCardService: data => {
     return http.post(
       `${SubApi}/khac/chi-tiet-vi-khach-hang`,

@@ -476,5 +476,65 @@ export const JsonFilter = {
       label: 'Còn',
       value: 'Con'
     }
+  ],
+  ServiceStatusBook: [
+    {
+      value: 'XAC_NHAN',
+      label: 'Xác nhận'
+    },
+    {
+      value: 'XAC_NHAN_TU_DONG',
+      label: 'Xác nhận tự động'
+    },
+    {
+      value: 'CHUA_XAC_NHAN',
+      label: 'Chưa xác nhận'
+    },
+    {
+      value: 'KHACH_KHONG_DEN',
+      label: 'Khách không đến'
+    },
+    {
+      value: 'KHACH_DEN',
+      label: 'Khách đến'
+    },
+    {
+      value: 'TU_CHOI',
+      label: 'Từ chối'
+    }
+  ],
+  ServiceTypeBook: [
+    {
+      value: 'KHACH_CU',
+      label: 'Khách cũ'
+    },
+    {
+      value: 'KHACH_VANG_LAI_CO_TK',
+      label: 'Khách vãng lai có tài khoản'
+    },
+    {
+      value: 'KHACH_MOI',
+      label: 'Khách mới'
+    }
+  ],
+  StatusCheckedBook: [
+    {
+      value: 'CHUA_CHON',
+      label: 'Chưa chọn'
+    },
+    {
+      value: 'DA_CHON',
+      label: 'Đã chọn'
+    }
+  ],
+  StatusAtBook: [
+    {
+      value: 'TAI_NHA',
+      label: 'Tại nhà'
+    },
+    {
+      value: 'TAI_SPA',
+      label: 'Tại spa'
+    }
   ]
 }

@@ -48,6 +48,7 @@ import DaysCustomer from 'src/features/Reports/pages/RP-Day/pages/DaysCustomer'
 import DaysOverview from 'src/features/Reports/pages/RP-Day/pages/DaysOverview'
 import ActualSell from 'src/features/Reports/pages/RP-Sell/pages/ActualSell'
 import InventoryService from 'src/features/Reports/pages/RP-Services/pages/InventoryService/InventoryService'
+import BookService from 'src/features/Reports/pages/RP-Services/pages/BookService'
 
 function RouterPage(props) {
   return (
@@ -98,6 +99,7 @@ function RouterPage(props) {
         <Route path="bao-cao-nghiep-vu" element={<OddCardService />} />
         <Route path="dv-diem-sd-diem-khac" element={<UsedElsewhere />} />
         <Route path="ton-dich-vu" element={<InventoryService />} />
+        <Route path="dat-lich" element={<BookService />} />
       </Route>
       <Route
         path="/ban-hang"

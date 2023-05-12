@@ -86,6 +86,10 @@ const MenuList = [
       {
         Title: 'Tồn dịch vụ',
         Href: '/dich-vu/ton-dich-vu'
+      },
+      {
+        Title: 'Báo cáo đặt lịch',
+        Href: '/dich-vu/dat-lich'
       }
     ]
   },

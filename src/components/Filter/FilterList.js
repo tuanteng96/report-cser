@@ -49,7 +49,11 @@ const {
   BrowserStatusList,
   TypeNVList,
   TypeNVList2,
-  TypeInventory
+  TypeInventory,
+  ServiceStatusBook,
+  ServiceTypeBook,
+  StatusCheckedBook,
+  StatusAtBook
 } = JsonFilter
 
 const CustomOption = ({ children, data, ...props }) => {
@@ -751,6 +755,111 @@ function FilterList({
                         }}
                         value={values.StaffID}
                         StocksList={StocksList}
+                      />
+                    </div>
+                  )}
+                  {'UserID' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Nhân viên đặt lịch</label>
+                      <AsyncSelectStaffs
+                        isMulti
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="UserID"
+                        onChange={otp => {
+                          setFieldValue('UserID', otp, false)
+                        }}
+                        value={values.UserID}
+                        StocksList={StocksList}
+                      />
+                    </div>
+                  )}
+                  {'UserServiceIDs' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Nhân viên thực hiện</label>
+                      <AsyncSelectStaffs
+                        isMulti
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="UserServiceIDs"
+                        onChange={otp => {
+                          setFieldValue('UserServiceIDs', otp, false)
+                        }}
+                        value={values.UserServiceIDs}
+                        StocksList={StocksList}
+                      />
+                    </div>
+                  )}
+                  {'StatusBooking' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Trạng thái đặt lịch</label>
+                      <Select
+                        isMulti
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="StatusBooking"
+                        placeholder="Chọn trạng thái"
+                        classNamePrefix="select"
+                        options={ServiceStatusBook}
+                        className="select-control"
+                        value={values.StatusBooking}
+                        onChange={otp => {
+                          setFieldValue('StatusBooking', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'StatusMember' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại khách hàng</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="StatusMember"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={ServiceTypeBook}
+                        className="select-control"
+                        value={values.StatusMember}
+                        onChange={otp => {
+                          setFieldValue('StatusMember', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'StatusBook' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại nhân viên</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="StatusBook"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={StatusCheckedBook}
+                        className="select-control"
+                        value={values.StatusBook}
+                        onChange={otp => {
+                          setFieldValue('StatusBook', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'StatusAtHome' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại thực hiện</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="StatusAtHome"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={StatusAtBook}
+                        className="select-control"
+                        value={values.StatusAtHome}
+                        onChange={otp => {
+                          setFieldValue('StatusAtHome', otp)
+                        }}
                       />
                     </div>
                   )}
