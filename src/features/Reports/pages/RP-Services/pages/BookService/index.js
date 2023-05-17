@@ -38,6 +38,11 @@ const ListStatus = [
     className: 'text-danger'
   },
   {
+    value: 'TU_CHOI',
+    label: 'Từ chối đặt lịch',
+    className: 'text-danger'
+  },
+  {
     value: 'KHACH_DEN',
     label: 'Khách đến',
     className: 'text-success'
@@ -171,6 +176,19 @@ function BookService(props) {
         sortable: false,
         align: 'center',
         className: 'position-relative',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CreateDate',
+        title: 'Ngày tạo',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          rowData.CreateDate &&
+          moment(rowData.CreateDate).format('HH:mm DD-MM-YYYY'),
+        width: 200,
+        sortable: false,
         mobileOptions: {
           visible: true
         }
@@ -375,8 +393,8 @@ function BookService(props) {
                       <span>{SumTotal?.CHUA_XAC_NHAN || 0}</span>
                     </div>
                     <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                      <span>Khách hủy</span>
-                      <span>{SumTotal?.KHACH_HUY || 0}</span>
+                      <span>Từ chối đặt lịch</span>
+                      <span>{SumTotal?.TU_CHOI || 0}</span>
                     </div>
                   </Popover.Body>
                 </Popover>
@@ -424,9 +442,9 @@ function BookService(props) {
                 </span>
               </div>
               <div className="fw-500">
-                Khách hủy
+                Từ chối đặt lịch
                 <span className="font-size-xl fw-600 text-danger pl-5px font-number">
-                  {SumTotal?.KHACH_HUY || 0}
+                  {SumTotal?.TU_CHOI || 0}
                 </span>
               </div>
             </div>

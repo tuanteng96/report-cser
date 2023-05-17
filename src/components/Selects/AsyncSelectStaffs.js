@@ -13,7 +13,13 @@ AsyncSelectStaffs.defaultProps = {
   StocksList: null
 }
 
-function AsyncSelectStaffs({ onChange, value, StocksList, ...props }) {
+function AsyncSelectStaffs({
+  onChange,
+  value,
+  StocksList,
+  addOptions = [],
+  ...props
+}) {
   const getAllStaffs = async (search, loadedOptions, { page }) => {
     const { data } = await moreApi.getAllStaffStock(search)
     const { Items } = {
@@ -42,7 +48,7 @@ function AsyncSelectStaffs({ onChange, value, StocksList, ...props }) {
     }
 
     return {
-      options: newData,
+      options: [...addOptions, ...newData],
       hasMore: false,
       additional: {
         page: 1

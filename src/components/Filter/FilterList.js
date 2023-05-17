@@ -762,6 +762,7 @@ function FilterList({
                     <div className="form-group mb-20px">
                       <label>Nhân viên đặt lịch</label>
                       <AsyncSelectStaffs
+                        addOptions={[{ label: 'Đặt lịch Online', value: 0 }]}
                         isMulti
                         isClearable={true}
                         menuPosition="fixed"
