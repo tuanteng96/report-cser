@@ -89,7 +89,7 @@ const MenuList = [
       },
       {
         Title: 'Báo cáo đặt lịch',
-        Href: '/dich-vu/dat-lich'
+        Href: '/dich-vu/bao-cao-dat-lich'
       }
     ]
   },

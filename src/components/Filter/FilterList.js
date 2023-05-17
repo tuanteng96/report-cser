@@ -119,7 +119,9 @@ function FilterList({
         newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
       } else {
         let newListItems = []
-        let Groups = PermissionReport?.jdata?.groups || []
+        let Groups = PermissionReport?.jdata?.groups
+          ? PermissionReport?.jdata?.groups
+          : []
         for (let group of Groups) {
           if (group.items) {
             for (let item of group.items) {

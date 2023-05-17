@@ -99,7 +99,7 @@ function RouterPage(props) {
         <Route path="bao-cao-nghiep-vu" element={<OddCardService />} />
         <Route path="dv-diem-sd-diem-khac" element={<UsedElsewhere />} />
         <Route path="ton-dich-vu" element={<InventoryService />} />
-        <Route path="dat-lich" element={<BookService />} />
+        <Route path="bao-cao-dat-lich" element={<BookService />} />
       </Route>
       <Route
         path="/ban-hang"
