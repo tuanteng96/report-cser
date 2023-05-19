@@ -144,6 +144,10 @@ const MenuList = [
     Href: '/bao-cao-thu-chi',
     Children: [
       {
+        Title: 'Thu chi & Sổ quỹ',
+        Href: '/bao-cao-thu-chi/tong-quan'
+      },
+      {
         Title: 'Thanh toán các phương thức chuyển khoản',
         Href: '/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan'
       }

@@ -128,7 +128,10 @@ function RouterPage(props) {
             <RPReEx />
           </LayoutReport>
         }
-      ></Route>
+      >
+        <Route index element={<Navigate to="tong-quan" replace />} />
+        <Route path="tong-quan" element={<RPReEx />} />
+      </Route>
       <Route
         path="/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan"
         element={
