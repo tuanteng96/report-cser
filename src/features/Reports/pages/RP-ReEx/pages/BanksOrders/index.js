@@ -12,6 +12,7 @@ import moment from 'moment'
 import 'moment/locale/vi'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 moment.locale('vi')
 
@@ -279,6 +280,48 @@ function BanksOrders(props) {
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-md-row">
           <div className="fw-500 font-size-lg">
             Danh sách các phương thức chuyển khoản
+          </div>
+          <div className="fw-500 d-flex align-items-center">
+            Tổng
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="auto"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Header
+                    className="py-10px text-uppercase fw-600"
+                    as="h3"
+                  >
+                    Chi tiết
+                  </Popover.Header>
+                  <Popover.Body className="p-0">
+                    {Banks &&
+                      Banks.map((item, index) => (
+                        <div
+                          className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                          key={index}
+                        >
+                          <span className="w-60">{item.ngan_hang}</span>
+                          <span className="flex-1 text-end">
+                            {PriceHelper.formatVNDPositive(item.Value)}
+                          </span>
+                        </div>
+                      ))}
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                  {PriceHelper.formatVNDPositive(
+                    Banks && Banks.reduce((n, { Value }) => n + Value, 0)
+                  )}
+                </span>
+                <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+              </div>
+            </OverlayTrigger>
           </div>
         </div>
         <div className="p-20px">
