@@ -1,55 +1,153 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
-import LayoutReport from 'src/layout/LayoutReport'
-import RPCustomer from 'src/features/Reports/pages/RP-Customer'
-import RPDay from 'src/features/Reports/pages/RP-Day'
-import RPSell from 'src/features/Reports/pages/RP-Sell'
-import Returns from 'src/features/Reports/pages/RP-Sell/pages/Returns'
-import Sales from 'src/features/Reports/pages/RP-Sell/pages/Sales'
-import SaleDetails from 'src/features/Reports/pages/RP-Sell/pages/SaleDetails'
-import DebtPayment from 'src/features/Reports/pages/RP-Sell/pages/DebtPayment'
-import RPMore from 'src/features/Reports/pages/RP-More'
-import TopProducts from 'src/features/Reports/pages/RP-More/pages/TopProducts'
-import RPReEx from 'src/features/Reports/pages/RP-ReEx'
-import RPDebt from 'src/features/Reports/pages/RP-Debt'
-import DebtLock from 'src/features/Reports/pages/RP-Debt/pages/DebtLock'
-import DebtGift from 'src/features/Reports/pages/RP-Debt/pages/Gift'
-import DebtHome from 'src/features/Reports/pages/RP-Debt/pages/Home'
-import RPStaff from 'src/features/Reports/pages/RP-Staff'
-import SalaryServices from 'src/features/Reports/pages/RP-Staff/pages/SalaryServices'
-import RoseStaff from 'src/features/Reports/pages/RP-Staff/pages/RoseStaff'
-import SalesStaff from 'src/features/Reports/pages/RP-Staff/pages/SalesStaff'
-import PayrollStaff from 'src/features/Reports/pages/RP-Staff/pages/PayrollStaff'
-import RPInventory from 'src/features/Reports/pages/RP-Inventory'
-import InventoryHome from 'src/features/Reports/pages/RP-Inventory/pages/Home'
-import InventoryAttrition from 'src/features/Reports/pages/RP-Inventory/pages/Attrition'
-import WarningMaterials from 'src/features/Reports/pages/RP-Inventory/pages/WarningMaterials'
-import BirthdayCustomer from 'src/features/Reports/pages/RP-CSKH/pages/BirthdayCustomer'
-import RPCSKH from 'src/features/Reports/pages/RP-CSKH'
-import TotalWallet from 'src/features/Reports/pages/RP-More/pages/TotalWallet'
-import TotalCard from 'src/features/Reports/pages/RP-More/pages/TotalCard'
-import UseCardMoney from 'src/features/Reports/pages/RP-More/pages/UseCardMoney'
-import GeneralCustomer from 'src/features/Reports/pages/RP-Customer/pages/GeneralCustomer'
-import OverviewCustomer from 'src/features/Reports/pages/RP-Customer/pages/OverviewCustomer'
-import ExpenseCustomer from 'src/features/Reports/pages/RP-Customer/pages/ExpenseCustomer'
-import UseServiceCustomer from 'src/features/Reports/pages/RP-Customer/pages/UseServiceCustomer'
-import ExpectedCustomer from 'src/features/Reports/pages/RP-Customer/pages/ExpectedCustomer'
-import FrequencyUseCustomer from 'src/features/Reports/pages/RP-Customer/pages/FrequencyUseCustomer'
-import CustomerUseApp from 'src/features/Reports/pages/RP-CSKH/pages/CustomerUseApp'
-import PriceList from 'src/features/Reports/pages/RP-Sell/pages/PriceList'
-import OverviewService from 'src/features/Reports/pages/RP-Services/pages/OverviewService'
-import RPServices from 'src/features/Reports/pages/RP-Services'
-import OddCardService from 'src/features/Reports/pages/RP-Services/pages/OddCardService'
-import SaleReduced from 'src/features/Reports/pages/RP-Sell/pages/SaleReduced'
-import UsedElsewhere from 'src/features/Reports/pages/RP-Services/pages/UsedElsewhere'
-import ConvertCustomer from 'src/features/Reports/pages/RP-Customer/pages/ConvertCustomer'
-import SellProfit from 'src/features/Reports/pages/RP-Sell/pages/SellProfit'
-import DaysCustomer from 'src/features/Reports/pages/RP-Day/pages/DaysCustomer'
-import DaysOverview from 'src/features/Reports/pages/RP-Day/pages/DaysOverview'
-import ActualSell from 'src/features/Reports/pages/RP-Sell/pages/ActualSell'
-import InventoryService from 'src/features/Reports/pages/RP-Services/pages/InventoryService/InventoryService'
-import BookService from 'src/features/Reports/pages/RP-Services/pages/BookService'
-import BanksOrders from 'src/features/Reports/pages/RP-ReEx/pages/BanksOrders'
+import TopBarProgress from 'react-topbar-progress-indicator'
+
+const LayoutReport = lazy(() => import('src/layout/LayoutReport'))
+const RPCustomer = lazy(() => import('src/features/Reports/pages/RP-Customer'))
+const RPDay = lazy(() => import('src/features/Reports/pages/RP-Day'))
+const RPSell = lazy(() => import('src/features/Reports/pages/RP-Sell'))
+const Returns = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/Returns')
+)
+const Sales = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/Sales')
+)
+const SaleDetails = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/SaleDetails')
+)
+const DebtPayment = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/DebtPayment')
+)
+const RPMore = lazy(() => import('src/features/Reports/pages/RP-More'))
+const TopProducts = lazy(() =>
+  import('src/features/Reports/pages/RP-More/pages/TopProducts')
+)
+const RPReEx = lazy(() => import('src/features/Reports/pages/RP-ReEx'))
+const RPDebt = lazy(() => import('src/features/Reports/pages/RP-Debt'))
+const DebtLock = lazy(() =>
+  import('src/features/Reports/pages/RP-Debt/pages/DebtLock')
+)
+const DebtGift = lazy(() =>
+  import('src/features/Reports/pages/RP-Debt/pages/Gift')
+)
+const DebtHome = lazy(() =>
+  import('src/features/Reports/pages/RP-Debt/pages/Home')
+)
+const RPStaff = lazy(() => import('src/features/Reports/pages/RP-Staff'))
+const SalaryServices = lazy(() =>
+  import('src/features/Reports/pages/RP-Staff/pages/SalaryServices')
+)
+const RoseStaff = lazy(() =>
+  import('src/features/Reports/pages/RP-Staff/pages/RoseStaff')
+)
+const SalesStaff = lazy(() =>
+  import('src/features/Reports/pages/RP-Staff/pages/SalesStaff')
+)
+const PayrollStaff = lazy(() =>
+  import('src/features/Reports/pages/RP-Staff/pages/PayrollStaff')
+)
+const RPInventory = lazy(() =>
+  import('src/features/Reports/pages/RP-Inventory')
+)
+const InventoryHome = lazy(() =>
+  import('src/features/Reports/pages/RP-Inventory/pages/Home')
+)
+const InventoryAttrition = lazy(() =>
+  import('src/features/Reports/pages/RP-Inventory/pages/Attrition')
+)
+const WarningMaterials = lazy(() =>
+  import('src/features/Reports/pages/RP-Inventory/pages/WarningMaterials')
+)
+const BirthdayCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-CSKH/pages/BirthdayCustomer')
+)
+const RPCSKH = lazy(() => import('src/features/Reports/pages/RP-CSKH'))
+const TotalWallet = lazy(() =>
+  import('src/features/Reports/pages/RP-More/pages/TotalWallet')
+)
+const TotalCard = lazy(() =>
+  import('src/features/Reports/pages/RP-More/pages/TotalCard')
+)
+const UseCardMoney = lazy(() =>
+  import('src/features/Reports/pages/RP-More/pages/UseCardMoney')
+)
+const GeneralCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-Customer/pages/GeneralCustomer')
+)
+const OverviewCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-Customer/pages/OverviewCustomer')
+)
+const ExpenseCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-Customer/pages/ExpenseCustomer')
+)
+const UseServiceCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-Customer/pages/UseServiceCustomer')
+)
+const ExpectedCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-Customer/pages/ExpectedCustomer')
+)
+const FrequencyUseCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-Customer/pages/FrequencyUseCustomer')
+)
+const CustomerUseApp = lazy(() =>
+  import('src/features/Reports/pages/RP-CSKH/pages/CustomerUseApp')
+)
+const PriceList = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/PriceList')
+)
+const OverviewService = lazy(() =>
+  import('src/features/Reports/pages/RP-Services/pages/OverviewService')
+)
+const RPServices = lazy(() => import('src/features/Reports/pages/RP-Services'))
+const OddCardService = lazy(() =>
+  import('src/features/Reports/pages/RP-Services/pages/OddCardService')
+)
+const SaleReduced = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/SaleReduced')
+)
+const UsedElsewhere = lazy(() =>
+  import('src/features/Reports/pages/RP-Services/pages/UsedElsewhere')
+)
+const ConvertCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-Customer/pages/ConvertCustomer')
+)
+const SellProfit = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/SellProfit')
+)
+const DaysCustomer = lazy(() =>
+  import('src/features/Reports/pages/RP-Day/pages/DaysCustomer')
+)
+const DaysOverview = lazy(() =>
+  import('src/features/Reports/pages/RP-Day/pages/DaysOverview')
+)
+const ActualSell = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/ActualSell')
+)
+const InventoryService = lazy(() =>
+  import(
+    'src/features/Reports/pages/RP-Services/pages/InventoryService/InventoryService'
+  )
+)
+const BookService = lazy(() =>
+  import('src/features/Reports/pages/RP-Services/pages/BookService')
+)
+const BanksOrders = lazy(() =>
+  import('src/features/Reports/pages/RP-ReEx/pages/BanksOrders')
+)
+const ReExs = lazy(() =>
+  import('src/features/Reports/pages/RP-ReEx/pages/ReExs')
+)
+
+const SuspensedView = ({ children }) => {
+  TopBarProgress.config({
+    barColors: {
+      0: '#3699ff'
+    },
+    barThickness: 1,
+    shadowBlur: 5
+  })
+  return <Suspense fallback={<TopBarProgress />}>{children}</Suspense>
+}
 
 function RouterPage(props) {
   return (
@@ -61,9 +159,11 @@ function RouterPage(props) {
       <Route
         path="/bao-cao-ngay"
         element={
-          <LayoutReport>
-            <RPDay />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPDay />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="tong-quan" replace />} />
@@ -73,9 +173,11 @@ function RouterPage(props) {
       <Route
         path="/khach-hang"
         element={
-          <LayoutReport>
-            <RPCustomer />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPCustomer />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="tong-quan" replace />} />
@@ -90,9 +192,11 @@ function RouterPage(props) {
       <Route
         path="/dich-vu"
         element={
-          <LayoutReport>
-            <RPServices />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPServices />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="tong-quan" replace />} />
@@ -105,9 +209,11 @@ function RouterPage(props) {
       <Route
         path="/ban-hang"
         element={
-          <LayoutReport>
-            <RPSell />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPSell />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="doanh-so" replace />} />
@@ -124,28 +230,25 @@ function RouterPage(props) {
       <Route
         path="/bao-cao-thu-chi"
         element={
-          <LayoutReport>
-            <RPReEx />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPReEx />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="tong-quan" replace />} />
-        <Route path="tong-quan" element={<RPReEx />} />
+        <Route path="tong-quan" element={<ReExs />} />
+        <Route path="cac-phuong-thuc-thanh-toan" element={<BanksOrders />} />
       </Route>
-      <Route
-        path="/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan"
-        element={
-          <LayoutReport>
-            <BanksOrders />
-          </LayoutReport>
-        }
-      />
       <Route
         path="/cong-no"
         element={
-          <LayoutReport>
-            <RPDebt />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPDebt />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="danh-sach" replace />} />
@@ -156,9 +259,11 @@ function RouterPage(props) {
       <Route
         path="/nhan-vien"
         element={
-          <LayoutReport>
-            <RPStaff />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPStaff />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="luong-ca-dich-vu" replace />} />
@@ -170,9 +275,11 @@ function RouterPage(props) {
       <Route
         path="/ton-kho"
         element={
-          <LayoutReport>
-            <RPInventory />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPInventory />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="danh-sach" replace />} />
@@ -183,9 +290,11 @@ function RouterPage(props) {
       <Route
         path="/cskh"
         element={
-          <LayoutReport>
-            <RPCSKH />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPCSKH />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="bao-cao-cai-dat-app" replace />} />
@@ -195,9 +304,11 @@ function RouterPage(props) {
       <Route
         path="/khac"
         element={
-          <LayoutReport>
-            <RPMore />
-          </LayoutReport>
+          <SuspensedView>
+            <LayoutReport>
+              <RPMore />
+            </LayoutReport>
+          </SuspensedView>
         }
       >
         <Route index element={<Navigate to="bao-cao-vi" replace />} />
