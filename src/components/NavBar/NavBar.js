@@ -139,9 +139,15 @@ const MenuList = [
   },
   {
     Title: 'Thu chi & Sổ quỹ',
-    TitleKey: 'THU_CHI_SO_QUY',
+    TitleKey: 'BAO_CAO_THU_CHI',
     IconClass: 'fa-regular fa-piggy-bank icon',
-    Href: '/thu-chi-va-so-quy'
+    Href: '/bao-cao-thu-chi',
+    Children: [
+      {
+        Title: 'Thanh toán các phương thức chuyển khoản',
+        Href: '/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan'
+      }
+    ]
   },
   {
     Title: 'Công nợ',

@@ -194,6 +194,11 @@ const reportsApi = {
       `${SubApi}/khac/bao-cao-su-dung-the-tien`,
       JSON.stringify(data)
     )
-  }
+  },
+  getListBanksOrder: data =>
+    http.post(
+      `${SubApi}/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan`,
+      JSON.stringify(data)
+    )
 }
 export default reportsApi

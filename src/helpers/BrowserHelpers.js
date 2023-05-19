@@ -297,6 +297,9 @@ export const BrowserHelpers = {
     if ('StatusBook' in filters) {
       params.StatusBook = filters.StatusBook ? filters.StatusBook.value : ''
     }
+    if ('Bank' in filters) {
+      params.Bank = filters.Bank ? filters.Bank.value : ''
+    }
     if ('StatusMember' in filters) {
       params.StatusMember = filters.StatusMember
         ? filters.StatusMember.value

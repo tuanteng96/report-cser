@@ -81,6 +81,7 @@ function FilterList({
   loading,
   loadingExport,
   ten_nghiep_vu2,
+  BankList,
   onRefresh,
   onExport
 }) {
@@ -260,6 +261,24 @@ function FilterList({
                           setFieldValue('StockID', otp ? otp.value : '')
                         }}
                         noOptionsMessage={() => 'Không có cơ sở'}
+                      />
+                    </div>
+                  )}
+                  {'Bank' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Phương thức chuyển khoản</label>
+                      <Select
+                        isClearable
+                        name="Bank"
+                        placeholder="Chọn phương thức"
+                        classNamePrefix="select"
+                        options={BankList}
+                        className="select-control"
+                        value={values.Bank}
+                        onChange={otp => {
+                          setFieldValue('Bank', otp)
+                        }}
+                        noOptionsMessage={() => 'Không có phương thức'}
                       />
                     </div>
                   )}

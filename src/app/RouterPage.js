@@ -49,6 +49,7 @@ import DaysOverview from 'src/features/Reports/pages/RP-Day/pages/DaysOverview'
 import ActualSell from 'src/features/Reports/pages/RP-Sell/pages/ActualSell'
 import InventoryService from 'src/features/Reports/pages/RP-Services/pages/InventoryService/InventoryService'
 import BookService from 'src/features/Reports/pages/RP-Services/pages/BookService'
+import BanksOrders from 'src/features/Reports/pages/RP-ReEx/pages/BanksOrders'
 
 function RouterPage(props) {
   return (
@@ -121,13 +122,21 @@ function RouterPage(props) {
         <Route path="doanh-so-thuc-thu" element={<ActualSell />} />
       </Route>
       <Route
-        path="/thu-chi-va-so-quy"
+        path="/bao-cao-thu-chi"
         element={
           <LayoutReport>
             <RPReEx />
           </LayoutReport>
         }
       ></Route>
+      <Route
+        path="/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan"
+        element={
+          <LayoutReport>
+            <BanksOrders />
+          </LayoutReport>
+        }
+      />
       <Route
         path="/cong-no"
         element={
