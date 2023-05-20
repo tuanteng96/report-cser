@@ -274,7 +274,6 @@ function BanksOrders(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
-        BankList={Banks}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-md-row">
