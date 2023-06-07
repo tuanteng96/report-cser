@@ -291,6 +291,17 @@ function OverviewService(props) {
         }
       },
       {
+        key: 'OrderID',
+        title: 'ID đơn hàng',
+        dataKey: 'OrderID',
+        cellRenderer: ({ rowData }) => <div>#{rowData.OrderID}</div>,
+        width: 100,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'BookDate',
         title: 'Ngày đặt lịch',
         dataKey: 'BookDate',
