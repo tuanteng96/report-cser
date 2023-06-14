@@ -262,7 +262,7 @@ function PayrollStaff(props) {
       },
       {
         key: 'KPI_Hoa_hong',
-        title: 'KPI Doanh số',
+        title: 'KPI',
         dataKey: 'KPI_Hoa_hong',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(rowData.KPI_Hoa_hong),

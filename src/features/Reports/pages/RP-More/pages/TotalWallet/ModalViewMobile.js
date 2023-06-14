@@ -98,7 +98,7 @@ function ModalViewMobile({ show, onHide, data }) {
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-                  KPI Doanh số
+                  KPI
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
                   {PriceHelper.formatVND(data?.KPI_Hoa_hong)}
