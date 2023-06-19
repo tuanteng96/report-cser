@@ -371,7 +371,7 @@ function Home(props) {
 
           {width <= 1200 ? (
             <div className="fw-500 d-flex align-items-center">
-              Tổng nợ
+              Tổng tiền nợ
               <OverlayTrigger
                 rootClose
                 trigger="click"
@@ -388,13 +388,17 @@ function Home(props) {
                         <span>Tổng ĐH nợ</span>
                         <span>{Total.DH_NO}</span>
                       </div>
+                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                        <span>Tổng tiền nợ</span>
+                        <span>{Total.TongNo}</span>
+                      </div>
                     </Popover.Body>
                   </Popover>
                 }
               >
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="font-size-xl fw-600 text-danger pl-5px font-number">
-                    {PriceHelper.formatVNDPositive(PageTotal)}
+                    {PriceHelper.formatVNDPositive(Total.TongNo)}
                   </span>
                   <i className="fa-solid fa-circle-exclamation cursor-pointer text-danger ml-5px"></i>
                 </div>
