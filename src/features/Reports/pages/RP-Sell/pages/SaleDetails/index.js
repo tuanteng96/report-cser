@@ -313,6 +313,9 @@ function SaleDetails(props) {
                       <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px w-sm-100px text-end">
                         Doanh số
                       </div>
+                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-100px w-sm-120px text-end">
+                        Thực thu
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -340,6 +343,59 @@ function SaleDetails(props) {
                           </div>
                           <div className="fw-500 w-70px w-sm-100px text-end">
                             {PriceHelper.formatVND(item.SumTopay)}
+                          </div>
+                          <div className="fw-500 w-100px w-sm-120px text-end">
+                            <OverlayTrigger
+                              rootClose
+                              trigger="click"
+                              key="bottom"
+                              placement="bottom"
+                              overlay={
+                                <Popover id={`popover-positioned-top`}>
+                                  <Popover.Body className="p-0">
+                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <span>Chuyển khoản</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(item.CK)}
+                                      </span>
+                                    </div>
+                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <span>Quẹt thẻ</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(item.QT)}
+                                      </span>
+                                    </div>
+                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <span>Tiền mặt</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(item.TM)}
+                                      </span>
+                                    </div>
+                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <span>Ví</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(item.Vi)}
+                                      </span>
+                                    </div>
+                                    <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                                      <span>Thẻ tiền</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(item.TT)}
+                                      </span>
+                                    </div>
+                                  </Popover.Body>
+                                </Popover>
+                              }
+                            >
+                              <div className="d-flex justify-content-end align-items-center">
+                                <span>
+                                  {PriceHelper.formatVNDPositive(
+                                    item.CK + item.Vi + item.TM + item.TT
+                                  )}
+                                </span>
+                                <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                              </div>
+                            </OverlayTrigger>
                           </div>
                         </div>
                       ))}

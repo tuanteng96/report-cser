@@ -99,6 +99,7 @@ function FilterList({
   )
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
+  const [GGLoading, setGGLoading] = useState(true)
   const { pathname } = useLocation()
 
   useEffect(() => {
@@ -170,6 +171,10 @@ function FilterList({
     setTimeout(() => {
       callback(filterTypeTC(inputValue, optionFilter))
     }, 500)
+  }
+
+  window.ShowButton = () => {
+    setGGLoading(false)
   }
 
   return (
@@ -941,6 +946,24 @@ function FilterList({
                       </label>
                     </div>
                   )}
+                  {'gia_nhap_tb_khoang_tg' in values && (
+                    <div className="mt-10px">
+                      <label className="checkbox d-flex">
+                        <input
+                          type="checkbox"
+                          name="gia_nhap_tb_khoang_tg"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.gia_nhap_tb_khoang_tg}
+                          checked={values.gia_nhap_tb_khoang_tg}
+                        />
+                        <span className="checkbox-icon"></span>
+                        <span className="fw-500 cursor-pointer">
+                          Giá nhập TB trong khoảng thời gian
+                        </span>
+                      </label>
+                    </div>
+                  )}
                   {'ProductId' in values && (
                     <div className="form-group mb-20px">
                       <label>Sản phẩm, DV, NVL, ...</label>
@@ -1162,10 +1185,10 @@ function FilterList({
                     type="button"
                     className={clsx(
                       'btn btn-primary me-2 max-w-135px text-truncate',
-                      (loadingExport || loading) &&
+                      (loadingExport || loading || GGLoading) &&
                         'spinner spinner-white spinner-right'
                     )}
-                    disabled={loadingExport}
+                    disabled={loadingExport || GGLoading}
                     onClick={onExport}
                   >
                     <i className="far fa-file-excel pr-8px"></i>

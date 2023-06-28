@@ -29,7 +29,8 @@ function Home(props) {
     CategoriesTK: '', // 0 => SP, 1 => NVL
     ProdIDs: '', // Danh sách SP, NVL
     QtyNumber: '', // Lọc ra Qty < QtyNumber
-    IsQtyEmpty: true
+    IsQtyEmpty: true,
+    gia_nhap_tb_khoang_tg: false // Tính theo DateStart,DateEnd, ngược lại tất cả
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -184,6 +185,15 @@ function Home(props) {
         dataKey: 'ImportPrice',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(rowData?.ImportPrice),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'AverageCost',
+        title: 'Giá nhập trung bình',
+        dataKey: 'AverageCost',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.AverageCost),
         width: 180,
         sortable: false
       },

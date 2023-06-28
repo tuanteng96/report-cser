@@ -20,7 +20,8 @@ function SellProfit(props) {
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
-    Ps: 1500 // Số lượng item
+    Ps: 1500, // Số lượng item
+    gia_nhap_tb_khoang_tg: false // Tính theo DateStart,DateEnd, ngược lại tất cả
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -166,6 +167,16 @@ function SellProfit(props) {
         mobileOptions: {
           visible: true
         },
+        align: 'right'
+      },
+      {
+        key: 'AverageCost',
+        title: 'Giá gốc trung bình',
+        dataKey: 'AverageCost',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.AverageCost),
+        width: 180,
+        sortable: false,
         align: 'right'
       },
       {
