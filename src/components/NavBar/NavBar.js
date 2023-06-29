@@ -12,20 +12,25 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
+const hasRouter = () => {
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') return ''
+  return '/admin/?mdl20=R23&act20=index#rp:'
+}
+
 const MenuList = [
   {
     Title: 'Báo cáo ngày',
     TitleKey: 'BAO_CAO_NGAY',
     IconClass: 'fa-regular fa-chart-pie icon',
-    Href: '/bao-cao-ngay',
+    Href: hasRouter() + '/bao-cao-ngay',
     Children: [
       {
         Title: 'Tổng quan',
-        Href: '/bao-cao-ngay/tong-quan'
+        Href: hasRouter() + '/bao-cao-ngay/tong-quan'
       },
       {
         Title: 'Khách hàng',
-        Href: '/bao-cao-ngay/khach-hang'
+        Href: hasRouter() + '/bao-cao-ngay/khach-hang'
       }
     ]
   },
@@ -33,35 +38,35 @@ const MenuList = [
     Title: 'Khách hàng',
     TitleKey: 'KHACH_HANG',
     IconClass: 'fa-regular fa-chart-user icon',
-    Href: '/khach-hang',
+    Href: hasRouter() + '/khach-hang',
     Children: [
       {
         Title: 'Tổng quan khách hàng',
-        Href: '/khach-hang/tong-quan'
+        Href: hasRouter() + '/khach-hang/tong-quan'
       },
       {
         Title: 'Tổng hợp khách hàng',
-        Href: '/khach-hang/tong-hop'
+        Href: hasRouter() + '/khach-hang/tong-hop'
       },
       {
         Title: 'Chi tiêu',
-        Href: '/khach-hang/chi-tieu'
+        Href: hasRouter() + '/khach-hang/chi-tieu'
       },
       {
         Title: 'Sử dụng dịch vụ',
-        Href: '/khach-hang/su-dung-dich-vu'
+        Href: hasRouter() + '/khach-hang/su-dung-dich-vu'
       },
       {
         Title: 'Dự kiến',
-        Href: '/khach-hang/du-kien'
+        Href: hasRouter() + '/khach-hang/du-kien'
       },
       {
         Title: 'Tần suất sử dụng',
-        Href: '/khach-hang/tan-suat-su-dung'
+        Href: hasRouter() + '/khach-hang/tan-suat-su-dung'
       },
       {
         Title: 'Chuyển đổi',
-        Href: '/khach-hang/chuyen-doi'
+        Href: hasRouter() + '/khach-hang/chuyen-doi'
       }
     ]
   },
@@ -69,27 +74,27 @@ const MenuList = [
     Title: 'Dịch vụ',
     TitleKey: 'DICH_VU',
     IconClass: 'fa-regular fa-chart-waterfall icon',
-    Href: '/dich-vu',
+    Href: hasRouter() + '/dich-vu',
     Children: [
       {
         Title: 'Tổng quan - Doanh số',
-        Href: '/dich-vu/tong-quan'
+        Href: hasRouter() + '/dich-vu/tong-quan'
       },
       {
         Title: 'Báo cáo nghiệp vụ',
-        Href: '/dich-vu/bao-cao-nghiep-vu'
+        Href: hasRouter() + '/dich-vu/bao-cao-nghiep-vu'
       },
       {
         Title: 'Dịch vụ điểm này, sử dụng điểm khác',
-        Href: '/dich-vu/dv-diem-sd-diem-khac'
+        Href: hasRouter() + '/dich-vu/dv-diem-sd-diem-khac'
       },
       {
         Title: 'Tồn dịch vụ',
-        Href: '/dich-vu/ton-dich-vu'
+        Href: hasRouter() + '/dich-vu/ton-dich-vu'
       },
       {
         Title: 'Báo cáo đặt lịch',
-        Href: '/dich-vu/bao-cao-dat-lich'
+        Href: hasRouter() + '/dich-vu/bao-cao-dat-lich'
       }
     ]
   },
@@ -97,43 +102,43 @@ const MenuList = [
     Title: 'Bán hàng',
     TitleKey: 'BAN_HANG',
     IconClass: 'fa-regular fa-cart-circle-check icon',
-    Href: '/ban-hang',
+    Href: hasRouter() + '/ban-hang',
     Children: [
       {
         Title: 'Doanh số',
-        Href: '/ban-hang/doanh-so'
+        Href: hasRouter() + '/ban-hang/doanh-so'
       },
       {
         Title: 'Sản phẩm, dịch vụ bán ra',
-        Href: '/ban-hang/sp-dv-ban-ra'
+        Href: hasRouter() + '/ban-hang/sp-dv-ban-ra'
       },
       {
         Title: 'Trả hàng',
-        Href: '/ban-hang/tra-hang'
+        Href: hasRouter() + '/ban-hang/tra-hang'
       },
       {
         Title: 'Thanh toán trả nợ',
-        Href: '/ban-hang/thanh-toan-tra-no'
+        Href: hasRouter() + '/ban-hang/thanh-toan-tra-no'
       },
       {
         Title: 'Top bán hàng, doanh số',
-        Href: '/ban-hang/top-ban-hang-doanh-so'
+        Href: hasRouter() + '/ban-hang/top-ban-hang-doanh-so'
       },
       {
         Title: 'Doanh số giảm trừ ( kết thúc thẻ, xóa buổi )',
-        Href: '/ban-hang/doanh-so-giam-tru'
+        Href: hasRouter() + '/ban-hang/doanh-so-giam-tru'
       },
       {
         Title: 'Bảng giá',
-        Href: '/ban-hang/bang-gia'
+        Href: hasRouter() + '/ban-hang/bang-gia'
       },
       {
         Title: 'Lợi nhuận',
-        Href: '/ban-hang/loi-nhuan'
+        Href: hasRouter() + '/ban-hang/loi-nhuan'
       },
       {
         Title: 'Doanh số thực thu',
-        Href: '/ban-hang/doanh-so-thuc-thu'
+        Href: hasRouter() + '/ban-hang/doanh-so-thuc-thu'
       }
     ]
   },
@@ -141,15 +146,15 @@ const MenuList = [
     Title: 'Thu chi & Sổ quỹ',
     TitleKey: 'BAO_CAO_THU_CHI',
     IconClass: 'fa-regular fa-piggy-bank icon',
-    Href: '/bao-cao-thu-chi',
+    Href: hasRouter() + '/bao-cao-thu-chi',
     Children: [
       {
         Title: 'Thu chi & Sổ quỹ',
-        Href: '/bao-cao-thu-chi/tong-quan'
+        Href: hasRouter() + '/bao-cao-thu-chi/tong-quan'
       },
       {
         Title: 'Thanh toán các phương thức chuyển khoản',
-        Href: '/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan'
+        Href: hasRouter() + '/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan'
       }
     ]
   },
@@ -157,19 +162,19 @@ const MenuList = [
     Title: 'Công nợ',
     TitleKey: 'CONG_NO',
     IconClass: 'fa-regular fa-chart-mixed icon',
-    Href: '/cong-no',
+    Href: hasRouter() + '/cong-no',
     Children: [
       {
         Title: 'Công nợ',
-        Href: '/cong-no/danh-sach'
+        Href: hasRouter() + '/cong-no/danh-sach'
       },
       {
         Title: 'Báo cáo khóa nợ',
-        Href: '/cong-no/khoa-no'
+        Href: hasRouter() + '/cong-no/khoa-no'
       },
       {
         Title: 'Báo cáo tặng',
-        Href: '/cong-no/tang'
+        Href: hasRouter() + '/cong-no/tang'
       }
     ]
   },
@@ -177,23 +182,23 @@ const MenuList = [
     Title: 'Nhân viên',
     TitleKey: 'NHAN_VIEN',
     IconClass: 'fa-regular fa-chart-candlestick icon',
-    Href: '/nhan-vien',
+    Href: hasRouter() + '/nhan-vien',
     Children: [
       {
         Title: 'Lương ca dịch vụ',
-        Href: '/nhan-vien/luong-ca-dich-vu'
+        Href: hasRouter() + '/nhan-vien/luong-ca-dich-vu'
       },
       {
         Title: 'Hoa hồng',
-        Href: '/nhan-vien/hoa-hong'
+        Href: hasRouter() + '/nhan-vien/hoa-hong'
       },
       {
         Title: 'Doanh số',
-        Href: '/nhan-vien/doanh-so'
+        Href: hasRouter() + '/nhan-vien/doanh-so'
       },
       {
         Title: 'Bảng lương',
-        Href: '/nhan-vien/bang-luong'
+        Href: hasRouter() + '/nhan-vien/bang-luong'
       }
     ]
   },
@@ -201,19 +206,19 @@ const MenuList = [
     Title: 'Tồn kho',
     TitleKey: 'TON_KHO',
     IconClass: 'fa-regular fa-chart-pie icon',
-    Href: '/ton-kho',
+    Href: hasRouter() + '/ton-kho',
     Children: [
       {
         Title: 'Tồn kho',
-        Href: '/ton-kho/danh-sach'
+        Href: hasRouter() + '/ton-kho/danh-sach'
       },
       {
         Title: 'Tiêu hao',
-        Href: '/ton-kho/tieu-hao'
+        Href: hasRouter() + '/ton-kho/tieu-hao'
       },
       {
         Title: 'Nguyên vật liệu dự kiến',
-        Href: '/ton-kho/du-kien-nvl'
+        Href: hasRouter() + '/ton-kho/du-kien-nvl'
       }
     ]
   },
@@ -221,11 +226,11 @@ const MenuList = [
     Title: 'CSKH',
     TitleKey: 'CSKH',
     IconClass: 'fa-regular fa-handshake icon',
-    Href: '/cskh',
+    Href: hasRouter() + '/cskh',
     Children: [
       {
         Title: 'Báo cáo cài đặt APP',
-        Href: '/cskh/bao-cao-cai-dat-app'
+        Href: hasRouter() + '/cskh/bao-cao-cai-dat-app'
       }
       // {
       //   Title: 'Khách hàng sinh nhật',
@@ -277,7 +282,7 @@ const MenuList = [
     Title: 'Khác',
     TitleKey: 'KHAC',
     IconClass: 'fa-regular fa-chart-scatter-bubble icon',
-    Href: '/khac',
+    Href: hasRouter() + '/khac',
     Children: [
       // {
       //   Title: 'Top đánh giá',
@@ -289,15 +294,15 @@ const MenuList = [
       // },
       {
         Title: 'Báo cáo ví',
-        Href: '/khac/bao-cao-vi'
+        Href: hasRouter() + '/khac/bao-cao-vi'
       },
       {
         Title: 'Báo cáo thẻ tiền',
-        Href: '/khac/bao-cao-the-tien'
+        Href: hasRouter() + '/khac/bao-cao-the-tien'
       },
       {
         Title: 'Báo cáo sử dụng thẻ tiền',
-        Href: '/khac/bao-cao-su-dung-the-tien'
+        Href: hasRouter() + '/khac/bao-cao-su-dung-the-tien'
       }
       // {
       //   Title: 'Lợi nhuận',
@@ -353,6 +358,17 @@ function NavBar(props) {
 
   const onHideAside = () => {
     dispatch(ToggleAside(false))
+  }
+
+  const isActive = path => {
+    if (
+      !path ||
+      !process.env.NODE_ENV ||
+      process.env.NODE_ENV === 'development'
+    )
+      return
+    let pathRc = path && path.split('#rp:')[1]
+    return location.pathname.search(pathRc) > -1
   }
 
   if (width < 1200) {
@@ -416,7 +432,10 @@ function NavBar(props) {
         {MenuList &&
           MenuList.map((item, index) => (
             <li key={index}>
-              <NavLink to={item.Href}>
+              <NavLink
+                className={clsx(isActive(item.Href) && 'active')}
+                to={item.Href}
+              >
                 <i className={item.IconClass}></i>
                 <span>{item.Title}</span>
                 {item.Children && item.Children.length > 0 && (
@@ -428,7 +447,12 @@ function NavBar(props) {
                   <ul>
                     {item.Children.map((sub, i) => (
                       <li key={i}>
-                        <NavLink to={sub.Href}>{sub.Title}</NavLink>
+                        <NavLink
+                          className={clsx(isActive(sub.Href) && 'active')}
+                          to={sub.Href}
+                        >
+                          {sub.Title}
+                        </NavLink>
                       </li>
                     ))}
                   </ul>

@@ -17,6 +17,11 @@ const ScrollToTop = props => {
         window.top.location.hash = `rp:${location?.pathname}`
       }
     }
+
+    if (location?.search === '?mdl20=R23&act20=index') {
+      let urlRc = location?.hash.split('#rp:')[1]
+      navigate(urlRc, { replace: true })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 

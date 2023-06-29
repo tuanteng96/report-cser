@@ -9,6 +9,7 @@ import _ from 'lodash'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import { uuidv4 } from '@nikitababko/id-generator'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 function SellProfit(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -180,10 +181,50 @@ function SellProfit(props) {
         align: 'right'
       },
       {
-        key: 'Revenue',
-        title: 'Lợi nhuận',
-        dataKey: 'Revenue',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Revenue),
+        key: 'Revenue1',
+        title: 'Lợi nhuận 1',
+        dataKey: 'Revenue1',
+        headerRenderer: () => (
+          <div className="text-uppercase">
+            Lợi nhuận 1
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="button-tooltip">
+                  Tính theo giá nhập kho trung bình
+                </Tooltip>
+              }
+            >
+              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+            </OverlayTrigger>
+          </div>
+        ),
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Revenue1),
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        },
+        align: 'right'
+      },
+      {
+        key: 'Revenue2',
+        title: 'Lợi nhuận 2',
+        dataKey: 'Revenue2',
+        headerRenderer: () => (
+          <div className="text-uppercase">
+            Lợi nhuận 2
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="button-tooltip">Tính theo giá cố định</Tooltip>
+              }
+            >
+              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+            </OverlayTrigger>
+          </div>
+        ),
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Revenue2),
         width: 150,
         sortable: false,
         mobileOptions: {
