@@ -190,9 +190,7 @@ function SellProfit(props) {
             <OverlayTrigger
               placement="top"
               overlay={
-                <Tooltip id="button-tooltip">
-                  Tính theo giá nhập kho trung bình
-                </Tooltip>
+                <Tooltip id="button-tooltip">Tính theo giá cố định</Tooltip>
               }
             >
               <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
@@ -217,7 +215,9 @@ function SellProfit(props) {
             <OverlayTrigger
               placement="top"
               overlay={
-                <Tooltip id="button-tooltip">Tính theo giá cố định</Tooltip>
+                <Tooltip id="button-tooltip">
+                  Tính theo giá nhập kho trung bình
+                </Tooltip>
               }
             >
               <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
