@@ -1192,7 +1192,7 @@ function FilterList({
                     onClick={onExport}
                   >
                     <i className="far fa-file-excel pr-8px"></i>
-                    Xuất Excel
+                    {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
                   </button>
                   <button
                     type="button"

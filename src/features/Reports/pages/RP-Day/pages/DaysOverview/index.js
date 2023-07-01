@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import 'src/_assets/sass/pages/_report.scss'
 import reportsApi from 'src/api/reports.api'
 import LoadingSkeleton from './LoadingSkeleton'
 import { PriceHelper } from 'src/helpers/PriceHelper'

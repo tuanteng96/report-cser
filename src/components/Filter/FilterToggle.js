@@ -69,6 +69,7 @@ function FilterToggle({
     PermissionReport: auth.Info?.rightsSum?.report
   }))
   const [StocksList, setStocksList] = useState([])
+  const [GGLoading, setGGLoading] = useState(true)
 
   const { pathname } = useLocation()
 
@@ -105,6 +106,10 @@ function FilterToggle({
     setStocksList(newStocks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PermissionReport, pathname])
+
+  window.ShowButton = () => {
+    setGGLoading(false)
+  }
 
   return (
     <div className={clsx('filter-box', show && 'show')}>
@@ -961,14 +966,16 @@ function FilterToggle({
                     type="button"
                     className={clsx(
                       'btn btn-primary me-2 max-w-135px text-truncate',
-                      (loadingExport || loading) &&
+                      (loadingExport || loading || GGLoading) &&
                         'spinner spinner-white spinner-right'
                     )}
-                    disabled={loadingExport}
+                    disabled={loadingExport || GGLoading}
                     onClick={onExport}
                   >
                     <i className="far fa-file-excel pr-8px"></i>
-                    <span>Xuất Excel</span>
+                    <span>
+                      {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
+                    </span>
                   </button>
                   <button
                     type="button"
