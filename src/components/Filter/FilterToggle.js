@@ -16,6 +16,7 @@ import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import AsyncSelectCategoriesSV from '../Selects/AsyncSelectCategoriesSV'
 import { useLocation } from 'react-router-dom'
+import { useApp } from 'src/app/App'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -69,9 +70,9 @@ function FilterToggle({
     PermissionReport: auth.Info?.rightsSum?.report
   }))
   const [StocksList, setStocksList] = useState([])
-  const [GGLoading, setGGLoading] = useState(true)
 
   const { pathname } = useLocation()
+  const { GGLoading } = useApp()
 
   useEffect(() => {
     let newStocks = [...Stocks]
@@ -106,10 +107,6 @@ function FilterToggle({
     setStocksList(newStocks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PermissionReport, pathname])
-
-  window.ShowButton = () => {
-    setGGLoading(false)
-  }
 
   return (
     <div className={clsx('filter-box', show && 'show')}>

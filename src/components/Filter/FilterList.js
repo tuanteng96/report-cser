@@ -27,6 +27,7 @@ import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import { useLocation } from 'react-router-dom'
 import SelectCustomType from '../Selects/SelectCustomType'
 import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
+import { useApp } from 'src/app/App'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -99,8 +100,9 @@ function FilterList({
   )
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
-  const [GGLoading, setGGLoading] = useState(true)
   const { pathname } = useLocation()
+
+  const { GGLoading } = useApp()
 
   useEffect(() => {
     const newKpiTypeList = []
@@ -171,10 +173,6 @@ function FilterList({
     setTimeout(() => {
       callback(filterTypeTC(inputValue, optionFilter))
     }, 500)
-  }
-
-  window.ShowButton = () => {
-    setGGLoading(false)
   }
 
   return (
