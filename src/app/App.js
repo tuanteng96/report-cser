@@ -2,7 +2,7 @@ import { Provider } from 'react-redux'
 import AuthInit from 'src/features/Auth/AuthInit'
 import ScrollToTop from 'src/layout/_core/ScrollToTop'
 import RouterPage from './RouterPage'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 const AppContext = createContext()
 
@@ -12,6 +12,12 @@ export const useApp = () => {
 
 function App({ store, persistor }) {
   const [GGLoading, setGGLoading] = useState(true)
+
+  useEffect(() => {
+    if (!window.isDesktop) {
+      setGGLoading(false)
+    }
+  }, [])
 
   window.ShowButton = () => {
     setGGLoading(false)
