@@ -201,7 +201,7 @@ function Home(props) {
         key: 'QtyBefore',
         title: 'Tồn trước',
         dataKey: 'QtyBefore',
-        cellRenderer: ({ rowData }) => rowData?.QtyBefore || 'Chưa xác định',
+        cellRenderer: ({ rowData }) => rowData?.QtyBefore || 0,
         width: 150,
         sortable: false
       },

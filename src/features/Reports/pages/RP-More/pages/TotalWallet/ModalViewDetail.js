@@ -116,7 +116,7 @@ function ModalViewDetail({ show, onHide, Member }) {
       },
       {
         key: 'StockName',
-        title: 'Ngày',
+        title: 'Cơ sở',
         dataKey: 'StockName',
         width: 200,
         sortable: false
