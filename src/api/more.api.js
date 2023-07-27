@@ -44,8 +44,12 @@ const moreApi = {
       `/api/gl/select2?cmd=cate&app=manu&ignore_root=1&ignore_pid0=1&roots=4&q=${key}`
     )
   },
-  getAllService: key => {
-    return http.get(`/api/gl/select2?cmd=prod&ignore_all=1&srv=1&q=${key}`)
+  getAllService: (key, isOnlyCard = false) => {
+    return http.get(
+      `/api/gl/select2?cmd=prod&ignore_all=1&srv=1&q=${key}${
+        isOnlyCard ? '&ignore_rootsv=1' : ''
+      }`
+    )
   },
   getAllServicePP: key => {
     return http.get(

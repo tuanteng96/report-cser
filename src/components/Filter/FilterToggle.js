@@ -57,7 +57,8 @@ function FilterToggle({
   loading,
   loadingExport,
   onRefresh,
-  onExport
+  onExport,
+  isOnlyCard
 }) {
   const { Stocks, PermissionReport } = useSelector(({ auth }) => ({
     Stocks: auth.Info?.Stocks
@@ -625,6 +626,7 @@ function FilterToggle({
                               setFieldValue('ServiceIDs', otp, false)
                             }}
                             value={values.ServiceIDs}
+                            isOnlyCard={isOnlyCard}
                           />
                         </div>
                       )}

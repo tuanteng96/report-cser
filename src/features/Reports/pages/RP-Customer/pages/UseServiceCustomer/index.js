@@ -332,6 +332,7 @@ function UseServiceCustomer(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        isOnlyCard
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">

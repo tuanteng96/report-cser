@@ -7,9 +7,9 @@ AsyncSelectServices.propTypes = {
   onChange: PropTypes.func
 }
 
-function AsyncSelectServices({ onChange, value, ...props }) {
+function AsyncSelectServices({ onChange, value, isOnlyCard, ...props }) {
   const getAllService = async (search, loadedOptions, { page }) => {
-    const { data } = await moreApi.getAllService(search)
+    const { data } = await moreApi.getAllService(search, isOnlyCard)
     const newData =
       data.data && data.data.length > 0
         ? data.data.map(item => ({
