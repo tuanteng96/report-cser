@@ -371,18 +371,6 @@ function SaleDetails(props) {
                                         {PriceHelper.formatVNDPositive(item.TM)}
                                       </span>
                                     </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                                      <span>Ví</span>
-                                      <span>
-                                        {PriceHelper.formatVNDPositive(item.Vi)}
-                                      </span>
-                                    </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                                      <span>Thẻ tiền</span>
-                                      <span>
-                                        {PriceHelper.formatVNDPositive(item.TT)}
-                                      </span>
-                                    </div>
                                   </Popover.Body>
                                 </Popover>
                               }
@@ -390,7 +378,7 @@ function SaleDetails(props) {
                               <div className="d-flex justify-content-end align-items-center">
                                 <span>
                                   {PriceHelper.formatVNDPositive(
-                                    item.CK + item.Vi + item.TM + item.TT
+                                    item.CK + item.QT + item.TM
                                   )}
                                 </span>
                                 <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
@@ -505,22 +493,6 @@ function SaleDetails(props) {
                                           )}
                                         </span>
                                       </div>
-                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                                        <span>Ví</span>
-                                        <span>
-                                          {PriceHelper.formatVNDPositive(
-                                            item.Vi
-                                          )}
-                                        </span>
-                                      </div>
-                                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                                        <span>Thẻ tiền</span>
-                                        <span>
-                                          {PriceHelper.formatVNDPositive(
-                                            item.TT
-                                          )}
-                                        </span>
-                                      </div>
                                     </Popover.Body>
                                   </Popover>
                                 }
@@ -528,7 +500,7 @@ function SaleDetails(props) {
                                 <div className="d-flex justify-content-end align-items-center">
                                   <span>
                                     {PriceHelper.formatVNDPositive(
-                                      item.CK + item.Vi + item.TM + item.TT
+                                      item.CK + item.QT + item.TM
                                     )}
                                   </span>
                                   <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
@@ -635,18 +607,6 @@ function SaleDetails(props) {
                                         {PriceHelper.formatVNDPositive(item.TM)}
                                       </span>
                                     </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                                      <span>Ví</span>
-                                      <span>
-                                        {PriceHelper.formatVNDPositive(item.Vi)}
-                                      </span>
-                                    </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                                      <span>Thẻ tiền</span>
-                                      <span>
-                                        {PriceHelper.formatVNDPositive(item.TT)}
-                                      </span>
-                                    </div>
                                   </Popover.Body>
                                 </Popover>
                               }
@@ -654,7 +614,7 @@ function SaleDetails(props) {
                               <div className="d-flex justify-content-end align-items-center">
                                 <span>
                                   {PriceHelper.formatVNDPositive(
-                                    item.CK + item.Vi + item.TM + item.TT
+                                    item.CK + item.QT + item.TM
                                   )}
                                 </span>
                                 <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
