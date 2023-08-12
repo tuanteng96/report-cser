@@ -215,7 +215,9 @@ function TotalCard(props) {
         title: 'Giá trị chi tiêu SP',
         dataKey: 'GiaTriChiTieuSP',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.GiaTriChiTieuSP),
+          rowData.GiaTriChiTieuSP === 0
+            ? PriceHelper.formatVND(rowData.TongGiaTri)
+            : PriceHelper.formatVND(rowData.GiaTriChiTieuSP),
         width: 150,
         sortable: false
       },
@@ -224,7 +226,9 @@ function TotalCard(props) {
         title: 'Giá trị chi tiêu DV',
         dataKey: 'GiaTriChiTieuDV',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.GiaTriChiTieuDV),
+          rowData.GiaTriChiTieuDV === 0
+            ? PriceHelper.formatVND(rowData.TongGiaTri)
+            : PriceHelper.formatVND(rowData.GiaTriChiTieuDV),
         width: 150,
         sortable: false
       },
@@ -268,7 +272,10 @@ function TotalCard(props) {
         key: 'ConLaiSP',
         title: 'Còn lại sản phẩm',
         dataKey: 'ConLaiSP',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ConLaiSP),
+        cellRenderer: ({ rowData }) =>
+          rowData.GiaTriChiTieuSP === 0 && rowData.GiaTriChiTieuDV === 0
+            ? PriceHelper.formatVND(rowData.TongConLai)
+            : PriceHelper.formatVND(rowData.ConLaiSP),
         width: 150,
         sortable: false
       },
@@ -276,7 +283,10 @@ function TotalCard(props) {
         key: 'ConLaiDV',
         title: 'Còn lại dịch vụ',
         dataKey: 'ConLaiDV',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ConLaiDV),
+        cellRenderer: ({ rowData }) =>
+          rowData.GiaTriChiTieuSP === 0 && rowData.GiaTriChiTieuDV === 0
+            ? PriceHelper.formatVND(rowData.TongConLai)
+            : PriceHelper.formatVND(rowData.ConLaiDV),
         width: 150,
         sortable: false
       },
@@ -289,7 +299,7 @@ function TotalCard(props) {
       },
       {
         key: 'Member.Phone',
-        title: 'Tên khách hàng',
+        title: 'Số điện thoại',
         dataKey: 'Member.Phone',
         width: 180,
         sortable: false
