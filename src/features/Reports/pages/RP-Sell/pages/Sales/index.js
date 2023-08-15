@@ -467,6 +467,13 @@ function Sales(props) {
         sortable: false
       },
       {
+        key: 'Desc',
+        title: 'Ghi chú',
+        dataKey: 'Desc',
+        width: 250,
+        sortable: false
+      },
+      {
         key: 'Prod',
         title: 'Chi tiết',
         dataKey: 'Prod',
