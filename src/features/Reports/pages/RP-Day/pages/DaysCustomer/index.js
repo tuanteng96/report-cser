@@ -660,7 +660,7 @@ function DaysCustomer(props) {
       },
       {
         key: 'CheckIn',
-        title: 'Giờ CheckIn',
+        title: 'Giờ bắt đầu',
         dataKey: 'CheckIn',
         cellRenderer: ({ rowData }) =>
           rowData.CheckIn
@@ -671,7 +671,7 @@ function DaysCustomer(props) {
       },
       {
         key: 'CheckOut',
-        title: 'Giờ CheckOut',
+        title: 'Giờ kết thúc',
         dataKey: 'CheckOut',
         cellRenderer: ({ rowData }) =>
           rowData.CheckOut

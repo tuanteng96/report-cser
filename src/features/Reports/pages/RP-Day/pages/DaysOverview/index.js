@@ -137,27 +137,25 @@ function DaysOverview(props) {
                 </div>
                 <div className="mt-10px">
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
-                    <div className="text-muted">Đến tại Spa</div>
+                    <div className="text-muted">Khách tạo mới tại Spa</div>
                     <div className="fw-600 font-number">
                       {dataDays?.KHDenTaiSpa || 0}
                     </div>
                   </div>
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
-                    <div className="text-muted">Web / App</div>
+                    <div className="text-muted">Khách đăng ký từ Web / App</div>
                     <div className="fw-600 font-number">
                       {dataDays?.KHWebApp || 0}
                     </div>
                   </div>
                   <div className="d-flex justify-content-between border-bottom-dashed py-12px">
-                    <div className="text-muted">Khách đang CheckIn</div>
+                    <div className="text-muted">Hóa đơn đang xử lý</div>
                     <div className="fw-600 font-number">
                       {dataDays?.KHDangCheckIn || 0}
                     </div>
                   </div>
                   <div className="d-flex justify-content-between pt-12px">
-                    <div className="text-muted">
-                      Khách mới / Tổng khách CheckIn
-                    </div>
+                    <div className="text-muted">Khách mới / Tổng hóa đơn</div>
                     <div className="fw-600 font-number">
                       <span className="font-size-md text-success">
                         {dataDays?.KHFirstCheckIn || 0}
