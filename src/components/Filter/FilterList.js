@@ -1119,6 +1119,30 @@ function FilterList({
                       />
                     </div>
                   )}
+                  {'Dich_vu_chuyen_doi_khong_hop_le' in values && (
+                    <div>
+                      <label className="checkbox d-flex">
+                        <input
+                          type="checkbox"
+                          name="Dich_vu_chuyen_doi_khong_hop_le"
+                          onChange={event => {
+                            setFieldValue(
+                              'Dich_vu_chuyen_doi_khong_hop_le',
+                              event.target.checked ? 1 : 0
+                            )
+                          }}
+                          value={values.Dich_vu_chuyen_doi_khong_hop_le}
+                          checked={
+                            Number(values.Dich_vu_chuyen_doi_khong_hop_le) === 1
+                          }
+                        />
+                        <span className="checkbox-icon"></span>
+                        <span className="fw-500 cursor-pointer">
+                          Dịch vụ chuyển đổi không hợp lệ
+                        </span>
+                      </label>
+                    </div>
+                  )}
                   {'GroupCustomerID' in values && (
                     <div className="form-group mb-20px">
                       <label>Nhóm khách hàng</label>

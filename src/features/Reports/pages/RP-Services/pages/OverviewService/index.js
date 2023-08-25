@@ -67,7 +67,8 @@ function OverviewService(props) {
     Status: '', // Trạng thái
     Warranty: '', // Bảo hành
     StaffID: '', // ID nhân viên
-    StarRating: '' // Đánh giá sao
+    StarRating: '', // Đánh giá sao
+    Dich_vu_chuyen_doi_khong_hop_le: 0
   })
   const [dataChart, setDataChart] = useState(objData)
   const [optionsChart, setOptionsChart] = useState(optionsObj)
