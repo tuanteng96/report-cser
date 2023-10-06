@@ -737,7 +737,9 @@ function OverviewService(props) {
                       <Popover.Body className="p-0">
                         <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                           <span>Tổng giá buổi</span>
-                          <span>{Total.TotalGiabuoi}</span>
+                          <span>
+                            {PriceHelper.formatVND(Total.TotalGiabuoi)}
+                          </span>
                         </div>
                         <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                           <span>KH buổi đầu thẻ</span>
@@ -768,7 +770,7 @@ function OverviewService(props) {
                 <div className="fw-500 pr-15px">
                   Tổng giá buổi{' '}
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {Total.TotalGiabuoi}
+                    {PriceHelper.formatVND(Total.TotalGiabuoi)}
                   </span>
                 </div>
                 <div className="fw-500 pr-15px">
