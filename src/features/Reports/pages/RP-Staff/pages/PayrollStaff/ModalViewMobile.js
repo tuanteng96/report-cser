@@ -56,14 +56,14 @@ function ModalViewMobile({ show, onHide, data }) {
                   {PriceHelper.formatVND(data?.PHU_CAP)}
                 </div>
               </div>
-              <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+              {/* <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
                   Ngày nghỉ
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
                   {PriceHelper.formatVND(data?.TRU_NGAY_NGHI)}
                 </div>
-              </div>
+              </div> */}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
                   Thưởng

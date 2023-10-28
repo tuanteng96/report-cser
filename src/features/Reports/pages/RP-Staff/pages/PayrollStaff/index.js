@@ -194,20 +194,20 @@ function PayrollStaff(props) {
           </span>
         )
       },
-      {
-        key: 'TRU_NGAY_NGHI',
-        title: 'Ngày nghỉ',
-        dataKey: 'TRU_NGAY_NGHI',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.TRU_NGAY_NGHI),
-        width: 150,
-        sortable: false,
-        footerRenderer: () => (
-          <span className="font-size-md font-number text-danger">
-            {PriceHelper.formatVND(Total?.TRU_NGAY_NGHI)}
-          </span>
-        )
-      },
+      // {
+      //   key: 'TRU_NGAY_NGHI',
+      //   title: 'Ngày nghỉ',
+      //   dataKey: 'TRU_NGAY_NGHI',
+      //   cellRenderer: ({ rowData }) =>
+      //     PriceHelper.formatVND(rowData.TRU_NGAY_NGHI),
+      //   width: 150,
+      //   sortable: false,
+      //   footerRenderer: () => (
+      //     <span className="font-size-md font-number text-danger">
+      //       {PriceHelper.formatVND(Total?.TRU_NGAY_NGHI)}
+      //     </span>
+      //   )
+      // },
       {
         key: 'THUONG',
         title: 'Thưởng',
