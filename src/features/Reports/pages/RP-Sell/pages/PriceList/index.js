@@ -230,8 +230,26 @@ function PriceList(props) {
         title: 'Hoa hồng Sale',
         dataKey: 'hoa_hong_sale',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData?.hoa_hong_sale),
-        width: 150,
+          rowData.BonusSaleLevels &&
+          rowData.BonusSaleLevels.length > 0 &&
+          rowData.BonusSaleLevels.some(x => x.Salary) ? (
+            <div className="d-flex flex-wrap">
+              {rowData.BonusSaleLevels.map((x, index) => (
+                <code
+                  className="fw-600 font-size-md px-2 m-3px d-block"
+                  key={index}
+                >
+                  {x.Level}{' '}
+                  {Number(x?.Salary) > 100
+                    ? PriceHelper.formatVND(x?.Salary)
+                    : x?.Salary + '%'}
+                </code>
+              ))}
+            </div>
+          ) : (
+            PriceHelper.formatVND(rowData?.hoa_hong_sale)
+          ),
+        width: 250,
         sortable: false
       },
       {
@@ -350,6 +368,7 @@ function PriceList(props) {
             optionMobile={{
               CellModal: cell => OpenModalMobile(cell)
             }}
+            estimatedRowHeight={40}
           />
         </div>
         <ModalViewMobile
