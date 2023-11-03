@@ -259,7 +259,8 @@ function PriceList(props) {
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(rowData?.hoa_hong_ktv),
         width: 150,
-        sortable: false
+        sortable: false,
+        hidden: window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van_ktv_an
       },
       {
         key: 'luong_ca',
