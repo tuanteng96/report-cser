@@ -46,10 +46,65 @@ const DetailRenderer = ({ filters, ...props }) => {
     ],
     More: props.rowData.More
   }
+
+  const MajorListWrap = (rs, name) => {
+    let result = []
+    for (let item of rs) {
+      let index = result.findIndex(x => x.ID === item[name].ID)
+      if (index > -1) {
+        result[index].children.push(item)
+      } else {
+        result.push({
+          ID: item[name].ID,
+          children: [item]
+        })
+      }
+    }
+
+    const newArray = []
+    for (let [index, obj] of result.entries()) {
+      for (let [o, child] of obj.children.entries()) {
+        let newObj = {
+          ...child,
+          rowSpan: obj.children.length
+        }
+        if (o !== 0) {
+          delete newObj.rowSpan
+          newObj.hidden = true
+        }
+        newArray.push(newObj)
+      }
+    }
+    return newArray
+  }
+
+  const MajorListConvert = rs => {
+    if (!rs || rs.length === 0) return null
+    let result = {
+      Order: MajorListWrap(
+        rs.filter(x => x.Order),
+        'Order'
+      ),
+      PayDebt: MajorListWrap(
+        rs.filter(x => x.PayDebt),
+        'PayDebt'
+      ),
+      Returns: MajorListWrap(
+        rs.filter(x => x.Returns),
+        'Returns'
+      ),
+      Services: rs.filter(x => x.Services)
+    }
+    return result
+  }
+
   const showDH_SĐV =
     _.includes(filters.ViewType, 'DON_HANG') ||
     _.includes(filters.ViewType, 'SD_DICH_VU') ||
     _.includes(filters.ViewType, 'THANH_TOAN_NO')
+
+  const MajorListResult = MajorListConvert(MajorList)
+
   return (
     <div className="p-15px w-100">
       {showDH_SĐV && (
@@ -58,7 +113,387 @@ const DetailRenderer = ({ filters, ...props }) => {
             <span className="text-danger">(*)</span> Đơn hàng & Sử dụng dịch vụ
           </div>
           <div className="table-responsive">
-            {MajorList && MajorList.length > 0 ? (
+            {MajorListResult ? (
+              <table className="table table-bordered mb-0">
+                <tbody>
+                  {MajorListResult.Order &&
+                    MajorListResult.Order.map((item, index) => (
+                      <tr key={index}>
+                        {!item.hidden && (
+                          <td
+                            className="vertical-align-middle min-w-200px w-200px"
+                            rowSpan={item?.rowSpan || 1}
+                          >
+                            <div>Đơn hàng mới</div>
+                            <span className="fw-600 pl-5px">
+                              #{item.Order.ID}
+                            </span>
+                          </td>
+                        )}
+                        <td className="vertical-align-middle min-w-300px w-300px">
+                          <div>Sản phẩm / Dịch vụ</div>
+                          <div className="fw-600">
+                            {item.Order.Prods.map(
+                              item => `${item.Title} (x${item.Qty})`
+                            ).join(', ')}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Giá bán đơn hàng</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVND(item.Order.GiaBanDonHang)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Thanh toán</div>
+                          <div className="fw-600 d-flex justify-content-between">
+                            {PriceHelper.formatVND(item.Order.ThanhToan)}
+                            <OverlayTrigger
+                              rootClose
+                              trigger="click"
+                              key="top"
+                              placement="top"
+                              overlay={
+                                <Popover id={`popover-positioned-top`}>
+                                  <Popover.Header
+                                    className="py-10px text-uppercase fw-600"
+                                    as="h3"
+                                  >
+                                    Chi tiết thanh toán
+                                  </Popover.Header>
+                                  <Popover.Body className="p-0">
+                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <span>Tiền mặt</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(
+                                          item.Order.ThanhToan_TienMat
+                                        )}
+                                      </span>
+                                    </div>
+                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <span>Chuyển khoản</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(
+                                          item.Order.ThanhToan_CK
+                                        )}
+                                      </span>
+                                    </div>
+                                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                      <span>Quẹt thẻ</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(
+                                          item.Order.ThanhToan_QT
+                                        )}
+                                      </span>
+                                    </div>
+                                  </Popover.Body>
+                                </Popover>
+                              }
+                            >
+                              <div className="d-flex justify-content-between align-items-center">
+                                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                              </div>
+                            </OverlayTrigger>
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Thanh toán ví</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVNDPositive(item.Order.Vi)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Thanh toán thẻ tiền</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVNDPositive(item.Order.TheTien)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Còn nợ</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVND(item.Order.No)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Hoa hồng</div>
+                          {item?.Order?.HoaHong &&
+                          item?.Order?.HoaHong.length > 0
+                            ? item?.Order?.HoaHong.map((item, index) => (
+                                <div className="fw-600" key={index}>
+                                  {item.FullName}{' '}
+                                  {PriceHelper.formatVND(item.Bonus)}
+                                </div>
+                              ))
+                            : 'Không'}
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Doanh số</div>
+                          {item.Order?.DoanhSo && item.Order?.DoanhSo.length > 0
+                            ? item.Order?.DoanhSo.map((item, index) => (
+                                <div className="fw-600" key={index}>
+                                  {item.FullName}{' '}
+                                  {PriceHelper.formatVND(item.Bonus)}
+                                </div>
+                              ))
+                            : 'Không'}
+                        </td>
+                      </tr>
+                    ))}
+                  {MajorListResult.PayDebt &&
+                    MajorListResult.PayDebt.map((item, index) => (
+                      <tr key={index}>
+                        {!item.hidden && (
+                          <td
+                            className="vertical-align-middle min-w-200px w-200px"
+                            rowSpan={item?.rowSpan || 1}
+                          >
+                            <div>Thanh toán nợ</div>
+                            <span className="fw-600 pl-5px">
+                              #{item.PayDebt.ID}
+                            </span>
+                          </td>
+                        )}
+
+                        <td className="vertical-align-middle min-w-300px w-300px">
+                          <div>Sản phẩm / Dịch vụ</div>
+                          <div className="fw-600">
+                            {item?.PayDebt?.Prods &&
+                            item?.PayDebt?.Prods.length > 0
+                              ? item?.PayDebt?.Prods.map(
+                                  item => `${item.Title} (x${item.Qty})`
+                                ).join(', ')
+                              : 'Không có'}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px"></td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Thanh toán</div>
+                          <div className="fw-600 d-flex justify-content-between">
+                            {PriceHelper.formatVND(item.PayDebt.ThanhToan)}
+                            <OverlayTrigger
+                              rootClose
+                              trigger="click"
+                              key="top"
+                              placement="top"
+                              overlay={
+                                <Popover id={`popover-positioned-top`}>
+                                  <Popover.Header
+                                    className="py-10px text-uppercase fw-600"
+                                    as="h3"
+                                  >
+                                    Chi tiết thanh toán
+                                  </Popover.Header>
+                                  <Popover.Body className="p-0">
+                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <span>Tiền mặt</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(
+                                          item.PayDebt.ThanhToan_TienMat
+                                        )}
+                                      </span>
+                                    </div>
+                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <span>Chuyển khoản</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(
+                                          item.PayDebt.ThanhToan_CK
+                                        )}
+                                      </span>
+                                    </div>
+                                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                      <span>Quẹt thẻ</span>
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(
+                                          item.PayDebt.ThanhToan_QT
+                                        )}
+                                      </span>
+                                    </div>
+                                  </Popover.Body>
+                                </Popover>
+                              }
+                            >
+                              <div className="d-flex justify-content-between align-items-center">
+                                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                              </div>
+                            </OverlayTrigger>
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Thanh toán ví</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVNDPositive(item.PayDebt.Vi)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Thanh toán thẻ tiền</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVNDPositive(
+                              item.PayDebt.TheTien
+                            )}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Còn nợ</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVNDPositive(item.PayDebt.No)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Hoa hồng</div>
+                          {item?.PayDebt?.HoaHong &&
+                          item?.PayDebt?.HoaHong.length > 0
+                            ? item?.PayDebt?.HoaHong.map((item, index) => (
+                                <div className="fw-600" key={index}>
+                                  {item.FullName}{' '}
+                                  {PriceHelper.formatVND(item.Bonus)}
+                                </div>
+                              ))
+                            : 'Không'}
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Doanh số</div>
+                          {item?.PayDebt?.DoanhSo &&
+                          item?.PayDebt?.DoanhSo.length > 0
+                            ? item?.PayDebt?.DoanhSo.map((item, index) => (
+                                <div className="fw-600" key={index}>
+                                  {item.FullName}{' '}
+                                  {PriceHelper.formatVND(item.Bonus)}
+                                </div>
+                              ))
+                            : 'Không'}
+                        </td>
+                      </tr>
+                    ))}
+                  {MajorListResult.Returns &&
+                    MajorListResult.Returns.map((item, index) => (
+                      <tr key={index}>
+                        {item.hidden && (
+                          <td
+                            className="vertical-align-middle min-w-200px w-200px"
+                            rowSpan={item?.rowSpan || 1}
+                          >
+                            <div>Đơn trả hàng</div>
+                            <span className="fw-600 pl-5px">
+                              #{item.Returns.ID}
+                            </span>
+                          </td>
+                        )}
+                        <td className="vertical-align-middle min-w-300px w-300px">
+                          <div>Sản phẩm / Dịch vụ</div>
+                          <div className="fw-600">
+                            {item?.Returns?.Prods &&
+                            item?.Returns?.Prods.length > 0
+                              ? item?.Returns?.Prods.map(
+                                  item => `${item.Title} (x${item.Qty})`
+                                ).join(', ')
+                              : 'Không'}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Giá trị đơn trả</div>
+                          <div className="fw-600 text-danger">
+                            {PriceHelper.formatVND(item.Returns.GiaTriDonTra)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Hoàn tiền mặt</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVND(item.Returns.HoanTienMat)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Hoàn ví</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVND(item.Returns.HoanVi)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Hoàn thẻ tiền</div>
+                          <div className="fw-600">
+                            {PriceHelper.formatVND(item.Returns.HoanTheTien)}
+                          </div>
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px"></td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div>Hoa hồng giảm</div>
+                          {item?.Returns?.HoaHongGiam &&
+                          item?.Returns?.HoaHongGiam.length > 0
+                            ? item?.Returns?.HoaHongGiam.map((item, index) => (
+                                <div className="fw-600" key={index}>
+                                  {item.FullName}{' '}
+                                  {PriceHelper.formatVND(item.Bonus)}
+                                </div>
+                              ))
+                            : 'Không'}
+                        </td>
+                        <td className="vertical-align-middle min-w-180px w-180px">
+                          <div className="fw-600">Doanh số giảm</div>
+                          {item?.Returns?.DoanhSoGiam &&
+                          item?.Returns?.DoanhSoGiam.length > 0
+                            ? item?.Returns?.DoanhSoGiam.map((item, index) => (
+                                <div className="fw-600" key={index}>
+                                  {item.FullName}{' '}
+                                  {PriceHelper.formatVND(item.Bonus)}
+                                </div>
+                              ))
+                            : 'Không'}
+                        </td>
+                      </tr>
+                    ))}
+                  {MajorListResult.Services &&
+                    MajorListResult.Services.map((item, index) => (
+                      <Fragment key={index}>
+                        {item.Services &&
+                          item.Services.map((service, idx) => (
+                            <tr key={idx}>
+                              {service.Type && idx === 0 && (
+                                <td
+                                  className="vertical-align-middle min-w-200px w-200px fw-600"
+                                  rowSpan={item.Services.length}
+                                >
+                                  {service.Type}
+                                </td>
+                              )}
+                              <td className="vertical-align-middle min-w-300px w-300px">
+                                <div>Sản phẩm / Dịch vụ</div>
+                                <div className="fw-600">{service.Title}</div>
+                              </td>
+                              <td className="vertical-align-middle min-w-180px w-180px">
+                                <div>Phụ Phí</div>
+                                <div className="fw-600">
+                                  {service?.PhuPhi && service?.PhuPhi.length > 0
+                                    ? service?.PhuPhi.map(o => o.Title).join(
+                                        ', '
+                                      )
+                                    : 'Không'}
+                                </div>
+                              </td>
+                              <td className="vertical-align-middle min-w-180px w-180px"></td>
+                              <td className="vertical-align-middle min-w-180px w-180px"></td>
+                              <td className="vertical-align-middle min-w-180px w-180px"></td>
+                              <td className="vertical-align-middle min-w-180px w-180px"></td>
+                              <td className="vertical-align-middle min-w-180px w-180px">
+                                <div>Hoa hồng</div>
+                                {service.HoaHong && service.HoaHong.length > 0
+                                  ? service.HoaHong.map((item, index) => (
+                                      <div className="fw-600" key={index}>
+                                        {item.FullName}{' '}
+                                        {PriceHelper.formatVND(item.Bonus)}
+                                      </div>
+                                    ))
+                                  : 'Không'}
+                              </td>
+                              <td className="vertical-align-middle min-w-180px w-180px"></td>
+                            </tr>
+                          ))}
+                      </Fragment>
+                    ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="pl-15px">Chưa có dữ liệu</div>
+            )}
+            {/* {MajorList && MajorList.length > 0 ? (
               <table className="table table-bordered mb-0">
                 <tbody>
                   {MajorList &&
@@ -66,7 +501,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                       <Fragment key={index}>
                         {item.Order && (
                           <tr>
-                            <td className="vertical-align-middle min-w-200px w-200px">
+                            <td className="vertical-align-middle min-w-200px w-200px" rowSpan={2}>
                               <div>Đơn hàng mới</div>
                               <span className="fw-600 pl-5px">
                                 #{item.Order.ID}
@@ -433,7 +868,7 @@ const DetailRenderer = ({ filters, ...props }) => {
               </table>
             ) : (
               <div className="pl-15px">Chưa có dữ liệu</div>
-            )}
+            )} */}
           </div>
         </div>
       )}
