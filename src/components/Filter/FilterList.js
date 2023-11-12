@@ -54,7 +54,8 @@ const {
   ServiceStatusBook,
   ServiceTypeBook,
   StatusCheckedBook,
-  StatusAtBook
+  StatusAtBook,
+  TimeToRealList
 } = JsonFilter
 
 const CustomOption = ({ children, data, ...props }) => {
@@ -1050,6 +1051,24 @@ function FilterList({
                           setFieldValue('BrandIds', otp, false)
                         }}
                         value={values.BrandIds}
+                      />
+                    </div>
+                  )}
+                  {'TimeToReal' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Thực thu tính đến</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="TimeToReal"
+                        placeholder="Chọn thời gian"
+                        classNamePrefix="select"
+                        options={TimeToRealList}
+                        className="select-control"
+                        value={values.TimeToReal}
+                        onChange={otp => {
+                          setFieldValue('TimeToReal', otp)
+                        }}
                       />
                     </div>
                   )}

@@ -536,5 +536,15 @@ export const JsonFilter = {
       value: 'TAI_SPA',
       label: 'Tại spa'
     }
+  ],
+  TimeToRealList: [
+    {
+      value: 0,
+      label: 'Hiện tại'
+    },
+    {
+      value: 1,
+      label: 'Ngày theo thời gian lọc'
+    }
   ]
 }

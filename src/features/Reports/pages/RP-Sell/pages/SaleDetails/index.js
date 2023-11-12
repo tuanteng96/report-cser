@@ -12,10 +12,14 @@ import { useWindowSize } from 'src/hooks/useWindowSize'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { JsonFilter } from 'src/Json/JsonFilter'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
+
+let { TimeToRealList } = JsonFilter
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
@@ -33,7 +37,8 @@ function SaleDetails(props) {
     DateEnd: new Date(), // Ngày,
     BrandIds: '',
     CategoriesIds: '',
-    ProductIds: ''
+    ProductIds: '',
+    TimeToReal: TimeToRealList[0]
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -103,7 +108,8 @@ function SaleDetails(props) {
       ProductIds:
         filters.ProductIds && filters.ProductIds.length > 0
           ? filters.ProductIds.map(item => item.value).join(',')
-          : ''
+          : '',
+      TimeToReal: filters.TimeToReal ? filters.TimeToReal.value : ''
     }
   }
 
