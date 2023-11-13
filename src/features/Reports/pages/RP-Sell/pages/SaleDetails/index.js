@@ -555,19 +555,6 @@ function SaleDetails(props) {
                                     </span>
                                     <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
                                   </div>
-                                  {Number(item.Vi + item.TT) > 0 && (
-                                    <div>
-                                      {PriceHelper.formatVNDPositive(
-                                        item.Vi + item.TT
-                                      )}
-                                      <i
-                                        className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"
-                                        style={{
-                                          opacity: 0
-                                        }}
-                                      ></i>
-                                    </div>
-                                  )}
                                 </div>
                               </OverlayTrigger>
                               {Number(item.Vi + item.TT) > 0 && (
