@@ -381,15 +381,58 @@ function SaleDetails(props) {
                                 </Popover>
                               }
                             >
-                              <div className="d-flex justify-content-end align-items-center">
-                                <span>
-                                  {PriceHelper.formatVNDPositive(
-                                    item.CK + item.QT + item.TM
-                                  )}
-                                </span>
-                                <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                              <div>
+                                <div className="d-flex justify-content-end align-items-center">
+                                  <span>
+                                    {PriceHelper.formatVNDPositive(
+                                      item.CK + item.QT + item.TM
+                                    )}
+                                  </span>
+                                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                </div>
                               </div>
                             </OverlayTrigger>
+                            {Number(item.Vi + item.TT) > 0 && (
+                              <OverlayTrigger
+                                rootClose
+                                trigger="click"
+                                key="bottom"
+                                placement="bottom"
+                                overlay={
+                                  <Popover id={`popover-positioned-top`}>
+                                    <Popover.Body className="p-0">
+                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <span>Ví</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            item.Vi
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <span>Thẻ tiền</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            item.TT
+                                          )}
+                                        </span>
+                                      </div>
+                                    </Popover.Body>
+                                  </Popover>
+                                }
+                              >
+                                <div>
+                                  <div className="d-flex justify-content-end align-items-center">
+                                    <span>
+                                      {PriceHelper.formatVNDPositive(
+                                        item.Vi + item.TT
+                                      )}
+                                    </span>
+                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                  </div>
+                                </div>
+                              </OverlayTrigger>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -503,15 +546,71 @@ function SaleDetails(props) {
                                   </Popover>
                                 }
                               >
-                                <div className="d-flex justify-content-end align-items-center">
-                                  <span>
-                                    {PriceHelper.formatVNDPositive(
-                                      item.CK + item.QT + item.TM
-                                    )}
-                                  </span>
-                                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                <div>
+                                  <div className="d-flex justify-content-end align-items-center">
+                                    <span>
+                                      {PriceHelper.formatVNDPositive(
+                                        item.CK + item.QT + item.TM
+                                      )}
+                                    </span>
+                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                  </div>
+                                  {Number(item.Vi + item.TT) > 0 && (
+                                    <div>
+                                      {PriceHelper.formatVNDPositive(
+                                        item.Vi + item.TT
+                                      )}
+                                      <i
+                                        className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"
+                                        style={{
+                                          opacity: 0
+                                        }}
+                                      ></i>
+                                    </div>
+                                  )}
                                 </div>
                               </OverlayTrigger>
+                              {Number(item.Vi + item.TT) > 0 && (
+                                <OverlayTrigger
+                                  rootClose
+                                  trigger="click"
+                                  key="bottom"
+                                  placement="bottom"
+                                  overlay={
+                                    <Popover id={`popover-positioned-top`}>
+                                      <Popover.Body className="p-0">
+                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                          <span>Ví</span>
+                                          <span>
+                                            {PriceHelper.formatVNDPositive(
+                                              item.Vi
+                                            )}
+                                          </span>
+                                        </div>
+                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                          <span>Thẻ tiền</span>
+                                          <span>
+                                            {PriceHelper.formatVNDPositive(
+                                              item.TT
+                                            )}
+                                          </span>
+                                        </div>
+                                      </Popover.Body>
+                                    </Popover>
+                                  }
+                                >
+                                  <div>
+                                    <div className="d-flex justify-content-end align-items-center">
+                                      <span>
+                                        {PriceHelper.formatVNDPositive(
+                                          item.Vi + item.TT
+                                        )}
+                                      </span>
+                                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                    </div>
+                                  </div>
+                                </OverlayTrigger>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -617,15 +716,58 @@ function SaleDetails(props) {
                                 </Popover>
                               }
                             >
-                              <div className="d-flex justify-content-end align-items-center">
-                                <span>
-                                  {PriceHelper.formatVNDPositive(
-                                    item.CK + item.QT + item.TM
-                                  )}
-                                </span>
-                                <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                              <div>
+                                <div className="d-flex justify-content-end align-items-center">
+                                  <span>
+                                    {PriceHelper.formatVNDPositive(
+                                      item.CK + item.QT + item.TM
+                                    )}
+                                  </span>
+                                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                </div>
                               </div>
                             </OverlayTrigger>
+                            {Number(item.Vi + item.TT) > 0 && (
+                              <OverlayTrigger
+                                rootClose
+                                trigger="click"
+                                key="bottom"
+                                placement="bottom"
+                                overlay={
+                                  <Popover id={`popover-positioned-top`}>
+                                    <Popover.Body className="p-0">
+                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <span>Ví</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            item.Vi
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <span>Thẻ tiền</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            item.TT
+                                          )}
+                                        </span>
+                                      </div>
+                                    </Popover.Body>
+                                  </Popover>
+                                }
+                              >
+                                <div>
+                                  <div className="d-flex justify-content-end align-items-center">
+                                    <span>
+                                      {PriceHelper.formatVNDPositive(
+                                        item.Vi + item.TT
+                                      )}
+                                    </span>
+                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                  </div>
+                                </div>
+                              </OverlayTrigger>
+                            )}
                           </div>
                         </div>
                       ))}
