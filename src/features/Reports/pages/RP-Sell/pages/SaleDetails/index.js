@@ -38,7 +38,7 @@ function SaleDetails(props) {
     BrandIds: '',
     CategoriesIds: '',
     ProductIds: '',
-    TimeToReal: TimeToRealList[0]
+    TimeToReal: TimeToRealList[1]
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
