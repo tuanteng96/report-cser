@@ -358,6 +358,34 @@ function Sales(props) {
         sortable: false
       },
       {
+        key: 'ToMoney',
+        title: 'Còn lại',
+        dataKey: 'ToMoney',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ToMoney),
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'CustomeDiscount',
+        title: 'Giảm giá cả đơn',
+        dataKey: 'CustomeDiscount',
+        cellRenderer: ({ rowData }) =>
+          rowData.CustomeDiscount > 100
+            ? PriceHelper.formatVND(rowData.CustomeDiscount)
+            : `${rowData.CustomeDiscount}%`,
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'ToMoneyToPay',
+        title: 'Giá trị giảm cả đơn',
+        dataKey: 'ToMoneyToPay',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.ToMoney - rowData.ToPay),
+        width: 200,
+        sortable: false
+      },
+      {
         key: 'ToPay',
         title: 'Cần thanh toán',
         dataKey: 'ToPay',
