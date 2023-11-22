@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Modal } from 'react-bootstrap'
+import { Modal, OverlayTrigger, Popover } from 'react-bootstrap'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 
@@ -86,6 +86,34 @@ function ModalViewMobile({ show, onHide, data }) {
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
                   {PriceHelper.formatVND(data?.LUONG_CA)}
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="bottom"
+                    placement="top"
+                    overlay={
+                      <Popover id={`popover-positioned-top`}>
+                        <Popover.Body className="p-0">
+                          <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                            <span>Lương ca cài đặt</span>
+                            <span>
+                              {PriceHelper.formatVND(data?.LUONG_CA_CAI_DAT)}
+                            </span>
+                          </div>
+                          <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                            <span>Thưởng khách hàng chọn</span>
+                            <span>
+                              {PriceHelper.formatVND(data?.LUONG_CA_EXTRA)}
+                            </span>
+                          </div>
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <div>
+                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                    </div>
+                  </OverlayTrigger>
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">

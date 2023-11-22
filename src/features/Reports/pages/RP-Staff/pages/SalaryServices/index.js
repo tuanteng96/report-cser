@@ -188,7 +188,10 @@ function SalaryServices(props) {
             key="top"
             placement="top"
             overlay={
-              <Popover id={`popover-positioned-top`}>
+              <Popover
+                id={`popover-positioned-top`}
+                style={{ minWidth: '320px' }}
+              >
                 <Popover.Header
                   className="py-10px text-uppercase fw-600"
                   as="h3"
@@ -207,7 +210,19 @@ function SalaryServices(props) {
                           key={index}
                         >
                           <span>{item.Title}</span>
-                          <span>{PriceHelper.formatVND(item.ToPay)}</span>
+                          <span>
+                            {PriceHelper.formatVND(
+                              rowData?.LuongCa_PPhi?.Tong_DV_CAI_DAT
+                            )}
+                            {rowData?.LuongCa_PPhi?.Tong_DV_Extra > 0 && (
+                              <>
+                                ,{' '}
+                                {PriceHelper.formatVND(
+                                  rowData?.LuongCa_PPhi?.Tong_DV_Extra
+                                )}
+                              </>
+                            )}
+                          </span>
                         </div>
                       ))}
                       {rowData.LuongCa_PPhi?.DS_PP.map((item, index) => (
@@ -229,7 +244,7 @@ function SalaryServices(props) {
               </Popover>
             }
           >
-            <div className="d-flex justify-content-between align-items-center w-100">
+            <div className="d-flex justify-content-end justify-content-md-between align-items-center w-100">
               {PriceHelper.formatVND(rowData.LuongCa_PPhi.Tong_Luong)}
               <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning pl-5px"></i>
             </div>

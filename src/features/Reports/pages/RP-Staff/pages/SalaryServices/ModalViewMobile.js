@@ -71,7 +71,19 @@ function ModalViewMobile({ show, onHide, data }) {
                               key={index}
                             >
                               <span>{item.Title}</span>
-                              <span>{PriceHelper.formatVND(item.ToPay)}</span>
+                              <span>
+                                {PriceHelper.formatVND(
+                                  data?.LuongCa_PPhi?.Tong_DV_CAI_DAT
+                                )}
+                                {data?.LuongCa_PPhi?.Tong_DV_Extra > 0 && (
+                                  <>
+                                    ,{' '}
+                                    {PriceHelper.formatVND(
+                                      data?.LuongCa_PPhi?.Tong_DV_Extra
+                                    )}
+                                  </>
+                                )}
+                              </span>
                             </div>
                           ))}
                           {data?.LuongCa_PPhi?.DS_PP.map((item, index) => (

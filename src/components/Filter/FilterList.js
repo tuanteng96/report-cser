@@ -1138,6 +1138,33 @@ function FilterList({
                       />
                     </div>
                   )}
+                  {'IsMemberSet' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Khách hàng chọn nhân viên</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="IsMemberSet"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={[
+                          {
+                            label: 'Khách hàng chọn nhân viên',
+                            value: 1
+                          },
+                          {
+                            label: 'Khách hàng không nhân viên',
+                            value: 0
+                          }
+                        ]}
+                        className="select-control"
+                        value={values.IsMemberSet}
+                        onChange={otp => {
+                          setFieldValue('IsMemberSet', otp)
+                        }}
+                      />
+                    </div>
+                  )}
                   {'Dich_vu_chuyen_doi_khong_hop_le' in values && (
                     <div>
                       <label className="checkbox d-flex">

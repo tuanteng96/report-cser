@@ -179,6 +179,9 @@ export const BrowserHelpers = {
     if ('Status' in filters) {
       params.Status = filters.Status ? filters.Status.value : ''
     }
+    if ('IsMemberSet' in filters) {
+      params.IsMemberSet = filters.IsMemberSet ? filters.IsMemberSet.value : ''
+    }
     if ('Warranty' in filters) {
       params.Warranty = filters.Warranty ? filters.Warranty.value : ''
     }

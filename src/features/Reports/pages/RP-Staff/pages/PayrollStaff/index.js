@@ -14,6 +14,7 @@ import 'moment/locale/vi'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import clsx from 'clsx'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 moment.locale('vi')
 
 function PayrollStaff(props) {
@@ -238,8 +239,40 @@ function PayrollStaff(props) {
         key: 'LUONG_CA',
         title: 'Lương Ca',
         dataKey: 'LUONG_CA',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.LUONG_CA),
-        width: 150,
+        cellRenderer: ({ rowData }) => (
+          <div className="w-100 d-flex justify-content-between">
+            <span>{PriceHelper.formatVND(rowData.LUONG_CA)}</span>
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="bottom"
+              placement="top"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Body className="p-0">
+                    <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                      <span>Lương ca cài đặt</span>
+                      <span>
+                        {PriceHelper.formatVND(rowData.LUONG_CA_CAI_DAT)}
+                      </span>
+                    </div>
+                    <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                      <span>Thưởng khách hàng chọn</span>
+                      <span>
+                        {PriceHelper.formatVND(rowData.LUONG_CA_EXTRA)}
+                      </span>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div>
+                <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+              </div>
+            </OverlayTrigger>
+          </div>
+        ),
+        width: 180,
         sortable: false,
         footerRenderer: () => (
           <span className="font-size-md font-number">
