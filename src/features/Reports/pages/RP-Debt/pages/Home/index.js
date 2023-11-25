@@ -193,7 +193,7 @@ function Home(props) {
       },
       {
         key: 'Member.FullName',
-        title: 'Ngày tạo',
+        title: 'Khách hàng',
         dataKey: 'Member.FullName',
         width: 250,
         sortable: false,
