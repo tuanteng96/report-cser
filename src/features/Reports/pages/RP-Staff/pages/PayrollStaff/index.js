@@ -26,7 +26,8 @@ function PayrollStaff(props) {
     StockID: CrStockID || '', // ID Stock
     Mon: new Date(), // Ngày bắt đầu
     Pi: 1, // Trang hiện tại
-    Ps: 15 // Số lượng item
+    Ps: 15, // Số lượng item
+    Shows: '0'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -236,13 +237,33 @@ function PayrollStaff(props) {
         )
       },
       {
+        key: 'LUONG_CA_CAI_DAT',
+        title: 'Lương ca cài đặt',
+        dataKey: 'LUONG_CA_CAI_DAT',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.LUONG_CA_CAI_DAT),
+        width: 150,
+        sortable: false,
+        hidden: Number(filters.Shows) === 0
+      },
+      {
+        key: 'LUONG_CA_EXTRA',
+        title: 'Thưởng KH chọn',
+        dataKey: 'LUONG_CA_EXTRA',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.LUONG_CA_EXTRA),
+        width: 150,
+        sortable: false,
+        hidden: Number(filters.Shows) === 0
+      },
+      {
         key: 'LUONG_CA',
         title: 'Lương Ca',
         dataKey: 'LUONG_CA',
         cellRenderer: ({ rowData }) => (
           <div className="w-100 d-flex justify-content-between">
             <span>{PriceHelper.formatVND(rowData.LUONG_CA)}</span>
-            <OverlayTrigger
+            {/* <OverlayTrigger
               rootClose
               trigger="click"
               key="bottom"
@@ -269,7 +290,7 @@ function PayrollStaff(props) {
               <div>
                 <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
               </div>
-            </OverlayTrigger>
+            </OverlayTrigger> */}
           </div>
         ),
         width: 180,
@@ -279,6 +300,56 @@ function PayrollStaff(props) {
             {PriceHelper.formatVND(Total?.LUONG_CA)}
           </span>
         )
+      },
+      {
+        key: 'HOA_HONG_Sanpham',
+        title: 'HH Sản phẩm',
+        dataKey: 'HOA_HONG_Sanpham',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.HOA_HONG_Sanpham),
+        width: 150,
+        sortable: false,
+        hidden: Number(filters.Shows) === 0
+      },
+      {
+        key: 'HOA_HONG_Dichvu',
+        title: 'HH Dịch vụ',
+        dataKey: 'HOA_HONG_Dichvu',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.HOA_HONG_Dichvu),
+        width: 150,
+        sortable: false,
+        hidden: Number(filters.Shows) === 0
+      },
+      {
+        key: 'GiaTri_Thetien',
+        title: 'HH Thẻ tiền',
+        dataKey: 'GiaTri_Thetien',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTri_Thetien),
+        width: 150,
+        sortable: false,
+        hidden: Number(filters.Shows) === 0
+      },
+      {
+        key: 'HOA_HONG_NVL',
+        title: 'HH NVL',
+        dataKey: 'HOA_HONG_NVL',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.HOA_HONG_NVL),
+        width: 150,
+        sortable: false,
+        hidden: Number(filters.Shows) === 0
+      },
+      {
+        key: 'HOA_HONG_Phuphi',
+        title: 'HH Phụ phí',
+        dataKey: 'HOA_HONG_Phuphi',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.HOA_HONG_Phuphi),
+        width: 150,
+        sortable: false,
+        hidden: Number(filters.Shows) === 0
       },
       {
         key: 'HOA_HONG',
@@ -504,6 +575,7 @@ function PayrollStaff(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          filters={filters}
         />
       </div>
     </div>

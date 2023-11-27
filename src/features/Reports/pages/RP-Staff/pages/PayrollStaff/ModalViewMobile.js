@@ -13,7 +13,7 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
-function ModalViewMobile({ show, onHide, data }) {
+function ModalViewMobile({ show, onHide, data, filters }) {
   return (
     <Modal
       className="modal-view-mobile"
@@ -80,13 +80,14 @@ function ModalViewMobile({ show, onHide, data }) {
                   {PriceHelper.formatVND(data?.TRU_PHAT)}
                 </div>
               </div>
+
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
                   Lương ca
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
                   {PriceHelper.formatVND(data?.LUONG_CA)}
-                  <OverlayTrigger
+                  {/* <OverlayTrigger
                     rootClose
                     trigger="click"
                     key="bottom"
@@ -113,7 +114,7 @@ function ModalViewMobile({ show, onHide, data }) {
                     <div>
                       <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
                     </div>
-                  </OverlayTrigger>
+                  </OverlayTrigger> */}
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -271,6 +272,26 @@ function ModalViewMobile({ show, onHide, data }) {
                   {PriceHelper.formatVND(data?.TRU_PHAT)}
                 </div>
               </div>
+              {Number(filters.Shows) !== 0 && (
+                <>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                      Lương cài đặt
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.LUONG_CA_CAI_DAT)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                      Thưởng KH chọn
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.LUONG_CA_EXTRA)}
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
                   Lương ca
@@ -279,6 +300,50 @@ function ModalViewMobile({ show, onHide, data }) {
                   {PriceHelper.formatVND(data?.LUONG_CA)}
                 </div>
               </div>
+              {Number(filters.Shows) !== 0 && (
+                <>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                      HH sản phẩm
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_Sanpham)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                      HH dịch vụ
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_Dichvu)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                      HH thẻ tiền
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.GiaTri_Thetien)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                      HH NVL
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_NVL)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                      HH phụ phí
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_Phuphi)}
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
                   Hoa hồng

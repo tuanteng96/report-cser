@@ -108,6 +108,46 @@ function ModalViewMobile({ show, onHide, data }) {
                           {PriceHelper.formatVND(order?.GiaTriThuc)}
                         </div>
                       </div>
+                      <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
+                        <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                          HH sản phẩm
+                        </div>
+                        <div className="fw-600 font-size-mdd w-60 text-end">
+                          {PriceHelper.formatVND(order?.GiaTri_Sanpham)}
+                        </div>
+                      </div>
+                      <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
+                        <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                          HH Dịch vụ
+                        </div>
+                        <div className="fw-600 font-size-mdd w-60 text-end">
+                          {PriceHelper.formatVND(order?.GiaTri_Dichvu)}
+                        </div>
+                      </div>
+                      <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
+                        <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                          HH Thẻ tiền
+                        </div>
+                        <div className="fw-600 font-size-mdd w-60 text-end">
+                          {PriceHelper.formatVND(order?.GiaTri_Thetien)}
+                        </div>
+                      </div>
+                      <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
+                        <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                          HH NVL
+                        </div>
+                        <div className="fw-600 font-size-mdd w-60 text-end">
+                          {PriceHelper.formatVND(order?.GiaTri_NVL)}
+                        </div>
+                      </div>
+                      <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
+                        <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                          HH Phụ phí
+                        </div>
+                        <div className="fw-600 font-size-mdd w-60 text-end">
+                          {PriceHelper.formatVND(order?.GiaTri_Phuphi)}
+                        </div>
+                      </div>
                       <div className="px-15px d-flex justify-content-between flex-column py-12px line-height-sm">
                         <div className="fw-600 text-uppercase text-muted font-size-smm text-truncate">
                           Chi tiết

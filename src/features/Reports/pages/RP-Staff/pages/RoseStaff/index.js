@@ -265,6 +265,61 @@ function RoseStaff(props) {
           rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       },
       {
+        key: 'GiaTri_Sanpham',
+        title: 'HH sản phẩm',
+        dataKey: 'GiaTri_Sanpham',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTri_Sanpham),
+        width: 150,
+        sortable: false,
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+      },
+      {
+        key: 'GiaTri_Dichvu',
+        title: 'HH Dịch vụ',
+        dataKey: 'GiaTri_Dichvu',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTri_Dichvu),
+        width: 150,
+        sortable: false,
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+      },
+      {
+        key: 'GiaTri_Thetien',
+        title: 'HH thẻ tiền',
+        dataKey: 'GiaTri_Thetien',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTri_Thetien),
+        width: 150,
+        sortable: false,
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+      },
+      {
+        key: 'GiaTri_NVL',
+        title: 'HH NVL',
+        dataKey: 'GiaTri_NVL',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTri_NVL),
+        width: 150,
+        sortable: false,
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+      },
+      {
+        key: 'GiaTri_Phuphi',
+        title: 'HH Phụ phí',
+        dataKey: 'GiaTri_Phuphi',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.GiaTri_Phuphi),
+        width: 150,
+        sortable: false,
+        className: ({ rowData }) =>
+          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+      },
+      {
         key: 'Lines',
         title: 'Chi tiết',
         dataKey: 'Lines',
