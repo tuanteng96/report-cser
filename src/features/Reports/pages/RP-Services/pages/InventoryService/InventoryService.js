@@ -152,9 +152,28 @@ function InventoryService(props) {
         sortable: false
       },
       {
+        key: 'NgayHetHan',
+        title: 'Ngày hết hạn',
+        dataKey: 'NgayHetHan',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.NgayHetHan).format('HH:mm DD-MM-YYYY'),
+        width: 200,
+        sortable: false
+      },
+      {
         key: 'MaDonHang',
         title: 'Mã đơn hàng',
         dataKey: 'MaDonHang',
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'MaDichVu',
+        title: 'Mã dịch vụ',
+        dataKey: 'MaDichVu',
         width: 150,
         sortable: false,
         mobileOptions: {

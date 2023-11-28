@@ -269,6 +269,8 @@ function ExpectedCustomer(props) {
         cellRenderer: ({ rowData }) =>
           rowData.UsedUpDate
             ? moment(rowData.UsedUpDate).format('HH:mm DD/MM/YYYY')
+            : rowData.DueDate
+            ? moment(rowData.DueDate).format('HH:mm DD/MM/YYYY')
             : 'Chưa xác định',
         width: 180,
         sortable: false

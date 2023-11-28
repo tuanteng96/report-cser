@@ -50,10 +50,28 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+              Ngày hết hạn
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.NgayHetHan
+                ? moment(data.NgayHetHan).format('HH:mm DD/MM/YYYY')
+                : 'Không có'}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
               Mã đơn hàng
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
               {data?.MaDonHang || 'Không có'}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+              Mã dịch vụ
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.MaDichVu || 'Không có'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">

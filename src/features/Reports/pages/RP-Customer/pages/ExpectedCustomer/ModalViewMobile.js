@@ -73,7 +73,11 @@ function ModalViewMobile({ show, onHide, data }) {
                 <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
                   <div>Ước tính dùng hết</div>
                   <div className="fw-600">
-                    {moment(item.ExpiryDate).format('HH:mm DD/MM/YYYY')}
+                    {item?.UsedUpDate
+                      ? moment(item.UsedUpDate).format('HH:mm DD/MM/YYYY')
+                      : item.DueDate
+                      ? moment(item.DueDate).format('HH:mm DD/MM/YYYY')
+                      : 'Chưa xác định'}
                   </div>
                 </div>
               </div>
