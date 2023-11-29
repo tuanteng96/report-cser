@@ -143,6 +143,30 @@ function InventoryService(props) {
         }
       },
       {
+        key: 'SenderID',
+        title: 'Mã KH',
+        dataKey: 'SenderID',
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'SenderName',
+        title: 'Họ tên',
+        dataKey: 'SenderName',
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'SenderPhone',
+        title: 'Số điện thoại',
+        dataKey: 'SenderPhone',
+        width: 200,
+        sortable: false
+      },
+      {
         key: 'NgayMua',
         title: 'Ngày mua',
         dataKey: 'NgayMua',
