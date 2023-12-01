@@ -1214,6 +1214,13 @@ function FilterList({
                           setFieldValue('SourceName', otp, false)
                         }}
                         value={values.SourceName}
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
                       />
                     </div>
                   )}
@@ -1228,6 +1235,13 @@ function FilterList({
                         onChange={otp =>
                           setFieldValue('ProvincesID', otp, false)
                         }
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
                       />
                     </div>
                   )}
@@ -1244,6 +1258,13 @@ function FilterList({
                         onChange={otp =>
                           setFieldValue('DistrictsID', otp, false)
                         }
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
                       />
                     </div>
                   )}
@@ -1281,6 +1302,14 @@ function FilterList({
                           setFieldValue('Shows', otp ? otp.value : '')
                         }}
                         noOptionsMessage={() => 'Không có dữ liệu'}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
                       />
                     </div>
                   )}
@@ -1315,9 +1344,17 @@ function FilterList({
                           item => Number(item.value) === Number(values?.ShowsX)
                         )}
                         onChange={otp => {
-                          setFieldValue('Shows', otp ? otp.value : '')
+                          setFieldValue('ShowsX', otp ? otp.value : '')
                         }}
                         noOptionsMessage={() => 'Không có dữ liệu'}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
                       />
                     </div>
                   )}
