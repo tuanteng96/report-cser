@@ -402,8 +402,19 @@ function Sales(props) {
         sortable: false
       },
       {
+        key: 'Tong_TToan',
+        title: 'Tổng đã thanh toán',
+        dataKey: 'Tong_TToan',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(
+            rowData.DaThToan + rowData.DaThToan_ThTien + rowData.DaThToan_Vi
+          ),
+        width: 180,
+        sortable: false
+      },
+      {
         key: 'DaThToan',
-        title: 'Đã thanh toán',
+        title: 'TM+CK+QT',
         dataKey: 'DaThToan',
         cellRenderer: ({ rowData }) => (
           <OverlayTrigger
@@ -833,7 +844,7 @@ function Sales(props) {
                   </span>
                 </div>
                 <div className="fw-500 pr-15px">
-                  Đã T.Toán{' '}
+                  TM+CK+QT{' '}
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVND(Total.DaThToan)}
                   </span>
