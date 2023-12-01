@@ -39,7 +39,8 @@ function Sales(props) {
     IsMember: '', // Loại khách hàng
     MemberID: '', // ID khách hàng
     SourceName: '',
-    ShipCode: ''
+    ShipCode: '',
+    ShowsX: '0'
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -780,7 +781,7 @@ function Sales(props) {
                           <span>{PriceHelper.formatVND(Total.ToPay)}</span>
                         </div>
                         <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                          <span>Đã thanh toán</span>
+                          <span>TM+CK+QT</span>
                           <span>{PriceHelper.formatVND(Total.DaThToan)}</span>
                         </div>
                         <div className="py-10px px-15px fw-400 font-size-md border-bottom border-gray-200 d-flex justify-content-between">

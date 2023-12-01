@@ -267,43 +267,6 @@ function FilterList({
                       />
                     </div>
                   )}
-                  {'Shows' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Chế độ</label>
-                      <Select
-                        name="Shows"
-                        placeholder="Chọn cơ cở"
-                        classNamePrefix="select"
-                        options={[
-                          {
-                            label: 'Đơn giản',
-                            value: '0'
-                          },
-                          {
-                            label: 'Đầy đủ',
-                            value: '1'
-                          }
-                        ]}
-                        className="select-control"
-                        value={[
-                          {
-                            label: 'Đơn giản',
-                            value: '0'
-                          },
-                          {
-                            label: 'Đầy đủ',
-                            value: '1'
-                          }
-                        ].filter(
-                          item => Number(item.value) === Number(values?.Shows)
-                        )}
-                        onChange={otp => {
-                          setFieldValue('Shows', otp ? otp.value : '')
-                        }}
-                        noOptionsMessage={() => 'Không có dữ liệu'}
-                      />
-                    </div>
-                  )}
                   {'Date' in values && (
                     <div className="mb-20px form-group">
                       <label>Ngày</label>
@@ -1281,6 +1244,80 @@ function FilterList({
                         onChange={otp =>
                           setFieldValue('DistrictsID', otp, false)
                         }
+                      />
+                    </div>
+                  )}
+                  {'Shows' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Chế độ</label>
+                      <Select
+                        name="Shows"
+                        placeholder="Chọn chế độ"
+                        classNamePrefix="select"
+                        options={[
+                          {
+                            label: 'Đơn giản',
+                            value: '0'
+                          },
+                          {
+                            label: 'Đầy đủ',
+                            value: '1'
+                          }
+                        ]}
+                        className="select-control"
+                        value={[
+                          {
+                            label: 'Đơn giản',
+                            value: '0'
+                          },
+                          {
+                            label: 'Đầy đủ',
+                            value: '1'
+                          }
+                        ].filter(
+                          item => Number(item.value) === Number(values?.Shows)
+                        )}
+                        onChange={otp => {
+                          setFieldValue('Shows', otp ? otp.value : '')
+                        }}
+                        noOptionsMessage={() => 'Không có dữ liệu'}
+                      />
+                    </div>
+                  )}
+                  {'ShowsX' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Chế độ</label>
+                      <Select
+                        name="ShowsX"
+                        placeholder="Chọn chế độ"
+                        classNamePrefix="select"
+                        options={[
+                          {
+                            label: 'Chuẩn',
+                            value: '0'
+                          },
+                          {
+                            label: 'Tách dòng',
+                            value: '1'
+                          }
+                        ]}
+                        className="select-control"
+                        value={[
+                          {
+                            label: 'Đơn giản',
+                            value: '0'
+                          },
+                          {
+                            label: 'Đầy đủ',
+                            value: '1'
+                          }
+                        ].filter(
+                          item => Number(item.value) === Number(values?.ShowsX)
+                        )}
+                        onChange={otp => {
+                          setFieldValue('Shows', otp ? otp.value : '')
+                        }}
+                        noOptionsMessage={() => 'Không có dữ liệu'}
                       />
                     </div>
                   )}

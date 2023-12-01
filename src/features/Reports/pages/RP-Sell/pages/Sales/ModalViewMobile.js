@@ -124,7 +124,17 @@ function ModalViewMobile({ show, onHide, data }) {
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Đã thanh toán
+              Tổng đã thanh toán
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {PriceHelper.formatVND(
+                data?.DaThToan + data?.DaThToan_ThTien + data?.DaThToan_Vi
+              )}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+              TM+CK+QT
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
               <OverlayTrigger
