@@ -57,7 +57,7 @@ function Home(props) {
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
-    DateStart: new Date(), // Ngày bắt đầu
+    DateStart: moment('01-01-2010', 'DD-MM-YYYY').toDate(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 15, // Số lượng item
