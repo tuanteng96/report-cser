@@ -408,7 +408,9 @@ function Sales(props) {
         dataKey: 'Tong_TToan',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(
-            rowData.DaThToan + rowData.DaThToan_ThTien + rowData.DaThToan_Vi
+            rowData.DaThToan +
+              Math.abs(rowData.DaThToan_ThTien) +
+              Math.abs(rowData.DaThToan_Vi)
           ),
         width: 180,
         sortable: false

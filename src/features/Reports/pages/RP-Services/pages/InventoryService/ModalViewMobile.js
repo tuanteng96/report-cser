@@ -92,6 +92,14 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+              Số buổi còn
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {(data?.Tong_buoi || 0) - (data?.Da_su_dung || 0)}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
               Tổng buổi
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">

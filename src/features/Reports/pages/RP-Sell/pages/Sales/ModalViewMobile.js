@@ -128,7 +128,9 @@ function ModalViewMobile({ show, onHide, data }) {
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
               {PriceHelper.formatVND(
-                data?.DaThToan + data?.DaThToan_ThTien + data?.DaThToan_Vi
+                data?.DaThToan +
+                  Math.abs(data?.DaThToan_ThTien || 0) +
+                  Math.abs(data?.DaThToan_Vi || 0)
               )}
             </div>
           </div>

@@ -1333,11 +1333,11 @@ function FilterList({
                         className="select-control"
                         value={[
                           {
-                            label: 'Đơn giản',
+                            label: 'Chuẩn',
                             value: '0'
                           },
                           {
-                            label: 'Đầy đủ',
+                            label: 'Tách dòng',
                             value: '1'
                           }
                         ].filter(

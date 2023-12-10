@@ -228,8 +228,18 @@ function InventoryService(props) {
         key: 'Da_su_dung',
         title: 'Đã sử dụng',
         dataKey: 'Da_su_dung',
+        cellRenderer: ({ rowData }) => rowData.Da_su_dung || 0,
         width: 120,
         sortable: false
+      },
+      {
+        key: 'so_buoi_con',
+        title: 'Số buổi còn',
+        dataKey: 'so_buoi_con',
+        width: 120,
+        sortable: false,
+        cellRenderer: ({ rowData }) =>
+          (rowData.Tong_buoi || 0) - (rowData.Da_su_dung || 0)
       },
       {
         key: 'Tong_buoi',
