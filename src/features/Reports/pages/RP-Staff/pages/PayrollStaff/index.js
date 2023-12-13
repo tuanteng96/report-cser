@@ -170,14 +170,14 @@ function PayrollStaff(props) {
         sortable: false
       },
       {
-        key: 'LUONG_CAU_HINH',
+        key: 'LUONG_CHAM_CONG',
         title: 'Lương chính sách',
-        dataKey: 'LUONG_CAU_HINH',
+        dataKey: 'LUONG_CHAM_CONG',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.LUONG_CAU_HINH),
+          PriceHelper.formatVND(rowData.LUONG_CHAM_CONG),
         footerRenderer: () => (
           <span className="text-success font-size-md font-number">
-            {PriceHelper.formatVND(Total?.LUONG_CAU_HINH)}
+            {PriceHelper.formatVND(Total?.LUONG_CHAM_CONG)}
           </span>
         ),
         width: 150,

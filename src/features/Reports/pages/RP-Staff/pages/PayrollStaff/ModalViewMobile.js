@@ -45,7 +45,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                   Lương chính sách
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
-                  {PriceHelper.formatVND(data?.LUONG_CAU_HINH)}
+                  {PriceHelper.formatVND(data?.LUONG_CHAM_CONG)}
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
