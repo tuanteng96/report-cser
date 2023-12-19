@@ -29,6 +29,11 @@ const moreApi = {
       `/api/gl/select2?cmd=cate&app=type&ignore_root=1&roots=794,795&q=${key}`
     )
   },
+  getAllCategoriesSPNVL: key => {
+    return http.get(
+      `/api/gl/select2?cmd=cate&app=type&ignore_root=1&roots=794,3298&q=${key}`
+    )
+  },
   getAllCategoriesSV: key => {
     return http.get(
       `/api/gl/select2?cmd=cate&app=type&ignore_root=1&roots=795&q=${key}`

@@ -28,6 +28,7 @@ import { useLocation } from 'react-router-dom'
 import SelectCustomType from '../Selects/SelectCustomType'
 import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
+import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -976,16 +977,29 @@ function FilterList({
                   {'CategoriesId' in values && (
                     <div className="form-group mb-20px">
                       <label>Danh mục</label>
-                      <AsyncSelectCategories
-                        menuPlacement="top"
-                        isClearable={true}
-                        menuPosition="fixed"
-                        name="CategoriesId"
-                        onChange={otp => {
-                          setFieldValue('CategoriesId', otp, false)
-                        }}
-                        value={values.CategoriesId}
-                      />
+                      {isWarehouse ? (
+                        <AsyncSelectCategoriesSPNVL
+                          menuPlacement="top"
+                          isClearable={true}
+                          menuPosition="fixed"
+                          name="CategoriesId"
+                          onChange={otp => {
+                            setFieldValue('CategoriesId', otp, false)
+                          }}
+                          value={values.CategoriesId}
+                        />
+                      ) : (
+                        <AsyncSelectCategories
+                          menuPlacement="top"
+                          isClearable={true}
+                          menuPosition="fixed"
+                          name="CategoriesId"
+                          onChange={otp => {
+                            setFieldValue('CategoriesId', otp, false)
+                          }}
+                          value={values.CategoriesId}
+                        />
+                      )}
                     </div>
                   )}
                   {'CategoriesIds' in values && (
