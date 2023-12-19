@@ -33,30 +33,30 @@ if (DevHelpers.isDevelopment()) {
           },
           { ID: 10053, Title: 'Cser Hồ Chí Minh' },
           { ID: 11210, Title: 'Cser Tuyên Quang' }
-        ],
-        jdata: {
-          groups: [
-            [
-              {
-                group: 'Dịch vụ',
-                items: [
-                  {
-                    text: 'Báo cáo đặt lịch',
-                    checked: true,
-                    stocks: '8975',
-                    paths: ['/bao-cao-ngay/danh-sach'],
-                    url: '/dich-vu/bao-cao-dat-lich'
-                  }
-                ]
-              }
-            ]
-          ]
-        }
+        ]
+        // jdata: {
+        //   groups: [
+        //     [
+        //       {
+        //         group: 'Dịch vụ',
+        //         items: [
+        //           {
+        //             text: 'Báo cáo đặt lịch',
+        //             checked: true,
+        //             stocks: '8975',
+        //             paths: ['/bao-cao-ngay/danh-sach'],
+        //             url: '/dich-vu/bao-cao-dat-lich'
+        //           }
+        //         ]
+        //       }
+        //     ]
+        //   ]
+        // }
       }
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMzExNDEwNTM1MyIsIm5iZiI6MTcwMjA0OTEyOCwiZXhwIjoxNzg4NDQ5MTI4LCJpYXQiOjE3MDIwNDkxMjh9.PYRqaea-wgTufA8wq4KaJw5wZn6n7wdaD3Doe9KLipY'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMzExNDEwNTQxNCIsIm5iZiI6MTcwMjY4OTE3OSwiZXhwIjoxNzg5MDg5MTc5LCJpYXQiOjE3MDI2ODkxNzl9.yxpbWU3x5-RfU1sO3KLPfZ1ETKkMYNWGdmdje2z2EFE'
 }
 
 const Auth = createSlice({

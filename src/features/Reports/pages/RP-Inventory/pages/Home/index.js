@@ -30,6 +30,8 @@ function Home(props) {
     ProdIDs: '', // Danh sách SP, NVL
     QtyNumber: '', // Lọc ra Qty < QtyNumber
     IsQtyEmpty: true,
+    BrandId: '',
+    CategoriesId: '',
     gia_nhap_tb_khoang_tg: false // Tính theo DateStart,DateEnd, ngược lại tất cả
   })
   const [StockName, setStockName] = useState('')
@@ -279,6 +281,7 @@ function Home(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        isWarehouse={true}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">

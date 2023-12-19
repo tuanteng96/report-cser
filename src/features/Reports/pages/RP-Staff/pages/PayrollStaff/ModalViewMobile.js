@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, OverlayTrigger, Popover } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 

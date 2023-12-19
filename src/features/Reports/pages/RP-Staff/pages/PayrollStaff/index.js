@@ -14,7 +14,6 @@ import 'moment/locale/vi'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import clsx from 'clsx'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
 moment.locale('vi')
 
 function PayrollStaff(props) {

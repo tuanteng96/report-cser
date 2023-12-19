@@ -84,7 +84,8 @@ function FilterList({
   loadingExport,
   ten_nghiep_vu2,
   onRefresh,
-  onExport
+  onExport,
+  isWarehouse = false
 }) {
   const { Stocks, KPT_Max_Type, PermissionReport } = useSelector(
     ({ auth }) => ({
@@ -120,7 +121,15 @@ function FilterList({
     let newStocks = [...Stocks]
     if (PermissionReport?.hasRight) {
       if (!PermissionReport?.jdata) {
-        newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+        if (isWarehouse) {
+          newStocks = [
+            { value: '', label: 'Tất cả cơ sở' },
+            { value: 778, label: 'Kho tổng' },
+            ...Stocks
+          ]
+        } else {
+          newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+        }
       } else {
         let newListItems = []
         let Groups = PermissionReport?.jdata?.groups
@@ -141,7 +150,15 @@ function FilterList({
               .map(o => Number(o))
             newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
           } else {
-            newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+            if (isWarehouse) {
+              newStocks = [
+                { value: '', label: 'Tất cả cơ sở' },
+                { value: 778, label: 'Kho tổng' },
+                ...Stocks
+              ]
+            } else {
+              newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+            }
           }
         } else {
           newStocks = []
@@ -150,7 +167,7 @@ function FilterList({
     }
     setStocksList(newStocks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [PermissionReport, pathname])
+  }, [PermissionReport, pathname, isWarehouse])
 
   const filterTypeTC = (inputValue, optionFilter) => {
     if (optionFilter !== '') {
@@ -927,42 +944,6 @@ function FilterList({
                       />
                     </div>
                   )}
-                  {'IsQtyEmpty' in values && (
-                    <div>
-                      <label className="checkbox d-flex">
-                        <input
-                          type="checkbox"
-                          name="IsQtyEmpty"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.IsQtyEmpty}
-                          checked={values.IsQtyEmpty}
-                        />
-                        <span className="checkbox-icon"></span>
-                        <span className="fw-500 cursor-pointer">
-                          Lọc sản phẩm còn
-                        </span>
-                      </label>
-                    </div>
-                  )}
-                  {'gia_nhap_tb_khoang_tg' in values && (
-                    <div className="mt-10px">
-                      <label className="checkbox d-flex">
-                        <input
-                          type="checkbox"
-                          name="gia_nhap_tb_khoang_tg"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.gia_nhap_tb_khoang_tg}
-                          checked={values.gia_nhap_tb_khoang_tg}
-                        />
-                        <span className="checkbox-icon"></span>
-                        <span className="fw-500 cursor-pointer">
-                          Giá nhập TB trong khoảng thời gian
-                        </span>
-                      </label>
-                    </div>
-                  )}
                   {'ProductId' in values && (
                     <div className="form-group mb-20px">
                       <label>Sản phẩm, DV, NVL, ...</label>
@@ -1070,6 +1051,42 @@ function FilterList({
                           setFieldValue('TimeToReal', otp)
                         }}
                       />
+                    </div>
+                  )}
+                  {'IsQtyEmpty' in values && (
+                    <div>
+                      <label className="checkbox d-flex">
+                        <input
+                          type="checkbox"
+                          name="IsQtyEmpty"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.IsQtyEmpty}
+                          checked={values.IsQtyEmpty}
+                        />
+                        <span className="checkbox-icon"></span>
+                        <span className="fw-500 cursor-pointer">
+                          Lọc sản phẩm còn
+                        </span>
+                      </label>
+                    </div>
+                  )}
+                  {'gia_nhap_tb_khoang_tg' in values && (
+                    <div className="mt-10px">
+                      <label className="checkbox d-flex">
+                        <input
+                          type="checkbox"
+                          name="gia_nhap_tb_khoang_tg"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.gia_nhap_tb_khoang_tg}
+                          checked={values.gia_nhap_tb_khoang_tg}
+                        />
+                        <span className="checkbox-icon"></span>
+                        <span className="fw-500 cursor-pointer">
+                          Giá nhập TB trong khoảng thời gian
+                        </span>
+                      </label>
                     </div>
                   )}
                   {'KpiType' in values && (
