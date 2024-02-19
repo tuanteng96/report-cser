@@ -13,7 +13,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 8975,
+        ID: 11333,
         Title: 'Cser Hà Nội'
       },
       {
@@ -21,14 +21,14 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser Hồ Chí Minh'
       }
     ],
-    CrStockID: 8975,
+    CrStockID: 11333,
     rightsSum: {
       report: {
         IsAllStock: true,
         hasRight: true,
         stocks: [
           {
-            ID: 8975,
+            ID: 11333,
             Title: 'Cser Hà Nội'
           },
           { ID: 10053, Title: 'Cser Hồ Chí Minh' },
@@ -56,7 +56,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwMzExNDEwNTQxNCIsIm5iZiI6MTcwMjY4OTE3OSwiZXhwIjoxNzg5MDg5MTc5LCJpYXQiOjE3MDI2ODkxNzl9.yxpbWU3x5-RfU1sO3KLPfZ1ETKkMYNWGdmdje2z2EFE'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjU3Mzg1NzkwNTczODU5ODEiLCJuYmYiOjE3MDc5NjYwOTEsImV4cCI6MTc5NDM2NjA5MSwiaWF0IjoxNzA3OTY2MDkxfQ.X5Y6DLjImWHHMtBsUH2M6rcbMmywPd2P4YghaDenQ4c'
 }
 
 const Auth = createSlice({

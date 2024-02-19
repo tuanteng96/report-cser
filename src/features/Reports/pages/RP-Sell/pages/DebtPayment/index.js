@@ -117,7 +117,7 @@ function DebtPayment(props) {
             PCount: data?.result?.PCount || 0
           }
           setListData(convertArray(Items))
-          setListDataMobile(Items)
+          setListDataMobile(convertArray(Items))
           setTongTTNo(TTToanNo)
           setLoading(false)
           setPageTotal(Total)

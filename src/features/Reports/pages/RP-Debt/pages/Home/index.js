@@ -195,6 +195,7 @@ function Home(props) {
         key: 'Member.FullName',
         title: 'Khách hàng',
         dataKey: 'Member.FullName',
+        cellRenderer: ({ rowData }) => rowData?.Member?.FullName,
         width: 250,
         sortable: false,
         rowSpan: ({ rowData }) => checkRowSpan(rowData.ListOrders),
@@ -208,6 +209,7 @@ function Home(props) {
         dataKey: 'Member.Phone',
         width: 180,
         sortable: false,
+        cellRenderer: ({ rowData }) => rowData?.Member?.Phone,
         rowSpan: ({ rowData }) => checkRowSpan(rowData.ListOrders),
         mobileOptions: {
           visible: true
