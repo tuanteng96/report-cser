@@ -469,7 +469,7 @@ function OverviewService(props) {
         key: 'RateNote',
         title: 'Nội dung đánh giá',
         dataKey: 'RateNote',
-        cellRenderer: ({ rowData }) => rowData.RateNote || 'Chưa có',
+        //cellRenderer: ({ rowData }) => rowData.RateNote || 'Chưa có',
         width: 180,
         sortable: false
       },
