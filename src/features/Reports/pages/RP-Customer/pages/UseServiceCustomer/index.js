@@ -13,6 +13,7 @@ import { uuidv4 } from '@nikitababko/id-generator'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { PriceHelper } from 'src/helpers/PriceHelper'
 
 moment.locale('vi')
 
@@ -245,6 +246,15 @@ function UseServiceCustomer(props) {
         title: 'Số buổi còn',
         dataKey: 'BuoiCon',
         width: 120,
+        sortable: false
+      },
+      {
+        key: 'TongGiatriBuoicon',
+        title: 'Tổng giá trị buổi còn',
+        dataKey: 'TongGiatriBuoicon',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.TongGiatriBuoicon),
+        width: 200,
         sortable: false
       },
       {
