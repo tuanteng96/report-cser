@@ -143,7 +143,9 @@ function FilterList({
             }
           }
         }
-        const index = newListItems.findIndex(o => o.url === pathname)
+        const index = newListItems.findIndex(
+          o => o.url === pathname || o.paths.includes(pathname)
+        )
         if (index > -1) {
           if (newListItems[index].stocks) {
             const StocksPermission = newListItems[index].stocks
