@@ -155,7 +155,7 @@ function DaysOverview(props) {
                     </div>
                   </div>
                   <div className="d-flex justify-content-between pt-12px">
-                    <div className="text-muted">Khách mới / Tổng hóa đơn</div>
+                    <div className="text-muted">Khách mới / Tổng Checkin</div>
                     <div className="fw-600 font-number">
                       <span className="font-size-md text-success">
                         {dataDays?.KHFirstCheckIn || 0}
