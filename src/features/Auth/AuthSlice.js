@@ -21,7 +21,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'TA Beauty - Linh Lang'
       }
     ],
-    CrStockID: 11313,
+    CrStockID: 11340,
     rightsSum: {
       thu_chi: {
         IsAllStock: true,
@@ -443,7 +443,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIyMTU5IiwiVG9rZW5JZCI6IjI4IiwibmJmIjoxNzEyMTk1NjgzLCJleHAiOjE3OTg1OTU2ODMsImlhdCI6MTcxMjE5NTY4M30.u95dWEDu5PezFb9fuXiLaXgtleDvwUgaKGhUDXEvGVs'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjU3Mzg1NzkwNTczODY0MTUiLCJuYmYiOjE3MTY3NzMzODMsImV4cCI6MTgwMzE3MzM4MywiaWF0IjoxNzE2NzczMzgzfQ.LCAbUwi7x2DZeJRXl3YcDXXL4CBdO_QKXK1I6sxhXLE'
 }
 
 const Auth = createSlice({

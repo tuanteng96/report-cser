@@ -294,6 +294,17 @@ function Sales(props) {
         }
       },
       {
+        key: 'MemberID',
+        title: 'Mã khách hàng',
+        dataKey: 'MemberID',
+        cellRenderer: ({ rowData }) => <div>#{rowData.MemberID}</div>,
+        width: 140,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'MemberName',
         title: 'Khách hàng',
         dataKey: 'MemberName',
