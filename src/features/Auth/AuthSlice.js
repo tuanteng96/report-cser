@@ -13,7 +13,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 11313,
+        ID: 11357,
         Title: 'Tầng 4 - 30 Mai Hắc Đế, Hà Nội'
       },
       {
@@ -21,7 +21,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'TA Beauty - Linh Lang'
       }
     ],
-    CrStockID: 11340,
+    CrStockID: 11357,
     rightsSum: {
       thu_chi: {
         IsAllStock: true,
@@ -42,7 +42,7 @@ if (DevHelpers.isDevelopment()) {
         hasRight: true,
         stocks: [
           {
-            ID: 11313,
+            ID: 11357,
             Title: 'Tầng 4 - 30 Mai Hắc Đế, Hà Nội'
           },
           {
@@ -443,7 +443,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjU3Mzg1NzkwNTczODY0MTUiLCJuYmYiOjE3MTY3NzMzODMsImV4cCI6MTgwMzE3MzM4MywiaWF0IjoxNzE2NzczMzgzfQ.LCAbUwi7x2DZeJRXl3YcDXXL4CBdO_QKXK1I6sxhXLE'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjU3Mzg1NzkwNTczODY0NzMiLCJuYmYiOjE3MTc1NzU0OTYsImV4cCI6MTgwMzk3NTQ5NiwiaWF0IjoxNzE3NTc1NDk2fQ.ugh040BfsnkfEry3408bJdWIIv9kfN0c18dHGERtuOM'
 }
 
 const Auth = createSlice({

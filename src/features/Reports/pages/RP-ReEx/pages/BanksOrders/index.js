@@ -76,9 +76,10 @@ function BanksOrders(props) {
             Items.map(x => {
               let obj = { ...x }
               if (x.BankValue) {
-                for (let bank of x.BankValue) {
-                  obj[bank.ma_nh || 'KHAC'] = bank.Value
-                }
+                let index = x.BankValue.findIndex(o => o.Value > 0)
+
+                obj[index > -1 ? x.BankValue[index].ngan_hang : 'Khác'] =
+                  index > -1 ? x.BankValue[index].Value : 0
               }
 
               return obj
@@ -168,11 +169,11 @@ function BanksOrders(props) {
     if (Banks) {
       for (let bank of Banks) {
         let obj = {
-          key: bank.ma_nh || 'KHAC',
+          key: bank.ma_nh + bank.stk || 'KHAC',
           title: bank.ngan_hang || 'KHAC',
-          dataKey: bank.ma_nh || 'KHAC',
+          dataKey: bank.ma_nh + bank.stk || 'KHAC',
           cellRenderer: ({ rowData }) =>
-            PriceHelper.formatVND(rowData[bank.ma_nh || 'KHAC']),
+            PriceHelper.formatVND(rowData[bank.ngan_hang]),
           width: 250,
           sortable: false
         }
@@ -336,6 +337,7 @@ function BanksOrders(props) {
             optionMobile={{
               CellModal: cell => OpenModalMobile(cell)
             }}
+            headerHeight={100}
           />
         </div>
         <ModalViewMobile
