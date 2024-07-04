@@ -222,6 +222,59 @@ function FilterList({
                   </div>
                 </div>
                 <div className="filter-box__body p-20px">
+                {'ShowsX' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Chế độ</label>
+                      <Select
+                        name="ShowsX"
+                        placeholder="Chọn chế độ"
+                        classNamePrefix="select"
+                        options={[
+                          {
+                            label: 'Nhanh',
+                            value: '2'
+                          },
+                          {
+                            label: 'Tiêu Chuẩn',
+                            value: '0'
+                          },
+                          {
+                            label: 'Tách dòng',
+                            value: '1'
+                          }
+                        ]}
+                        className="select-control"
+                        value={[
+                          {
+                            label: 'Nhanh',
+                            value: '2'
+                          },
+                          {
+                            label: 'Tiêu Chuẩn',
+                            value: '0'
+                          },
+                          {
+                            label: 'Tách dòng',
+                            value: '1'
+                          }
+                        ].filter(
+                          item => Number(item.value) === Number(values?.ShowsX)
+                        )}
+                        onChange={otp => {
+                          setFieldValue('ShowsX', otp ? otp.value : '')
+                        }}
+                        noOptionsMessage={() => 'Không có dữ liệu'}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
+                      />
+                    </div>
+                  )}
                   {'DateStart' in values && (
                     <div className="mb-20px form-group">
                       <label>Ngày bắt đầu</label>
@@ -1333,51 +1386,6 @@ function FilterList({
                         )}
                         onChange={otp => {
                           setFieldValue('Shows', otp ? otp.value : '')
-                        }}
-                        noOptionsMessage={() => 'Không có dữ liệu'}
-                        menuPortalTarget={document.body}
-                        menuPosition="fixed"
-                        styles={{
-                          menuPortal: base => ({
-                            ...base,
-                            zIndex: 9999
-                          })
-                        }}
-                      />
-                    </div>
-                  )}
-                  {'ShowsX' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Chế độ</label>
-                      <Select
-                        name="ShowsX"
-                        placeholder="Chọn chế độ"
-                        classNamePrefix="select"
-                        options={[
-                          {
-                            label: 'Chuẩn',
-                            value: '0'
-                          },
-                          {
-                            label: 'Tách dòng',
-                            value: '1'
-                          }
-                        ]}
-                        className="select-control"
-                        value={[
-                          {
-                            label: 'Chuẩn',
-                            value: '0'
-                          },
-                          {
-                            label: 'Tách dòng',
-                            value: '1'
-                          }
-                        ].filter(
-                          item => Number(item.value) === Number(values?.ShowsX)
-                        )}
-                        onChange={otp => {
-                          setFieldValue('ShowsX', otp ? otp.value : '')
                         }}
                         noOptionsMessage={() => 'Không có dữ liệu'}
                         menuPortalTarget={document.body}
