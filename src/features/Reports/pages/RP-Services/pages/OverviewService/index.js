@@ -7,7 +7,6 @@ import ElementEmpty from 'src/components/Empty/ElementEmpty'
 import LoadingChart from 'src/components/Loading/LoadingChart'
 import { TextHelper } from 'src/helpers/TextHelpers'
 import { useWindowSize } from 'src/hooks/useWindowSize'
-import FilterList from 'src/components/Filter/FilterList'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import LoadingSkeleton from './LoadingSkeleton'
 import ChartWidget2 from 'src/features/Reports/components/ChartWidget2'
@@ -19,9 +18,11 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import ModalViewMobile from './ModalViewMobile'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { OverlayTrigger, Popover, Tooltip } from 'react-bootstrap'
+import FilterListAdvanced from 'src/components/Filter/FilterListAdvanced'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 
 moment.locale('vi')
 
@@ -69,7 +70,8 @@ function OverviewService(props) {
     StaffID: '', // ID nhân viên
     StarRating: '', // Đánh giá sao
     Dich_vu_chuyen_doi_khong_hop_le: 0,
-    IsMemberSet: ''
+    IsMemberSet: '',
+    ShowsX: '2'
   })
   const [dataChart, setDataChart] = useState(objData)
   const [optionsChart, setOptionsChart] = useState(optionsObj)
@@ -590,7 +592,7 @@ function OverviewService(props) {
           <IconMenuMobile />
         </div>
       </div>
-      <FilterList
+      <FilterListAdvanced
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}
@@ -599,6 +601,16 @@ function OverviewService(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        regimes={[
+          {
+            label: 'Nhanh',
+            value: '2'
+          },
+          {
+            label: 'Tiêu Chuẩn',
+            value: '0'
+          }
+        ]}
       />
       <div className="row">
         <div className="col-lg-4">

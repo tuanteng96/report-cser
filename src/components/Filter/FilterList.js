@@ -222,7 +222,7 @@ function FilterList({
                   </div>
                 </div>
                 <div className="filter-box__body p-20px">
-                {'ShowsX' in values && (
+                  {'ShowsX' in values && (
                     <div className="form-group mb-20px">
                       <label>Chế độ</label>
                       <Select

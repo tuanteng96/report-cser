@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo, Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import FilterList from 'src/components/Filter/FilterList'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
@@ -17,6 +16,7 @@ import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ModalViewMobile from './ModalViewMobile'
 import clsx from 'clsx'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+import FilterListAdvanced from 'src/components/Filter/FilterListAdvanced'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -40,7 +40,7 @@ function Sales(props) {
     MemberID: '', // ID khách hàng
     SourceName: '',
     ShipCode: '',
-    ShowsX: '0'
+    ShowsX: '2'
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -326,7 +326,8 @@ function Sales(props) {
         dataKey: 'MemberSource',
         cellRenderer: ({ rowData }) => rowData.MemberSource || 'Không xác định',
         width: 200,
-        sortable: false
+        sortable: false,
+        hidden: filters.ShowsX === '2'
       },
       {
         key: 'Value',
@@ -510,14 +511,16 @@ function Sales(props) {
           </span>
         ),
         width: 150,
-        sortable: false
+        sortable: false,
+        hidden: filters.ShowsX === '2'
       },
       {
         key: 'ShipCode',
         title: 'Ship Code',
         dataKey: 'ShipCode',
         width: 180,
-        sortable: false
+        sortable: false,
+        hidden: filters.ShowsX === '2'
       },
       {
         key: 'Desc',
@@ -594,7 +597,7 @@ function Sales(props) {
           <IconMenuMobile />
         </div>
       </div>
-      <FilterList
+      <FilterListAdvanced
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}
@@ -603,6 +606,20 @@ function Sales(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        regimes={[
+          {
+            label: 'Nhanh',
+            value: '2'
+          },
+          {
+            label: 'Tiêu Chuẩn',
+            value: '0'
+          },
+          {
+            label: 'Tách dòng',
+            value: '1'
+          }
+        ]}
       />
       <div className="row">
         <div className="col-md-12 col-lg-5" ref={elementRef}>
