@@ -63,7 +63,7 @@ const moreApi = {
   },
   getAllServiceOriginal: key => {
     return http.get(
-      `/api/gl/select2?cmd=prod&combo=0&fee=0&ignore_all=1&srv=1&q=${key}`
+      `/api/gl/select2?cmd=prod&combo=0&fee=0&ignore_all=1&srv=1&q=${key}&cate_name=dich_vu`
     )
   },
   getAllServiceCard: key => {
