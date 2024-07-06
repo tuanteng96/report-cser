@@ -324,6 +324,16 @@ export const BrowserHelpers = {
         ? filters.UserServiceIDs.map(item => item.value).join(',')
         : ''
     }
+    if ('CardServiceID' in filters) {
+      params.CardServiceID = filters?.CardServiceID
+        ? filters.CardServiceID.map(item => item.value).join(',')
+        : ''
+    }
+    if ('ServiceOriginalID' in filters) {
+      params.ServiceOriginalID = filters?.ServiceOriginalID
+        ? filters.ServiceOriginalID.map(item => item.value).join(',')
+        : ''
+    }
     return params
   },
   getRequestParamsToggle: (filters, config) => {

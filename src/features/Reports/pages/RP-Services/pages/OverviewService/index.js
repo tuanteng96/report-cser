@@ -18,11 +18,10 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import ModalViewMobile from './ModalViewMobile'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { OverlayTrigger, Popover, Tooltip } from 'react-bootstrap'
-import FilterListAdvanced from 'src/components/Filter/FilterListAdvanced'
+import FilterListAdvancedSv from 'src/components/Filter/FilterListAdvancedSv'
 
 import moment from 'moment'
 import 'moment/locale/vi'
-
 
 moment.locale('vi')
 
@@ -71,6 +70,8 @@ function OverviewService(props) {
     StarRating: '', // Đánh giá sao
     Dich_vu_chuyen_doi_khong_hop_le: 0,
     IsMemberSet: '',
+    CardServiceID: '',
+    ServiceOriginalID: '',
     ShowsX: '2'
   })
   const [dataChart, setDataChart] = useState(objData)
@@ -396,7 +397,8 @@ function OverviewService(props) {
             ? rowData.SessionWarrantyIndex
             : rowData.SessionIndex,
         width: 100,
-        sortable: false
+        sortable: false,
+        hidden: filters.ShowsX === '2'
       },
       {
         key: 'Warranty',
@@ -592,7 +594,7 @@ function OverviewService(props) {
           <IconMenuMobile />
         </div>
       </div>
-      <FilterListAdvanced
+      <FilterListAdvancedSv
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}
@@ -754,22 +756,26 @@ function OverviewService(props) {
                             {PriceHelper.formatVND(Total.TotalGiabuoi)}
                           </span>
                         </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                          <span>KH buổi đầu thẻ</span>
-                          <span>{Total.Totalbuoidau}</span>
-                        </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                          <span>KH buổi cuối thẻ</span>
-                          <span>{Total.Totalbuoicuoi}</span>
-                        </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                          <span>KH buổi đầu</span>
-                          <span>{Total.Totalisfirst}</span>
-                        </div>
-                        <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                          <span>KH cần thanh toán</span>
-                          <span>{Total.Totalrequest}</span>
-                        </div>
+                        {filters.ShowsX !== '2' && (
+                          <>
+                            <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                              <span>KH buổi đầu thẻ</span>
+                              <span>{Total.Totalbuoidau}</span>
+                            </div>
+                            <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                              <span>KH buổi cuối thẻ</span>
+                              <span>{Total.Totalbuoicuoi}</span>
+                            </div>
+                            <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                              <span>KH buổi đầu</span>
+                              <span>{Total.Totalisfirst}</span>
+                            </div>
+                            <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                              <span>KH cần thanh toán</span>
+                              <span>{Total.Totalrequest}</span>
+                            </div>
+                          </>
+                        )}
                       </Popover.Body>
                     </Popover>
                   }
@@ -786,119 +792,127 @@ function OverviewService(props) {
                     {PriceHelper.formatVND(Total.TotalGiabuoi)}
                   </span>
                 </div>
-                <div className="fw-500 pr-15px">
-                  KH buổi đầu thẻ{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {Total.Totalbuoidau}
-                  </span>
-                </div>
-                <div className="fw-500 pr-15px">
-                  KH buổi cuối thẻ{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {Total.Totalbuoicuoi}
-                  </span>
-                </div>
-                <div className="fw-500 pr-15px">
-                  KH buổi đầu{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {Total.Totalisfirst}
-                  </span>
-                </div>
-                <div className="fw-500">
-                  KH cần thanh toán{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {Total.Totalrequest}
-                  </span>
-                </div>
+
+                {filters.ShowsX !== '2' && (
+                  <>
+                    <div className="fw-500 pr-15px">
+                      KH buổi đầu thẻ{' '}
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {Total.Totalbuoidau}
+                      </span>
+                    </div>
+                    <div className="fw-500 pr-15px">
+                      KH buổi cuối thẻ{' '}
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {Total.Totalbuoicuoi}
+                      </span>
+                    </div>
+                    <div className="fw-500 pr-15px">
+                      KH buổi đầu{' '}
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {Total.Totalisfirst}
+                      </span>
+                    </div>
+                    <div className="fw-500">
+                      KH cần thanh toán{' '}
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {Total.Totalrequest}
+                      </span>
+                    </div>
+                  </>
+                )}
               </Fragment>
             )}
           </div>
         </div>
         <div className="p-20px">
-          <div className="d-flex mb-15px">
-            <div className="d-flex mr-20px">
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="top"
-                placement="top"
-                overlay={<Tooltip id={`tooltip-top`}>Khách buổi đầu</Tooltip>}
-              >
-                <div
-                  className="w-40px h-15px"
-                  style={{ backgroundColor: 'rgb(144 189 86)' }}
-                ></div>
-              </OverlayTrigger>
-              {width > 992 && (
-                <div className="fw-500 pl-8px line-height-xs">
-                  Khách buổi đầu
-                </div>
-              )}
+          {filters.ShowsX !== '2' && (
+            <div className="d-flex mb-15px">
+              <div className="d-flex mr-20px">
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={<Tooltip id={`tooltip-top`}>Khách buổi đầu</Tooltip>}
+                >
+                  <div
+                    className="w-40px h-15px"
+                    style={{ backgroundColor: 'rgb(144 189 86)' }}
+                  ></div>
+                </OverlayTrigger>
+                {width > 992 && (
+                  <div className="fw-500 pl-8px line-height-xs">
+                    Khách buổi đầu
+                  </div>
+                )}
+              </div>
+              <div className="d-flex mr-20px">
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={
+                    <Tooltip id={`tooltip-top`}>Cần thanh toán thêm</Tooltip>
+                  }
+                >
+                  <div
+                    className="w-40px h-15px"
+                    style={{ backgroundColor: 'rgb(231, 195, 84)' }}
+                  ></div>
+                </OverlayTrigger>
+                {width > 992 && (
+                  <div className="fw-500 pl-8px line-height-xs">
+                    Cần thanh toán thêm
+                  </div>
+                )}
+              </div>
+              <div className="d-flex mr-20px">
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={
+                    <Tooltip id={`tooltip-top`}>Khách thẻ buổi đầu</Tooltip>
+                  }
+                >
+                  <div
+                    className="w-40px h-15px"
+                    style={{ backgroundColor: 'rgb(146 224 224)' }}
+                  ></div>
+                </OverlayTrigger>
+                {width > 992 && (
+                  <div className="fw-500 pl-8px line-height-xs">
+                    Khách thẻ buổi đầu
+                  </div>
+                )}
+              </div>
+              <div className="d-flex">
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={
+                    <Tooltip id={`tooltip-top`}>Khách thẻ buổi cuối</Tooltip>
+                  }
+                >
+                  <div
+                    className="w-40px h-15px"
+                    style={{ backgroundColor: 'rgb(255, 190, 211)' }}
+                  ></div>
+                </OverlayTrigger>
+                {width > 992 && (
+                  <div className="fw-500 pl-8px line-height-xs">
+                    Khách thẻ buổi cuối
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="d-flex mr-20px">
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="top"
-                placement="top"
-                overlay={
-                  <Tooltip id={`tooltip-top`}>Cần thanh toán thêm</Tooltip>
-                }
-              >
-                <div
-                  className="w-40px h-15px"
-                  style={{ backgroundColor: 'rgb(231, 195, 84)' }}
-                ></div>
-              </OverlayTrigger>
-              {width > 992 && (
-                <div className="fw-500 pl-8px line-height-xs">
-                  Cần thanh toán thêm
-                </div>
-              )}
-            </div>
-            <div className="d-flex mr-20px">
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="top"
-                placement="top"
-                overlay={
-                  <Tooltip id={`tooltip-top`}>Khách thẻ buổi đầu</Tooltip>
-                }
-              >
-                <div
-                  className="w-40px h-15px"
-                  style={{ backgroundColor: 'rgb(146 224 224)' }}
-                ></div>
-              </OverlayTrigger>
-              {width > 992 && (
-                <div className="fw-500 pl-8px line-height-xs">
-                  Khách thẻ buổi đầu
-                </div>
-              )}
-            </div>
-            <div className="d-flex">
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="top"
-                placement="top"
-                overlay={
-                  <Tooltip id={`tooltip-top`}>Khách thẻ buổi cuối</Tooltip>
-                }
-              >
-                <div
-                  className="w-40px h-15px"
-                  style={{ backgroundColor: 'rgb(255, 190, 211)' }}
-                ></div>
-              </OverlayTrigger>
-              {width > 992 && (
-                <div className="fw-500 pl-8px line-height-xs">
-                  Khách thẻ buổi cuối
-                </div>
-              )}
-            </div>
-          </div>
+          )}
+
           <ReactTableV7
             rowKey="ID"
             filters={filters}
