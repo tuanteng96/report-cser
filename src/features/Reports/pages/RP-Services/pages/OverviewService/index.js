@@ -407,7 +407,16 @@ function OverviewService(props) {
         cellRenderer: ({ rowData }) =>
           rowData.Warranty ? 'Bảo hành' : 'Không có',
         width: 120,
-        sortable: false
+        sortable: false,
+        hidden: filters.ShowsX === '2',
+      },
+      {
+        key: 'Loai',
+        title: 'Loại',
+        dataKey: 'Loai',
+        width: 180,
+        sortable: false,
+        hidden: filters.ShowsX !== '2'
       },
       {
         key: 'AddFeeTitles',
