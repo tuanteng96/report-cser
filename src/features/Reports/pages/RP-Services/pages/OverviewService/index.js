@@ -408,7 +408,7 @@ function OverviewService(props) {
           rowData.Warranty ? 'Bảo hành' : 'Không có',
         width: 120,
         sortable: false,
-        hidden: filters.ShowsX === '2',
+        hidden: filters.ShowsX === '2'
       },
       {
         key: 'Loai',
@@ -424,9 +424,7 @@ function OverviewService(props) {
         dataKey: 'AddFeeTitles',
         cellRenderer: ({ rowData }) =>
           rowData.AddFeeTitles && rowData.AddFeeTitles.length > 0
-            ? rowData.AddFeeTitles.map((item, index) => (
-                <div key={index}>{removeName(item)} </div>
-              ))
+            ? rowData.AddFeeTitles.toString()
             : 'Không có',
         width: 200,
         sortable: false
