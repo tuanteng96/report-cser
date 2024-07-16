@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
-import FilterList from 'src/components/Filter/FilterList'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
@@ -10,10 +9,39 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 import Text from 'react-texty'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+import FilterListAdvancedBG from 'src/components/Filter/FilterListAdvancedBG'
+import { uuidv4 } from '@nikitababko/id-generator'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+
 moment.locale('vi')
+
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+  for (let [index, obj] of arrays.entries()) {
+    let { NVL, Root, Prod } = obj
+    let count = NVL.length > Root.NVL.length ? NVL.length : Root.NVL.length
+
+    for (let i = 0; i < (count || 1); i++) {
+      let object = {
+        NVL,
+        Root,
+        Prod,
+        Ids: uuidv4(),
+        rowIndex: index,
+        NVLTT: NVL && NVL.length > 0 ? NVL[i] : null,
+        NVLG: Root.NVL && Root.NVL.length > 0 ? Root.NVL[i] : null,
+        rowSpan: i !== 0 ? 1 : count
+      }
+      newArray.push(object)
+    }
+  }
+  return newArray
+}
 
 function PriceList(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -27,7 +55,8 @@ function PriceList(props) {
     Key: '',
     CategoriesId: '',
     BrandId: '',
-    TypeCNHng: ''
+    TypeCNHng: '',
+    ShowsX: '2'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -85,7 +114,10 @@ function PriceList(props) {
           setLoading(false)
         } else {
           const { Items, Total, PCount } = {
-            Items: data.result?.Items || [],
+            Items:
+              filters.ShowsX === '2'
+                ? convertArray(data.result?.Items || [])
+                : data.result?.Items || [],
             Total: data.result?.Total || 0,
             PCount: data?.result?.PCount || 0
           }
@@ -125,178 +157,250 @@ function PriceList(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
-  const columns = useMemo(
-    () => [
+  const columns = useMemo(() => {
+    if (filters.ShowsX !== '2') {
+      return [
+        {
+          key: 'index',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex }) =>
+            filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'ID',
+          title: 'ID',
+          dataKey: 'ID',
+          cellRenderer: ({ rowData }) => <div>#{rowData.ID}</div>,
+          width: 100,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Ten',
+          title: 'Tên mặt hàng',
+          dataKey: 'Ten',
+          width: 250,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'MaSP',
+          title: 'Mã',
+          dataKey: 'MaSP',
+          width: 150,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'gia_goc',
+          title: 'Giá gốc',
+          dataKey: 'gia_goc',
+          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.gia_goc),
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'NguyenGia',
+          title: 'Nguyên giá',
+          dataKey: 'NguyenGia',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.NguyenGia),
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'GiaKM',
+          title: 'Giá hiện tại',
+          dataKey: 'GiaKM',
+          cellRenderer: ({ rowData }) =>
+            rowData?.GiaKM > 0
+              ? PriceHelper.formatVND(rowData?.GiaKM)
+              : PriceHelper.formatVND(rowData?.NguyenGia),
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'TonKho',
+          title: 'Tồn kho',
+          dataKey: 'TonKho',
+          cellRenderer: ({ rowData }) =>
+            rowData?.TonKho || rowData?.TonKho === 0
+              ? `${PriceHelper.formatVND(rowData?.TonKho)} ${
+                  rowData?.DonVi || ''
+                }`
+              : '',
+          width: 100,
+          sortable: false
+        },
+        {
+          key: 'DanhMuc',
+          title: 'Danh mục',
+          dataKey: 'DanhMuc',
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'NhanHang',
+          title: 'Nhãn hàng',
+          dataKey: 'NhanHang',
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'hoa_hong_sale',
+          title: 'Hoa hồng Sale',
+          dataKey: 'hoa_hong_sale',
+          cellRenderer: ({ rowData }) =>
+            rowData.BonusSaleLevels &&
+            rowData.BonusSaleLevels.length > 0 &&
+            rowData.BonusSaleLevels.some(x => x.Salary) ? (
+              <div className="d-flex flex-wrap">
+                {rowData.BonusSaleLevels.map((x, index) => (
+                  <code
+                    className="fw-600 font-size-md px-2 m-3px d-block"
+                    key={index}
+                  >
+                    {x.Level}{' '}
+                    {Number(x?.Salary) > 100
+                      ? PriceHelper.formatVND(x?.Salary)
+                      : x?.Salary + '%'}
+                  </code>
+                ))}
+              </div>
+            ) : (
+              PriceHelper.formatVND(rowData?.hoa_hong_sale)
+            ),
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'hoa_hong_ktv',
+          title: 'Hoa hồng KTV',
+          dataKey: 'hoa_hong_ktv',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData?.hoa_hong_ktv),
+          width: 150,
+          sortable: false,
+          hidden: window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van_ktv_an
+        },
+        {
+          key: 'luong_ca',
+          title: 'Lương ca',
+          dataKey: 'luong_ca',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData.luong_ca_dv_goc &&
+                rowData.luong_ca_dv_goc.map((o, index) => (
+                  <span key={index}>
+                    {o.RootTitle} -{' '}
+                    {o.Luong_ca_cap_bac && o.Luong_ca_cap_bac.length > 0 ? (
+                      <div>
+                        {o.Luong_ca_cap_bac.map((x, idx) => (
+                          <code className="fw-600 font-size-md px-2" key={idx}>
+                            {x.LevelName} {PriceHelper.formatVND(x?.Salary)}
+                          </code>
+                        )).reduce((prev, curr) => [prev, ', ', curr])}
+                      </div>
+                    ) : (
+                      <code className="fw-600 font-size-md px-2px">
+                        Lương ca {PriceHelper.formatVND(o?.Luong_ca)}
+                      </code>
+                    )}
+                  </span>
+                ))}
+            </Text>
+          ),
+          width: 300,
+          sortable: false,
+          className: 'flex-fill'
+        }
+      ]
+    }
+    return [
       {
         key: 'index',
         title: 'STT',
         dataKey: 'index',
-        cellRenderer: ({ rowIndex }) =>
-          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        cellRenderer: ({ rowData }) =>
+          filters.Ps * (filters.Pi - 1) + (rowData.rowIndex + 1),
         width: 60,
         sortable: false,
         align: 'center',
         mobileOptions: {
           visible: true
-        }
+        },
+        rowSpan: ({ rowData }) => rowData.rowSpan
       },
       {
-        key: 'ID',
-        title: 'ID',
-        dataKey: 'ID',
-        cellRenderer: ({ rowData }) => <div>#{rowData.ID}</div>,
-        width: 100,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'Ten',
-        title: 'Tên mặt hàng',
-        dataKey: 'Ten',
-        width: 250,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'MaSP',
-        title: 'Mã',
-        dataKey: 'MaSP',
-        width: 150,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'gia_goc',
-        title: 'Giá gốc',
-        dataKey: 'gia_goc',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.gia_goc),
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'NguyenGia',
-        title: 'Nguyên giá',
-        dataKey: 'NguyenGia',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NguyenGia),
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'GiaKM',
-        title: 'Giá hiện tại',
-        dataKey: 'GiaKM',
+        key: 'DICH_VU_GOC',
+        title: 'Dịch vụ gốc',
+        dataKey: 'DICH_VU_GOC',
         cellRenderer: ({ rowData }) =>
-          rowData?.GiaKM > 0
-            ? PriceHelper.formatVND(rowData?.GiaKM)
-            : PriceHelper.formatVND(rowData?.NguyenGia),
-        width: 150,
-        sortable: false
+          `${rowData.Root.Prod.DynamicID} - ${rowData.Root.Prod.Title}`,
+        width: 350,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        },
+        rowSpan: ({ rowData }) => rowData.rowSpan
       },
       {
-        key: 'TonKho',
-        title: 'Tồn kho',
-        dataKey: 'TonKho',
+        key: 'THE_DV',
+        title: 'Tên thẻ',
+        dataKey: 'THE_DV',
         cellRenderer: ({ rowData }) =>
-          rowData?.TonKho || rowData?.TonKho === 0
-            ? `${PriceHelper.formatVND(rowData?.TonKho)} ${
-                rowData?.DonVi || ''
-              }`
+          `${rowData.Prod.DynamicID} - ${rowData.Prod.Title}`,
+        width: 350,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        },
+        rowSpan: ({ rowData }) => rowData.rowSpan
+      },
+      {
+        key: 'THEO_THE_DV_GOC',
+        title: 'Theo dịch vụ gốc',
+        dataKey: 'THEO_THE_DV_GOC',
+        cellRenderer: ({ rowData }) =>
+          rowData?.NVLG
+            ? `${rowData?.NVLG?.ItemDynamicID} - ${rowData?.NVLG?.Prod?.Title}`
             : '',
-        width: 100,
-        sortable: false
-      },
-      {
-        key: 'DanhMuc',
-        title: 'Danh mục',
-        dataKey: 'DanhMuc',
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'NhanHang',
-        title: 'Nhãn hàng',
-        dataKey: 'NhanHang',
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'hoa_hong_sale',
-        title: 'Hoa hồng Sale',
-        dataKey: 'hoa_hong_sale',
-        cellRenderer: ({ rowData }) =>
-          rowData.BonusSaleLevels &&
-          rowData.BonusSaleLevels.length > 0 &&
-          rowData.BonusSaleLevels.some(x => x.Salary) ? (
-            <div className="d-flex flex-wrap">
-              {rowData.BonusSaleLevels.map((x, index) => (
-                <code
-                  className="fw-600 font-size-md px-2 m-3px d-block"
-                  key={index}
-                >
-                  {x.Level}{' '}
-                  {Number(x?.Salary) > 100
-                    ? PriceHelper.formatVND(x?.Salary)
-                    : x?.Salary + '%'}
-                </code>
-              ))}
-            </div>
-          ) : (
-            PriceHelper.formatVND(rowData?.hoa_hong_sale)
-          ),
-        width: 250,
-        sortable: false
-      },
-      {
-        key: 'hoa_hong_ktv',
-        title: 'Hoa hồng KTV',
-        dataKey: 'hoa_hong_ktv',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData?.hoa_hong_ktv),
-        width: 150,
+        width: 350,
         sortable: false,
-        hidden: window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van_ktv_an
+        mobileOptions: {
+          visible: true
+        }
       },
       {
-        key: 'luong_ca',
-        title: 'Lương ca',
-        dataKey: 'luong_ca',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>
-            {rowData.luong_ca_dv_goc &&
-              rowData.luong_ca_dv_goc.map((o, index) => (
-                <span key={index}>
-                  {o.RootTitle} -{' '}
-                  {o.Luong_ca_cap_bac && o.Luong_ca_cap_bac.length > 0 ? (
-                    <div>
-                      {o.Luong_ca_cap_bac.map((x, idx) => (
-                        <code className="fw-600 font-size-md px-2" key={idx}>
-                          {x.LevelName} {PriceHelper.formatVND(x?.Salary)}
-                        </code>
-                      )).reduce((prev, curr) => [prev, ', ', curr])}
-                    </div>
-                  ) : (
-                    <code className="fw-600 font-size-md px-2px">
-                      Lương ca {PriceHelper.formatVND(o?.Luong_ca)}
-                    </code>
-                  )}
-                </span>
-              ))}
-          </Text>
-        ),
-        width: 300,
+        key: 'THEO_THE_DV',
+        title: 'Theo thẻ dịch vụ',
+        dataKey: 'THEO_THE_DV',
+        cellRenderer: ({ rowData }) =>
+          rowData?.NVLTT
+            ? `${rowData?.NVLTT?.ItemDynamicID} - ${rowData?.NVLTT?.Prod?.Title}`
+            : '',
+        width: 350,
         sortable: false,
-        className: 'flex-fill'
+        mobileOptions: {
+          visible: true
+        }
       }
-    ],
-    [filters]
-  )
-
+    ]
+  }, [filters])
+  
   const onExport = () => {
     PermissionHelpers.ExportExcel({
       FuncStart: () => setLoadingExport(true),
@@ -321,6 +425,31 @@ function PriceList(props) {
     setIsModalMobile(false)
   }
 
+  const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    if (isScrolling)
+      return (
+        <div className="pl-15px d-flex align-items">
+          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+        </div>
+      )
+    const indexList = [0, 1, 2]
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
+    }
+    return cells
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -343,7 +472,7 @@ function PriceList(props) {
           <IconMenuMobile />
         </div>
       </div>
-      <FilterList
+      <FilterListAdvancedBG
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}
@@ -359,7 +488,7 @@ function PriceList(props) {
         </div>
         <div className="p-20px">
           <ReactTableV7
-            rowKey="ID"
+            rowKey="Ids"
             filters={filters}
             columns={columns}
             data={ListData}
@@ -369,7 +498,9 @@ function PriceList(props) {
             optionMobile={{
               CellModal: cell => OpenModalMobile(cell)
             }}
-            estimatedRowHeight={40}
+            overscanRowCount={50}
+            rowRenderer={rowRenderer}
+            useIsScrolling={filters.ShowsX === '2'}
           />
         </div>
         <ModalViewMobile
