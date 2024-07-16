@@ -56,7 +56,7 @@ function PriceList(props) {
     CategoriesId: '',
     BrandId: '',
     TypeCNHng: '',
-    ShowsX: '2'
+    ShowsX: '0'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -349,7 +349,9 @@ function PriceList(props) {
         title: 'Dịch vụ gốc',
         dataKey: 'DICH_VU_GOC',
         cellRenderer: ({ rowData }) =>
-          `${rowData.Root.Prod.DynamicID} - ${rowData.Root.Prod.Title}`,
+          rowData?.Root?.Prod
+            ? `${rowData?.Root?.Prod?.DynamicID} - ${rowData?.Root?.Prod?.Title}`
+            : '',
         width: 350,
         sortable: false,
         mobileOptions: {
@@ -362,7 +364,9 @@ function PriceList(props) {
         title: 'Tên thẻ',
         dataKey: 'THE_DV',
         cellRenderer: ({ rowData }) =>
-          `${rowData.Prod.DynamicID} - ${rowData.Prod.Title}`,
+          rowData?.Prod
+            ? `${rowData?.Prod?.DynamicID} - ${rowData?.Prod?.Title}`
+            : '',
         width: 350,
         sortable: false,
         mobileOptions: {
@@ -376,7 +380,11 @@ function PriceList(props) {
         dataKey: 'THEO_THE_DV_GOC',
         cellRenderer: ({ rowData }) =>
           rowData?.NVLG
-            ? `${rowData?.NVLG?.ItemDynamicID} - ${rowData?.NVLG?.Prod?.Title}`
+            ? `${rowData?.NVLG?.ItemDynamicID} - ${
+                rowData?.NVLG?.Prod?.Title
+              } : ${rowData?.NVLTT?.Qty || '--'} (${
+                rowData?.NVLTT?.Unit || '--'
+              })`
             : '',
         width: 350,
         sortable: false,
@@ -390,7 +398,11 @@ function PriceList(props) {
         dataKey: 'THEO_THE_DV',
         cellRenderer: ({ rowData }) =>
           rowData?.NVLTT
-            ? `${rowData?.NVLTT?.ItemDynamicID} - ${rowData?.NVLTT?.Prod?.Title}`
+            ? `${rowData?.NVLTT?.ItemDynamicID} - ${
+                rowData?.NVLTT?.Prod?.Title
+              } : ${rowData?.NVLTT?.Qty || '--'} (${
+                rowData?.NVLTT?.Unit || '--'
+              })`
             : '',
         width: 350,
         sortable: false,
@@ -400,7 +412,7 @@ function PriceList(props) {
       }
     ]
   }, [filters])
-  
+
   const onExport = () => {
     PermissionHelpers.ExportExcel({
       FuncStart: () => setLoadingExport(true),
@@ -434,7 +446,10 @@ function PriceList(props) {
       )
     const indexList = [0, 1, 2]
     for (let index of indexList) {
-      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      const rowSpan =
+        columns[index] &&
+        columns[index].rowSpan &&
+        columns[index].rowSpan({ rowData, rowIndex })
       if (rowSpan > 1) {
         const cell = cells[index]
         const style = {
@@ -488,7 +503,7 @@ function PriceList(props) {
         </div>
         <div className="p-20px">
           <ReactTableV7
-            rowKey="Ids"
+            rowKey={'ID'}
             filters={filters}
             columns={columns}
             data={ListData}
