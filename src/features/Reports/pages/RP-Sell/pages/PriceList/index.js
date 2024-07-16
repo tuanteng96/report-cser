@@ -382,8 +382,8 @@ function PriceList(props) {
           rowData?.NVLG
             ? `${rowData?.NVLG?.ItemDynamicID} - ${
                 rowData?.NVLG?.Prod?.Title
-              } : ${rowData?.NVLTT?.Qty || '--'} (${
-                rowData?.NVLTT?.Unit || '--'
+              } : ${rowData?.NVLG?.Qty || '--'} (${
+                rowData?.NVLG?.Unit || '--'
               })`
             : '',
         width: 350,
