@@ -232,6 +232,10 @@ function FilterListAdvancedBG({
                         options={[
                           {
                             label: 'Bảng giá cơ bản',
+                            value: '1'
+                          },
+                          {
+                            label: 'Bảng giá nâng cao',
                             value: '0'
                           },
                           {
@@ -243,6 +247,10 @@ function FilterListAdvancedBG({
                         value={[
                           {
                             label: 'Bảng giá cơ bản',
+                            value: '1'
+                          },
+                          {
+                            label: 'Bảng giá nâng cao',
                             value: '0'
                           },
                           {

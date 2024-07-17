@@ -56,7 +56,7 @@ function PriceList(props) {
     CategoriesId: '',
     BrandId: '',
     TypeCNHng: '',
-    ShowsX: '0'
+    ShowsX: '1'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -230,7 +230,8 @@ function PriceList(props) {
               ? PriceHelper.formatVND(rowData?.GiaKM)
               : PriceHelper.formatVND(rowData?.NguyenGia),
           width: 150,
-          sortable: false
+          sortable: false,
+          hidden: filters.ShowsX === '1'
         },
         {
           key: 'TonKho',
@@ -243,7 +244,8 @@ function PriceList(props) {
                 }`
               : '',
           width: 100,
-          sortable: false
+          sortable: false,
+          hidden: filters.ShowsX === '1'
         },
         {
           key: 'DanhMuc',
