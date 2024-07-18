@@ -126,7 +126,7 @@ function CourseReport(props) {
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
-        reportsApi.getListTotalCard(
+        reportsApi.getListCourses(
           BrowserHelpers.getRequestParamsCourse(filters, {
             Total: PageTotal
           })
@@ -322,11 +322,11 @@ function CourseReport(props) {
     [filters, width]
   )
 
-  const rowClassName = ({ rowData }) => {
-    if (rowData?.IsExpired) {
-      return 'bg-danger-o-90'
-    }
-  }
+//   const rowClassName = ({ rowData }) => {
+//     if (rowData?.IsExpired) {
+//       return 'bg-danger-o-90'
+//     }
+//   }
 
   return (
     <div className="py-main">
@@ -451,7 +451,7 @@ function CourseReport(props) {
             optionMobile={{
               CellModal: cell => OpenModalMobile(cell)
             }}
-            rowClassName={rowClassName}
+            //rowClassName={rowClassName}
           />
         </div>
         <ModalViewMobile
