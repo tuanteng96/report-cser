@@ -199,6 +199,16 @@ const reportsApi = {
     http.post(
       `${SubApi}/bao-cao-thu-chi/cac-phuong-thuc-thanh-toan`,
       JSON.stringify(data)
+    ),
+  getCourse: data =>
+    http.post(
+      `/api/v3/course@list`,
+      JSON.stringify(data)
+    ),
+  getListCourses: data =>
+    http.post(
+      `/api/v3/CourseReport@list`,
+      JSON.stringify(data)
     )
 }
 export default reportsApi

@@ -138,6 +138,10 @@ const ReExs = lazy(() =>
   import('src/features/Reports/pages/RP-ReEx/pages/ReExs')
 )
 
+const CourseReport = lazy(() =>
+  import('src/features/Reports/pages/RP-More/pages/CourseReport')
+)
+
 const SuspensedView = ({ children }) => {
   TopBarProgress.config({
     barColors: {
@@ -315,6 +319,7 @@ function RouterPage(props) {
         <Route path="bao-cao-vi" element={<TotalWallet />} />
         <Route path="bao-cao-the-tien" element={<TotalCard />} />
         <Route path="bao-cao-su-dung-the-tien" element={<UseCardMoney />} />
+        <Route path="bao-cao-khoa-hoc" element={<CourseReport />} />
       </Route>
       {!window?.isDesktop && (
         <Route path="/app23/index.html" element={<Navigate to="/" replace />} />

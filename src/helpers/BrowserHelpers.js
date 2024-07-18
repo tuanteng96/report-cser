@@ -514,5 +514,52 @@ export const BrowserHelpers = {
       params.DayService = filters.DayService
     }
     return params
+  },
+  getRequestParamsCourse: (filters, config) => {
+    let params = { ...filters }
+    if (config) {
+      const { auth } = store.getState()
+      const { AmountExport } = {
+        AmountExport: auth?.GlobalConfig?.Admin?.AmountExport
+      }
+      if (AmountExport && Number(AmountExport) > 0) {
+        params.Pi = Number(AmountExport)
+      }
+      if (!AmountExport && config.Total < 1500) {
+        params.Pi = 1500
+      }
+      params.Pi = 1
+    }
+
+    let pi = params.Pi
+    let ps = params.Ps
+
+    let DayToPay = [
+      params.filter.FromDebt
+        ? moment(params.filter.FromDebt).format('YYYY-MM-DD')
+        : '',
+      params.filter.ToDebt
+        ? moment(params.filter.ToDebt).format('YYYY-MM-DD')
+        : ''
+    ]
+
+    params = {
+      ...params,
+      filter: {
+        ...params.filter,
+        DayToPay
+      },
+      filterCourse: {
+        ...params.filterCourse,
+        ID: params.filterCourse.ID ? params.filterCourse.ID.value : '',
+        Tags: params.filterCourse.Tags
+          ? ',&' + params.filterCourse.Tags.map(x => x.value).toString()
+          : ''
+      },
+      pi,
+      ps
+    }
+
+    return params
   }
 }

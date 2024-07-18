@@ -195,7 +195,7 @@ function FilterList({
       callback(filterTypeTC(inputValue, optionFilter))
     }, 500)
   }
-
+  
   return (
     <div className={clsx('filter-box', show && 'show')}>
       <Formik

@@ -303,6 +303,10 @@ const MenuList = [
       {
         Title: 'Báo cáo sử dụng thẻ tiền',
         Href: hasRouter() + '/khac/bao-cao-su-dung-the-tien'
+      },
+      {
+        Title: 'Báo cáo khoá học',
+        Href: hasRouter() + '/khac/bao-cao-khoa-hoc'
       }
       // {
       //   Title: 'Lợi nhuận',
