@@ -82,13 +82,13 @@ function CourseReport(props) {
           setLoading(false)
         } else {
           const { Items, Total, PCount } = {
-            Items: data?.Items
-              ? data?.Items.map(x => ({ ...x, ID: x.Member.ID }))
+            Items: data?.result?.Items
+              ? data?.result?.Items.map(x => ({ ...x, ID: x.Member.ID }))
               : [],
-            Total: data?.Total || 0,
-            PCount: data?.Pcount || 0
+            Total: data?.result?.Total || 0,
+            PCount: data?.result?.Pcount || 0
           }
-          setTotal(data)
+          setTotal(data?.result)
           setPageCount(PCount)
           setListData(Items)
           setLoading(false)
@@ -189,12 +189,12 @@ function CourseReport(props) {
         }
       },
       {
-        key: 'Member.BirtDate',
+        key: 'Member.BirthDate',
         title: 'Ngày sinh',
-        dataKey: 'Member.BirtDate',
+        dataKey: 'Member.BirthDate',
         cellRenderer: ({ rowData }) =>
-          rowData?.Member?.BirtDate
-            ? moment(rowData.Member.BirtDate).format('DD/MM/YYYY')
+          rowData?.Member?.BirthDate
+            ? moment(rowData.Member.BirthDate).format('DD/MM/YYYY')
             : '',
         width: 180,
         sortable: false
