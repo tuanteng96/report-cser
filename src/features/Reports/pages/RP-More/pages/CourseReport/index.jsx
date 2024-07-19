@@ -271,23 +271,19 @@ function CourseReport(props) {
         }
       },
       {
-        key: 'CourseMember.MinDate',
+        key: 'MinDate',
         title: 'Ngày nhập học',
-        dataKey: 'CourseMember.MinDate',
+        dataKey: 'MinDate',
         cellRenderer: ({ rowData }) =>
-          rowData.CourseMember?.MinDate
-            ? moment(rowData.CourseMember.MinDate).format('DD-MM-YYYY')
-            : '',
+          rowData.MinDate ? moment(rowData.MinDate).format('DD-MM-YYYY') : '',
         width: 150,
         sortable: false
       },
       {
-        key: 'CourseMember.TotalCheck',
+        key: 'TotalCheck',
         title: 'Số buổi đã học',
-        dataKey: 'CourseMember.TotalCheck',
-        cellRenderer: ({ rowData }) =>
-          Number(rowData?.CourseMember?.TotalCheck || 0) +
-          Number(rowData?.CourseMember?.TotalBefore || 0),
+        dataKey: 'TotalCheck',
+        cellRenderer: ({ rowData }) => Number(rowData?.TotalCheck || 0),
         width: 150,
         sortable: false
       },
@@ -322,11 +318,11 @@ function CourseReport(props) {
     [filters, width]
   )
 
-//   const rowClassName = ({ rowData }) => {
-//     if (rowData?.IsExpired) {
-//       return 'bg-danger-o-90'
-//     }
-//   }
+  //   const rowClassName = ({ rowData }) => {
+  //     if (rowData?.IsExpired) {
+  //       return 'bg-danger-o-90'
+  //     }
+  //   }
 
   return (
     <div className="py-main">
