@@ -316,6 +316,34 @@ function FilterListAdvanced({
                       />
                     </div>
                   )}
+                  {'DebtFrom' in values && (
+                    <div className="mb-20px form-group">
+                      <label>Dự kiến thu nợ từ</label>
+                      <DatePicker
+                        onChange={date => {
+                          setFieldValue('DebtFrom', date, false)
+                        }}
+                        selected={values.DebtFrom}
+                        placeholderText="Chọn ngày"
+                        className="form-control"
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  )}
+                  {'DebtTo' in values && (
+                    <div className="mb-20px form-group">
+                      <label>Dự kiến thu nợ đến</label>
+                      <DatePicker
+                        onChange={date => {
+                          setFieldValue('DebtTo', date, false)
+                        }}
+                        selected={values.DebtTo}
+                        placeholderText="Chọn ngày"
+                        className="form-control"
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  )}
                   {'Date' in values && (
                     <div className="mb-20px form-group">
                       <label>Ngày</label>
@@ -330,6 +358,48 @@ function FilterListAdvanced({
                       />
                     </div>
                   )}
+                  <div className="form-group mb-20px">
+                    <label>Nợ</label>
+                    <Select
+                      isClearable
+                      name="no"
+                      placeholder="Chọn trạng thái"
+                      classNamePrefix="select"
+                      options={[
+                        {
+                          value: 'con',
+                          label: 'Còn nợ'
+                        },
+                        {
+                          value: 'khong',
+                          label: 'Hết nợ'
+                        }
+                      ]}
+                      className="select-control"
+                      value={[
+                        {
+                          value: 'con',
+                          label: 'Còn nợ'
+                        },
+                        {
+                          value: 'khong',
+                          label: 'Hết nợ'
+                        }
+                      ].filter(item => item.value === values?.no)}
+                      onChange={otp => {
+                        setFieldValue('no', otp ? otp.value : '')
+                      }}
+                      noOptionsMessage={() => 'Không có dữ liệu'}
+                      menuPortalTarget={document.body}
+                      menuPosition="fixed"
+                      styles={{
+                        menuPortal: base => ({
+                          ...base,
+                          zIndex: 9999
+                        })
+                      }}
+                    />
+                  </div>
                   {'AllServiceID' in values && (
                     <div className="form-group mb-20px">
                       <label>Dịch vụ</label>

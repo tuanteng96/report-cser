@@ -59,6 +59,16 @@ export const BrowserHelpers = {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null
     }
+    if ('DebtFrom' in filters) {
+      params.DebtFrom = filters.DebtFrom
+        ? moment(filters.DebtFrom).format('DD/MM/yyyy')
+        : null
+    }
+    if ('DebtTo' in filters) {
+      params.DebtTo = filters.DebtTo
+        ? moment(filters.DebtTo).format('DD/MM/yyyy')
+        : null
+    }
     if ('Date' in filters) {
       params.DateStart = filters.Date
         ? moment(filters.Date).format('DD/MM/yyyy')

@@ -40,7 +40,10 @@ function Sales(props) {
     MemberID: '', // ID khách hàng
     SourceName: '',
     ShipCode: '',
-    ShowsX: '2'
+    ShowsX: '2',
+    DebtFrom: '',
+    DebtTo: '',
+    no: ''
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -494,6 +497,15 @@ function Sales(props) {
         title: 'Còn nợ',
         dataKey: 'ConNo',
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ConNo),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'DayToPay',
+        title: 'Ngày hẹn thanh toán',
+        dataKey: 'DayToPay',
+        cellRenderer: ({ rowData }) =>
+          rowData.DayToPay ? moment(rowData.DayToPay).format('DD-MM-YYYY') : '',
         width: 180,
         sortable: false
       },
