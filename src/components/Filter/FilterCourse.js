@@ -229,6 +229,10 @@ function FilterCourse({
                           label: 'Chưa tốt nghiệp'
                         },
                         {
+                          value: 4,
+                          label: 'Chờ tốt nghiệp'
+                        },
+                        {
                           value: 1,
                           label: 'Đã tốt nghiệp'
                         },
@@ -242,6 +246,10 @@ function FilterCourse({
                         {
                           value: 2,
                           label: 'Chưa tốt nghiệp'
+                        },
+                        {
+                          value: 4,
+                          label: 'Chờ tốt nghiệp'
                         },
                         {
                           value: 1,

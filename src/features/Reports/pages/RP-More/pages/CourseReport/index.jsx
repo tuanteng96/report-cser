@@ -302,6 +302,9 @@ function CourseReport(props) {
             {Number(rowData?.CourseMember?.Status) === 3 && (
               <span className="text-danger fw-500">Đang tạm dừng</span>
             )}
+            {Number(rowData?.CourseMember?.Status) === 4 && (
+              <span className="text-danger fw-500">Chờ tạm dừng</span>
+            )}
           </>
         ),
         width: 150,
