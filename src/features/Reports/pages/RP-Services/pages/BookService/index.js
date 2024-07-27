@@ -268,6 +268,14 @@ function BookService(props) {
         sortable: false
       },
       {
+        key: 'OsUsedValue',
+        title: 'Giá trị sử dụng',
+        dataKey: 'OsUsedValue',
+        cellRenderer: ({ rowData }) => rowData.OsUsedValue,
+        width: 150,
+        sortable: false
+      },
+      {
         key: 'AtHome',
         title: 'Thực hiện',
         dataKey: 'AtHome',
