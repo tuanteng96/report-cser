@@ -16,6 +16,7 @@ import clsx from 'clsx'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import ModalViewMobile from './ModalViewMobile'
+import { PriceHelper } from 'src/helpers/PriceHelper'
 
 moment.locale('vi')
 
@@ -271,7 +272,7 @@ function BookService(props) {
         key: 'OsUsedValue',
         title: 'Giá trị sử dụng',
         dataKey: 'OsUsedValue',
-        cellRenderer: ({ rowData }) => rowData.OsUsedValue,
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.OsUsedValue),
         width: 150,
         sortable: false
       },
