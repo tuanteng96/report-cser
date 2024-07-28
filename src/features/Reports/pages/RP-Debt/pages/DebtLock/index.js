@@ -227,7 +227,13 @@ function DebtLock(props) {
           moment(rowData.ThoiGianKhoaNo).format('HH:mm DD/MM/YYYY'),
         width: 180,
         sortable: false,
-        className: 'flex-fill'
+      },
+      {
+        key: 'Desc',
+        title: 'Mô tả',
+        dataKey: 'Desc',
+        width: 250,
+        sortable: false,
       }
     ],
     [filters]

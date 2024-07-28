@@ -225,7 +225,13 @@ function Gift(props) {
           moment(rowData.ThoiGianTang).format('HH:mm DD/MM/YYYY'),
         width: 180,
         sortable: false,
-        className: 'flex-fill'
+      },
+      {
+        key: 'Desc',
+        title: 'Ghi chú',
+        dataKey: 'Desc',
+        width: 250,
+        sortable: false,
       }
     ],
     [filters]
