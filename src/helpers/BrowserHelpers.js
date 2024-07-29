@@ -557,6 +557,9 @@ export const BrowserHelpers = {
       ...params,
       filter: {
         ...params.filter,
+        Tags: params.filter.Tags
+          ? ',&' + params.filter.Tags.map(x => x.value).toString()
+          : '',
         DayToPay
       },
       filterCourse: {

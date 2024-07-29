@@ -13,7 +13,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 11375,
+        ID: 11384,
         Title: 'Cser Hà Nội'
       },
       {
@@ -443,7 +443,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjcyIiwibmJmIjoxNzIxMzgxMzIwLCJleHAiOjE4MDc3ODEzMjAsImlhdCI6MTcyMTM4MTMyMH0.HJ6a-Y7rsYEHrv4D5ADNHUduzSJVzf5v2VyRnrrPYlE'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjExMSIsIm5iZiI6MTcyMjE0OTEwOSwiZXhwIjoxODA4NTQ5MTA5LCJpYXQiOjE3MjIxNDkxMDl9.p5CZuP-oqE_J5_nObp8OLaayv0h4COaOBHNZpGhGxAI'
 }
 const Auth = createSlice({
   name: 'auth',

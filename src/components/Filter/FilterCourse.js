@@ -157,7 +157,7 @@ function FilterCourse({
                     />
                   </div>
                   <div className="form-group mb-20px">
-                    <label>Tags</label>
+                    <label>Tags Khoá học</label>
                     <SelectTagsCourse
                       isMulti
                       className="select-control"
@@ -170,6 +170,22 @@ function FilterCourse({
                         setFieldValue('filterCourse.Tags', otp, false)
                       }}
                       value={values.filterCourse.Tags}
+                    />
+                  </div>
+                  <div className="form-group mb-20px">
+                    <label>Tags học viên</label>
+                    <SelectTagsCourse
+                      isMulti
+                      className="select-control"
+                      closeMenuOnScroll={true}
+                      menuPlacement="top"
+                      isClearable={true}
+                      menuPosition="fixed"
+                      name="filter.Tags"
+                      onChange={otp => {
+                        setFieldValue('filter.Tags', otp, false)
+                      }}
+                      value={values.filter.Tags}
                     />
                   </div>
                   <div className="form-group mb-20px">

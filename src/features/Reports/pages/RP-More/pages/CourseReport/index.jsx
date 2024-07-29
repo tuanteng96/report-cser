@@ -32,6 +32,7 @@ function CourseReport(props) {
       DayToPay: [],
       FromDebt: '',
       ToDebt: '',
+      Tags: '',
       no: '' //no | khong
     },
     filterCourse: {
@@ -219,9 +220,20 @@ function CourseReport(props) {
       },
       {
         key: 'Course.Tags',
-        title: 'Tags',
+        title: 'Tags khoá học',
         dataKey: 'Course.Tags',
         cellRenderer: ({ rowData }) => rowData?.Course.Tags,
+        width: 250,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'CourseMember.Tags',
+        title: 'Tags học viên',
+        dataKey: 'CourseMember.Tags',
+        cellRenderer: ({ rowData }) => rowData?.CourseMember.Tags,
         width: 250,
         sortable: false,
         mobileOptions: {
