@@ -549,7 +549,13 @@ export const BrowserHelpers = {
         ? moment(params.filter.FromDebt).format('YYYY-MM-DD')
         : '',
       params.filter.ToDebt
-        ? moment(params.filter.ToDebt).format('YYYY-MM-DD')
+        ? moment(params.filter.ToDebt)
+            .set({
+              hour: '23',
+              minute: '59',
+              second: '59'
+            })
+            .format('YYYY-MM-DD HH:mm:ss')
         : ''
     ]
 
@@ -558,7 +564,13 @@ export const BrowserHelpers = {
         ? moment(params.filter.FromDayStatus).format('YYYY-MM-DD')
         : '',
       params.filter.ToDayStatus
-        ? moment(params.filter.ToDayStatus).format('YYYY-MM-DD')
+        ? moment(params.filter.ToDayStatus)
+            .set({
+              hour: '23',
+              minute: '59',
+              second: '59'
+            })
+            .format('YYYY-MM-DD HH:mm:ss')
         : ''
     ]
 
