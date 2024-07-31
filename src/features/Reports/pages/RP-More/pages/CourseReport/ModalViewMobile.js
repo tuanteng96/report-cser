@@ -151,6 +151,14 @@ function ModalViewMobile({ show, onHide, data, translateType }) {
                 )}
               </div>
             </div>
+            <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+              <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                Thời gian đổi trạng thái
+              </div>
+              <div className="fw-600 font-size-mdd w-60 text-end">
+                {data?.CourseMember?.DayStatus && data?.CourseMember?.DayStatus !== "1900-01-01T00:00:00" ? moment(data.CourseMember.DayStatus).format('HH:mm DD-MM-YYYY') : ''}
+              </div>
+            </div>
             <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
               <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
                 Ghi chú

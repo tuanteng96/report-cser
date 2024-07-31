@@ -30,6 +30,9 @@ function CourseReport(props) {
     filter: {
       Status: '',
       DayToPay: [],
+      DayStatus: [],
+      FromDayStatus: '',
+      ToDayStatus: '',
       FromDebt: '',
       ToDebt: '',
       Tags: '',
@@ -320,6 +323,15 @@ function CourseReport(props) {
           </>
         ),
         width: 150,
+        sortable: false
+      },
+      {
+        key: 'DayStatus',
+        title: 'Thời gian đổi trạng thái',
+        dataKey: 'DayStatus',
+        cellRenderer: ({ rowData }) =>
+          rowData?.CourseMember?.DayStatus && rowData?.CourseMember?.DayStatus !== "1900-01-01T00:00:00" ? moment(rowData.CourseMember.DayStatus).format('HH:mm DD-MM-YYYY') : '',
+        width: 200,
         sortable: false
       },
       {

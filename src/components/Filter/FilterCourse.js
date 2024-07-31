@@ -334,6 +334,32 @@ function FilterCourse({
                   </div>
 
                   <div className="mb-20px form-group">
+                    <label>Ngày thay đổi trạng thái từ</label>
+                    <DatePicker
+                      onChange={date => {
+                        setFieldValue('filter.FromDayStatus', date, false)
+                      }}
+                      selected={values.filter.FromDayStatus}
+                      placeholderText="Chọn ngày"
+                      className="form-control"
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </div>
+
+                  <div className="mb-20px form-group">
+                    <label>Ngày thay đổi trạng thái đến</label>
+                    <DatePicker
+                      onChange={date => {
+                        setFieldValue('filter.ToDayStatus', date, false)
+                      }}
+                      selected={values.filter.ToDayStatus}
+                      placeholderText="Chọn ngày"
+                      className="form-control"
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </div>
+
+                  <div className="mb-20px form-group">
                     <label>Ngày hẹn thu nợ từ</label>
                     <DatePicker
                       onChange={date => {

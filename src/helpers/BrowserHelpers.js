@@ -553,6 +553,15 @@ export const BrowserHelpers = {
         : ''
     ]
 
+    let DayStatus = [
+      params.filter.FromDayStatus
+        ? moment(params.filter.FromDayStatus).format('YYYY-MM-DD')
+        : '',
+      params.filter.ToDayStatus
+        ? moment(params.filter.ToDayStatus).format('YYYY-MM-DD')
+        : ''
+    ]
+
     params = {
       ...params,
       filter: {
@@ -560,7 +569,8 @@ export const BrowserHelpers = {
         Tags: params.filter.Tags
           ? ',&' + params.filter.Tags.map(x => x.value).toString()
           : '',
-        DayToPay
+        DayToPay,
+        DayStatus
       },
       filterCourse: {
         ...params.filterCourse,
