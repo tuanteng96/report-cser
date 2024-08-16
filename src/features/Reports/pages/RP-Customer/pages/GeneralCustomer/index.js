@@ -6,13 +6,12 @@ import ModalViewMobile from '../OverviewCustomer/ModalViewMobile'
 import { useWindowSize } from 'src/hooks/useWindowSize'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import _ from 'lodash'
-import FilterToggle from 'src/components/Filter/FilterToggle'
 import reportsApi from 'src/api/reports.api'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import Text from 'react-texty'
-
+import FilterListAdvancedMb from 'src/components/Filter/FilterListAdvancedMb'
 import moment from 'moment'
 import 'moment/locale/vi'
 
@@ -46,7 +45,9 @@ function GeneralCustomer(props) {
     StatusServices: '',
     TypeServices: '',
     DayFromServices: '', // Số buổi còn lại từ
-    DayToServices: '' // Số buổi còn lại đến
+    DayToServices: '', // Số buổi còn lại đến
+    MemberID: '',
+    ShowsX: '2'
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
@@ -55,6 +56,7 @@ function GeneralCustomer(props) {
   const [PageTotal, setPageTotal] = useState(0)
   const [TotalOl, setTotalOl] = useState(0)
   const [pageCount, setPageCount] = useState(0)
+  const [totalShows, setTotalShows] = useState({ TongSL: 0, TongThanhTien: 0 })
   const [isFilter, setIsFilter] = useState(false)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -86,17 +88,21 @@ function GeneralCustomer(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Members, Total, TotalOnline, PCount } = {
-            Members: data?.result?.Members || [],
-            Total: data?.result?.Total || 0,
-            TotalOnline: data?.result?.TotalOnline || 0,
-            PCount: data?.result?.PCount || 0
-          }
+          const { Members, Total, TotalOnline, PCount, TongSL, TongThanhTien } =
+            {
+              Members: data?.result?.Members || data?.result?.Items || [],
+              Total: data?.result?.Total || 0,
+              TotalOnline: data?.result?.TotalOnline || 0,
+              PCount: data?.result?.PCount || 0,
+              TongSL: data?.result?.TongSL || 0,
+              TongThanhTien: data?.result?.TongThanhTien || 0
+            }
           setListData(Members)
           setPageCount(PCount)
           setTotalOl(TotalOnline)
           setLoading(false)
           setPageTotal(Total)
+          setTotalShows({ TongSL, TongThanhTien })
           isFilter && setIsFilter(false)
           callback && callback()
           PermissionHelpers.HideErrorAccess()
@@ -151,8 +157,90 @@ function GeneralCustomer(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
-  const columns = useMemo(
-    () => [
+  const columns = useMemo(() => {
+    if (filters.ShowsX === '2') {
+      return [
+        {
+          key: 'index',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex }) =>
+            filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Ten_KH',
+          title: 'Tên khách hàng',
+          dataKey: 'Ten_KH',
+          width: 250,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'SDT',
+          title: 'Số điện thoại',
+          dataKey: 'SDT',
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'Ten_SP',
+          title: 'Tên sản phẩm',
+          dataKey: 'Ten_SP',
+          width: 250,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'SL',
+          title: 'Số lượng',
+          dataKey: 'SL',
+          width: 100,
+          sortable: false
+        },
+        {
+          key: 'Don_gia',
+          title: 'Đơn giá',
+          dataKey: 'Don_gia',
+          width: 200,
+          sortable: false,
+          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Don_gia)
+        },
+        {
+          key: 'Thanh_tien',
+          title: 'Thành tiền',
+          dataKey: 'Thanh_tien',
+          width: 200,
+          sortable: false,
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.Thanh_tien)
+        },
+        {
+          key: 'OrderID',
+          title: 'Đơn hàng ID',
+          dataKey: 'OrderID',
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'Co_so',
+          title: 'Cơ sở mua',
+          dataKey: 'Co_so',
+          width: 250,
+          sortable: false
+        }
+      ]
+    }
+    return [
       {
         key: 'index',
         title: 'STT',
@@ -331,9 +419,8 @@ function GeneralCustomer(props) {
         width: 120,
         sortable: false
       }
-    ],
-    [filters]
-  )
+    ]
+  }, [filters])
 
   return (
     <div className="py-main">
@@ -357,7 +444,7 @@ function GeneralCustomer(props) {
           <IconMenuMobile />
         </div>
       </div>
-      <FilterToggle
+      <FilterListAdvancedMb
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}
@@ -366,56 +453,122 @@ function GeneralCustomer(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        regimes={[
+          {
+            label: 'Nhanh',
+            value: '2'
+          },
+          {
+            label: 'Tiêu Chuẩn',
+            value: '0'
+          }
+        ]}
       />
       <div className="bg-white rounded">
         <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
-          {width > 1200 ? (
-            <div className="d-flex">
-              <div className="fw-500">
-                Tổng KH
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PageTotal}
-                </span>
-              </div>
-              <div className="fw-500 pl-20px">
-                KH đến từ Online
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {TotalOl}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="fw-500 d-flex align-items-center">
-              Tổng KH
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="bottom"
-                placement="bottom"
-                overlay={
-                  <Popover id={`popover-positioned-top`}>
-                    <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                        <span>Tổng KH</span>
-                        <span>{PriceHelper.formatVNDPositive(PageTotal)}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>KH đến từ Online</span>
-                        <span>{PriceHelper.formatVNDPositive(TotalOl)}</span>
-                      </div>
-                    </Popover.Body>
-                  </Popover>
-                }
-              >
-                <div className="d-flex justify-content-between align-items-center">
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVNDPositive(PageTotal)}
-                  </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+          {filters.ShowsX === '2' ? (
+            <>
+              {width > 1200 ? (
+                <div className="d-flex">
+                  <div className="fw-500">
+                    Tổng SL
+                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                      {totalShows.TongSL}
+                    </span>
+                  </div>
+                  <div className="fw-500 pl-20px">
+                    Tổng thành tiền
+                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                      {PriceHelper.formatVND(totalShows.TongThanhTien)}
+                    </span>
+                  </div>
                 </div>
-              </OverlayTrigger>
-            </div>
+              ) : (
+                <div className="fw-500 d-flex align-items-center">
+                  Tổng SL
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="bottom"
+                    placement="bottom"
+                    overlay={
+                      <Popover id={`popover-positioned-top`}>
+                        <Popover.Body className="p-0">
+                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                            <span>Tổng SL</span>
+                            <span>{totalShows.TongSL}</span>
+                          </div>
+                          <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                            <span>Tổng thành tiền</span>
+                            <span>
+                              {PriceHelper.formatVND(totalShows.TongThanhTien)}
+                            </span>
+                          </div>
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {totalShows.TongSL}
+                      </span>
+                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                    </div>
+                  </OverlayTrigger>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {width > 1200 ? (
+                <div className="d-flex">
+                  <div className="fw-500">
+                    Tổng KH
+                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                      {PageTotal}
+                    </span>
+                  </div>
+                  <div className="fw-500 pl-20px">
+                    KH đến từ Online
+                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                      {TotalOl}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="fw-500 d-flex align-items-center">
+                  Tổng KH
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="bottom"
+                    placement="bottom"
+                    overlay={
+                      <Popover id={`popover-positioned-top`}>
+                        <Popover.Body className="p-0">
+                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                            <span>Tổng KH</span>
+                            <span>{PageTotal}</span>
+                          </div>
+                          <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                            <span>KH đến từ Online</span>
+                            <span>{TotalOl}</span>
+                          </div>
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {PageTotal}
+                      </span>
+                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                    </div>
+                  </OverlayTrigger>
+                </div>
+              )}
+            </>
           )}
         </div>
         <div className="p-20px">
