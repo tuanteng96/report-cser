@@ -257,7 +257,7 @@ function PayrollStaff(props) {
       },
       {
         key: 'LUONG_CA',
-        title: 'Lương Ca',
+        title: 'Lương Tour',
         dataKey: 'LUONG_CA',
         cellRenderer: ({ rowData }) => (
           <div className="w-100 d-flex justify-content-between">
@@ -360,6 +360,19 @@ function PayrollStaff(props) {
         footerRenderer: () => (
           <span className="font-size-md font-number">
             {PriceHelper.formatVND(Total?.HOA_HONG)}
+          </span>
+        )
+      },
+      {
+        key: 'DOANH_SO_THANG',
+        title: 'Doanh số',
+        dataKey: 'DOANH_SO_THANG',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.DOANH_SO_THANG),
+        width: 150,
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(Total?.DOANH_SO_THANG)}
           </span>
         )
       },
