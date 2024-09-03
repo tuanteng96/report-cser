@@ -202,6 +202,8 @@ const reportsApi = {
     ),
   getCourse: data => http.post(`/api/v3/course@list`, JSON.stringify(data)),
   getListCourses: data =>
-    http.post(`${SubApi}/khac/bao-cao-khoa-hoc`, JSON.stringify(data))
+    http.post(`${SubApi}/khac/bao-cao-khoa-hoc`, JSON.stringify(data)),
+  getDetailPayroll: (data, params) =>
+    http.post(`/api/v3/r23detail@${params}`, JSON.stringify(data))
 }
 export default reportsApi

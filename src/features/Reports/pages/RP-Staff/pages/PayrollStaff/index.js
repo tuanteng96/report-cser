@@ -14,7 +14,362 @@ import 'moment/locale/vi'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import clsx from 'clsx'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 moment.locale('vi')
+
+const OverlayHH = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.Staff.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'HOA_HONG'
+      )
+      .then(({ data }) => {
+        setValues(data ? data.filter(x => x.Value > 0) : null)
+        setLoading(false)
+      })
+  }
+
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.Staff.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            Hoa hồng - {rowData?.Staff.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+        <div>{PriceHelper.formatVND(rowData.HOA_HONG)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
+
+const OverlayLT = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.Staff.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'LUONG_TOUR'
+      )
+      .then(({ data }) => {
+        setValues(data ? data.filter(x => x.Value > 0) : null)
+        setLoading(false)
+      })
+  }
+
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.Staff.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            Lương Tour - {rowData?.Staff.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+        <div>{PriceHelper.formatVND(rowData.LUONG_CA)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
+
+const OverlayDS = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.Staff.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'DOANH_SO'
+      )
+      .then(({ data }) => {
+        setValues(data ? data.filter(x => x.Value > 0) : null)
+        setLoading(false)
+      })
+  }
+
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.Staff.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            Doanh số - {rowData?.Staff.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+        <div>{PriceHelper.formatVND(rowData.DOANH_SO_THANG)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
+
+const OverlayKPI = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.Staff.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'DOANH_SO'
+      )
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          let newsKPIS = data ? data.filter(x => x.Value > 0) : null
+          if (newsKPIS && newsKPIS.length > 0) {
+            let result = []
+            for (let item of newsKPIS) {
+              let x = 0
+              let y = rowData.DOANH_SO_THANG > 30000000 ? 500000 : -500000
+              if (
+                15000000 <= rowData.DOANH_SO_THANG &&
+                rowData.DOANH_SO_THANG < 30000000
+              ) {
+                x = 5
+              } else if (
+                45000000 <= rowData.DOANH_SO_THANG &&
+                rowData.DOANH_SO_THANG < 60000000
+              ) {
+                x = 6
+              } else if (
+                60000000 <= rowData.DOANH_SO_THANG &&
+                rowData.DOANH_SO_THANG < 1000000000
+              ) {
+                x = 7
+              }
+              result.push({
+                ...item,
+                x,
+                y
+              })
+            }
+            setValues(result)
+          }
+        }
+        setLoading(false)
+      })
+  }
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.Staff.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            KPI - {rowData?.Staff.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <span>Doanh số cơ sở chính</span>
+                  <span>
+                    {PriceHelper.formatVND(
+                      rowData.DOANH_SO_THANG >= 30000000 ? 500000 : -500000
+                    )}
+                  </span>
+                </div>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>
+                        {PriceHelper.formatVNDPositive(
+                          (item.Value * item.x) / 100
+                        )}
+                      </span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+        <div>{PriceHelper.formatVND(rowData.KPI_Hoa_hong)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
 
 function PayrollStaff(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
@@ -66,7 +421,9 @@ function PayrollStaff(props) {
           setLoading(false)
         } else {
           const { Items, Total, PCount, SumTotal } = {
-            Items: data.result?.Items || [],
+            Items: data.result?.Items
+              ? data.result?.Items.map(x => ({ ...x, IDs: x?.Staff?.ID }))
+              : [],
             Total: data.result?.Total || 0,
             PCount: data?.result?.PCount || 0,
             SumTotal: data.result?.Sum || {}
@@ -259,39 +616,12 @@ function PayrollStaff(props) {
         key: 'LUONG_CA',
         title: 'Lương Tour',
         dataKey: 'LUONG_CA',
-        cellRenderer: ({ rowData }) => (
-          <div className="w-100 d-flex justify-content-between">
-            <span>{PriceHelper.formatVND(rowData.LUONG_CA)}</span>
-            {/* <OverlayTrigger
-              rootClose
-              trigger="click"
-              key="bottom"
-              placement="top"
-              overlay={
-                <Popover id={`popover-positioned-top`}>
-                  <Popover.Body className="p-0">
-                    <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                      <span>Lương ca cài đặt</span>
-                      <span>
-                        {PriceHelper.formatVND(rowData.LUONG_CA_CAI_DAT)}
-                      </span>
-                    </div>
-                    <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                      <span>Thưởng khách hàng chọn</span>
-                      <span>
-                        {PriceHelper.formatVND(rowData.LUONG_CA_EXTRA)}
-                      </span>
-                    </div>
-                  </Popover.Body>
-                </Popover>
-              }
-            >
-              <div>
-                <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
-              </div>
-            </OverlayTrigger> */}
-          </div>
-        ),
+        cellRenderer: ({ rowData }) =>
+          window?.top?.GlobalConfig?.Admin?.chi_tiet_cong ? (
+            <OverlayLT rowData={rowData} filters={filters} />
+          ) : (
+            PriceHelper.formatVND(rowData.LUONG_CA)
+          ),
         width: 180,
         sortable: false,
         footerRenderer: () => (
@@ -354,7 +684,13 @@ function PayrollStaff(props) {
         key: 'HOA_HONG',
         title: 'Hoa Hồng',
         dataKey: 'HOA_HONG',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.HOA_HONG),
+        cellRenderer: ({ rowData }) =>
+          window?.top?.GlobalConfig?.Admin?.chi_tiet_cong ? (
+            <OverlayHH rowData={rowData} filters={filters} />
+          ) : (
+            PriceHelper.formatVND(rowData.HOA_HONG)
+          ),
+
         width: 150,
         sortable: false,
         footerRenderer: () => (
@@ -367,7 +703,12 @@ function PayrollStaff(props) {
         key: 'DOANH_SO_THANG',
         title: 'Doanh số',
         dataKey: 'DOANH_SO_THANG',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.DOANH_SO_THANG),
+        cellRenderer: ({ rowData }) =>
+          window?.top?.GlobalConfig?.Admin?.chi_tiet_cong ? (
+            <OverlayDS rowData={rowData} filters={filters} />
+          ) : (
+            PriceHelper.formatVND(rowData.DOANH_SO_THANG)
+          ),
         width: 150,
         sortable: false,
         footerRenderer: () => (
@@ -381,7 +722,11 @@ function PayrollStaff(props) {
         title: 'KPI',
         dataKey: 'KPI_Hoa_hong',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.KPI_Hoa_hong),
+          window?.top?.GlobalConfig?.Admin?.chi_tiet_cong ? (
+            <OverlayKPI rowData={rowData} filters={filters} />
+          ) : (
+            PriceHelper.formatVND(rowData?.KPI_Hoa_hong)
+          ),
         width: 150,
         sortable: false,
         footerRenderer: () => (
@@ -569,7 +914,7 @@ function PayrollStaff(props) {
         </div>
         <div className="p-20px">
           <ReactTableV7
-            rowKey="Staff.ID"
+            rowKey="IDs"
             filters={filters}
             columns={columns}
             data={ListData}
