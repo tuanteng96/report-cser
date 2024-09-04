@@ -23,7 +23,7 @@ const OverlayHH = ({ rowData, filters }) => {
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     show && getDetail()
-    // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show])
 
   const getDetail = () => {
@@ -95,13 +95,91 @@ const OverlayHH = ({ rowData, filters }) => {
   )
 }
 
+const OverlayLCS = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.Staff.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'LUONG_CHINH_SACH'
+      )
+      .then(({ data }) => {
+        setValues(data ? data.filter(x => x.Value > 0) : null)
+        setLoading(false)
+      })
+  }
+
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.Staff.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            Lương chính sách - {rowData?.Staff.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+        <div>{PriceHelper.formatVND(rowData.LUONG_CHAM_CONG)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
+
 const OverlayLT = ({ rowData, filters }) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     show && getDetail()
-    // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show])
 
   const getDetail = () => {
@@ -179,7 +257,7 @@ const OverlayDS = ({ rowData, filters }) => {
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     show && getDetail()
-    // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show])
 
   const getDetail = () => {
@@ -257,7 +335,7 @@ const OverlayKPI = ({ rowData, filters }) => {
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     show && getDetail()
-    // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show])
 
   const getDetail = () => {
@@ -529,8 +607,9 @@ function PayrollStaff(props) {
         key: 'LUONG_CHAM_CONG',
         title: 'Lương chính sách',
         dataKey: 'LUONG_CHAM_CONG',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.LUONG_CHAM_CONG),
+        cellRenderer: ({ rowData }) => (
+          <OverlayLCS rowData={rowData} filters={filters} />
+        ),
         footerRenderer: () => (
           <span className="text-success font-size-md font-number">
             {PriceHelper.formatVND(Total?.LUONG_CHAM_CONG)}
@@ -616,12 +695,9 @@ function PayrollStaff(props) {
         key: 'LUONG_CA',
         title: 'Lương Tour',
         dataKey: 'LUONG_CA',
-        cellRenderer: ({ rowData }) =>
-          window?.top?.GlobalConfig?.Admin?.chi_tiet_cong ? (
-            <OverlayLT rowData={rowData} filters={filters} />
-          ) : (
-            PriceHelper.formatVND(rowData.LUONG_CA)
-          ),
+        cellRenderer: ({ rowData }) => (
+          <OverlayLT rowData={rowData} filters={filters} />
+        ),
         width: 180,
         sortable: false,
         footerRenderer: () => (
@@ -684,12 +760,9 @@ function PayrollStaff(props) {
         key: 'HOA_HONG',
         title: 'Hoa Hồng',
         dataKey: 'HOA_HONG',
-        cellRenderer: ({ rowData }) =>
-          window?.top?.GlobalConfig?.Admin?.chi_tiet_cong ? (
-            <OverlayHH rowData={rowData} filters={filters} />
-          ) : (
-            PriceHelper.formatVND(rowData.HOA_HONG)
-          ),
+        cellRenderer: ({ rowData }) => (
+          <OverlayHH rowData={rowData} filters={filters} />
+        ),
 
         width: 150,
         sortable: false,
@@ -703,12 +776,9 @@ function PayrollStaff(props) {
         key: 'DOANH_SO_THANG',
         title: 'Doanh số',
         dataKey: 'DOANH_SO_THANG',
-        cellRenderer: ({ rowData }) =>
-          window?.top?.GlobalConfig?.Admin?.chi_tiet_cong ? (
-            <OverlayDS rowData={rowData} filters={filters} />
-          ) : (
-            PriceHelper.formatVND(rowData.DOANH_SO_THANG)
-          ),
+        cellRenderer: ({ rowData }) => (
+          <OverlayDS rowData={rowData} filters={filters} />
+        ),
         width: 150,
         sortable: false,
         footerRenderer: () => (
