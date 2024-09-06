@@ -1,6 +1,5 @@
 export const JsonFilter = {
-  VoucherList: [
-    {
+  VoucherList: [{
       value: 0,
       label: 'Không có Voucher'
     },
@@ -10,8 +9,7 @@ export const JsonFilter = {
     }
   ],
 
-  PaymentList: [
-    {
+  PaymentList: [{
       value: 0,
       label: 'Còn nợ'
     },
@@ -21,8 +19,7 @@ export const JsonFilter = {
     }
   ],
 
-  IsMemberList: [
-    {
+  IsMemberList: [{
       value: 0,
       label: 'Khách cũ'
     },
@@ -32,8 +29,7 @@ export const JsonFilter = {
     }
   ],
 
-  TopTypeList: [
-    {
+  TopTypeList: [{
       value: 1,
       label: 'Sản phẩm, NVL'
     },
@@ -46,8 +42,7 @@ export const JsonFilter = {
       label: 'Thẻ tiền'
     }
   ],
-  PaymentMethodsList: [
-    {
+  PaymentMethodsList: [{
       value: 'TM',
       label: 'Tiền mặt'
     },
@@ -61,8 +56,7 @@ export const JsonFilter = {
     }
   ],
 
-  TypeTCList: [
-    {
+  TypeTCList: [{
       value: 0,
       label: 'Thu'
     },
@@ -72,8 +66,7 @@ export const JsonFilter = {
     }
   ],
 
-  TagsTCList: [
-    {
+  TagsTCList: [{
       value: 'THU',
       label: 'Thu',
       type: 0
@@ -99,6 +92,11 @@ export const JsonFilter = {
       type: 0
     },
     {
+      value: 'THU_XUAT_KHO',
+      label: 'Thu xuất kho',
+      type: 0
+    },
+    {
       value: 'CHI',
       label: 'Chi',
       type: 1
@@ -114,6 +112,11 @@ export const JsonFilter = {
       type: 1
     },
     {
+      value: 'CHI_NHAP_KHO',
+      label: 'Chi nhập kho',
+      type: 1
+    },
+    {
       value: 'CHI_GIU_LUONG',
       label: 'Trả tiền giữ lương',
       type: 1
@@ -124,8 +127,7 @@ export const JsonFilter = {
       type: 1
     }
   ],
-  TypeCNList: [
-    {
+  TypeCNList: [{
       value: 'SP',
       label: 'Sản phẩm'
     },
@@ -146,8 +148,7 @@ export const JsonFilter = {
       label: 'Thẻ tiền'
     }
   ],
-  TypeCNHng: [
-    {
+  TypeCNHng: [{
       value: 'san_pham',
       label: 'Sản phẩm'
     },
@@ -168,8 +169,7 @@ export const JsonFilter = {
       label: 'Thẻ tiền'
     }
   ],
-  TypeCNList2: [
-    {
+  TypeCNList2: [{
       value: 'SP',
       label: 'Sản phẩm'
     },
@@ -178,8 +178,7 @@ export const JsonFilter = {
       label: 'Dịch vụ'
     }
   ],
-  CategoriesTKList: [
-    {
+  CategoriesTKList: [{
       value: 0,
       label: 'Sản phẩm'
     },
@@ -188,8 +187,7 @@ export const JsonFilter = {
       label: 'Nguyên vật liệu'
     }
   ],
-  TagWLList: [
-    {
+  TagWLList: [{
       value: 'NAP_QUY',
       label: 'Nạp quỹ'
     },
@@ -251,8 +249,7 @@ export const JsonFilter = {
       label: 'Thanh toán đơn hàng'
     }
   ],
-  TypeTTList: [
-    {
+  TypeTTList: [{
       value: 'MUA_THE_TIEN',
       label: 'Mua thẻ tiền'
     },
@@ -269,8 +266,7 @@ export const JsonFilter = {
       label: 'Hoàn thẻ tiền trả hàng'
     }
   ],
-  StatusTTList: [
-    {
+  StatusTTList: [{
       value: 'KHOA',
       label: 'Khóa'
     },
@@ -283,8 +279,7 @@ export const JsonFilter = {
       label: 'Đang sử dụng'
     }
   ],
-  StatusWalletList: [
-    {
+  StatusWalletList: [{
       value: 'CON',
       label: 'Còn'
     },
@@ -293,8 +288,7 @@ export const JsonFilter = {
       label: 'Hết'
     }
   ],
-  TypeServiceMemberList: [
-    {
+  TypeServiceMemberList: [{
       value: 'MUA_CHUA_SU_DUNG',
       label: 'Mua nhưng chưa sử dụng'
     },
@@ -311,8 +305,7 @@ export const JsonFilter = {
       label: 'Chỉ sử dụng buổi lẻ'
     }
   ],
-  StatusServiceMemberList: [
-    {
+  StatusServiceMemberList: [{
       value: 'CON_HAN',
       label: 'Hiện còn'
     },
@@ -325,8 +318,7 @@ export const JsonFilter = {
       label: 'Thẻ bảo hành'
     }
   ],
-  StarRatingList: [
-    {
+  StarRatingList: [{
       value: 0,
       label: 'Chưa đánh giá'
     },
@@ -351,8 +343,7 @@ export const JsonFilter = {
       label: '5 Sao'
     }
   ],
-  FrequencyList: [
-    {
+  FrequencyList: [{
       value: 'NGAY',
       label: 'Ngày'
     },
@@ -373,8 +364,7 @@ export const JsonFilter = {
       label: 'Khác'
     }
   ],
-  BrowserTypeList: [
-    {
+  BrowserTypeList: [{
       value: 'android',
       label: 'Android'
     },
@@ -383,8 +373,7 @@ export const JsonFilter = {
       label: 'IOS'
     }
   ],
-  BrowserStatusList: [
-    {
+  BrowserStatusList: [{
       value: 0,
       label: 'Offline'
     },
@@ -393,8 +382,7 @@ export const JsonFilter = {
       label: 'Online'
     }
   ],
-  TypeNVList: [
-    {
+  TypeNVList: [{
       value: 'Đơn hàng thay đổi khách hàng',
       label: 'Đơn hàng thay đổi khách hàng'
     },
@@ -439,8 +427,7 @@ export const JsonFilter = {
       label: 'Thay đổi cơ sở'
     }
   ],
-  TypeNVList2: [
-    {
+  TypeNVList2: [{
       value: 'Kết thúc dịch vụ',
       label: 'Kết thúc dịch vụ'
     },
@@ -449,8 +436,7 @@ export const JsonFilter = {
       label: 'Xóa buổi'
     }
   ],
-  ViewTypeList: [
-    {
+  ViewTypeList: [{
       value: 'DON_HANG',
       label: 'Đơn hàng'
     },
@@ -467,8 +453,7 @@ export const JsonFilter = {
       label: 'Nghiệp vụ khác'
     }
   ],
-  TypeInventory: [
-    {
+  TypeInventory: [{
       label: 'Sử dụng hết',
       value: 'Het'
     },
@@ -477,8 +462,7 @@ export const JsonFilter = {
       value: 'Con'
     }
   ],
-  ServiceStatusBook: [
-    {
+  ServiceStatusBook: [{
       value: 'XAC_NHAN',
       label: 'Xác nhận'
     },
@@ -503,8 +487,7 @@ export const JsonFilter = {
       label: 'Từ chối'
     }
   ],
-  ServiceTypeBook: [
-    {
+  ServiceTypeBook: [{
       value: 'KHACH_CU',
       label: 'Khách cũ'
     },
@@ -517,8 +500,7 @@ export const JsonFilter = {
       label: 'Khách mới'
     }
   ],
-  StatusCheckedBook: [
-    {
+  StatusCheckedBook: [{
       value: 'CHUA_CHON',
       label: 'Chưa chọn'
     },
@@ -527,8 +509,7 @@ export const JsonFilter = {
       label: 'Đã chọn'
     }
   ],
-  StatusAtBook: [
-    {
+  StatusAtBook: [{
       value: 'TAI_NHA',
       label: 'Tại nhà'
     },
@@ -537,8 +518,7 @@ export const JsonFilter = {
       label: 'Tại spa'
     }
   ],
-  TimeToRealList: [
-    {
+  TimeToRealList: [{
       value: 0,
       label: 'Hiện tại'
     },
