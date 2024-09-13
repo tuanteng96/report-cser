@@ -480,11 +480,11 @@ export const JsonFilter = {
     },
     {
       value: 'KHACH_DEN',
-      label: 'Khách đến'
+      label: 'Khách có đến'
     },
     {
       value: 'TU_CHOI',
-      label: 'Từ chối'
+      label: 'Khách huỷ lịch'
     }
   ],
   ServiceTypeBook: [{

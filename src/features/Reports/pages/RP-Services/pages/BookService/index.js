@@ -40,12 +40,12 @@ const ListStatus = [
   },
   {
     value: 'TU_CHOI',
-    label: 'Từ chối đặt lịch',
+    label: 'Khách hủy lịch',
     className: 'text-danger'
   },
   {
     value: 'KHACH_DEN',
-    label: 'Khách đến',
+    label: 'Khách có đến',
     className: 'text-success'
   }
 ]
@@ -402,7 +402,7 @@ function BookService(props) {
                       <span>{SumTotal?.CHUA_XAC_NHAN || 0}</span>
                     </div>
                     <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                      <span>Từ chối đặt lịch</span>
+                      <span>Khách huỷ lịch</span>
                       <span>{SumTotal?.TU_CHOI || 0}</span>
                     </div>
                   </Popover.Body>
@@ -451,7 +451,7 @@ function BookService(props) {
                 </span>
               </div>
               <div className="fw-500">
-                Từ chối đặt lịch
+                Khách huỷ lịch
                 <span className="font-size-xl fw-600 text-danger pl-5px font-number">
                   {SumTotal?.TU_CHOI || 0}
                 </span>
