@@ -443,19 +443,19 @@ function CourseReport(props) {
                       <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                         <span>Tổng học viên</span>
                         <span>
-                          {PriceHelper.formatVNDPositive(Total.TongThu)}
+                          {PriceHelper.formatVNDPositive(Total.Total)}
                         </span>
                       </div>
                       <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                         <span>Tổng tiền</span>
                         <span>
-                          {PriceHelper.formatVNDPositive(Total.TongGiaTri)}
+                          {PriceHelper.formatVNDPositive(Total.TongTien)}
                         </span>
                       </div>
                       <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
                         <span>Tổng thanh toán</span>
                         <span>
-                          {PriceHelper.formatVNDPositive(Total.TongChi)}
+                          {PriceHelper.formatVNDPositive(Total.TongThanhToan)}
                         </span>
                       </div>
                     </Popover.Body>
@@ -463,10 +463,10 @@ function CourseReport(props) {
                 }
               >
                 <div className="d-flex justify-content-between align-items-center">
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVNDPositive(Total.ConLai)}
+                  <span className="font-size-xl fw-600 text-danger pl-5px font-number">
+                    {PriceHelper.formatVNDPositive(Total.TongNo)}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>
