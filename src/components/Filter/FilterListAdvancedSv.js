@@ -383,6 +383,21 @@ function FilterListAdvancedSv({
                           />
                         </div>
                       )}
+                      {'TransfUserID' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Nhân viên chuyển ca</label>
+                          <AsyncSelectStaffs
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="TransfUserID"
+                            onChange={otp => {
+                              setFieldValue('TransfUserID', otp, false)
+                            }}
+                            value={values.TransfUserID}
+                            StocksList={StocksList}
+                          />
+                        </div>
+                      )}
                     </>
                   )}
                   {'TenDichvu' in values && (
@@ -835,6 +850,7 @@ function FilterListAdvancedSv({
                       />
                     </div>
                   )}
+
                   {'UserID' in values && (
                     <div className="form-group mb-20px">
                       <label>Nhân viên đặt lịch</label>

@@ -72,6 +72,7 @@ function OverviewService(props) {
     IsMemberSet: '',
     CardServiceID: '',
     ServiceOriginalID: '',
+    TransfUserID: '',
     ShowsX: '2'
   })
   const [dataChart, setDataChart] = useState(objData)
@@ -428,6 +429,14 @@ function OverviewService(props) {
             : 'Không có',
         width: 200,
         sortable: false
+      },
+      {
+        key: 'UserFullName',
+        title: 'Nhân viên chuyển ca',
+        dataKey: 'UserFullName',
+        width: 250,
+        sortable: false,
+        hidden: filters.ShowsX !== '2'
       },
       {
         key: 'StaffSalaries',

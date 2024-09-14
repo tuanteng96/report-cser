@@ -344,6 +344,10 @@ export const BrowserHelpers = {
         ? filters.ServiceOriginalID.map(item => item.value).join(',')
         : ''
     }
+    if ('TransfUserID' in filters) {
+      params.UserID = filters?.TransfUserID?.value || ''
+      delete params.TransfUserID
+    }
     return params
   },
   getRequestParamsToggle: (filters, config) => {
