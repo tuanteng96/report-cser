@@ -73,6 +73,13 @@ function FilterCourse({
               .split(',')
               .map(o => Number(o))
             newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
+            if (
+              Stocks &&
+              Stocks.length > 0 &&
+              StocksPermission.length === Stocks.length
+            ) {
+              newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+            }
           } else {
             if (isWarehouse) {
               newStocks = [
