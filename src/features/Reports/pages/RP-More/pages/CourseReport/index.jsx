@@ -8,8 +8,6 @@ import ModalViewMobile from './ModalViewMobile'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWindowSize } from 'src/hooks/useWindowSize'
-import Text from 'react-texty'
-import clsx from 'clsx'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import FilterCourse from 'src/components/Filter/FilterCourse'
@@ -36,12 +34,13 @@ function CourseReport(props) {
       FromDebt: '',
       ToDebt: '',
       Tags: '',
-      no: '' //no | khong
+      no: '', //no | khong
+      Places: ""
     },
     filterCourse: {
       StockID: CrStockID, // coso
       ID: '',
-      Tags: ''
+      Tags: '',
     },
     order: {
       CreateDate: 'desc'

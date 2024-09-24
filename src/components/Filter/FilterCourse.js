@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom'
 import { useApp } from 'src/app/App'
 import { SelectTagsCourse } from '../Selects/SelectTagsCourse'
 import { SelectCourse } from '../Selects/SelectCourse'
+import { SelectDormitoryCourse } from '../Selects/SelectDormitoryCourse'
 
 registerLocale('vi', vi)
 
@@ -73,13 +74,6 @@ function FilterCourse({
               .split(',')
               .map(o => Number(o))
             newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
-            if (
-              Stocks &&
-              Stocks.length > 0 &&
-              StocksPermission.length === Stocks.length
-            ) {
-              newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
-            }
           } else {
             if (isWarehouse) {
               newStocks = [
@@ -193,6 +187,22 @@ function FilterCourse({
                         setFieldValue('filter.Tags', otp, false)
                       }}
                       value={values.filter.Tags}
+                    />
+                  </div>
+                  <div className="form-group mb-20px">
+                    <label>Ký túc xá</label>
+                    <SelectDormitoryCourse
+                      placeholder="Chọn ký túc xá"
+                      className="select-control"
+                      closeMenuOnScroll={true}
+                      menuPlacement="top"
+                      isClearable={true}
+                      menuPosition="fixed"
+                      name="filter.Places"
+                      onChange={otp => {
+                        setFieldValue('filter.Places', otp, false)
+                      }}
+                      value={values.filter.Places}
                     />
                   </div>
                   <div className="form-group mb-20px">

@@ -344,10 +344,6 @@ export const BrowserHelpers = {
         ? filters.ServiceOriginalID.map(item => item.value).join(',')
         : ''
     }
-    if ('TransfUserID' in filters) {
-      params.UserID = filters?.TransfUserID?.value || ''
-      delete params.TransfUserID
-    }
     return params
   },
   getRequestParamsToggle: (filters, config) => {
@@ -586,7 +582,8 @@ export const BrowserHelpers = {
           ? ',&' + params.filter.Tags.map(x => x.value).toString()
           : '',
         DayToPay,
-        DayStatus
+        DayStatus,
+        Places: params.filter?.Places?.value || ''
       },
       filterCourse: {
         ...params.filterCourse,
