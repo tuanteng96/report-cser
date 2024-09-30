@@ -127,6 +127,12 @@ const reportsApi = {
     )
   },
   getListReEx: data => {
+    if (Number(data?.ShowsX) === 1) {
+      return http.post(
+        `${SubApi}/bao-cao-thu-chi/danh-sach-2`,
+        JSON.stringify(data)
+      )
+    }
     return http.post(
       `${SubApi}/bao-cao-thu-chi/danh-sach`,
       JSON.stringify(data)

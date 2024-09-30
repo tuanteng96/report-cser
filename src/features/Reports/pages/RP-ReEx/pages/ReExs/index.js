@@ -17,6 +17,7 @@ import moment from 'moment'
 import 'moment/locale/vi'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import Chart2Column from 'src/features/Reports/components/Chart2Column'
+import FilterListAdvancedTC from 'src/components/Filter/FilterListAdvancedTC'
 
 moment.locale('vi')
 
@@ -64,7 +65,8 @@ function ReExs(props) {
     PaymentMethods: '', // TM, CK, QT
     TypeTC: '', // Thu hay chi
     TagsTC: '', // ID nhân viên
-    CustomType: ''
+    CustomType: '',
+    ShowsX: '2'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -334,8 +336,10 @@ function ReExs(props) {
         title: 'Nội dung',
         dataKey: 'Content',
         width: 350,
-        sortable: false
+        sortable: false,
+        hidden: Number(filters.ShowsX) === 1
       },
+
       {
         key: 'StockName',
         title: 'Cơ sở',
@@ -349,6 +353,86 @@ function ReExs(props) {
         dataKey: 'Member.FullName',
         width: 250,
         sortable: false
+      },
+      {
+        key: 'Ngan_Hang',
+        title: 'Ngân hàng',
+        dataKey: 'Ngan_Hang',
+        width: 250,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Dien_Thoai',
+        title: 'Điện thoại',
+        dataKey: 'Dien_Thoai',
+        width: 180,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'OrderID',
+        title: 'ID đơn hàng',
+        dataKey: 'OrderID',
+        width: 100,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Gia_tri_Don_hang',
+        title: 'Giá trị đơn hàng',
+        dataKey: 'Gia_tri_Don_hang',
+        width: 180,
+        sortable: false,
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVNDPositive(rowData.Gia_tri_Don_hang),
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'SPDV',
+        title: 'SP/DV',
+        dataKey: 'SPDV',
+        width: 350,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Con_no',
+        title: 'Còn nợ',
+        dataKey: 'Con_no',
+        width: 180,
+        sortable: false,
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVNDPositive(rowData.Con_no),
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Ngay_TT_Du_kien',
+        title: 'Ngày dự kiến TT',
+        dataKey: 'Ngay_TT_Du_kien',
+        width: 180,
+        sortable: false,
+        cellRenderer: ({ rowData }) =>
+          rowData?.Ngay_TT_Du_kien
+            ? moment(rowData?.Ngay_TT_Du_kien).format('DD-MM-YYYY')
+            : '',
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Ghi_chu',
+        title: 'Ghi chú đơn',
+        dataKey: 'Ghi_chu',
+        width: 300,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Doanh_So',
+        title: 'Doanh số',
+        dataKey: 'Doanh_So',
+        width: 350,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
       },
       {
         key: 'Staff.FullName',
@@ -416,7 +500,7 @@ function ReExs(props) {
           <IconMenuMobile />
         </div>
       </div>
-      <FilterList
+      <FilterListAdvancedTC
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}
