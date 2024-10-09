@@ -431,6 +431,14 @@ function OverviewService(props) {
         sortable: false
       },
       {
+        key: 'ProServiceType',
+        title: 'Nhóm dịch vụ',
+        dataKey: 'ProServiceType',
+        width: 200,
+        sortable: false,
+        hidden: filters.ShowsX !== '0'
+      },
+      {
         key: 'UserFullName',
         title: 'Nhân viên chuyển ca',
         dataKey: 'UserFullName',

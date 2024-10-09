@@ -427,6 +427,14 @@ function ReExs(props) {
         hidden: Number(filters.ShowsX) !== 1
       },
       {
+        key: 'Hoa_Hong',
+        title: 'Hoa hồng',
+        dataKey: 'Hoa_Hong',
+        width: 350,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
         key: 'Doanh_So',
         title: 'Doanh số',
         dataKey: 'Doanh_So',
