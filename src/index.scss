@@ -5,3 +5,7 @@
 @import '~sweetalert2/src/sweetalert2.scss';
 @import '~react-texty/styles.css';
 @import './_assets/sass/style.react.scss';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -9,6 +9,7 @@ import store from './redux/store'
 import * as _redux from './api/configs'
 import http from './api/configs/http'
 import { SplashScreenProvider } from './layout/_core/SplashScreen'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 /**
  * Base URL of the website.
@@ -19,14 +20,24 @@ const { PUBLIC_URL } = process.env
 
 _redux.setupAxios(http, store)
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false
+    }
+  }
+})
+
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
-    <SplashScreenProvider>
-      <BrowserRouter>
-        <App store={store} basename={PUBLIC_URL} />
-      </BrowserRouter>
-    </SplashScreenProvider>
+    <QueryClientProvider client={queryClient}>
+      <SplashScreenProvider>
+        <BrowserRouter>
+          <App store={store} basename={PUBLIC_URL} />
+        </BrowserRouter>
+      </SplashScreenProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 )
 

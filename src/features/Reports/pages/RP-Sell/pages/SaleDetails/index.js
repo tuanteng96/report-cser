@@ -16,6 +16,7 @@ import { JsonFilter } from 'src/Json/JsonFilter'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import PickerView from './PickerView'
 
 moment.locale('vi')
 
@@ -51,7 +52,11 @@ function SaleDetails(props) {
   })
   const [Total, setTotal] = useState({
     SL: 0,
-    DS: 0
+    DS: 0,
+    TongThanhToan: 0,
+    TongThanhToanSP_NVL: 0,
+    TongThanhToanDV_PP: 0,
+    TongThanhToanTT: 0
   })
   const [heighElm, setHeightElm] = useState({
     Content: 'calc(100% - 55px)',
@@ -123,12 +128,7 @@ function SaleDetails(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          setTotal(prevState => ({
-            ...prevState,
-            DS: ArrayHeplers.totalKeyArray(data?.result, 'SumTopay'),
-            SL: ArrayHeplers.totalKeyArray(data?.result, 'SumQTy')
-          }))
-          setDataResult({
+          let obj = {
             SP_NVL:
               (data?.result &&
                 data?.result.filter(item => item.Format === 1)) ||
@@ -141,7 +141,41 @@ function SaleDetails(props) {
               (data?.result &&
                 data?.result.filter(item => item.Format === 3)) ||
               []
-          })
+          }
+
+          setTotal(prevState => ({
+            ...prevState,
+            DS: ArrayHeplers.totalKeyArray(data?.result, 'SumTopay'),
+            SL: ArrayHeplers.totalKeyArray(data?.result, 'SumQTy'),
+            TongThanhToan: ArrayHeplers.totalKeyArray(
+              data?.result
+                ? data?.result.map(x => ({
+                    ThanhToan: x.CK + x.QT + x.TM + x.TT + x.Vi
+                  }))
+                : [],
+              'ThanhToan'
+            ),
+            TongThanhToanSP_NVL: ArrayHeplers.totalKeyArray(
+              obj.SP_NVL.map(x => ({
+                ThanhToan: x.CK + x.QT + x.TM + x.TT + x.Vi
+              })),
+              'ThanhToan'
+            ),
+            TongThanhToanDV_PP: ArrayHeplers.totalKeyArray(
+              obj.DV_PP.map(x => ({
+                ThanhToan: x.CK + x.QT + x.TM + x.TT + x.Vi
+              })),
+              'ThanhToan'
+            ),
+            TongThanhToanTT: ArrayHeplers.totalKeyArray(
+              obj.TT.map(x => ({
+                ThanhToan: x.CK + x.QT + x.TM + x.TT + x.Vi
+              })),
+              'ThanhToan'
+            )
+          }))
+
+          setDataResult(obj)
           setLoading(false)
           isFilter && setIsFilter(false)
           callback && callback()
@@ -244,6 +278,32 @@ function SaleDetails(props) {
                   <Popover id={`popover-positioned-top`}>
                     <Popover.Body className="p-0">
                       <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Tổng thanh toán</span>
+                        <span>{PriceHelper.formatVNDPositive(Total.TongThanhToan)}</span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Thanh toán Sản phẩm / NVL</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(
+                            Total.TongThanhToanSP_NVL
+                          )}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Thanh toán Dịch vụ / PP</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(
+                            Total.TongThanhToanDV_PP
+                          )}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <span>Thanh toán Thẻ tiền</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(Total.TongThanhToanTT)}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
                         <span>Tổng số lượng</span>
                         <span>{PriceHelper.formatVNDPositive(Total.SL)}</span>
                       </div>
@@ -256,10 +316,10 @@ function SaleDetails(props) {
                 }
               >
                 <div className="d-flex justify-content-between align-items-center">
-                  <span className="font-size-xl fw-600 text-danger pl-5px font-number text-success">
+                  <span className="font-size-xl fw-600 pl-5px font-number text-success">
                     {PriceHelper.formatVNDPositive(Total.DS)}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-danger ml-5px"></i>
+                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>
@@ -276,6 +336,52 @@ function SaleDetails(props) {
                 <span className="font-size-xl fw-600 pl-5px font-number text-success">
                   {PriceHelper.formatVND(Total.DS)}
                 </span>
+              </div>
+              <div className="fw-500 d-flex align-items-center">
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="bottom"
+                  placement="bottom"
+                  overlay={
+                    <Popover id={`popover-positioned-top`}>
+                      <Popover.Body className="p-0">
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>Thanh toán Sản phẩm / NVL</span>
+                          <span>
+                            {PriceHelper.formatVNDPositive(
+                              Total.TongThanhToanSP_NVL
+                            )}
+                          </span>
+                        </div>
+                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <span>Thanh toán Dịch vụ / PP</span>
+                          <span>
+                            {PriceHelper.formatVNDPositive(
+                              Total.TongThanhToanDV_PP
+                            )}
+                          </span>
+                        </div>
+                        <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                          <span>Thanh toán Thẻ tiền</span>
+                          <span>
+                            {PriceHelper.formatVNDPositive(
+                              Total.TongThanhToanTT
+                            )}
+                          </span>
+                        </div>
+                      </Popover.Body>
+                    </Popover>
+                  }
+                >
+                  <div className="fw-500 pl-20px">
+                    Tổng thanh toán{' '}
+                    <span className="font-size-xl fw-600 pl-5px font-number text-success">
+                      {PriceHelper.formatVND(Total.TongThanhToan)}
+                    </span>
+                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px align-text-top"></i>
+                  </div>
+                </OverlayTrigger>
               </div>
             </div>
           )}
@@ -341,9 +447,16 @@ function SaleDetails(props) {
                           } border-top border-gray-200 d-flex`}
                           key={index}
                         >
-                          <div className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px">
-                            {item.ProdTitle}
-                          </div>
+                          <PickerView item={item} filters={filters}>
+                            {({ open }) => (
+                              <div
+                                className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px cursor-pointer"
+                                onClick={open}
+                              >
+                                {item.ProdTitle}
+                              </div>
+                            )}
+                          </PickerView>
                           <div className="w-40px fw-500 pr-15px text-center">
                             {item.SumQTy}
                           </div>
@@ -500,9 +613,16 @@ function SaleDetails(props) {
                             } border-top border-gray-200 d-flex`}
                             key={index}
                           >
-                            <div className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px">
-                              {item.ProdTitle}
-                            </div>
+                            <PickerView item={item} filters={filters}>
+                              {({ open }) => (
+                                <div
+                                  className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px cursor-pointer"
+                                  onClick={open}
+                                >
+                                  {item.ProdTitle}
+                                </div>
+                              )}
+                            </PickerView>
                             <div className="w-40px fw-500 pr-15px text-center">
                               {item.SumQTy}
                             </div>
@@ -663,9 +783,16 @@ function SaleDetails(props) {
                           } border-top border-gray-200 d-flex`}
                           key={index}
                         >
-                          <div className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px">
-                            {item.ProdTitle}
-                          </div>
+                          <PickerView item={item} filters={filters}>
+                            {({ open }) => (
+                              <div
+                                className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px cursor-pointer"
+                                onClick={open}
+                              >
+                                {item.ProdTitle}
+                              </div>
+                            )}
+                          </PickerView>
                           <div className="w-40px fw-500 pr-15px text-center">
                             {item.SumQTy}
                           </div>
