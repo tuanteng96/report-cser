@@ -171,9 +171,9 @@ function PickerView({ children, item, filters }) {
         width: 160,
         cellRenderer: ({ rowData }) =>
           rowData?.Status === 'finish' ? (
-            <span className="text-success font-medium">Hoàn thành</span>
+            <span className="font-medium text-success">Hoàn thành</span>
           ) : (
-            <span className="text-danger font-medium">Trả hàng</span>
+            <span className="font-medium text-danger">Trả hàng</span>
           ),
         sortable: false,
         mobileOptions: {
@@ -197,7 +197,7 @@ function PickerView({ children, item, filters }) {
           createPortal(
             <div className="fixed z-[125001] inset-0 flex justify-end flex-col">
               <motion.div
-                className="relative flex flex-col z-20 bg-white h-full"
+                className="relative z-20 flex flex-col h-full bg-white"
                 initial={{ opacity: 0, translateY: '100%' }}
                 animate={{ opacity: 1, translateY: '0%' }}
                 exit={{ opacity: 0, translateY: '100%' }}
@@ -213,7 +213,7 @@ function PickerView({ children, item, filters }) {
                     <XMarkIcon className="w-6 md:w-8" />
                   </div>
                 </div>
-                <div className="grow p-4 overflow-hidden" ref={elRef}>
+                <div className="p-4 overflow-auto grow md:overflow-hidden" ref={elRef}>
                   <ReactTableV7
                     rowKey="ID"
                     overscanRowCount={50}
