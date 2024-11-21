@@ -109,6 +109,11 @@ const MenuList = [
         Href: hasRouter() + '/ban-hang/doanh-so'
       },
       {
+        Title: 'Doanh số mới',
+        Href: hasRouter() + '/ban-hang/ds-bc-2',
+        hidden: window?.top?.GlobalConfig?.Admin?.bao_cao_mely || false
+      },
+      {
         Title: 'Sản phẩm, dịch vụ bán ra',
         Href: hasRouter() + '/ban-hang/sp-dv-ban-ra'
       },
@@ -431,7 +436,7 @@ function NavBar(props) {
     )
   }
   return (
-    <div className="position-fixed zindex-1001 w-100 h-55px top-0 left-0 px-30px bg-white">
+    <div className="top-0 left-0 bg-white position-fixed zindex-1001 w-100 h-55px px-30px">
       <ul className="ezs-navbar">
         {MenuList &&
           MenuList.map((item, index) => (
@@ -446,7 +451,7 @@ function NavBar(props) {
                   <i className="fa-solid fa-chevron-down icon-down"></i>
                 )}
               </NavLink>
-              {item.Children && item.Children.length > 0 && (
+              {item.Children && item.Children.filter(x => !x.hidden).length > 0 && (
                 <div className="ezs-navbar__sub">
                   <ul>
                     {item.Children.map((sub, i) => (
