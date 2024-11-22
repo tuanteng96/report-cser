@@ -217,18 +217,64 @@ function FilterList({
           return (
             <Form>
               <div className="filter-box__content">
-                <div className="filter-box__header d-flex justify-content-between align-items-center border-bottom border-gray-200 px-20px py-20px">
+                <div className="border-gray-200 filter-box__header d-flex justify-content-between align-items-center border-bottom px-20px py-20px">
                   <div className="font-size-lg fw-500 text-uppercase">
                     Bộ lọc danh sách
                   </div>
                   <div
-                    className="w-30px h-30px d-flex justify-content-center align-items-center cursor-pointer"
+                    className="cursor-pointer w-30px h-30px d-flex justify-content-center align-items-center"
                     onClick={onHide}
                   >
                     <i className="fa-regular fa-xmark font-size-lg text-muted"></i>
                   </div>
                 </div>
                 <div className="filter-box__body p-20px">
+                  {'ShowsType' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Chế độ</label>
+                      <Select
+                        name="ShowsX"
+                        placeholder="Chọn chế độ"
+                        classNamePrefix="select"
+                        options={[
+                          {
+                            label: 'Cơ bản',
+                            value: '1'
+                          },
+                          {
+                            label: 'Nâng cao',
+                            value: '2'
+                          }
+                        ]}
+                        className="select-control"
+                        value={[
+                          {
+                            label: 'Cơ bản',
+                            value: '1'
+                          },
+                          {
+                            label: 'Nâng cao',
+                            value: '2'
+                          }
+                        ].filter(
+                          item =>
+                            Number(item.value) === Number(values?.ShowsType)
+                        )}
+                        onChange={otp => {
+                          setFieldValue('ShowsType', otp ? otp.value : '')
+                        }}
+                        noOptionsMessage={() => 'Không có dữ liệu'}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
+                      />
+                    </div>
+                  )}
                   {'ShowsX' in values && (
                     <div className="form-group mb-20px">
                       <label>Chế độ</label>
@@ -371,7 +417,7 @@ function FilterList({
                             value={item.value}
                           />
                           <span className="checkbox-icon"></span>
-                          <span className="fw-500 cursor-pointer">
+                          <span className="cursor-pointer fw-500">
                             {item.label}
                           </span>
                         </label>
@@ -411,7 +457,7 @@ function FilterList({
                       />
                     </div>
                   )}
-                  {'TypeCN' in values && (
+                  {Number(values?.ShowsType) !== 2 && 'TypeCN' in values && (
                     <div className="form-group mb-20px">
                       <label>Loại</label>
                       <Select
@@ -1141,7 +1187,7 @@ function FilterList({
                           checked={values.IsQtyEmpty}
                         />
                         <span className="checkbox-icon"></span>
-                        <span className="fw-500 cursor-pointer">
+                        <span className="cursor-pointer fw-500">
                           Lọc sản phẩm còn
                         </span>
                       </label>
@@ -1159,7 +1205,7 @@ function FilterList({
                           checked={values.gia_nhap_tb_khoang_tg}
                         />
                         <span className="checkbox-icon"></span>
-                        <span className="fw-500 cursor-pointer">
+                        <span className="cursor-pointer fw-500">
                           Giá nhập TB trong khoảng thời gian
                         </span>
                       </label>
@@ -1276,7 +1322,7 @@ function FilterList({
                           }
                         />
                         <span className="checkbox-icon"></span>
-                        <span className="fw-500 cursor-pointer">
+                        <span className="cursor-pointer fw-500">
                           Dịch vụ chuyển đổi không hợp lệ
                         </span>
                       </label>

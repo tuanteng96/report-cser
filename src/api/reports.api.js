@@ -147,6 +147,9 @@ const reportsApi = {
   getListDebt: data => {
     return http.post(`${SubApi}/cong-no/danh-sach`, JSON.stringify(data))
   },
+  getListDebt2: data => {
+    return http.post(`/api/v3/Member27@DebtInTimes`, JSON.stringify(data))
+  },
   getListDebtLock: data => {
     return http.post(`${SubApi}/cong-no/khoa-no`, JSON.stringify(data))
   },
