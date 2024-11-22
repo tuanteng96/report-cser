@@ -285,36 +285,26 @@ function Home(props) {
         {
           key: 'NO_A',
           title:
-            'Nợ tính đến 00h00 ngày ' +
-            moment(filters.DateStart).format('DD/MM/YYYY'),
+            'Nợ trước kỳ',
           dataKey: 'NO_A',
           cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NO_A),
-          width: 250,
+          width: 150,
           sortable: false,
           rowSpan: ({ rowData }) => 1
         },
         {
           key: 'NO_A_B',
           title:
-            'Nợ phát sinh trong ' +
-            moment(filters.DateStart).format('DD/MM/YYYY') +
-            ' - ' +
-            moment(filters.DateEnd).format('DD/MM/YYYY'),
+            'Nợ phát sinh trong kỳ',
           dataKey: 'NO_A_B',
           cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NO_A_B),
-          width: 250,
+          width: 180,
           sortable: false,
           rowSpan: ({ rowData }) => 1
         },
         {
           key: 'TRA_NO_A_B',
-          title:
-            'Trả nợ trong ' +
-            moment(filters.DateStart).format('DD/MM/YYYY') +
-            ' - ' +
-            moment(filters.DateEnd).format('DD/MM/YYYY') +
-            ' cho đơn trước ' +
-            moment(filters.DateStart).format('DD/MM/YYYY'),
+          title: 'Thanh toán nợ trong kỳ',
           dataKey: 'TRA_NO_A_B',
           cellRenderer: ({ rowData }) => (
             <>
@@ -365,21 +355,13 @@ function Home(props) {
               </OverlayTrigger>
             </>
           ),
-          width: 270,
+          width: 200,
           sortable: false,
           rowSpan: ({ rowData }) => 1
         },
         {
           key: 'TRA_NO_A',
-          title:
-            'Trả nợ trong ' +
-            moment(filters.DateStart).format('DD/MM/YYYY') +
-            ' - ' +
-            moment(filters.DateEnd).format('DD/MM/YYYY') +
-            ' cho đơn trong ' +
-            moment(filters.DateStart).format('DD/MM/YYYY') +
-            ' - ' +
-            moment(filters.DateEnd).format('DD/MM/YYYY'),
+          title: 'Thanh toán trong kỳ',
           dataKey: 'TRA_NO_A',
           cellRenderer: ({ rowData }) => (
             <>
@@ -430,18 +412,16 @@ function Home(props) {
               </OverlayTrigger>
             </>
           ),
-          width: 320,
+          width: 180,
           sortable: false,
           rowSpan: ({ rowData }) => 1
         },
         {
           key: 'NO_B',
-          title:
-            'Nợ tính đến 23H59 ngày ' +
-            moment(filters.DateEnd).format('DD/MM/YYYY'),
+          title: 'Nợ cuối kỳ',
           dataKey: 'NO_B',
           cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NO_B),
-          width: 250,
+          width: 150,
           sortable: false,
           rowSpan: ({ rowData }) => 1
         }

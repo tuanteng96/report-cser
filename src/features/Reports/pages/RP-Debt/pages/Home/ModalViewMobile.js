@@ -66,8 +66,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
             </div>
             <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
               <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px">
-                Nợ tính đến 00h00 ngày $
-                {moment(filters.DateStart).format('DD/MM/YYYY')}
+                Nợ trước kỳ
               </div>
               <div className="fw-600 font-size-mdd w-60 text-end">
                 {PriceHelper.formatVND(data?.NO_A)}
@@ -75,9 +74,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
             </div>
             <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
               <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px">
-                Nợ phát sinh trong{' '}
-                {moment(filters.DateStart).format('DD/MM/YYYY')} -{' '}
-                {moment(filters.DateEnd).format('DD/MM/YYYY')}
+                Nợ phát sinh trong kỳ
               </div>
               <div className="fw-600 font-size-mdd w-60 text-end">
                 {PriceHelper.formatVND(data?.NO_A_B)}
@@ -85,9 +82,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
             </div>
             <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
               <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px">
-                Trả nợ trong {moment(filters.DateStart).format('DD/MM/YYYY')} -{' '}
-                {moment(filters.DateEnd).format('DD/MM/YYYY')} cho đơn trước
-                {moment(filters.DateStart).format('DD/MM/YYYY')}
+                Thanh toán nợ trong kỳ
               </div>
               <div className="fw-600 font-size-mdd w-60 text-end">
                 <OverlayTrigger
@@ -139,10 +134,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
             </div>
             <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
               <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px">
-                Trả nợ trong {moment(filters.DateStart).format('DD/MM/YYYY')} -{' '}
-                {moment(filters.DateEnd).format('DD/MM/YYYY')} cho đơn trong
-                {moment(filters.DateStart).format('DD/MM/YYYY')} -{' '}
-                {moment(filters.DateEnd).format('DD/MM/YYYY')}
+                Thanh toán trong kỳ
               </div>
               <div className="fw-600 font-size-mdd w-60 text-end">
                 <OverlayTrigger
@@ -194,8 +186,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
             </div>
             <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
               <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px">
-                Nợ tính đến 23H50 ngày{' '}
-                {moment(filters.DateEnd).format('DD/MM/YYYY')}
+                Nợ cuối kỳ
               </div>
               <div className="fw-600 font-size-mdd w-60 text-end">
                 {PriceHelper.formatVND(data?.NO_B)}
