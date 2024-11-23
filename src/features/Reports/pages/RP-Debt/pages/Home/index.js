@@ -284,8 +284,7 @@ function Home(props) {
         },
         {
           key: 'NO_A',
-          title:
-            'Nợ trước kỳ',
+          title: 'Nợ trước kỳ',
           dataKey: 'NO_A',
           cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NO_A),
           width: 150,
@@ -294,8 +293,7 @@ function Home(props) {
         },
         {
           key: 'NO_A_B',
-          title:
-            'Nợ phát sinh trong kỳ',
+          title: 'Nợ phát sinh trong kỳ',
           dataKey: 'NO_A_B',
           cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NO_A_B),
           width: 180,
@@ -336,6 +334,10 @@ function Home(props) {
                         <span>Ví</span>
                         <span>{rowData.TRA_NO_A_B_VI}</span>
                       </div>
+                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                        <span>Khấu trừ ( Kết thúc thẻ, trả hàng)</span>
+                        <span>{rowData.TRA_NO_A_B_KT}</span>
+                      </div>
                     </Popover.Body>
                   </Popover>
                 }
@@ -347,7 +349,8 @@ function Home(props) {
                         rowData.TRA_NO_A_B_QT +
                         rowData.TRA_NO_A_B_TM +
                         rowData.TRA_NO_A_B_TT +
-                        rowData.TRA_NO_A_B_VI
+                        rowData.TRA_NO_A_B_VI +
+                        rowData.TRA_NO_A_B_KT
                     )}
                   </span>
                   <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
@@ -393,6 +396,10 @@ function Home(props) {
                         <span>Ví</span>
                         <span>{rowData.TRA_NO_A_VI}</span>
                       </div>
+                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                        <span>Khấu trừ ( Kết thúc thẻ, trả hàng)</span>
+                        <span>{rowData.TRA_NO_A_KT}</span>
+                      </div>
                     </Popover.Body>
                   </Popover>
                 }
@@ -404,7 +411,8 @@ function Home(props) {
                         rowData.TRA_NO_A_QT +
                         rowData.TRA_NO_A_TM +
                         rowData.TRA_NO_A_TT +
-                        rowData.TRA_NO_A_VI
+                        rowData.TRA_NO_A_VI +
+                        rowData.TRA_NO_A_KT
                     )}
                   </span>
                   <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>

@@ -394,6 +394,14 @@ function OverviewCustomer() {
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.the_tien),
         width: 120,
         sortable: false
+      },
+      {
+        key: 'tich_diem',
+        title: 'Tích điểm',
+        dataKey: 'tich_diem',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.tich_diem),
+        width: 120,
+        sortable: false
       }
     ],
     [filters]
@@ -447,7 +455,7 @@ function OverviewCustomer() {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Khách hàng tổng quan
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -457,7 +465,7 @@ function OverviewCustomer() {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -603,7 +611,7 @@ function OverviewCustomer() {
       )}
 
       <div className="bg-white rounded mt-25px">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
           {width > 1200 ? (
             <div className="d-flex">
@@ -631,7 +639,7 @@ function OverviewCustomer() {
                 overlay={
                   <Popover id={`popover-positioned-top`}>
                     <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng KH</span>
                         <span>{PageTotal.Total}</span>
                       </div>
@@ -647,7 +655,7 @@ function OverviewCustomer() {
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PageTotal.Total}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>

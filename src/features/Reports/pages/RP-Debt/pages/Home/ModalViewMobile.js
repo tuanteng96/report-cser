@@ -113,6 +113,10 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                           <span>Ví</span>
                           <span>{data?.TRA_NO_A_B_VI}</span>
                         </div>
+                        <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                          <span>Khấu trừ ( Kết thúc thẻ, trả hàng )</span>
+                          <span>{data?.TRA_NO_A_B_KT}</span>
+                        </div>
                       </Popover.Body>
                     </Popover>
                   }
@@ -124,7 +128,8 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                           data?.TRA_NO_A_B_QT +
                           data?.TRA_NO_A_B_TM +
                           data?.TRA_NO_A_B_TT +
-                          data?.TRA_NO_A_B_VI
+                          data?.TRA_NO_A_B_VI +
+                          data?.TRA_NO_A_B_KT
                       )}
                     </span>
                     <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
@@ -165,6 +170,10 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                           <span>Ví</span>
                           <span>{data?.TRA_NO_A_VI}</span>
                         </div>
+                        <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                          <span>Khấu trừ ( Kết thúc thẻ, trả hàng)</span>
+                          <span>{data?.TRA_NO_A_KT}</span>
+                        </div>
                       </Popover.Body>
                     </Popover>
                   }
@@ -176,7 +185,8 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                           data?.TRA_NO_A_QT +
                           data?.TRA_NO_A_TM +
                           data?.TRA_NO_A_TT +
-                          data?.TRA_NO_A_VI
+                          data?.TRA_NO_A_VI +
+                          data?.TRA_NO_A_KT
                       )}
                     </span>
                     <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
