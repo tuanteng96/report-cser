@@ -230,13 +230,57 @@ function Home(props) {
 
   const columns = useMemo(() => {
     if (Number(filters.ShowsType) === 2) {
-      return [
+      if (!ListData || ListData.length === 0) {
+        return [
+          {
+            key: 'index',
+            title: 'STT',
+            dataKey: 'index',
+            cellRenderer: ({ rowIndex }) => {
+              
+              return filters.Ps * (filters.Pi - 1) + (rowIndex + 1)
+            },
+            width: 60,
+            sortable: false,
+            align: 'center',
+            rowSpan: ({ rowData }) => 1,
+            mobileOptions: {
+              visible: true
+            }
+          },
+          {
+            key: 'MemberID',
+            title: 'ID Khách hàng',
+            dataKey: 'MemberID',
+            cellRenderer: ({ rowData }) => rowData?.MemberID,
+            width: 120,
+            sortable: false,
+            rowSpan: ({ rowData }) => 1,
+            mobileOptions: {
+              visible: true
+            }
+          },
+          {
+            key: 'MemberName',
+            title: 'Khách hàng',
+            dataKey: 'MemberName',
+            cellRenderer: ({ rowData }) => rowData?.MemberName,
+            width: 250,
+            sortable: false,
+            rowSpan: ({ rowData }) => 1,
+            mobileOptions: {
+              visible: true
+            }
+          }
+        ]
+      }
+      let rs = [
         {
           key: 'index',
           title: 'STT',
           dataKey: 'index',
-          cellRenderer: ({ rowIndex }) => {
-            return filters.Ps * (filters.Pi - 1) + (rowIndex + 1)
+          cellRenderer: ({ rowData }) => {
+            return filters.Ps * (filters.Pi - 1) + (rowData.rowIndex + 1)
           },
           width: 60,
           sortable: false,
@@ -245,195 +289,26 @@ function Home(props) {
           mobileOptions: {
             visible: true
           }
-        },
-        {
-          key: 'MemberID',
-          title: 'ID Khách hàng',
-          dataKey: 'MemberID',
-          cellRenderer: ({ rowData }) => rowData?.MemberID,
-          width: 120,
-          sortable: false,
-          rowSpan: ({ rowData }) => 1,
-          mobileOptions: {
-            visible: true
-          }
-        },
-        {
-          key: 'MemberName',
-          title: 'Khách hàng',
-          dataKey: 'MemberName',
-          cellRenderer: ({ rowData }) => rowData?.MemberName,
+        }
+      ]
+      for (let property in ListData[0]) {
+        var i = Object.keys(ListData[0]).indexOf(property);
+
+        rs.push({
+          key: property,
+          title: property,
+          dataKey: property,
+          cellRenderer: ({ rowData }) => (typeof rowData[property] === "string" || property === "ID Khách hàng" || property === "SenderID") ? rowData[property] : PriceHelper.formatVND(rowData[property]),
           width: 250,
           sortable: false,
           rowSpan: ({ rowData }) => 1,
           mobileOptions: {
-            visible: true
+            visible: i < 4
           }
-        },
-        {
-          key: 'MobilePhone',
-          title: 'Số điện thoại',
-          dataKey: 'MobilePhone',
-          width: 180,
-          sortable: false,
-          cellRenderer: ({ rowData }) => rowData?.MobilePhone,
-          rowSpan: ({ rowData }) => 1,
-          mobileOptions: {
-            visible: true
-          }
-        },
-        {
-          key: 'NO_A',
-          title: 'Nợ trước kỳ',
-          dataKey: 'NO_A',
-          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NO_A),
-          width: 150,
-          sortable: false,
-          rowSpan: ({ rowData }) => 1
-        },
-        {
-          key: 'NO_A_B',
-          title: 'Nợ phát sinh trong kỳ',
-          dataKey: 'NO_A_B',
-          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NO_A_B),
-          width: 180,
-          sortable: false,
-          rowSpan: ({ rowData }) => 1
-        },
-        {
-          key: 'TRA_NO_A_B',
-          title: 'Thanh toán nợ trong kỳ',
-          dataKey: 'TRA_NO_A_B',
-          cellRenderer: ({ rowData }) => (
-            <>
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="bottom"
-                placement="bottom"
-                overlay={
-                  <Popover id={`popover-positioned-top`}>
-                    <Popover.Body className="p-0">
-                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                        <span>Chuyển khoản</span>
-                        <span>{rowData.TRA_NO_A_B_CK}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Quẹt thẻ</span>
-                        <span>{rowData.TRA_NO_A_B_QT}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Tiền mặt</span>
-                        <span>{rowData.TRA_NO_A_B_TM}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Thẻ tiền</span>
-                        <span>{rowData.TRA_NO_A_B_TT}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Ví</span>
-                        <span>{rowData.TRA_NO_A_B_VI}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Khấu trừ ( Kết thúc thẻ, trả hàng)</span>
-                        <span>{rowData.TRA_NO_A_B_KT}</span>
-                      </div>
-                    </Popover.Body>
-                  </Popover>
-                }
-              >
-                <div className="d-flex justify-content-between align-items-center w-100">
-                  <span>
-                    {PriceHelper.formatVND(
-                      rowData.TRA_NO_A_B_CK +
-                        rowData.TRA_NO_A_B_QT +
-                        rowData.TRA_NO_A_B_TM +
-                        rowData.TRA_NO_A_B_TT +
-                        rowData.TRA_NO_A_B_VI +
-                        rowData.TRA_NO_A_B_KT
-                    )}
-                  </span>
-                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
-                </div>
-              </OverlayTrigger>
-            </>
-          ),
-          width: 200,
-          sortable: false,
-          rowSpan: ({ rowData }) => 1
-        },
-        {
-          key: 'TRA_NO_A',
-          title: 'Thanh toán trong kỳ',
-          dataKey: 'TRA_NO_A',
-          cellRenderer: ({ rowData }) => (
-            <>
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="bottom"
-                placement="bottom"
-                overlay={
-                  <Popover id={`popover-positioned-top`}>
-                    <Popover.Body className="p-0">
-                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                        <span>Chuyển khoản</span>
-                        <span>{rowData.TRA_NO_A_CK}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Quẹt thẻ</span>
-                        <span>{rowData.TRA_NO_A_QT}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Tiền mặt</span>
-                        <span>{rowData.TRA_NO_A_TM}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Thẻ tiền</span>
-                        <span>{rowData.TRA_NO_A_TT}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Ví</span>
-                        <span>{rowData.TRA_NO_A_VI}</span>
-                      </div>
-                      <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Khấu trừ ( Kết thúc thẻ, trả hàng)</span>
-                        <span>{rowData.TRA_NO_A_KT}</span>
-                      </div>
-                    </Popover.Body>
-                  </Popover>
-                }
-              >
-                <div className="d-flex justify-content-between align-items-center w-100">
-                  <span>
-                    {PriceHelper.formatVND(
-                      rowData.TRA_NO_A_CK +
-                        rowData.TRA_NO_A_QT +
-                        rowData.TRA_NO_A_TM +
-                        rowData.TRA_NO_A_TT +
-                        rowData.TRA_NO_A_VI +
-                        rowData.TRA_NO_A_KT
-                    )}
-                  </span>
-                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
-                </div>
-              </OverlayTrigger>
-            </>
-          ),
-          width: 180,
-          sortable: false,
-          rowSpan: ({ rowData }) => 1
-        },
-        {
-          key: 'NO_B',
-          title: 'Nợ cuối kỳ',
-          dataKey: 'NO_B',
-          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.NO_B),
-          width: 150,
-          sortable: false,
-          rowSpan: ({ rowData }) => 1
-        }
-      ]
+        })
+      }
+
+      return rs
     }
     return [
       {
@@ -558,7 +433,7 @@ function Home(props) {
         sortable: false
       }
     ]
-  }, [filters])
+  }, [ListData])
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
     if (Number(filters.ShowsType) !== 2 && isScrolling)
@@ -694,7 +569,7 @@ function Home(props) {
         <div className="p-20px">
           <ReactTableV7
             headerHeight={60}
-            rowKey={Number(filters.ShowsType) !== 2 ? 'Ids' : 'MemberID'}
+            rowKey={Number(filters.ShowsType) !== 2 ? 'Ids' : 'ID Khách hàng'}
             overscanRowCount={50}
             useIsScrolling
             filters={filters}

@@ -153,7 +153,7 @@ function ReactTableV7Mobile({
               })
             }}
           />
-          <div className="d-flex align-items-center text-gray-500">
+          <div className="text-gray-500 d-flex align-items-center">
             <DropdownButton
               as={ButtonGroup}
               key="secondary"

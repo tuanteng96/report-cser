@@ -111,7 +111,7 @@ const MenuList = [
       {
         Title: 'Doanh số mới',
         Href: hasRouter() + '/ban-hang/ds-bc-2',
-        hidden: window?.top?.GlobalConfig?.Admin?.bao_cao_mely || false
+        hidden: !window?.top?.GlobalConfig?.Admin?.bao_cao_mely || true
       },
       {
         Title: 'Sản phẩm, dịch vụ bán ra',
@@ -454,7 +454,7 @@ function NavBar(props) {
               {item.Children && item.Children.filter(x => !x.hidden).length > 0 && (
                 <div className="ezs-navbar__sub">
                   <ul>
-                    {item.Children.map((sub, i) => (
+                    {item.Children.filter(x => !x.hidden).map((sub, i) => (
                       <li key={i}>
                         <NavLink
                           className={clsx(isActive(sub.Href) && 'active')}

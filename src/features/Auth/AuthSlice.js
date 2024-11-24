@@ -443,7 +443,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwNjEzMzEwNjcwNSIsIm5iZiI6MTczMTkxNjY5NywiZXhwIjoxODE4MzE2Njk3LCJpYXQiOjE3MzE5MTY2OTd9.fe8WYRUllu708jHHKxpvJi4xnTy-tu0fs5b_XL_LUkQ'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEwNjEzMzEwNjcyNSIsIm5iZiI6MTczMjM1MDI4NywiZXhwIjoxODE4NzUwMjg3LCJpYXQiOjE3MzIzNTAyODd9.q_DzDG5qzUdYCnd68Gm7R_Laa7PRdNEvI3Bs6MSOXv8'
 }
 const Auth = createSlice({
   name: 'auth',
