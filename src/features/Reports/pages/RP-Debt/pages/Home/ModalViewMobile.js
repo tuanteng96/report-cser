@@ -14,7 +14,7 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
-function ModalViewMobile({ show, onHide, data, filters }) {
+function ModalViewMobile({ show, onHide, data, filters, formatText }) {
   if (Number(filters.ShowsType) === 2) {
     return (
       <Modal
@@ -25,7 +25,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
       >
         <div className="modal-view-head align-items-baseline px-15px py-8px">
           <div className="flex-1 modal-view-title text-uppercase font-size-lg fw-500 pr-15px">
-            {data && data['Khách hàng'] || 'Chưa có tên KH'}
+            {(data && data['Khách hàng']) || 'Chưa có tên KH'}
           </div>
           <div
             className="text-center modal-view-close font-size-h3 w-20px"
@@ -41,16 +41,85 @@ function ModalViewMobile({ show, onHide, data, filters }) {
         >
           <div className="py-5px">
             {data &&
-              Object.keys(data).map((property, index) => (
-                <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm" key={index}>
-                  <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px">
-                    {property}
+              Object.keys(data)
+                .filter(x => x !== 'TTTK' && x !== 'TTT')
+                .map((property, index) => (
+                  <div
+                    className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm"
+                    key={index}
+                  >
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px">
+                      {formatText(property)}
+                    </div>
+                    <div className="fw-600 text-end">
+                      {property.includes('Thanh toán cho đơn trong kỳ') ||
+                      property.includes('Tổng thanh toán') ? (
+                        <>
+                          <OverlayTrigger
+                            rootClose
+                            trigger="click"
+                            key="bottom"
+                            placement="bottom"
+                            overlay={
+                              <Popover id={`popover-positioned-top`} className='overflow-auto h-250px'>
+                                <Popover.Body className="p-0">
+                                  {Object.keys(data['TTTK']).map(
+                                    (keyName, i) => (
+                                      <div
+                                        className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                                        key={i}
+                                      >
+                                        <span>
+                                          Trong kỳ - {formatText(keyName)}
+                                        </span>
+                                        <span>
+                                          {PriceHelper.formatVND(
+                                            data['TTTK'][keyName]
+                                          )}
+                                        </span>
+                                      </div>
+                                    )
+                                  )}
+                                  {Object.keys(data['TTTK']).map(
+                                    (keyName, i) => (
+                                      <div
+                                        className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                                        key={i}
+                                      >
+                                        <span>
+                                          Nợ cũ - {formatText(keyName)}
+                                        </span>
+                                        <span>
+                                          {PriceHelper.formatVND(
+                                            data["TTT"][i] - data['TTTK'][keyName]
+                                          )}
+                                        </span>
+                                      </div>
+                                    )
+                                  )}
+                                </Popover.Body>
+                              </Popover>
+                            }
+                          >
+                            <div className="d-flex justify-content-between align-items-center w-100">
+                              <span className="pl-5px font-number">
+                                {PriceHelper.formatVNDPositive(data[property])}
+                              </span>
+                              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+                            </div>
+                          </OverlayTrigger>
+                        </>
+                      ) : (
+                        <>
+                          {typeof data[property] === 'string' ||
+                          property === 'ID Khách hàng'
+                            ? data[property]
+                            : PriceHelper.formatVND(data[property])}
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div className="fw-600 font-size-mdd w-60 text-end">
-                    {(typeof data[property] === "string" || property === "ID Khách hàng" || property === "SenderID") ? data[property] : PriceHelper.formatVND(data[property])}
-                  </div>
-                </div>
-              ))}
+                ))}
           </div>
         </PerfectScrollbar>
       </Modal>

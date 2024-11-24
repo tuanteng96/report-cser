@@ -50,6 +50,45 @@ const convertArray = arrays => {
   return newArray
 }
 
+const convertArray2 = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+  for (let item of arrays) {
+    let obj = {
+      TTTK: {},
+      TTT: []
+    }
+    for (const property in item) {
+      if (
+        property !== 'SenderID' &&
+        !property.includes('Thanh toán nợ trước') &&
+        !property.includes('Còn lại nợ trước') &&
+        !property.includes('Nợ của các đơn trong kỳ')
+      ) {
+        if (
+          property.includes('Thanh toán cho đơn trong kỳ') &&
+          property.includes(')_')
+        ) {
+          obj.TTTK[property] = item[property]
+        } else if (
+          property.includes('Tổng thanh toán') &&
+          property.includes(')_')
+        ) {
+          obj.TTT.push(item[property])
+        } else {
+          if (!property.includes('Thanh toán cho đơn trong kỳ')) {
+            obj[property] = item[property]
+          }
+        }
+      }
+    }
+    newArray.push(obj)
+  }
+  return newArray
+}
+
 function Home(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -144,8 +183,8 @@ function Home(props) {
               Total: data?.Total || 0,
               PCount: data?.PCount || 0
             }
-            setListData(Items)
-            setListDataMobile(Items)
+            setListData(convertArray2(Items))
+            setListDataMobile(convertArray2(Items))
             setTotal({ TongNo, DH_NO, KH_NO })
             setLoading(false)
             setPageTotal(Total)
@@ -228,6 +267,49 @@ function Home(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
+  const formatText = text => {
+    if (text.includes('Nợ trước')) {
+      return 'Nợ trước kỳ'
+    }
+    if (text.includes('Bán mới trong kỳ')) {
+      return 'Nợ phát sinh trong kỳ'
+    }
+    if (text.includes('Tổng thanh toán') && !text.includes(')_')) {
+      return 'Thanh toán, trả nợ cũ'
+    }
+    if (text.includes('Nợ cuối')) {
+      return 'Nợ cuối kỳ'
+    }
+    if (text.includes('_TM')) {
+      return 'Tiền mặt'
+    }
+    if (text.includes('_CK')) {
+      return 'Chuyển khoản'
+    }
+    if (text.includes('_QT')) {
+      return 'Quẹt thẻ'
+    }
+    if (text.includes('_TT')) {
+      return 'Thẻ tiền'
+    }
+    if (text.includes('_VI')) {
+      return 'Ví'
+    }
+    if (text.includes('_KTT')) {
+      return 'Kết thúc thẻ'
+    }
+    if (text.includes('_TRA_HANG')) {
+      return 'Trả hàng'
+    }
+    if (text.includes('_KET_NO')) {
+      return 'Tặng'
+    }
+    if (text.includes('_KHOA_NO')) {
+      return 'Khoá nợ'
+    }
+    return text
+  }
+
   const columns = useMemo(() => {
     if (Number(filters.ShowsType) === 2) {
       if (!ListData || ListData.length === 0) {
@@ -237,7 +319,6 @@ function Home(props) {
             title: 'STT',
             dataKey: 'index',
             cellRenderer: ({ rowIndex }) => {
-              
               return filters.Ps * (filters.Pi - 1) + (rowIndex + 1)
             },
             width: 60,
@@ -279,8 +360,11 @@ function Home(props) {
           key: 'index',
           title: 'STT',
           dataKey: 'index',
-          cellRenderer: ({ rowData }) => {
-            return filters.Ps * (filters.Pi - 1) + (rowData.rowIndex + 1)
+          cellRenderer: ({ rowData, rowIndex }) => {
+            return (
+              filters.Ps * (filters.Pi - 1) +
+              ((rowData.rowIndex || rowIndex || 0) + 1)
+            )
           },
           width: 60,
           sortable: false,
@@ -292,20 +376,82 @@ function Home(props) {
         }
       ]
       for (let property in ListData[0]) {
-        var i = Object.keys(ListData[0]).indexOf(property);
+        var i = Object.keys(ListData[0]).indexOf(property)
 
-        rs.push({
-          key: property,
-          title: property,
-          dataKey: property,
-          cellRenderer: ({ rowData }) => (typeof rowData[property] === "string" || property === "ID Khách hàng" || property === "SenderID") ? rowData[property] : PriceHelper.formatVND(rowData[property]),
-          width: 250,
-          sortable: false,
-          rowSpan: ({ rowData }) => 1,
-          mobileOptions: {
-            visible: i < 4
-          }
-        })
+        if (property !== 'TTT' && property !== 'TTTK') {
+          rs.push({
+            key: property,
+            title: formatText(property),
+            dataKey: property,
+            cellRenderer: ({ rowData }) =>
+              property.includes('Thanh toán cho đơn trong kỳ') ||
+              property.includes('Tổng thanh toán') ? (
+                <>
+                  <OverlayTrigger
+                    
+                    rootClose
+                    trigger="click"
+                    key="bottom"
+                    placement="bottom"
+                    overlay={
+                      <Popover id={`popover-positioned-top`} style={{
+                        minWidth: "350px"
+                      }}>
+                        <Popover.Body className="p-0 overflow-auto h-250px">
+                          {Object.keys(rowData['TTTK']).map((keyName, i) => (
+                            <div
+                              className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                              key={i}
+                            >
+                              <span>Trong kỳ - {formatText(keyName)}</span>
+                              <span>
+                                {PriceHelper.formatVND(
+                                  rowData['TTTK'][keyName]
+                                )}
+                              </span>
+                            </div>
+                          ))}
+                          {Object.keys(rowData['TTTK']).map((keyName, i) => (
+                            <div
+                              className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                              key={i}
+                            >
+                              <span>Nợ cũ - {formatText(keyName)}</span>
+                              <span>
+                                {PriceHelper.formatVND(
+                                  rowData['TTT'][i] - rowData['TTTK'][keyName]
+                                )}
+                              </span>
+                            </div>
+                          ))}
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <div className="d-flex justify-content-between align-items-center w-100">
+                      <span className="pl-5px font-number">
+                        {PriceHelper.formatVNDPositive(rowData[property])}
+                      </span>
+                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+                    </div>
+                  </OverlayTrigger>
+                </>
+              ) : (
+                <>
+                  {typeof rowData[property] === 'string' ||
+                  property === 'ID Khách hàng'
+                    ? rowData[property]
+                    : PriceHelper.formatVND(rowData[property])}
+                </>
+              ),
+            width: 220,
+            sortable: false,
+            rowSpan: ({ rowData }) => 1,
+            mobileOptions: {
+              visible: i < 4
+            }
+          })
+        }
       }
 
       return rs
@@ -590,6 +736,7 @@ function Home(props) {
           onHide={HideModalMobile}
           data={initialValuesMobile}
           filters={filters}
+          formatText={formatText}
         />
       </div>
     </div>
