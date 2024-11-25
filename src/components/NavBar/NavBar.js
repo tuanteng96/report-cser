@@ -12,6 +12,10 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
+var bao_cao_mely = false
+
+//window?.top?.GlobalConfig?.Admin?.bao_cao_mely
+
 const hasRouter = () => {
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') return ''
   return '/admin/?mdl20=R23&act20=index#rp:'
@@ -111,7 +115,7 @@ const MenuList = [
       {
         Title: 'Doanh số mới',
         Href: hasRouter() + '/ban-hang/ds-bc-2',
-        hidden: !window?.top?.GlobalConfig?.Admin?.bao_cao_mely || true
+        hidden: !window?.top?.GlobalConfig?.Admin?.bao_cao_mely
       },
       {
         Title: 'Sản phẩm, dịch vụ bán ra',
