@@ -280,6 +280,70 @@ function ReExs(props) {
         }
       },
       {
+        key: 'Tag',
+        title: 'Tag',
+        dataKey: 'Tag',
+        cellRenderer: ({ rowData }) => `${TransferTags(rowData.Tag)}`,
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'CustomType',
+        title: 'Phân loại',
+        dataKey: 'CustomType',
+        cellRenderer: ({ rowData }) => rowData.CustomType,
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'StockName',
+        title: 'Cơ sở',
+        dataKey: 'StockName',
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'OrderID',
+        title: 'ID đơn hàng',
+        dataKey: 'OrderID',
+        width: 100,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Member.FullName',
+        title: 'Khách hàng',
+        dataKey: 'Member.FullName',
+        width: 250,
+        sortable: false
+      },
+      {
+        key: 'Dien_Thoai',
+        title: 'Điện thoại',
+        dataKey: 'Dien_Thoai',
+        width: 180,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'SPDV',
+        title: 'SP/DV',
+        dataKey: 'SPDV',
+        width: 350,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Gia_tri_Don_hang',
+        title: 'Giá trị đơn hàng',
+        dataKey: 'Gia_tri_Don_hang',
+        width: 180,
+        sortable: false,
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVNDPositive(rowData.Gia_tri_Don_hang),
+        hidden: Number(filters.ShowsX) !== 1
+      },
+      {
         key: 'TM',
         title: 'Tiền mặt',
         dataKey: 'TM',
@@ -316,87 +380,6 @@ function ReExs(props) {
         }
       },
       {
-        key: 'Tag',
-        title: 'Tag',
-        dataKey: 'Tag',
-        cellRenderer: ({ rowData }) => `${TransferTags(rowData.Tag)}`,
-        width: 180,
-        sortable: false
-      },
-      {
-        key: 'CustomType',
-        title: 'Phân loại',
-        dataKey: 'CustomType',
-        cellRenderer: ({ rowData }) => rowData.CustomType,
-        width: 180,
-        sortable: false
-      },
-      {
-        key: 'Content',
-        title: 'Nội dung',
-        dataKey: 'Content',
-        width: 350,
-        sortable: false,
-        hidden: Number(filters.ShowsX) === 1
-      },
-
-      {
-        key: 'StockName',
-        title: 'Cơ sở',
-        dataKey: 'StockName',
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'Member.FullName',
-        title: 'Khách hàng',
-        dataKey: 'Member.FullName',
-        width: 250,
-        sortable: false
-      },
-      {
-        key: 'Ngan_Hang',
-        title: 'Ngân hàng',
-        dataKey: 'Ngan_Hang',
-        width: 250,
-        sortable: false,
-        hidden: Number(filters.ShowsX) !== 1
-      },
-      {
-        key: 'Dien_Thoai',
-        title: 'Điện thoại',
-        dataKey: 'Dien_Thoai',
-        width: 180,
-        sortable: false,
-        hidden: Number(filters.ShowsX) !== 1
-      },
-      {
-        key: 'OrderID',
-        title: 'ID đơn hàng',
-        dataKey: 'OrderID',
-        width: 100,
-        sortable: false,
-        hidden: Number(filters.ShowsX) !== 1
-      },
-      {
-        key: 'Gia_tri_Don_hang',
-        title: 'Giá trị đơn hàng',
-        dataKey: 'Gia_tri_Don_hang',
-        width: 180,
-        sortable: false,
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVNDPositive(rowData.Gia_tri_Don_hang),
-        hidden: Number(filters.ShowsX) !== 1
-      },
-      {
-        key: 'SPDV',
-        title: 'SP/DV',
-        dataKey: 'SPDV',
-        width: 350,
-        sortable: false,
-        hidden: Number(filters.ShowsX) !== 1
-      },
-      {
         key: 'Con_no',
         title: 'Còn nợ',
         dataKey: 'Con_no',
@@ -405,6 +388,14 @@ function ReExs(props) {
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVNDPositive(rowData.Con_no),
         hidden: Number(filters.ShowsX) !== 1
+      },
+      {
+        key: 'Content',
+        title: 'Nội dung',
+        dataKey: 'Content',
+        width: 350,
+        sortable: false,
+        hidden: Number(filters.ShowsX) === 1
       },
       {
         key: 'Ngay_TT_Du_kien',
@@ -448,6 +439,14 @@ function ReExs(props) {
         dataKey: 'Staff.FullName',
         width: 250,
         sortable: false
+      },
+      {
+        key: 'Ngan_Hang',
+        title: 'Ngân hàng',
+        dataKey: 'Ngan_Hang',
+        width: 250,
+        sortable: false,
+        hidden: Number(filters.ShowsX) !== 1
       }
     ],
     [filters]
@@ -490,7 +489,7 @@ function ReExs(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Thu chi & Sổ quỹ
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -500,7 +499,7 @@ function ReExs(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -524,7 +523,7 @@ function ReExs(props) {
           {!loading && (
             <div className="d-flex flex-column h-100">
               <div
-                className="bg-white rounded px-20px py-30px text-center flex-grow-1 d-flex flex-column justify-content-center align-items-center"
+                className="text-center bg-white rounded px-20px py-30px flex-grow-1 d-flex flex-column justify-content-center align-items-center"
                 style={{
                   backgroundPosition: 'right top',
                   backgroundSize: '30% auto',
@@ -537,7 +536,7 @@ function ReExs(props) {
                 <div className="font-number font-size-35 fw-600 line-height-xxl text-primary d-inline-block">
                   {PriceHelper.formatVND(OverviewData?.TonTienDauKy)}
                 </div>
-                <div className="d-flex fw-600 mt-2">
+                <div className="mt-2 d-flex fw-600">
                   <div>
                     <span className="text-muted pr-5px">TM:</span>
                     {PriceHelper.formatVND(OverviewData?.TonTienDauKy_TM)}
@@ -589,7 +588,7 @@ function ReExs(props) {
                     Thu trong kỳ
                   </div>
                 </div>
-                <div className="flex-1 d-flex flex-column justify-content-center text-center border-left border-left-0 border-xl-left-1  border-right border-right-0 border-xl-right-1 border-gray-200 border-bottom border-xl-bottom-0 border-top border-xl-top-0 py-20px my-20px py-xl-0 my-xl-0 align-items-center">
+                <div className="flex-1 text-center border-gray-200 d-flex flex-column justify-content-center border-left border-left-0 border-xl-left-1 border-right border-right-0 border-xl-right-1 border-bottom border-xl-bottom-0 border-top border-xl-top-0 py-20px my-20px py-xl-0 my-xl-0 align-items-center">
                   <OverlayTrigger
                     overlay={
                       <Tooltip className="w-auto">
@@ -659,7 +658,7 @@ function ReExs(props) {
                 </div>
               </div>
               <div
-                className="bg-white rounded px-20px py-30px mb-20px mb-md-0 text-center flex-grow-1 d-flex flex-column justify-content-center align-items-center"
+                className="text-center bg-white rounded px-20px py-30px mb-20px mb-md-0 flex-grow-1 d-flex flex-column justify-content-center align-items-center"
                 style={{
                   backgroundPosition: 'right top',
                   backgroundSize: '30% auto',
@@ -672,7 +671,7 @@ function ReExs(props) {
                 <div className="font-number font-size-35 fw-600 line-height-xxl text-success">
                   {PriceHelper.formatVND(OverviewData?.ThuChiHienTai)}
                 </div>
-                <div className="d-flex fw-600 mt-2">
+                <div className="mt-2 d-flex fw-600">
                   <div>
                     <span className="text-muted pr-5px">TM:</span>
                     {PriceHelper.formatVND(OverviewData?.ThuChiHienTai_TM)}
@@ -702,7 +701,7 @@ function ReExs(props) {
         </div>
       </div>
       <div className="bg-white rounded mt-25px">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between flex-column flex-md-row">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách thu chi & sổ quỹ</div>
           <div className="d-flex">
             <div className="fw-500 d-flex align-items-center">
@@ -721,13 +720,13 @@ function ReExs(props) {
                       Chi tiết tổng thu
                     </Popover.Header>
                     <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tiền mặt</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.THU_TM)}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Chuyển khoản</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.THU_CK)}
@@ -747,7 +746,7 @@ function ReExs(props) {
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVNDPositive(Total.TONG_THU)}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>
@@ -767,13 +766,13 @@ function ReExs(props) {
                       Chi tiết tổng chi
                     </Popover.Header>
                     <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tiền mặt</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.CHI_TM)}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Chuyển khoản</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.CHI_CK)}
@@ -793,7 +792,7 @@ function ReExs(props) {
                   <span className="font-size-xl fw-600 text-danger pl-5px font-number">
                     {PriceHelper.formatVNDPositive(Total.TONG_CHI)}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-danger ml-5px"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-danger ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>

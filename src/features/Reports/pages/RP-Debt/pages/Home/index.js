@@ -388,15 +388,17 @@ function Home(props) {
               property.includes('Tổng thanh toán') ? (
                 <>
                   <OverlayTrigger
-                    
                     rootClose
                     trigger="click"
                     key="bottom"
                     placement="bottom"
                     overlay={
-                      <Popover id={`popover-positioned-top`} style={{
-                        minWidth: "350px"
-                      }}>
+                      <Popover
+                        id={`popover-positioned-top`}
+                        style={{
+                          minWidth: '350px'
+                        }}
+                      >
                         <Popover.Body className="p-0 overflow-auto h-250px">
                           {Object.keys(rowData['TTTK']).map((keyName, i) => (
                             <div
@@ -577,8 +579,26 @@ function Home(props) {
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.ConNo),
         width: 180,
         sortable: false
+      },
+      {
+        key: 'DayToPay',
+        title: 'Ngày thanh toán nợ',
+        dataKey: 'DayToPay',
+        cellRenderer: ({ rowData }) =>
+          rowData.DayToPay ? moment(rowData.DayToPay).format('DD-MM-YYYY') : '',
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'Desc',
+        title: 'Ghi chú',
+        dataKey: 'Desc',
+        cellRenderer: ({ rowData }) => rowData.Desc,
+        width: 250,
+        sortable: false
       }
     ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ListData])
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
