@@ -108,12 +108,12 @@ function FilterCourse({
           return (
             <Form>
               <div className="filter-box__content">
-                <div className="filter-box__header d-flex justify-content-between align-items-center border-bottom border-gray-200 px-20px py-20px">
+                <div className="border-gray-200 filter-box__header d-flex justify-content-between align-items-center border-bottom px-20px py-20px">
                   <div className="font-size-lg fw-500 text-uppercase">
                     Bộ lọc danh sách
                   </div>
                   <div
-                    className="w-30px h-30px d-flex justify-content-center align-items-center cursor-pointer"
+                    className="cursor-pointer w-30px h-30px d-flex justify-content-center align-items-center"
                     onClick={onHide}
                   >
                     <i className="fa-regular fa-xmark font-size-lg text-muted"></i>
@@ -252,6 +252,7 @@ function FilterCourse({
                   <div className="form-group mb-20px">
                     <label>Trạng thái</label>
                     <Select
+                      isMulti
                       isClearable
                       name="filter.Status"
                       placeholder="Chọn trạng thái"
@@ -275,26 +276,9 @@ function FilterCourse({
                         }
                       ]}
                       className="select-control"
-                      value={[
-                        {
-                          value: 2,
-                          label: 'Chưa tốt nghiệp'
-                        },
-                        {
-                          value: 4,
-                          label: 'Chờ tốt nghiệp'
-                        },
-                        {
-                          value: 1,
-                          label: 'Đã tốt nghiệp'
-                        },
-                        {
-                          value: 3,
-                          label: 'Đang tạm dừng'
-                        }
-                      ].filter(item => item.value === values?.filter.Status)}
+                      value={values?.filter.Status}
                       onChange={otp => {
-                        setFieldValue('filter.Status', otp ? otp.value : '')
+                        setFieldValue('filter.Status', otp)
                       }}
                       noOptionsMessage={() => 'Không có dữ liệu'}
                       menuPortalTarget={document.body}

@@ -583,7 +583,8 @@ export const BrowserHelpers = {
           : '',
         DayToPay,
         DayStatus,
-        Places: params.filter?.Places?.value || ''
+        Places: params.filter?.Places?.value || '',
+        Status: params.filter?.Status ? params.filter?.Status.map(x => x.value).toString() : ''
       },
       filterCourse: {
         ...params.filterCourse,
