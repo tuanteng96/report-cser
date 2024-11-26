@@ -114,7 +114,7 @@ function BookService(props) {
             PCount: data?.result?.PCount || 0,
             Sum: data?.result?.Sum || null
           }
-          setListData(Items.map(item => ({ ...item, Ids: uuidv4() })))
+          setListData(Items.map(item => ({ ...item, Ids: uuidv4(), Desc: item.Desc ? item.Desc.replaceAll("\n", " | ").replaceAll("</br>", ", ") : "" })))
           setSumTotal(Sum)
           setPageCount(PCount)
           setLoading(false)
@@ -351,7 +351,7 @@ function BookService(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -370,7 +370,7 @@ function BookService(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-md-row">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-md-center justify-content-between flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách đặt lịch</div>
           {width < 1200 && (
             <OverlayTrigger
@@ -381,23 +381,23 @@ function BookService(props) {
               overlay={
                 <Popover id={`popover-positioned-top`}>
                   <Popover.Body className="p-0">
-                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                       <span>Khách đến</span>
                       <span>{SumTotal?.KHACH_DEN || 0}</span>
                     </div>
-                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                       <span>Khách không đến</span>
                       <span>{SumTotal?.KHACH_KHONG_DEN || 0}</span>
                     </div>
-                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                       <span>Xác nhận</span>
                       <span>{SumTotal?.XAC_NHAN || 0}</span>
                     </div>
-                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                       <span>Xác nhận tự động</span>
                       <span>{SumTotal?.XAC_NHAN_TU_DONG || 0}</span>
                     </div>
-                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                       <span>Chưa xác nhận</span>
                       <span>{SumTotal?.CHUA_XAC_NHAN || 0}</span>
                     </div>
@@ -409,7 +409,7 @@ function BookService(props) {
                 </Popover>
               }
             >
-              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h5"></i>
+              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h5"></i>
             </OverlayTrigger>
           )}
           {width >= 1200 && (
