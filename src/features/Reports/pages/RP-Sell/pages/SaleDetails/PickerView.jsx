@@ -7,8 +7,13 @@ import moment from 'moment'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import { useApp } from 'src/app/App'
+import clsx from 'clsx'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 
 function PickerView({ children, item, filters }) {
+  const { GGLoading } = useApp()
   let [visible, setVisible] = useState(false)
   let [params, setParams] = useState({
     StockID: filters?.StockID,
@@ -18,9 +23,11 @@ function PickerView({ children, item, filters }) {
     Pi: 1,
     Ps: 15
   })
+  const [loadingExport, setLoadingExport] = useState(false)
+
   const open = () => setVisible(true)
   const onHide = () => setVisible(false)
-  
+
   let elRef = useRef(null)
 
   const { isLoading, data } = useQuery({
@@ -42,6 +49,7 @@ function PickerView({ children, item, filters }) {
     keepPreviousData: true,
     enabled: visible
   })
+
   const columns = useMemo(
     () => [
       {
@@ -183,11 +191,42 @@ function PickerView({ children, item, filters }) {
     ],
     [params]
   )
+
   const rowClassName = ({ rowData }) => {
     if (rowData.Status === 'cancel' && rowData.IsReturn > 0) {
       return 'bg-danger-o-50'
     }
   }
+  
+  const onExport = () => {
+    setLoadingExport(true)
+    reportsApi
+      .getViewSaleDetail(
+        BrowserHelpers.getRequestParamsList(
+          {
+            ...params,
+            StockID: params?.StockID,
+            DateStart: params?.DateStart,
+            DateEnd: params?.DateEnd,
+            ids: params?.ids,
+            Title: item?.ProdTitle
+          },
+          {
+            Total: data.Total
+          }
+        )
+      )
+      .then(({ data }) => {
+        window?.EzsExportExcel &&
+          window?.EzsExportExcel({
+            Url: '/ban-hang/chi-tiet-sp-dv-ban-ra',
+            Data: data,
+            hideLoading: () => setLoadingExport(false)
+          })
+      })
+      .catch(error => console.log(error))
+  }
+
   return (
     <AnimatePresence>
       <>
@@ -203,8 +242,25 @@ function PickerView({ children, item, filters }) {
                 exit={{ opacity: 0, translateY: '100%' }}
               >
                 <div className="relative flex justify-between px-4 py-4 border-b md:py-5">
-                  <div className="text-lg font-bold md:text-2xl">
-                    {item?.ProdTitle}
+                  <div className="flex align-items-center">
+                    <div className="text-lg font-bold md:text-2xl">
+                      {item?.ProdTitle}
+                    </div>
+                    <button
+                      onClick={onExport}
+                      type="button"
+                      className={clsx(
+                        'btn btn-primary ms-4 max-w-135px text-truncate',
+                        (loadingExport || GGLoading) &&
+                          'spinner spinner-white spinner-right'
+                      )}
+                      disabled={loadingExport || GGLoading}
+                    >
+                      <i className="far fa-file-excel pr-8px"></i>
+                      <span>
+                        {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
+                      </span>
+                    </button>
                   </div>
                   <div
                     className="absolute flex items-center justify-center w-12 h-12 cursor-pointer right-4 top-2/4 -translate-y-2/4"
@@ -213,7 +269,10 @@ function PickerView({ children, item, filters }) {
                     <XMarkIcon className="w-6 md:w-8" />
                   </div>
                 </div>
-                <div className="p-4 overflow-auto grow md:overflow-hidden" ref={elRef}>
+                <div
+                  className="p-4 overflow-auto grow md:overflow-hidden"
+                  ref={elRef}
+                >
                   <ReactTableV7
                     rowKey="ID"
                     overscanRowCount={50}
