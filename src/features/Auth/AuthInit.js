@@ -30,7 +30,7 @@ function AuthInit(props) {
             DevHelpers.isDevelopment()
               ? process.env.REACT_APP_API_URL
               : window.API || ''
-          }/brand/global/Global.json`
+          }/brand/global/Global.json?${new Date().getTime()}`
         )
         .then(({ data }) => {
           dispatch(

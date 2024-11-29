@@ -44,10 +44,12 @@ const convertArray = arrays => {
 }
 
 function PriceList(props) {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || []
+    Stocks: auth?.Info?.Stocks || [],
+    GlobalConfig: auth?.GlobalConfig
   }))
+  
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     Pi: 1, // Trang hiện tại
@@ -269,10 +271,10 @@ function PriceList(props) {
             rowData.BonusSaleLevels &&
             rowData.BonusSaleLevels.length > 0 &&
             rowData.BonusSaleLevels.some(x => x.Salary) ? (
-              <div className="d-flex flex-wrap">
+              <div className="flex-wrap d-flex">
                 {rowData.BonusSaleLevels.map((x, index) => (
                   <code
-                    className="fw-600 font-size-md px-2 m-3px d-block"
+                    className="px-2 fw-600 font-size-md m-3px d-block"
                     key={index}
                   >
                     {x.Level}{' '}
@@ -296,7 +298,7 @@ function PriceList(props) {
             PriceHelper.formatVND(rowData?.hoa_hong_ktv),
           width: 150,
           sortable: false,
-          hidden: window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van_ktv_an
+          hidden: GlobalConfig?.Admin?.hoa_hong_tu_van_ktv_an
         },
         {
           key: 'luong_ca',
@@ -311,7 +313,7 @@ function PriceList(props) {
                     {o.Luong_ca_cap_bac && o.Luong_ca_cap_bac.length > 0 ? (
                       <div>
                         {o.Luong_ca_cap_bac.map((x, idx) => (
-                          <code className="fw-600 font-size-md px-2" key={idx}>
+                          <code className="px-2 fw-600 font-size-md" key={idx}>
                             {x.LevelName} {PriceHelper.formatVND(x?.Salary)}
                           </code>
                         )).reduce((prev, curr) => [prev, ', ', curr])}
@@ -471,7 +473,7 @@ function PriceList(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Bảng giá sản phẩm, dịch vụ
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -481,7 +483,7 @@ function PriceList(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -500,7 +502,7 @@ function PriceList(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách sản phẩm, dịch vụ</div>
         </div>
         <div className="p-20px">

@@ -70,7 +70,7 @@ const OverlayHH = ({ rowData, filters }) => {
                 {values &&
                   values.map((item, index) => (
                     <div
-                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
                       <span>{item.StockTitle}</span>
@@ -85,7 +85,7 @@ const OverlayHH = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
         <div>{PriceHelper.formatVND(rowData.HOA_HONG)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -148,7 +148,7 @@ const OverlayLCS = ({ rowData, filters }) => {
                 {values &&
                   values.map((item, index) => (
                     <div
-                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
                       <span>{item.StockTitle}</span>
@@ -163,7 +163,7 @@ const OverlayLCS = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
         <div>{PriceHelper.formatVND(rowData.LUONG_CHAM_CONG)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -226,7 +226,7 @@ const OverlayLT = ({ rowData, filters }) => {
                 {values &&
                   values.map((item, index) => (
                     <div
-                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
                       <span>{item.StockTitle}</span>
@@ -241,7 +241,7 @@ const OverlayLT = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
         <div>{PriceHelper.formatVND(rowData.LUONG_CA)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -304,7 +304,7 @@ const OverlayDS = ({ rowData, filters }) => {
                 {values &&
                   values.map((item, index) => (
                     <div
-                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
                       <span>{item.StockTitle}</span>
@@ -319,7 +319,7 @@ const OverlayDS = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
         <div>{PriceHelper.formatVND(rowData.DOANH_SO_THANG)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -409,7 +409,7 @@ const OverlayKPI = ({ rowData, filters }) => {
             )}
             {!loading && (
               <>
-                <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                   <span>Doanh số cơ sở chính</span>
                   <span>
                     {PriceHelper.formatVND(
@@ -420,7 +420,7 @@ const OverlayKPI = ({ rowData, filters }) => {
                 {values &&
                   values.map((item, index) => (
                     <div
-                      className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between"
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
                       <span>{item.StockTitle}</span>
@@ -439,7 +439,7 @@ const OverlayKPI = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="d-flex justify-content-between w-100 align-items-center cursor-pointer">
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
         <div>{PriceHelper.formatVND(rowData.KPI_Hoa_hong)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -450,9 +450,10 @@ const OverlayKPI = ({ rowData, filters }) => {
 }
 
 function PayrollStaff(props) {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || []
+    Stocks: auth?.Info?.Stocks || [],
+    GlobalConfig: auth?.GlobalConfig
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -792,7 +793,7 @@ function PayrollStaff(props) {
         title: 'KPI',
         dataKey: 'KPI_Hoa_hong',
         cellRenderer: ({ rowData }) =>
-          window?.top?.GlobalConfig?.Admin?.chi_tiet_cong ? (
+          GlobalConfig?.Admin?.chi_tiet_cong ? (
             <OverlayKPI rowData={rowData} filters={filters} />
           ) : (
             PriceHelper.formatVND(rowData?.KPI_Hoa_hong)
@@ -950,7 +951,7 @@ function PayrollStaff(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Bảng lương nhân viên
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -960,7 +961,7 @@ function PayrollStaff(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -979,7 +980,7 @@ function PayrollStaff(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách nhân viên</div>
         </div>
         <div className="p-20px">
