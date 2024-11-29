@@ -10,6 +10,11 @@ import * as _redux from './api/configs'
 import http from './api/configs/http'
 import { SplashScreenProvider } from './layout/_core/SplashScreen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { install } from 'resize-observer'
+
+if (typeof window !== 'undefined') {
+  install()
+}
 
 /**
  * Base URL of the website.
