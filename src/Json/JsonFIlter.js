@@ -491,10 +491,10 @@ export const JsonFilter = {
       value: 'KHACH_CU',
       label: 'Khách cũ'
     },
-    {
-      value: 'KHACH_VANG_LAI_CO_TK',
-      label: 'Khách vãng lai có tài khoản'
-    },
+    // {
+    //   value: 'KHACH_VANG_LAI_CO_TK',
+    //   label: 'Khách vãng lai có tài khoản'
+    // },
     {
       value: 'KHACH_MOI',
       label: 'Khách mới'

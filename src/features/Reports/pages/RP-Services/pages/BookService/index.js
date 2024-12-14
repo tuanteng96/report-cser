@@ -68,7 +68,8 @@ function BookService(props) {
     StatusAtHome: '', //TAI_NHA,TAI_SPA
     MemberID: '',
     UserID: '', //nv dat
-    UserServiceIDs: ''
+    UserServiceIDs: '',
+    include: "IsNewMember,OrderInDate"
   })
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
@@ -317,10 +318,29 @@ function BookService(props) {
         sortable: false
       },
       {
+        key: 'IsNewMember',
+        title: 'Trạng thái',
+        dataKey: 'IsNewMember',
+        cellRenderer: ({ rowData }) => (
+          <>
+            {rowData?.IsNewMember ? "Khách mới" : "Khách cũ"}
+          </>
+        ),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'OrderInDate',
+        title: 'Đơn hàng',
+        dataKey: 'OrderInDate',
+        width: 250,
+        sortable: false
+      },
+      {
         key: 'Desc',
         title: 'Ghi chú',
         dataKey: 'Desc',
-        width: 200,
+        width: 250,
         sortable: false
       }
     ],
