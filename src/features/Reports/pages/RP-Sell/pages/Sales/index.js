@@ -164,7 +164,10 @@ function Sales(props) {
   const getListServices = (isLoading = true, callback) => {
     isLoading && setLoadingTable(true)
     reportsApi
-      .getListSell(BrowserHelpers.getRequestParamsList(filters))
+      .getListSell({
+        ...BrowserHelpers.getRequestParamsList(filters),
+        ShowsX: filters.ShowsX === '11' ? '1' : filters.ShowsX
+      })
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -449,11 +452,11 @@ function Sales(props) {
                   Chi tiết thanh toán #{rowData.Id}
                 </Popover.Header>
                 <Popover.Body className="p-0">
-                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                     <span>Tiền mặt</span>
                     <span>{PriceHelper.formatVND(rowData.DaThToan_TM)}</span>
                   </div>
-                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                     <span>Chuyển khoản</span>
                     <span>{PriceHelper.formatVND(rowData.DaThToan_CK)}</span>
                   </div>
@@ -467,7 +470,7 @@ function Sales(props) {
           >
             <div className="d-flex justify-content-between align-items-center w-100">
               {PriceHelper.formatVND(rowData.DaThToan)}
-              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning"></i>
             </div>
           </OverlayTrigger>
         ),
@@ -569,9 +572,16 @@ function Sales(props) {
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
         reportsApi.getListSell(
-          BrowserHelpers.getRequestParamsList(filters, {
-            Total: PageTotal
-          })
+          BrowserHelpers.getRequestParamsList(
+            {
+              ...filters,
+              ShowsX: filters.ShowsX === '11' ? '1' : filters.ShowsX,
+              ShowsX2: filters.ShowsX === '11'
+            },
+            {
+              Total: PageTotal
+            }
+          )
         ),
       UrlName: '/ban-hang/doanh-so'
     })
@@ -591,9 +601,7 @@ function Sales(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Doanh số
-          </span>
+          <span className="text-uppercase font-size-xl fw-600">Doanh số</span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
           </span>
@@ -601,7 +609,7 @@ function Sales(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -630,6 +638,10 @@ function Sales(props) {
           {
             label: 'Tách dòng',
             value: '1'
+          },
+          {
+            label: 'Tách dòng 2',
+            value: '11'
           }
         ]}
       />
@@ -639,7 +651,7 @@ function Sales(props) {
           {!loading && (
             <div className="bg-white rounded report-sell-overview">
               <div
-                className="rounded text-white p-30px elm-top"
+                className="text-white rounded p-30px elm-top"
                 style={{ backgroundColor: '#f54e60' }}
               >
                 <div className="mb-15px d-flex justify-content-between align-items-end">
@@ -650,7 +662,7 @@ function Sales(props) {
                     {moment(filters.Date).format('ddd, ll')}
                   </span> */}
                 </div>
-                <div className="font-number text-center py-3 py-md-5 fw-600 total">
+                <div className="py-3 text-center font-number py-md-5 fw-600 total">
                   +{PriceHelper.formatVND(dataSell.DSo_Ngay)}
                 </div>
               </div>
@@ -658,7 +670,7 @@ function Sales(props) {
                 <div className="row">
                   <div className="col-md-6">
                     <div
-                      className="rounded mb-20px p-4"
+                      className="p-4 rounded mb-20px"
                       style={{ backgroundColor: '#E1F0FF', color: '#3699FF' }}
                     >
                       <i className="fa-solid fa-money-bill-wave font-size-30"></i>
@@ -680,7 +692,7 @@ function Sales(props) {
                                 Chi tiết thanh toán
                               </Popover.Header>
                               <Popover.Body className="p-0">
-                                <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                   <span>Tiền mặt</span>
                                   <span>
                                     {PriceHelper.formatVND(
@@ -688,7 +700,7 @@ function Sales(props) {
                                     )}
                                   </span>
                                 </div>
-                                <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                   <span>Chuyển khoản</span>
                                   <span>
                                     {PriceHelper.formatVND(
@@ -708,7 +720,7 @@ function Sales(props) {
                             </Popover>
                           }
                         >
-                          <i className="fa-solid fa-circle-exclamation font-size-xl pl-5px cursor-pointer"></i>
+                          <i className="cursor-pointer fa-solid fa-circle-exclamation font-size-xl pl-5px"></i>
                         </OverlayTrigger>
                       </div>
                       <div className="">Thanh toán</div>
@@ -716,7 +728,7 @@ function Sales(props) {
                   </div>
                   <div className="col-md-6">
                     <div
-                      className="rounded mb-20px p-4"
+                      className="p-4 rounded mb-20px"
                       style={{ backgroundColor: '#FFF4DE', color: '#FFA800' }}
                     >
                       <i className="fa-solid fa-wallet font-size-30"></i>
@@ -728,7 +740,7 @@ function Sales(props) {
                   </div>
                   <div className="col-md-6">
                     <div
-                      className="rounded p-4 mb-4 mb-md-0"
+                      className="p-4 mb-4 rounded mb-md-0"
                       style={{ backgroundColor: '#C9F7F5', color: '#1BC5BD' }}
                     >
                       <i className="fa-solid fa-id-card font-size-30"></i>
@@ -742,7 +754,7 @@ function Sales(props) {
                   </div>
                   <div className="col-md-6">
                     <div
-                      className="rounded p-4"
+                      className="p-4 rounded"
                       style={{ backgroundColor: '#FFE2E5', color: '#F64E60' }}
                     >
                       <i className="fa-solid fa-credit-card-blank font-size-30"></i>
@@ -761,7 +773,7 @@ function Sales(props) {
           <div className="row">
             <div className="col-md-12">
               <div
-                className="bg-white rounded p-4 w-100 mt-4 mt-lg-0"
+                className="p-4 mt-4 bg-white rounded w-100 mt-lg-0"
                 style={{ height: heightElm > 0 ? `${heightElm}px` : 'auto' }}
               >
                 <ChartCircle
@@ -775,7 +787,7 @@ function Sales(props) {
         </div>
       </div>
       <div className="bg-white rounded mt-25px">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách đơn hàng</div>
           <div className="d-flex">
             <div className="fw-500 pr-sm-15px d-flex align-items-center">
@@ -792,11 +804,11 @@ function Sales(props) {
                   overlay={
                     <Popover id={`popover-positioned-top`}>
                       <Popover.Body className="p-0">
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                           <span>Nguyên giá</span>
                           <span>{PriceHelper.formatVND(Total.Value)}</span>
                         </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
                           <span>Giảm giá</span>
                           <span>
                             {PriceHelper.formatVND(Total.ReducedValue)}
@@ -806,7 +818,7 @@ function Sales(props) {
                     </Popover>
                   }
                 >
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h6 vertical-align-text-top d-none d-sm-inline-block"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h6 vertical-align-text-top d-none d-sm-inline-block"></i>
                 </OverlayTrigger>
               </div>
               {width <= 1200 && (
@@ -818,39 +830,39 @@ function Sales(props) {
                   overlay={
                     <Popover id={`popover-positioned-top`}>
                       <Popover.Body className="p-0">
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between d-md-none">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between d-md-none">
                           <span>Cần thanh toán</span>
                           <span>{PriceHelper.formatVND(Total.ToPay)}</span>
                         </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                           <span>TM+CK+QT</span>
                           <span>{PriceHelper.formatVND(Total.DaThToan)}</span>
                         </div>
-                        <div className="py-10px px-15px fw-400 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-400 font-size-md border-bottom d-flex justify-content-between">
                           <span>Đã thanh toán TM</span>
                           <span>
                             {PriceHelper.formatVND(Total.DaThToan_TM)}
                           </span>
                         </div>
-                        <div className="py-10px px-15px fw-400 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-400 font-size-md border-bottom d-flex justify-content-between">
                           <span>Đã thanh toán CK</span>
                           <span>
                             {PriceHelper.formatVND(Total.DaThToan_CK)}
                           </span>
                         </div>
-                        <div className="py-10px px-15px fw-400 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-400 font-size-md border-bottom d-flex justify-content-between">
                           <span>Đã thanh toán QT</span>
                           <span>
                             {PriceHelper.formatVND(Total.DaThToan_QT)}
                           </span>
                         </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                           <span>Ví</span>
                           <span>
                             {PriceHelper.formatVNDPositive(Total.DaThToan_Vi)}
                           </span>
                         </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                           <span>Thẻ tiền</span>
                           <span>
                             {PriceHelper.formatVNDPositive(
@@ -868,7 +880,7 @@ function Sales(props) {
                     </Popover>
                   }
                 >
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h5"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h5"></i>
                 </OverlayTrigger>
               )}
             </div>
@@ -899,19 +911,19 @@ function Sales(props) {
                     overlay={
                       <Popover id={`popover-positioned-top`}>
                         <Popover.Body className="p-0">
-                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                             <span>Tiền mặt</span>
                             <span>
                               {PriceHelper.formatVND(Total.DaThToan_TM)}
                             </span>
                           </div>
-                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                             <span>Chuyển khoản</span>
                             <span>
                               {PriceHelper.formatVND(Total.DaThToan_CK)}
                             </span>
                           </div>
-                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                             <span>Quẹt thẻ</span>
                             <span>
                               {PriceHelper.formatVND(Total.DaThToan_QT)}
@@ -921,7 +933,7 @@ function Sales(props) {
                       </Popover>
                     }
                   >
-                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h6 vertical-align-text-top"></i>
+                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h6 vertical-align-text-top"></i>
                   </OverlayTrigger>
                 </div>
                 <div className="fw-500 pr-15px">
@@ -969,7 +981,7 @@ function Sales(props) {
       <div className="row">
         <div className="col-md-6">
           <div className="bg-white rounded mt-20px">
-            <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+            <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
               <div className="fw-500 font-size-lg">Doanh số theo tuần</div>
             </div>
             <div className="p-20px">
@@ -979,7 +991,7 @@ function Sales(props) {
         </div>
         <div className="col-md-6">
           <div className="bg-white rounded mt-20px">
-            <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+            <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
               <div className="fw-500 font-size-lg">Doanh số theo năm</div>
             </div>
             <div className="p-20px">
