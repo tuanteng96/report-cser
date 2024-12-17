@@ -552,7 +552,7 @@ function Sales(props) {
           <Text tooltipMaxWidth={300}>
             {[rowData?.Prod || '', rowData?.Svr || '', rowData?.PP || '']
               .filter(x => x)
-              .join(', ')}
+              .join('; ')}
           </Text>
         ),
         width: 300,
