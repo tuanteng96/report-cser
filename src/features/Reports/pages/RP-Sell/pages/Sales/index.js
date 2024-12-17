@@ -550,9 +550,9 @@ function Sales(props) {
         dataKey: 'Prod',
         cellRenderer: ({ rowData }) => (
           <Text tooltipMaxWidth={300}>
-            {`${rowData.Prod ? `${rowData.Prod} ` : ''}${
-              rowData.Prod ? ',' : ''
-            }${rowData.Svr || ''}`}
+            {[rowData?.Prod || '', rowData?.Svr || '', rowData?.PP || '']
+              .filter(x => x)
+              .join(', ')}
           </Text>
         ),
         width: 300,
