@@ -41,6 +41,7 @@ const {
   TypeTCList,
   TagsTCList,
   TypeCNList,
+  TypeCNListNum,
   TypeCNHng,
   CategoriesTKList,
   TagWLList,
@@ -1050,6 +1051,24 @@ function FilterList({
                         onChange={handleChange}
                         onBlur={handleBlur}
                         autoComplete="off"
+                      />
+                    </div>
+                  )}
+                  {'ProdOrService' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Loại</label>
+                      <Select
+                        menuPosition="fixed"
+                        isClearable={true}
+                        name="ProdOrService"
+                        placeholder="Chọn loại"
+                        classNamePrefix="select"
+                        options={TypeCNListNum}
+                        className="select-control"
+                        value={values.ProdOrService}
+                        onChange={otp => {
+                          setFieldValue('ProdOrService', otp)
+                        }}
                       />
                     </div>
                   )}

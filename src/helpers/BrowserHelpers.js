@@ -86,6 +86,11 @@ export const BrowserHelpers = {
         ? filters.AllServiceID.value
         : ''
     }
+    if ('ProdOrService' in filters) {
+      params.ProdOrService = filters.ProdOrService
+        ? filters.ProdOrService.value
+        : ''
+    }
     if ('StaffID' in filters) {
       params.StaffID = filters.StaffID ? filters.StaffID.value : ''
     }
@@ -584,7 +589,9 @@ export const BrowserHelpers = {
         DayToPay,
         DayStatus,
         Places: params.filter?.Places?.value || '',
-        Status: params.filter?.Status ? params.filter?.Status.map(x => x.value).toString() : ''
+        Status: params.filter?.Status
+          ? params.filter?.Status.map(x => x.value).toString()
+          : ''
       },
       filterCourse: {
         ...params.filterCourse,

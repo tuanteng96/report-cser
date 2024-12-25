@@ -71,7 +71,8 @@ function SalesStaff(props) {
     CategoriesId: '', // ID 1 danh mục
     BrandId: '', //ID 1 nhãn hàng
     ProductId: '', // ID 1 SP, DV, NVL, ...
-    KpiType: ''
+    KpiType: '',
+    ProdOrService: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
