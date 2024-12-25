@@ -61,7 +61,10 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
                             key="bottom"
                             placement="bottom"
                             overlay={
-                              <Popover id={`popover-positioned-top`} className='overflow-auto h-250px'>
+                              <Popover
+                                id={`popover-positioned-top`}
+                                className="overflow-auto h-250px"
+                              >
                                 <Popover.Body className="p-0">
                                   {Object.keys(data['TTTK']).map(
                                     (keyName, i) => (
@@ -91,7 +94,8 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
                                         </span>
                                         <span>
                                           {PriceHelper.formatVND(
-                                            data["TTT"][i] - data['TTTK'][keyName]
+                                            data['TTT'][i] -
+                                              data['TTTK'][keyName]
                                           )}
                                         </span>
                                       </div>
@@ -226,6 +230,18 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
                         </div>
                       ))}
                   </div>
+                </div>
+                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
+                  <div>Ngày thanh toán nợ</div>
+                  <div className="fw-600">
+                    {item.DayToPay
+                      ? moment(item.DayToPay).format('DD-MM-YYYY')
+                      : ''}
+                  </div>
+                </div>
+                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
+                  <div>Ghi chú</div>
+                  <div className="fw-600">{item.Desc}</div>
                 </div>
               </div>
             ))}
