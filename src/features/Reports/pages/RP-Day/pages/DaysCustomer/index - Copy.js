@@ -988,7 +988,7 @@ function DaysCustomer(props) {
             Total: data.result?.Total || 0,
             PCount: data.result?.PCount || 0
           }
-          setListData(Items)
+          setListData(converArray(Items))
           setPageCount(PCount)
           setLoading(false)
           setPageTotal(Total)
@@ -1042,8 +1042,8 @@ function DaysCustomer(props) {
         key: 'index',
         title: 'STT',
         dataKey: 'index',
-        cellRenderer: ({ rowIndex }) =>
-          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        cellRenderer: ({ rowData }) =>
+          filters.Ps * (filters.Pi - 1) + (rowData.rowIndex + 1),
         width: 60,
         sortable: false,
         align: 'center',
@@ -1052,56 +1052,33 @@ function DaysCustomer(props) {
         }
       },
       {
-        key: 'FullName',
-        title: 'Tên khách hàng',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            <div className="fw-600">{rowData?.FullName}</div>
-            <div>{rowData?.Phone}</div>
-          </div>
-        ),
-        dataKey: 'FullName',
-        width: 280,
+        key: 'CreateDate',
+        title: 'Ngày',
+        dataKey: 'CreateDate',
+        cellRenderer: ({ rowData }) =>
+          moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+        width: 150,
         sortable: false,
         mobileOptions: {
           visible: true
         }
       },
       {
-        key: 'IN_OUT',
-        title: 'IN - OUT',
-        dataKey: 'IN_OUT',
-        width: 200,
-        cellRenderer: ({ rowData }) => (
-          <div>
-            <div className="fw-600">
-              <span
-                style={{
-                  display: 'inline-block',
-                  width: '40px'
-                }}
-              >
-                IN:
-              </span>
-              {rowData?.CheckIn
-                ? moment(rowData?.CheckIn).format('HH:mm')
-                : '--:--'}
-            </div>
-            <div className="fw-600">
-              <span
-                style={{
-                  display: 'inline-block',
-                  width: '40px'
-                }}
-              >
-                OUT:
-              </span>
-              {rowData?.CheckOut
-                ? moment(rowData?.CheckOut).format('HH:mm')
-                : '--:--'}
-            </div>
-          </div>
-        ),
+        key: 'FullName',
+        title: 'Tên khách hàng',
+        dataKey: 'FullName',
+        width: 280,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        },
+        className: 'flex-1'
+      },
+      {
+        key: 'Phone',
+        title: 'Số điện thoại',
+        dataKey: 'Phone',
+        width: 180,
         sortable: false,
         mobileOptions: {
           visible: true
@@ -1117,105 +1094,40 @@ function DaysCustomer(props) {
         sortable: false
       },
       {
-        key: 'DHM_TTN_TH',
-        title: 'Đơn hàng mới/Thanh toán nợ/Trả hàng',
-        dataKey: 'DHM_TTN_TH',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            {/* {
-              rowData.
-            } */}
-            <div></div>
-          </div>
-        ),
-        width: 600,
+        key: 'CheckIn',
+        title: 'Giờ bắt đầu',
+        dataKey: 'CheckIn',
+        cellRenderer: ({ rowData }) =>
+          rowData.CheckIn
+            ? moment(rowData.CheckIn).format('HH:mm DD/MM/YYYY')
+            : '',
+        width: 200,
         sortable: false
       },
       {
-        key: 'DVTH',
-        title: 'Dịch vụ thực hiện',
-        dataKey: 'DVTH',
-        cellRenderer: ({ rowData }) => (
-          <div>
-            {rowData.children &&
-              rowData.children.map((item, index) => (
-                <Fragment key={index}>
-                  {item.MajorList &&
-                    item.MajorList.filter(
-                      x => x.Services && x.Services.length > 0
-                    ).map((major, i) => (
-                      <Fragment key={i}>
-                        {major.Services &&
-                          major.Services.map((sv, k) => (
-                            <div className="mb-3 last:!mb-0" key={k}>
-                              <div className="fw-600">{sv.Title}</div>
-                              <div>
-                                Phụ phí :
-                                <span className="pl-1">
-                                  {sv.PhuPhi &&
-                                    sv.PhuPhi.map(o => o.Title).join(', ')}
-                                  {(!sv.PhuPhi || sv.PhuPhi.length === 0) &&
-                                    'Không'}
-                                </span>
-                              </div>
-                              <div>
-                                <div className="underline">Nhân viên : </div>
-                                <div>
-                                  {sv.HoaHong &&
-                                    sv.HoaHong.length > 0 &&
-                                    sv.HoaHong.map((o, io) => (
-                                      <div key={io}>
-                                        <span>{o.FullName}</span>
-                                        <span className="pl-1">
-                                          [ {PriceHelper.formatVND(o.Bonus)}đ ]
-                                        </span>
-                                      </div>
-                                    ))}
-                                  {(!sv.HoaHong || sv.HoaHong.length === 0) &&
-                                    'Không có nhân viên.'}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                      </Fragment>
-                    ))}
-                </Fragment>
-              ))}
-          </div>
-        ),
-        width: 300,
+        key: 'CheckOut',
+        title: 'Giờ kết thúc',
+        dataKey: 'CheckOut',
+        cellRenderer: ({ rowData }) =>
+          rowData.CheckOut
+            ? moment(rowData.CheckOut).format('HH:mm DD/MM/YYYY')
+            : '',
+        width: 200,
         sortable: false
       },
       {
-        key: 'NVK',
-        title: 'Nghiệp vụ khác',
-        dataKey: 'NVK',
+        key: '#',
+        title: '#',
+        dataKey: '#',
         cellRenderer: ({ rowData }) => (
-          <div>
-            {rowData.children &&
-              rowData.children
-                .filter(x => x.More && x.More.length > 0)
-                .map((item, index) => (
-                  <Fragment key={index}>
-                    {item.More &&
-                      item.More.map((more, i) => (
-                        <div className="mb-3 last:!mb-0" key={i}>
-                          <div className="fw-600">{more.Title}</div>
-                          <div>{more.Desc}</div>
-                          <div>
-                            Giá trị :
-                            <span className="pl-5px text-danger fw-500">
-                              {PriceHelper.formatVND(more.Value)}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                  </Fragment>
-                ))}
-          </div>
+          <button className="btn btn-primary btn-xs" type="button">
+            <span className="open">Xem chi tiết</span>
+            <span className="hide">Ẩn chi tiết</span>
+          </button>
         ),
-        width: 400,
-        sortable: false
+        width: 150,
+        sortable: false,
+        align: 'center'
       }
     ],
     [filters]
@@ -1301,7 +1213,8 @@ function DaysCustomer(props) {
         </div>
         <div className="p-20px">
           <ReactTableV7
-            rowKey="MemberID"
+            expandColumnKey={columns[7].key}
+            rowKey="Ids"
             filters={filters}
             columns={columns}
             data={ListData}
