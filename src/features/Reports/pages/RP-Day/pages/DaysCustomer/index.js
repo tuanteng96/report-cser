@@ -114,7 +114,7 @@ const DetailRenderer = ({ filters, ...props }) => {
           </div>
           <div className="table-responsive">
             {MajorListResult ? (
-              <table className="table table-bordered mb-0">
+              <table className="table mb-0 table-bordered">
                 <tbody>
                   {MajorListResult.Order &&
                     MajorListResult.Order.map((item, index) => (
@@ -162,7 +162,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                     Chi tiết thanh toán
                                   </Popover.Header>
                                   <Popover.Body className="p-0">
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Tiền mặt</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(
@@ -170,7 +170,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                         )}
                                       </span>
                                     </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Chuyển khoản</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(
@@ -191,7 +191,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                               }
                             >
                               <div className="d-flex justify-content-between align-items-center">
-                                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                                <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                               </div>
                             </OverlayTrigger>
                           </div>
@@ -284,7 +284,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                     Chi tiết thanh toán
                                   </Popover.Header>
                                   <Popover.Body className="p-0">
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Tiền mặt</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(
@@ -292,7 +292,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                         )}
                                       </span>
                                     </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Chuyển khoản</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(
@@ -313,7 +313,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                               }
                             >
                               <div className="d-flex justify-content-between align-items-center">
-                                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                                <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                               </div>
                             </OverlayTrigger>
                           </div>
@@ -494,7 +494,7 @@ const DetailRenderer = ({ filters, ...props }) => {
               <div className="pl-15px">Chưa có dữ liệu</div>
             )}
             {/* {MajorList && MajorList.length > 0 ? (
-              <table className="table table-bordered mb-0">
+              <table className="table mb-0 table-bordered">
                 <tbody>
                   {MajorList &&
                     MajorList.map((item, index) => (
@@ -541,7 +541,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                         Chi tiết thanh toán
                                       </Popover.Header>
                                       <Popover.Body className="p-0">
-                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                           <span>Tiền mặt</span>
                                           <span>
                                             {PriceHelper.formatVNDPositive(
@@ -549,7 +549,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                             )}
                                           </span>
                                         </div>
-                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                           <span>Chuyển khoản</span>
                                           <span>
                                             {PriceHelper.formatVNDPositive(
@@ -570,7 +570,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                   }
                                 >
                                   <div className="d-flex justify-content-between align-items-center">
-                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                                   </div>
                                 </OverlayTrigger>
                               </div>
@@ -659,7 +659,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                         Chi tiết thanh toán
                                       </Popover.Header>
                                       <Popover.Body className="p-0">
-                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                           <span>Tiền mặt</span>
                                           <span>
                                             {PriceHelper.formatVNDPositive(
@@ -667,7 +667,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                             )}
                                           </span>
                                         </div>
-                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                           <span>Chuyển khoản</span>
                                           <span>
                                             {PriceHelper.formatVNDPositive(
@@ -688,7 +688,7 @@ const DetailRenderer = ({ filters, ...props }) => {
                                   }
                                 >
                                   <div className="d-flex justify-content-between align-items-center">
-                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                                   </div>
                                 </OverlayTrigger>
                               </div>
@@ -880,7 +880,7 @@ const DetailRenderer = ({ filters, ...props }) => {
               <span className="text-danger">(*)</span> Nghiệp vụ khác
             </div>
             <div className="table-responsive">
-              <table className="table table-bordered mb-0">
+              <table className="table mb-0 table-bordered">
                 <thead>
                   <tr>
                     <th className="min-w-250px w-250px">Tên nghiệp vụ</th>
@@ -1044,6 +1044,7 @@ function DaysCustomer(props) {
         dataKey: 'index',
         cellRenderer: ({ rowIndex }) =>
           filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+        className: '!items-start',
         width: 60,
         sortable: false,
         align: 'center',
@@ -1060,6 +1061,7 @@ function DaysCustomer(props) {
             <div>{rowData?.Phone}</div>
           </div>
         ),
+        className: '!items-start',
         dataKey: 'FullName',
         width: 280,
         sortable: false,
@@ -1102,6 +1104,7 @@ function DaysCustomer(props) {
             </div>
           </div>
         ),
+        className: '!items-start',
         sortable: false,
         mobileOptions: {
           visible: true
@@ -1113,6 +1116,7 @@ function DaysCustomer(props) {
         dataKey: 'TongThanhToan',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(rowData.TongThanhToan),
+        className: '!items-start',
         width: 200,
         sortable: false
       },
@@ -1121,14 +1125,379 @@ function DaysCustomer(props) {
         title: 'Đơn hàng mới/Thanh toán nợ/Trả hàng',
         dataKey: 'DHM_TTN_TH',
         cellRenderer: ({ rowData }) => (
-          <div>
-            {/* {
-              rowData.
-            } */}
-            <div></div>
+          <div className="w-full">
+            {rowData.children &&
+              rowData.children.map((item, index) => (
+                <Fragment key={index}>
+                  {item.MajorList &&
+                    item.MajorList.map((major, i) => (
+                      <Fragment key={i}>
+                        {major.Order && (
+                          <div className="grid grid-cols-3 mb-3 gap-7 last:mb-0">
+                            <div>
+                              <div className="flex justify-between mb-1 fw-600">
+                                <div>#{major.Order?.ID}</div>
+                                <div className="text-danger">
+                                  {PriceHelper.formatVND(
+                                    major.Order?.GiaBanDonHang
+                                  )}
+                                </div>
+                              </div>
+                              <div>
+                                {major.Order?.Prods?.map((x, k) => (
+                                  <div key={k}>
+                                    {x.Title} (x{x.Qty})
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex items-baseline fw-600">
+                              <OverlayTrigger
+                                rootClose
+                                trigger="click"
+                                key="top"
+                                placement="top"
+                                overlay={
+                                  <Popover id={`popover-positioned-top`}>
+                                    <Popover.Header
+                                      className="py-10px text-uppercase fw-600"
+                                      as="h3"
+                                    >
+                                      Chi tiết thanh toán
+                                    </Popover.Header>
+                                    <Popover.Body className="p-0">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                        <span>Tiền mặt</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.Order.ThanhToan_TienMat
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                        <span>Chuyển khoản</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.Order.ThanhToan_CK
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                        <span>Quẹt thẻ</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.Order.ThanhToan_QT
+                                          )}
+                                        </span>
+                                      </div>
+                                    </Popover.Body>
+                                  </Popover>
+                                }
+                              >
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success mr-5px"></i>
+                                </div>
+                              </OverlayTrigger>
+                              <span className="text-success fw-600">
+                                TT:
+                                <span className="pl-1">
+                                  {PriceHelper.formatVNDPositive(
+                                    major.Order.ThanhToan
+                                  )}
+                                </span>
+                              </span>
+                            </div>
+                            <div>
+                              <div>
+                                <div className="underline">Hoa hồng :</div>
+                                <div>
+                                  {major?.Order?.HoaHong &&
+                                  major?.Order?.HoaHong.length > 0
+                                    ? major?.Order?.HoaHong.map((o, k) => (
+                                        <div key={k}>
+                                          {o.FullName}
+                                          <span className="pl-1">
+                                            [ {PriceHelper.formatVND(o.Bonus)}đ
+                                            ]
+                                          </span>
+                                        </div>
+                                      ))
+                                    : 'Không'}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="underline">Tư vấn :</div>
+                                <div>
+                                  {major?.Order?.DoanhSo &&
+                                  major?.Order?.DoanhSo.length > 0
+                                    ? major?.Order?.DoanhSo.map((o, k) => (
+                                        <div key={k}>
+                                          {o.FullName}
+                                          <span className="pl-1">
+                                            [ {PriceHelper.formatVND(o.Bonus)}đ
+                                            ]
+                                          </span>
+                                        </div>
+                                      ))
+                                    : 'Không'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {major.PayDebt && (
+                          <div className="grid grid-cols-3 mb-3 gap-7 last:mb-0">
+                            <div>
+                              <div className="flex justify-between mb-1 fw-600">
+                                <div>#{major.PayDebt?.ID}</div>
+                                <div className="text-danger">
+                                  [ Thanh toán nợ ]
+                                </div>
+                              </div>
+                              <div>
+                                {major.PayDebt?.Prods?.map((x, k) => (
+                                  <div key={k}>
+                                    {x.Title} (x{x.Qty})
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex items-baseline fw-600">
+                              <OverlayTrigger
+                                rootClose
+                                trigger="click"
+                                key="top"
+                                placement="top"
+                                overlay={
+                                  <Popover id={`popover-positioned-top`}>
+                                    <Popover.Header
+                                      className="py-10px text-uppercase fw-600"
+                                      as="h3"
+                                    >
+                                      Chi tiết thanh toán
+                                    </Popover.Header>
+                                    <Popover.Body className="p-0">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                        <span>Tiền mặt</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.PayDebt.ThanhToan_TienMat
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                        <span>Chuyển khoản</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.PayDebt.ThanhToan_CK
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="border-gray-200 py-10px px-15px fw-500 font-size-md d-flex justify-content-between border-bottom">
+                                        <span>Quẹt thẻ</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.PayDebt.ThanhToan_QT
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="border-gray-200 py-10px px-15px fw-500 font-size-md d-flex justify-content-between border-bottom">
+                                        <span>Thanh toán ví</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.PayDebt.Vi
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                        <span>Quẹt thẻ</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.PayDebt.TheTien
+                                          )}
+                                        </span>
+                                      </div>
+                                    </Popover.Body>
+                                  </Popover>
+                                }
+                              >
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success mr-5px"></i>
+                                </div>
+                              </OverlayTrigger>
+                              <span className="text-success fw-600">
+                                TT:
+                                <span className="pl-1">
+                                  {PriceHelper.formatVNDPositive(
+                                    major.PayDebt.ThanhToan
+                                  )}
+                                </span>
+                              </span>
+                            </div>
+                            <div>
+                              <div>
+                                <div className="underline">Hoa hồng :</div>
+                                <div>
+                                  {major?.PayDebt?.HoaHong &&
+                                  major?.PayDebt?.HoaHong.length > 0
+                                    ? major?.PayDebt?.HoaHong.map((o, k) => (
+                                        <div key={k}>
+                                          {o.FullName}
+                                          <span className="pl-1">
+                                            [ {PriceHelper.formatVND(o.Bonus)}đ
+                                            ]
+                                          </span>
+                                        </div>
+                                      ))
+                                    : 'Không'}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="underline">Tư vấn :</div>
+                                <div>
+                                  {major?.PayDebt?.DoanhSo &&
+                                  major?.PayDebt?.DoanhSo.length > 0
+                                    ? major?.PayDebt?.DoanhSo.map((o, k) => (
+                                        <div key={k}>
+                                          {o.FullName}
+                                          <span className="pl-1">
+                                            [ {PriceHelper.formatVND(o.Bonus)}đ
+                                            ]
+                                          </span>
+                                        </div>
+                                      ))
+                                    : 'Không'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {major.Returns && (
+                          <div className="grid grid-cols-3 mb-3 gap-7 last:mb-0">
+                            <div>
+                              <div className="flex justify-between mb-1 fw-600">
+                                <div>#{major.Returns?.ID}</div>
+                                <div className="text-danger">[ Trả hàng ]</div>
+                              </div>
+                              <div>
+                                {major.Returns?.Prods?.map((x, k) => (
+                                  <div key={k}>
+                                    {x.Title} (x{x.Qty})
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex items-baseline fw-600">
+                              <OverlayTrigger
+                                rootClose
+                                trigger="click"
+                                key="top"
+                                placement="top"
+                                overlay={
+                                  <Popover id={`popover-positioned-top`}>
+                                    <Popover.Header
+                                      className="py-10px text-uppercase fw-600"
+                                      as="h3"
+                                    >
+                                      Chi tiết hoàn tiền
+                                    </Popover.Header>
+                                    <Popover.Body className="p-0">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                        <span>Hoàn tiền mặt</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.Returns.HoanTienMat
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                        <span>Hoàn ví</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.Returns.HoanVi
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                        <span>Hoàn thẻ tiền</span>
+                                        <span>
+                                          {PriceHelper.formatVNDPositive(
+                                            major.Returns.HoanTheTien
+                                          )}
+                                        </span>
+                                      </div>
+                                    </Popover.Body>
+                                  </Popover>
+                                }
+                              >
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success mr-5px"></i>
+                                </div>
+                              </OverlayTrigger>
+                              <span className="text-success fw-600">
+                                Hoàn:
+                                <span className="pl-1">
+                                  {PriceHelper.formatVNDPositive(
+                                    major.Returns.HoanTienMat +
+                                      major.Returns.HoanVi +
+                                      major.Returns.HoanTheTien
+                                  )}
+                                </span>
+                              </span>
+                            </div>
+                            <div>
+                              <div className="mb-1 fw-600">
+                                Khấu trừ HS & DS
+                              </div>
+                              <div>
+                                <div className="underline">Hoa hồng giảm :</div>
+                                <div>
+                                  {major?.Returns?.HoaHongGiam &&
+                                  major?.Returns?.HoaHongGiam.length > 0
+                                    ? major?.Returns?.HoaHongGiam.map(
+                                        (o, k) => (
+                                          <div key={k}>
+                                            {o.FullName}
+                                            <span className="pl-1">
+                                              [ {PriceHelper.formatVND(o.Bonus)}
+                                              đ ]
+                                            </span>
+                                          </div>
+                                        )
+                                      )
+                                    : 'Không'}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="underline">Tư vấn :</div>
+                                <div>
+                                  {major?.Returns?.DoanhSoGiam &&
+                                  major?.Returns?.DoanhSoGiam.length > 0
+                                    ? major?.Returns?.DoanhSoGiam.map(
+                                        (o, k) => (
+                                          <div key={k}>
+                                            {o.FullName}
+                                            <span className="pl-1">
+                                              [ {PriceHelper.formatVND(o.Bonus)}
+                                              đ ]
+                                            </span>
+                                          </div>
+                                        )
+                                      )
+                                    : 'Không'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </Fragment>
+                    ))}
+                </Fragment>
+              ))}
           </div>
         ),
-        width: 600,
+        className: '!items-start',
+        width: 750,
         sortable: false
       },
       {
@@ -1183,6 +1552,7 @@ function DaysCustomer(props) {
               ))}
           </div>
         ),
+        className: '!items-start',
         width: 300,
         sortable: false
       },
@@ -1214,6 +1584,7 @@ function DaysCustomer(props) {
                 ))}
           </div>
         ),
+        className: '!items-start',
         width: 400,
         sortable: false
       }
@@ -1267,7 +1638,7 @@ function DaysCustomer(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Báo cáo chi tiết
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -1277,7 +1648,7 @@ function DaysCustomer(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -1296,7 +1667,7 @@ function DaysCustomer(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
         </div>
         <div className="p-20px">

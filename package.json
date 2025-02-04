@@ -2,7 +2,7 @@
     "name": "react-teamplate",
     "version": "0.1.0",
     "private": true,
-    "_homepage": "/App23/",
+    "homepage": "/App23/",
     "dependencies": {
         "@floating-ui/react": "^0.26.25",
         "@headlessui/react": "^2.1.10",

@@ -15,14 +15,14 @@ export const ArrayHeplers = {
     }
     return newObj
   },
-  useInfiniteQuery: (page, key = "data") => {
-    let newPages = [];
-    if (!page || !page[0]) return newPages;
+  useInfiniteQuery: (page, key = 'data') => {
+    let newPages = []
+    if (!page || !page[0]) return newPages
     for (let items of page) {
       for (let x of items[key]) {
-        newPages.push(x);
+        newPages.push(x)
       }
     }
-    return newPages;
-  },
+    return newPages
+  }
 }
