@@ -490,16 +490,34 @@ function NavBar(props) {
                   )}
                 </a>
               ) : (
-                <NavLink
-                  className={clsx(isActive(item.Href) && 'active')}
-                  to={item.Href}
-                >
-                  <i className={item.IconClass}></i>
-                  <span>{item.Title}</span>
-                  {item.Children && item.Children.length > 0 && (
-                    <i className="fa-solid fa-chevron-down icon-down"></i>
+                <>
+                  {window.AppNavigation && item.TitleKey === 'BAO_CAO_NGAY' ? (
+                    <a
+                      className={clsx(isActive(item.Href) && 'active')}
+                      onClick={() =>
+                        window.AppNavigation &&
+                        window.AppNavigation('/report-preview/')
+                      }
+                    >
+                      <i className={item.IconClass}></i>
+                      <span>{item.Title}</span>
+                      {item.Children && item.Children.length > 0 && (
+                        <i className="fa-solid fa-chevron-down icon-down"></i>
+                      )}
+                    </a>
+                  ) : (
+                    <NavLink
+                      className={clsx(isActive(item.Href) && 'active')}
+                      to={item.Href}
+                    >
+                      <i className={item.IconClass}></i>
+                      <span>{item.Title}</span>
+                      {item.Children && item.Children.length > 0 && (
+                        <i className="fa-solid fa-chevron-down icon-down"></i>
+                      )}
+                    </NavLink>
                   )}
-                </NavLink>
+                </>
               )}
 
               {item.Children &&
@@ -521,12 +539,33 @@ function NavBar(props) {
                               {sub.Title}
                             </a>
                           ) : (
-                            <NavLink
-                              className={clsx(isActive(sub.Href) && 'active')}
-                              to={sub.Href}
-                            >
-                              {sub.Title}
-                            </NavLink>
+                            <>
+                              {window.AppNavigation &&
+                              sub.Href ===
+                                '/admin/?mdl20=R23&act20=index#rp:/bao-cao-ngay/tong-quan' ? (
+                                <a
+                                  className={clsx(
+                                    isActive(sub.Href) && 'active'
+                                  )}
+                                  href="#"
+                                  onClick={() =>
+                                    window.AppNavigation &&
+                                    window.AppNavigation('/report-preview/')
+                                  }
+                                >
+                                  {sub.Title}
+                                </a>
+                              ) : (
+                                <NavLink
+                                  className={clsx(
+                                    isActive(sub.Href) && 'active'
+                                  )}
+                                  to={sub.Href}
+                                >
+                                  {sub.Title}
+                                </NavLink>
+                              )}
+                            </>
                           )}
                         </li>
                       ))}

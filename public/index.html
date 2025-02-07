@@ -36,9 +36,11 @@
         }) {
             if (typeof data === "string") {
                 const IfameBody = JSON.parse(data || '');
+                console.log(IfameBody)
                 window.Info = IfameBody.Info;
                 window.token = IfameBody.token;
-                window.isApp = IfameBody.isApp || false
+                window.isApp = IfameBody.isApp || false;
+                window.AppNavigation = IfameBody.AppNavigation || null
                 window.isDesktop = IfameBody.isDesktop || false;
             }
         }))
