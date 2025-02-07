@@ -399,10 +399,24 @@ function NavBar(props) {
                     )}
                     key={index}
                   >
-                    <NavLink to={item.Href}>
-                      <i className={item.IconClass}></i>
-                      <span>{item.Title}</span>
-                    </NavLink>
+                    {item.TitleKey === 'BAO_CAO_NGAY' && !window.isApp ? (
+                      <a
+                        href="#"
+                        onClick={() =>
+                          (window.top.location.href =
+                            '/admin/?mdl20=R23&act20=daily')
+                        }
+                      >
+                        <i className={item.IconClass}></i>
+                        <span>{item.Title}</span>
+                      </a>
+                    ) : (
+                      <NavLink to={item.Href}>
+                        <i className={item.IconClass}></i>
+                        <span>{item.Title}</span>
+                      </NavLink>
+                    )}
+
                     {item.Children && item.Children.length > 0 && (
                       <div
                         className="btn-down"
@@ -459,16 +473,35 @@ function NavBar(props) {
         {MenuList &&
           MenuList.map((item, index) => (
             <li key={index}>
-              <NavLink
-                className={clsx(isActive(item.Href) && 'active')}
-                to={item.Href}
-              >
-                <i className={item.IconClass}></i>
-                <span>{item.Title}</span>
-                {item.Children && item.Children.length > 0 && (
-                  <i className="fa-solid fa-chevron-down icon-down"></i>
-                )}
-              </NavLink>
+              {item.TitleKey === 'BAO_CAO_NGAY' && !window.isApp ? (
+                <a
+                  className={clsx(
+                    isActive(item.Href) && 'active',
+                    'cursor-pointer'
+                  )}
+                  onClick={() =>
+                    (window.top.location.href = '/admin/?mdl20=R23&act20=daily')
+                  }
+                >
+                  <i className={item.IconClass}></i>
+                  <span>{item.Title}</span>
+                  {item.Children && item.Children.length > 0 && (
+                    <i className="fa-solid fa-chevron-down icon-down"></i>
+                  )}
+                </a>
+              ) : (
+                <NavLink
+                  className={clsx(isActive(item.Href) && 'active')}
+                  to={item.Href}
+                >
+                  <i className={item.IconClass}></i>
+                  <span>{item.Title}</span>
+                  {item.Children && item.Children.length > 0 && (
+                    <i className="fa-solid fa-chevron-down icon-down"></i>
+                  )}
+                </NavLink>
+              )}
+
               {item.Children &&
                 item.Children.filter(x => !x.hidden).length > 0 && (
                   <div className="ezs-navbar__sub">
