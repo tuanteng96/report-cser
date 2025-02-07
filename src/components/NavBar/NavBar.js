@@ -25,7 +25,7 @@ function NavBar(props) {
   const { width } = useWindowSize()
   const [IndexShow, setIndexShow] = useState('')
   const [locationCurent, setLocationCurrent] = useState('')
-  
+
   const [MenuList, setMenuList] = useState([
     {
       Title: 'Báo cáo ngày',
@@ -416,12 +416,29 @@ function NavBar(props) {
                         <ul>
                           {item.Children.map((sub, i) => (
                             <li key={i}>
-                              <NavLink to={sub.Href}>
-                                <i className="menu-bullet menu-bullet-dot">
-                                  <span></span>
-                                </i>
-                                <span className="menu-text">{sub.Title}</span>
-                              </NavLink>
+                              {sub.Href ===
+                                '/admin/?mdl20=R23&act20=index#rp:/bao-cao-ngay/tong-quan' &&
+                              !window.isApp ? (
+                                <a
+                                  href="#"
+                                  onClick={() =>
+                                    (window.top.location.href =
+                                      '/admin/?mdl20=R23&act20=daily')
+                                  }
+                                >
+                                  <i className="menu-bullet menu-bullet-dot">
+                                    <span></span>
+                                  </i>
+                                  <span className="menu-text">{sub.Title}</span>
+                                </a>
+                              ) : (
+                                <NavLink to={sub.Href}>
+                                  <i className="menu-bullet menu-bullet-dot">
+                                    <span></span>
+                                  </i>
+                                  <span className="menu-text">{sub.Title}</span>
+                                </NavLink>
+                              )}
                             </li>
                           ))}
                         </ul>
@@ -458,12 +475,26 @@ function NavBar(props) {
                     <ul>
                       {item.Children.filter(x => !x.hidden).map((sub, i) => (
                         <li key={i}>
-                          <NavLink
-                            className={clsx(isActive(sub.Href) && 'active')}
-                            to={sub.Href}
-                          >
-                            {sub.Title}
-                          </NavLink>
+                          {sub.Href ===
+                            '/admin/?mdl20=R23&act20=index#rp:/bao-cao-ngay/tong-quan' &&
+                          !window.isApp ? (
+                            <a
+                              href="#"
+                              onClick={() =>
+                                (window.top.location.href =
+                                  '/admin/?mdl20=R23&act20=daily')
+                              }
+                            >
+                              {sub.Title}
+                            </a>
+                          ) : (
+                            <NavLink
+                              className={clsx(isActive(sub.Href) && 'active')}
+                              to={sub.Href}
+                            >
+                              {sub.Title}
+                            </NavLink>
+                          )}
                         </li>
                       ))}
                     </ul>

@@ -13,7 +13,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 11440,
+        ID: 11448,
         Title: 'Cser Hà Nội'
       },
       {
@@ -21,7 +21,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'TA Beauty - Linh Lang'
       }
     ],
-    CrStockID: 11440,
+    CrStockID: 11448,
     rightsSum: {
       thu_chi: {
         IsAllStock: true,
