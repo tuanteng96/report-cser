@@ -13,7 +13,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 11448,
+        ID: 11450,
         Title: 'Cser Hà Nội'
       },
       {
@@ -21,7 +21,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'TA Beauty - Linh Lang'
       }
     ],
-    CrStockID: 11448,
+    CrStockID: 11450,
     rightsSum: {
       thu_chi: {
         IsAllStock: true,
@@ -443,7 +443,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEyMjEzNSIsIm5iZiI6MTczODYzNDkyNSwiZXhwIjoxODI1MDM0OTI1LCJpYXQiOjE3Mzg2MzQ5MjV9.MWmJ_qFl84jvFmDpc-CNVG7R212UnkAZqaF0oSgnDvY'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEyMjEzMzEyMjEzOCIsIm5iZiI6MTczODgwOTg2MSwiZXhwIjoxODI1MjA5ODYxLCJpYXQiOjE3Mzg4MDk4NjF9.bwdaHx64wn8uH-KM1egIMGMYyt-SWw4XUMxqQlO3tV8'
 }
 const Auth = createSlice({
   name: 'auth',

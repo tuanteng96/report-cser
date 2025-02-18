@@ -202,6 +202,25 @@ function Attrition(props) {
         }
       },
       {
+        key: 'StockUsageList',
+        title: 'Tỉ lệ theo cơ sở',
+        dataKey: 'StockUsageList',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData?.StockUsageList
+              ? rowData?.StockUsageList.map(
+                  item =>
+                    `${item.Title || 'Chưa xác định'} (${item?.Unit} ${
+                      item?.SUnit
+                    })`
+                ).join(', ')
+              : 'Chưa xác định'}
+          </Text>
+        ),
+        width: 340,
+        sortable: false
+      },
+      {
         key: 'UsageList',
         title: 'Tỉ lệ vào các dịch vụ',
         dataKey: 'UsageList',

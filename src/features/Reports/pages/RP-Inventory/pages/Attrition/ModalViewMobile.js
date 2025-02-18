@@ -65,6 +65,18 @@ function ModalViewMobile({ show, onHide, data }) {
           </div>
           <div className="px-15px d-flex flex-column justify-content-between py-10px line-height-sm">
             <div className="fw-600 text-uppercase text-muted font-size-smm text-truncate">
+              Tỉ lệ theo cơ sở
+            </div>
+            <div className="fw-600 font-size-mdd">
+              {data?.StockUsageList
+                ? data?.StockUsageList.map(
+                    item => `${item.Title} (${item?.Unit} ${item?.SUnit})`
+                  ).join(', ')
+                : 'Chưa xác định'}
+            </div>
+          </div>
+          <div className="px-15px d-flex flex-column justify-content-between py-10px line-height-sm">
+            <div className="fw-600 text-uppercase text-muted font-size-smm text-truncate">
               Tỉ lệ vào các dịch vụ
             </div>
             <div className="fw-600 font-size-mdd">

@@ -69,9 +69,9 @@ const converItems = arr => {
           }
         }
 
-        let newDoanhSo = [...DoanhSo || []].map(x => ({ ...x }))
+        let newDoanhSo = [...(DoanhSo || [])].map(x => ({ ...x }))
 
-        for (let user of (a?.DoanhSo || [])) {
+        for (let user of a?.DoanhSo || []) {
           let indexMember = newDoanhSo.findIndex(
             c => c.FullName === user.FullName
           )
@@ -82,8 +82,8 @@ const converItems = arr => {
           }
         }
 
-        let newHoaHong = [...HoaHong || []].map(x => ({ ...x }))
-        for (let user of (a?.HoaHong || [])) {
+        let newHoaHong = [...(HoaHong || [])].map(x => ({ ...x }))
+        for (let user of a?.HoaHong || []) {
           let indexMember = newHoaHong.findIndex(
             c => c.FullName === user.FullName
           )
