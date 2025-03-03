@@ -171,6 +171,7 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
           </div>
         </div>
         <div className="px-15px">
+          
           {data &&
             data.ListOrders &&
             data.ListOrders.map((item, index) => (

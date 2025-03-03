@@ -523,6 +523,17 @@ function Home(props) {
             : 1
       },
       {
+        key: 'StockName',
+        title: 'Cơ sở',
+        dataKey: 'StockName',
+        width: 220,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.ListDebt && rowData.ListDebt.length > 0
+            ? rowData.ListDebt.length
+            : 1
+      },
+      {
         key: 'CreateDate',
         title: 'Ngày bán',
         dataKey: 'CreateDate',
