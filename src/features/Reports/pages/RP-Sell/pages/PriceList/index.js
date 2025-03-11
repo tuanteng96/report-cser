@@ -265,7 +265,7 @@ function PriceList(props) {
         },
         {
           key: 'hoa_hong_sale',
-          title: 'Hoa hồng Sale',
+          title: window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van || 'Hoa hồng tư vấn',
           dataKey: 'hoa_hong_sale',
           cellRenderer: ({ rowData }) =>
             rowData.BonusSaleLevels &&
@@ -292,11 +292,11 @@ function PriceList(props) {
         },
         {
           key: 'hoa_hong_ktv',
-          title: 'Hoa hồng KTV',
+          title: window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van_khm || 'Hoa hồng tư vấn khách mới',
           dataKey: 'hoa_hong_ktv',
           cellRenderer: ({ rowData }) =>
             PriceHelper.formatVND(rowData?.hoa_hong_ktv),
-          width: 150,
+          width: 250,
           sortable: false,
           hidden: GlobalConfig?.Admin?.hoa_hong_tu_van_ktv_an
         },
