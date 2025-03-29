@@ -528,6 +528,11 @@ export const BrowserHelpers = {
     if ('DayService' in filters) {
       params.DayService = filters.DayService
     }
+    if ('GroupMemberIDs' in filters) {
+      params.GroupMemberIDs = filters.GroupMemberIDs
+        ? filters.GroupMemberIDs.map(x => x.value)
+        : []
+    }
     return params
   },
   getRequestParamsCourse: (filters, config) => {

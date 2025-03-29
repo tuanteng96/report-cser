@@ -18,6 +18,9 @@ const reportsApi = {
   getListCustomerGeneral: data => {
     return http.post(`${SubApi}/khach-hang/tong-hop`, JSON.stringify(data))
   },
+  getListCustomerLevelUp: data => {
+    return http.post(`/api/v3/r23/khach-hang/len-cap`, JSON.stringify(data))
+  },
   getListCustomerConvert: data => {
     return http.post(`${SubApi}/khach-hang/chuyen-doi`, JSON.stringify(data))
   },
@@ -49,10 +52,7 @@ const reportsApi = {
     )
   },
   getListSale2: data => {
-    return http.post(
-      `/api/v3/MemberGroup27@Get`,
-      JSON.stringify(data)
-    )
+    return http.post(`/api/v3/MemberGroup27@Get`, JSON.stringify(data))
   },
   getOverviewServices: data => {
     return http.post(`${SubApi}/dich-vu/tong-quan`, JSON.stringify(data))
@@ -221,7 +221,10 @@ const reportsApi = {
   getDetailPayroll: (data, params) =>
     http.post(`/api/v3/r23detail@${params}`, JSON.stringify(data)),
   getViewSaleDetail: data => {
-    return http.post(`/api/v3/r23/ban-hang/doanh-so-chi-tiet-2`, JSON.stringify(data))
-  },
+    return http.post(
+      `/api/v3/r23/ban-hang/doanh-so-chi-tiet-2`,
+      JSON.stringify(data)
+    )
+  }
 }
 export default reportsApi

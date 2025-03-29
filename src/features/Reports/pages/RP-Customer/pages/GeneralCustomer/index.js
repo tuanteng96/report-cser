@@ -47,6 +47,7 @@ function GeneralCustomer(props) {
     DayFromServices: '', // Số buổi còn lại từ
     DayToServices: '', // Số buổi còn lại đến
     MemberID: '',
+    GroupMemberIDs: [],
     ShowsX: '2'
   })
   const [StockName, setStockName] = useState('')
@@ -81,15 +82,44 @@ function GeneralCustomer(props) {
 
   const getListGeneralCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    reportsApi
-      .getListCustomerGeneral(BrowserHelpers.getRequestParamsToggle(filters))
-      .then(({ data }) => {
-        if (data.isRight) {
-          PermissionHelpers.ErrorAccess(data.error)
-          setLoading(false)
-        } else {
-          const { Members, Total, TotalOnline, PCount, TongSL, TongThanhTien } =
-            {
+    if (filters.ShowsX === '1') {
+      reportsApi
+        .getListCustomerLevelUp(BrowserHelpers.getRequestParamsToggle(filters))
+        .then(({ data }) => {
+          if (data.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            setLoading(false)
+          } else {
+            const { Members, Total, PCount } = {
+              Members: data?.result?.Members || data?.result?.Items || [],
+              Total: data?.result?.Total || 0,
+              PCount: data?.result?.PCount || 0
+            }
+            setListData(Members)
+            setPageCount(PCount)
+            setLoading(false)
+            setPageTotal(Total)
+            isFilter && setIsFilter(false)
+            callback && callback()
+            PermissionHelpers.HideErrorAccess()
+          }
+        })
+    } else {
+      reportsApi
+        .getListCustomerGeneral(BrowserHelpers.getRequestParamsToggle(filters))
+        .then(({ data }) => {
+          if (data.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            setLoading(false)
+          } else {
+            const {
+              Members,
+              Total,
+              TotalOnline,
+              PCount,
+              TongSL,
+              TongThanhTien
+            } = {
               Members: data?.result?.Members || data?.result?.Items || [],
               Total: data?.result?.Total || 0,
               TotalOnline: data?.result?.TotalOnline || 0,
@@ -97,18 +127,19 @@ function GeneralCustomer(props) {
               TongSL: data?.result?.TongSL || 0,
               TongThanhTien: data?.result?.TongThanhTien || 0
             }
-          setListData(Members)
-          setPageCount(PCount)
-          setTotalOl(TotalOnline)
-          setLoading(false)
-          setPageTotal(Total)
-          setTotalShows({ TongSL, TongThanhTien })
-          isFilter && setIsFilter(false)
-          callback && callback()
-          PermissionHelpers.HideErrorAccess()
-        }
-      })
-      .catch(error => console.log(error))
+            setListData(Members)
+            setPageCount(PCount)
+            setTotalOl(TotalOnline)
+            setLoading(false)
+            setPageTotal(Total)
+            setTotalShows({ TongSL, TongThanhTien })
+            isFilter && setIsFilter(false)
+            callback && callback()
+            PermissionHelpers.HideErrorAccess()
+          }
+        })
+        .catch(error => console.log(error))
+    }
   }
 
   const onOpenFilter = () => {
@@ -131,10 +162,16 @@ function GeneralCustomer(props) {
     PermissionHelpers.ExportExcel({
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
-      FuncApi: () =>
-        reportsApi.getListCustomerGeneral(
+      FuncApi: () => {
+        if (filters.ShowsX === '1') {
+          return reportsApi.getListCustomerLevelUp(
+            BrowserHelpers.getRequestParamsToggle(filters, { Total: PageTotal })
+          )
+        }
+        return reportsApi.getListCustomerGeneral(
           BrowserHelpers.getRequestParamsToggle(filters, { Total: PageTotal })
-        ),
+        )
+      },
       UrlName: '/khach-hang/tong-hop'
     })
   }
@@ -237,6 +274,80 @@ function GeneralCustomer(props) {
           dataKey: 'Co_so',
           width: 250,
           sortable: false
+        }
+      ]
+    }
+    if (filters.ShowsX === '1') {
+      return [
+        {
+          key: 'index',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex }) =>
+            filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'CreateDate',
+          title: 'Ngày tạo',
+          dataKey: 'CreateDate',
+          cellRenderer: ({ rowData }) =>
+            moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY'),
+          width: 150,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'StockTitle',
+          title: 'Cơ sở',
+          dataKey: 'StockTitle',
+          width: 280,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'ID',
+          title: 'ID Khách hàng',
+          dataKey: 'ID',
+          cellRenderer: ({ rowData }) => rowData.ID,
+          width: 130,
+          sortable: false
+        },
+        {
+          key: 'FullName',
+          title: 'Tên khách hàng',
+          dataKey: 'FullName',
+          width: 280,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'MobilePhone',
+          title: 'Số điện thoại',
+          dataKey: 'MobilePhone',
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'GroupTitle',
+          title: 'Lên cấp',
+          dataKey: 'GroupTitle',
+          width: 200,
+          sortable: false,
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>{rowData.GroupTitle || ''}</Text>
+          )
         }
       ]
     }
@@ -426,7 +537,7 @@ function GeneralCustomer(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Khách hàng tổng hợp
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -436,7 +547,7 @@ function GeneralCustomer(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -461,11 +572,15 @@ function GeneralCustomer(props) {
           {
             label: 'Tiêu Chuẩn',
             value: '0'
+          },
+          {
+            label: 'Khách hàng lên cấp',
+            value: '1'
           }
         ]}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
           {filters.ShowsX === '2' ? (
             <>
@@ -495,7 +610,7 @@ function GeneralCustomer(props) {
                     overlay={
                       <Popover id={`popover-positioned-top`}>
                         <Popover.Body className="p-0">
-                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                             <span>Tổng SL</span>
                             <span>{totalShows.TongSL}</span>
                           </div>
@@ -513,7 +628,7 @@ function GeneralCustomer(props) {
                       <span className="font-size-xl fw-600 text-success pl-5px font-number">
                         {totalShows.TongSL}
                       </span>
-                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                     </div>
                   </OverlayTrigger>
                 </div>
@@ -529,12 +644,14 @@ function GeneralCustomer(props) {
                       {PageTotal}
                     </span>
                   </div>
-                  <div className="fw-500 pl-20px">
-                    KH đến từ Online
-                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                      {TotalOl}
-                    </span>
-                  </div>
+                  {filters.ShowsX !== '1' && (
+                    <div className="fw-500 pl-20px">
+                      KH đến từ Online
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {TotalOl}
+                      </span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="fw-500 d-flex align-items-center">
@@ -547,7 +664,7 @@ function GeneralCustomer(props) {
                     overlay={
                       <Popover id={`popover-positioned-top`}>
                         <Popover.Body className="p-0">
-                          <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                             <span>Tổng KH</span>
                             <span>{PageTotal}</span>
                           </div>
@@ -563,7 +680,7 @@ function GeneralCustomer(props) {
                       <span className="font-size-xl fw-600 text-success pl-5px font-number">
                         {PageTotal}
                       </span>
-                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                     </div>
                   </OverlayTrigger>
                 </div>

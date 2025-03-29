@@ -49,7 +49,7 @@ function PriceList(props) {
     Stocks: auth?.Info?.Stocks || [],
     GlobalConfig: auth?.GlobalConfig
   }))
-  
+
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     Pi: 1, // Trang hiện tại
@@ -265,7 +265,9 @@ function PriceList(props) {
         },
         {
           key: 'hoa_hong_sale',
-          title: window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van || 'Hoa hồng tư vấn',
+          title:
+            window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van ||
+            'Hoa hồng tư vấn',
           dataKey: 'hoa_hong_sale',
           cellRenderer: ({ rowData }) =>
             rowData.BonusSaleLevels &&
@@ -292,7 +294,9 @@ function PriceList(props) {
         },
         {
           key: 'hoa_hong_ktv',
-          title: window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van_khm || 'Hoa hồng tư vấn khách mới',
+          title:
+            window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van_khm ||
+            'Hoa hồng tư vấn khách mới',
           dataKey: 'hoa_hong_ktv',
           cellRenderer: ({ rowData }) =>
             PriceHelper.formatVND(rowData?.hoa_hong_ktv),
@@ -415,6 +419,7 @@ function PriceList(props) {
         }
       }
     ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
   const onExport = () => {
