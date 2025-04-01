@@ -12,6 +12,7 @@ import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import ModalViewMobile from './ModalViewMobile'
 import { OverlayTrigger, Popover, Tooltip } from 'react-bootstrap'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+import Text from 'react-texty'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -411,8 +412,15 @@ function ReExs(props) {
       },
       {
         key: 'Ghi_chu',
-        title: 'Ghi chú đơn',
+        title: 'Ghi chú',
         dataKey: 'Ghi_chu',
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {TransferTags(rowData.Tag) === 'Thu bán hàng'
+              ? rowData.Ghi_chu
+              : rowData.Content}
+          </Text>
+        ),
         width: 300,
         sortable: false,
         hidden: Number(filters.ShowsX) !== 1
