@@ -146,6 +146,33 @@ function SalaryServices(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
+  const sumTotal = (data, key) => {
+    return data
+      ? data.reduce((accumulator, object) => {
+          return accumulator + object[key]
+        }, 0)
+      : 0
+  }
+
+  const wrapSalaryUser = arr => {
+    let rs = []
+    if (!arr || arr.length === 0) return rs
+    for (let item of arr) {
+      let index = rs.findIndex(x => x.StaffID === item.StaffID)
+      if (index > -1) {
+        rs[index].Items = [...rs[index].Items, item]
+      } else {
+        rs.push({
+          StaffID: item.StaffID,
+          StaffName: item.StaffName,
+          Items: [item]
+        })
+      }
+    }
+
+    return rs
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -202,38 +229,51 @@ function SalaryServices(props) {
                   {(rowData.LuongCa_PPhi?.DS_DV &&
                     rowData.LuongCa_PPhi?.DS_DV.length > 0) ||
                   (rowData.LuongCa_PPhi?.DS_PP &&
-                    rowData.LuongCa_PPhi?.DS_PP.length > 0) ? (
+                    rowData.LuongCa_PPhi?.DS_PP.length > 0) ||
+                  (wrapSalaryUser(rowData?.Salary?.salaryList) &&
+                    wrapSalaryUser(rowData?.Salary?.salaryList).length > 0) ? (
                     <Fragment>
                       {rowData.LuongCa_PPhi?.DS_DV.map((item, index) => (
                         <div
-                          className="py-10px px-15px fw-600 font-size-md border-top border-gray-200 d-flex justify-content-between"
+                          className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between"
                           key={index}
                         >
                           <span>{item.Title}</span>
                           <span>
                             {PriceHelper.formatVND(
-                              rowData?.LuongCa_PPhi?.Tong_DV_CAI_DAT
-                            )}
-                            {rowData?.LuongCa_PPhi?.Tong_DV_Extra > 0 && (
-                              <>
-                                ,{' '}
-                                {PriceHelper.formatVND(
-                                  rowData?.LuongCa_PPhi?.Tong_DV_Extra
-                                )}
-                              </>
+                              rowData?.LuongCa_PPhi?.Tong_DV ||
+                                rowData?.LuongCa_PPhi?.Tong_DV_Extra
                             )}
                           </span>
                         </div>
                       ))}
                       {rowData.LuongCa_PPhi?.DS_PP.map((item, index) => (
                         <div
-                          className="py-10px px-15px fw-600 font-size-md border-top border-gray-200 d-flex justify-content-between w-100"
+                          className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
                           key={index}
                         >
                           <span>{item.Title}</span>
                           <span>{PriceHelper.formatVND(item.ToPay)}</span>
                         </div>
                       ))}
+                      {wrapSalaryUser(rowData?.Salary?.salaryList) &&
+                        wrapSalaryUser(rowData?.Salary?.salaryList).length >
+                          1 &&
+                        wrapSalaryUser(rowData?.Salary?.salaryList).map(
+                          (item, index) => (
+                            <div
+                              className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
+                              key={index}
+                            >
+                              <span>{item.StaffName}</span>
+                              <span>
+                                {PriceHelper.formatVND(
+                                  sumTotal(item.Items, 'Value')
+                                )}
+                              </span>
+                            </div>
+                          )
+                        )}
                     </Fragment>
                   ) : (
                     <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
@@ -246,7 +286,7 @@ function SalaryServices(props) {
           >
             <div className="d-flex justify-content-end justify-content-md-between align-items-center w-100">
               {PriceHelper.formatVND(rowData.LuongCa_PPhi.Tong_Luong)}
-              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning pl-5px"></i>
+              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning pl-5px"></i>
             </div>
           </OverlayTrigger>
         ),
@@ -345,7 +385,7 @@ function SalaryServices(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Báo cáo lương ca dịch vụ
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -355,7 +395,7 @@ function SalaryServices(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -374,7 +414,7 @@ function SalaryServices(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách lương ca dịch vụ</div>
           <div className="d-flex">
             {/* <div className="fw-500 d-flex align-items-center">
@@ -399,13 +439,13 @@ function SalaryServices(props) {
                       Chi tiết tổng lương
                     </Popover.Header>
                     <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng lương dịch vụ</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.Tong_DV)}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
                         <span>Tổng lương phụ phí</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.Tong_PP)}
@@ -419,7 +459,7 @@ function SalaryServices(props) {
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVNDPositive(Total.Tong_Luong)}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>
