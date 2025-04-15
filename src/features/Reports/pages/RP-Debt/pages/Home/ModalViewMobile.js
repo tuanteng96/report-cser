@@ -169,22 +169,6 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
               {PriceHelper.formatVND(data?.TongNo)}
             </div>
           </div>
-          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
-              ID đơn hàng
-            </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              #{data?.OrderId}
-            </div>
-          </div>
-          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
-              Cơ sở
-            </div>
-            <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.StockName || 'Chưa xác định'}
-            </div>
-          </div>
         </div>
         <div className="px-15px">
           {data &&
@@ -197,6 +181,14 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
                 <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
                   <div>ID đơn hàng</div>
                   <div className="fw-600">#{item.Id}</div>
+                </div>
+                <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                  <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                    Cơ sở
+                  </div>
+                  <div className="fw-600 font-size-mdd w-60 text-end">
+                    {item?.StockName || 'Chưa xác định'}
+                  </div>
                 </div>
                 <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
                   <div>Ngày bán</div>
