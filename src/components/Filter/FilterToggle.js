@@ -38,7 +38,7 @@ const {
 //   return (
 //     <div>
 //       <div
-//         className="font-size-sm fw-600 text-uppercase d-flex align-items-center justify-content-between cursor-pointer pb-8px"
+//         className="cursor-pointer font-size-sm fw-600 text-uppercase d-flex align-items-center justify-content-between pb-8px"
 //         onClick={() => setShow(!show)}
 //       >
 //         {Title}
@@ -60,16 +60,20 @@ function FilterToggle({
   onExport,
   isOnlyCard
 }) {
-  const { Stocks, PermissionReport } = useSelector(({ auth }) => ({
-    Stocks: auth.Info?.Stocks
-      ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
-          ...item,
-          label: item.Title || item.label,
-          value: item.ID || item.value
-        }))
-      : [],
-    PermissionReport: auth.Info?.rightsSum?.report
-  }))
+  const { Stocks, PermissionReport, GlobalConfig, AuthID } = useSelector(
+    ({ auth }) => ({
+      Stocks: auth.Info?.Stocks
+        ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
+            ...item,
+            label: item.Title || item.label,
+            value: item.ID || item.value
+          }))
+        : [],
+      PermissionReport: auth.Info?.rightsSum?.report,
+      GlobalConfig: auth?.GlobalConfig,
+      AuthID: auth?.Info?.User?.ID
+    })
+  )
   const [StocksList, setStocksList] = useState([])
 
   const { pathname } = useLocation()
@@ -129,12 +133,12 @@ function FilterToggle({
           return (
             <Form>
               <div className="filter-box__content">
-                <div className="filter-box__header d-flex justify-content-between align-items-center border-bottom border-gray-200 px-20px py-20px">
+                <div className="border-gray-200 filter-box__header d-flex justify-content-between align-items-center border-bottom px-20px py-20px">
                   <div className="font-size-lg fw-500 text-uppercase">
                     Bộ lọc danh sách
                   </div>
                   <div
-                    className="w-30px h-30px d-flex justify-content-center align-items-center cursor-pointer"
+                    className="cursor-pointer w-30px h-30px d-flex justify-content-center align-items-center"
                     onClick={onHide}
                   >
                     <i className="fa-regular fa-xmark font-size-lg text-muted"></i>
@@ -968,21 +972,23 @@ function FilterToggle({
                   )}
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
-                  <button
-                    type="button"
-                    className={clsx(
-                      'btn btn-primary me-2 max-w-135px text-truncate',
-                      (loadingExport || loading || GGLoading) &&
-                        'spinner spinner-white spinner-right'
-                    )}
-                    disabled={loadingExport || GGLoading}
-                    onClick={onExport}
-                  >
-                    <i className="far fa-file-excel pr-8px"></i>
-                    <span>
+                  {(GlobalConfig?.Admin?.byAdminExcel
+                    ? AuthID === 1
+                    : !GlobalConfig?.Admin?.byAdminExcel) && (
+                    <button
+                      type="button"
+                      className={clsx(
+                        'btn btn-primary me-2 max-w-135px text-truncate',
+                        (loadingExport || loading || GGLoading) &&
+                          'spinner spinner-white spinner-right'
+                      )}
+                      disabled={loadingExport || GGLoading}
+                      onClick={onExport}
+                    >
+                      <i className="far fa-file-excel pr-8px"></i>
                       {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
-                    </span>
-                  </button>
+                    </button>
+                  )}
                   <button
                     type="button"
                     className={clsx(

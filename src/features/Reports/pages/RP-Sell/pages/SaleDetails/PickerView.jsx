@@ -11,9 +11,16 @@ import { useApp } from 'src/app/App'
 import clsx from 'clsx'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
+import { useSelector } from 'react-redux'
 
 function PickerView({ children, item, filters }) {
   const { GGLoading } = useApp()
+
+  const { GlobalConfig, AuthID } = useSelector(({ auth }) => ({
+    GlobalConfig: auth?.GlobalConfig,
+    AuthID: auth?.Info?.User?.ID
+  }))
+
   let [visible, setVisible] = useState(false)
   let [params, setParams] = useState({
     StockID: filters?.StockID,
@@ -197,7 +204,7 @@ function PickerView({ children, item, filters }) {
       return 'bg-danger-o-50'
     }
   }
-  
+
   const onExport = () => {
     setLoadingExport(true)
     reportsApi
@@ -246,21 +253,25 @@ function PickerView({ children, item, filters }) {
                     <div className="text-lg font-bold md:text-2xl">
                       {item?.ProdTitle}
                     </div>
-                    <button
-                      onClick={onExport}
-                      type="button"
-                      className={clsx(
-                        'btn btn-primary ms-4 max-w-135px text-truncate',
-                        (loadingExport || GGLoading) &&
-                          'spinner spinner-white spinner-right'
-                      )}
-                      disabled={loadingExport || GGLoading}
-                    >
-                      <i className="far fa-file-excel pr-8px"></i>
-                      <span>
-                        {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
-                      </span>
-                    </button>
+                    {(GlobalConfig?.Admin?.byAdminExcel
+                      ? AuthID === 1
+                      : !GlobalConfig?.Admin?.byAdminExcel) && (
+                      <button
+                        onClick={onExport}
+                        type="button"
+                        className={clsx(
+                          'btn btn-primary ms-4 max-w-135px text-truncate',
+                          (loadingExport || GGLoading) &&
+                            'spinner spinner-white spinner-right'
+                        )}
+                        disabled={loadingExport || GGLoading}
+                      >
+                        <i className="far fa-file-excel pr-8px"></i>
+                        <span>
+                          {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
+                        </span>
+                      </button>
+                    )}
                   </div>
                   <div
                     className="absolute flex items-center justify-center w-12 h-12 cursor-pointer right-4 top-2/4 -translate-y-2/4"

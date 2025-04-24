@@ -91,7 +91,7 @@ function FilterListAdvancedSv({
   isWarehouse = false,
   regimes
 }) {
-  const { Stocks, KPT_Max_Type, PermissionReport } = useSelector(
+  const { Stocks, KPT_Max_Type, PermissionReport, GlobalConfig, AuthID } = useSelector(
     ({ auth }) => ({
       Stocks: auth.Info?.Stocks
         ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
@@ -101,7 +101,9 @@ function FilterListAdvancedSv({
           }))
         : [],
       PermissionReport: auth.Info?.rightsSum?.report,
-      KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0
+      KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
+      GlobalConfig: auth?.GlobalConfig,
+      AuthID: auth?.Info?.User?.ID
     })
   )
   const [StocksList, setStocksList] = useState([])
@@ -221,12 +223,12 @@ function FilterListAdvancedSv({
           return (
             <Form>
               <div className="filter-box__content">
-                <div className="filter-box__header d-flex justify-content-between align-items-center border-bottom border-gray-200 px-20px py-20px">
+                <div className="border-gray-200 filter-box__header d-flex justify-content-between align-items-center border-bottom px-20px py-20px">
                   <div className="font-size-lg fw-500 text-uppercase">
                     Bộ lọc danh sách
                   </div>
                   <div
-                    className="w-30px h-30px d-flex justify-content-center align-items-center cursor-pointer"
+                    className="cursor-pointer w-30px h-30px d-flex justify-content-center align-items-center"
                     onClick={onHide}
                   >
                     <i className="fa-regular fa-xmark font-size-lg text-muted"></i>
@@ -1155,7 +1157,7 @@ function FilterListAdvancedSv({
                           checked={values.IsQtyEmpty}
                         />
                         <span className="checkbox-icon"></span>
-                        <span className="fw-500 cursor-pointer">
+                        <span className="cursor-pointer fw-500">
                           Lọc sản phẩm còn
                         </span>
                       </label>
@@ -1173,7 +1175,7 @@ function FilterListAdvancedSv({
                           checked={values.gia_nhap_tb_khoang_tg}
                         />
                         <span className="checkbox-icon"></span>
-                        <span className="fw-500 cursor-pointer">
+                        <span className="cursor-pointer fw-500">
                           Giá nhập TB trong khoảng thời gian
                         </span>
                       </label>
@@ -1418,7 +1420,7 @@ function FilterListAdvancedSv({
                               }
                             />
                             <span className="checkbox-icon"></span>
-                            <span className="fw-500 cursor-pointer">
+                            <span className="cursor-pointer fw-500">
                               Dịch vụ chuyển đổi không hợp lệ
                             </span>
                           </label>
@@ -1428,19 +1430,23 @@ function FilterListAdvancedSv({
                   )}
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
-                  <button
-                    type="button"
-                    className={clsx(
-                      'btn btn-primary me-2 max-w-135px text-truncate',
-                      (loadingExport || loading || GGLoading) &&
-                        'spinner spinner-white spinner-right'
-                    )}
-                    disabled={loadingExport || GGLoading}
-                    onClick={onExport}
-                  >
-                    <i className="far fa-file-excel pr-8px"></i>
-                    {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
-                  </button>
+                  {(GlobalConfig?.Admin?.byAdminExcel
+                    ? AuthID === 1
+                    : !GlobalConfig?.Admin?.byAdminExcel) && (
+                    <button
+                      type="button"
+                      className={clsx(
+                        'btn btn-primary me-2 max-w-135px text-truncate',
+                        (loadingExport || loading || GGLoading) &&
+                          'spinner spinner-white spinner-right'
+                      )}
+                      disabled={loadingExport || GGLoading}
+                      onClick={onExport}
+                    >
+                      <i className="far fa-file-excel pr-8px"></i>
+                      {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
+                    </button>
+                  )}
                   <button
                     type="button"
                     className={clsx(

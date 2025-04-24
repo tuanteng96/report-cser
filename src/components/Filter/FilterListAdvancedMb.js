@@ -45,16 +45,20 @@ function FilterListAdvancedMb({
   isOnlyCard,
   regimes
 }) {
-  const { Stocks, PermissionReport } = useSelector(({ auth }) => ({
-    Stocks: auth.Info?.Stocks
-      ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
-          ...item,
-          label: item.Title || item.label,
-          value: item.ID || item.value
-        }))
-      : [],
-    PermissionReport: auth.Info?.rightsSum?.report
-  }))
+  const { Stocks, PermissionReport, GlobalConfig, AuthID } = useSelector(
+    ({ auth }) => ({
+      Stocks: auth.Info?.Stocks
+        ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
+            ...item,
+            label: item.Title || item.label,
+            value: item.ID || item.value
+          }))
+        : [],
+      PermissionReport: auth.Info?.rightsSum?.report,
+      GlobalConfig: auth?.GlobalConfig,
+      AuthID: auth?.Info?.User?.ID
+    })
+  )
   const [StocksList, setStocksList] = useState([])
 
   const { pathname } = useLocation()
@@ -1111,21 +1115,23 @@ function FilterListAdvancedMb({
                   )}
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
-                  <button
-                    type="button"
-                    className={clsx(
-                      'btn btn-primary me-2 max-w-135px text-truncate',
-                      (loadingExport || loading || GGLoading) &&
-                        'spinner spinner-white spinner-right'
-                    )}
-                    disabled={loadingExport || GGLoading}
-                    onClick={onExport}
-                  >
-                    <i className="far fa-file-excel pr-8px"></i>
-                    <span>
+                  {(GlobalConfig?.Admin?.byAdminExcel
+                    ? AuthID === 1
+                    : !GlobalConfig?.Admin?.byAdminExcel) && (
+                    <button
+                      type="button"
+                      className={clsx(
+                        'btn btn-primary me-2 max-w-135px text-truncate',
+                        (loadingExport || loading || GGLoading) &&
+                          'spinner spinner-white spinner-right'
+                      )}
+                      disabled={loadingExport || GGLoading}
+                      onClick={onExport}
+                    >
+                      <i className="far fa-file-excel pr-8px"></i>
                       {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
-                    </span>
-                  </button>
+                    </button>
+                  )}
                   <button
                     type="button"
                     className={clsx(
