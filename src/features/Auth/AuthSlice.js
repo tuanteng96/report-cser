@@ -17,8 +17,8 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser Hà Nội'
       },
       {
-        ID: 11314,
-        Title: 'TA Beauty - Linh Lang'
+        ID: 11542,
+        Title: 'Cser HCM'
       }
     ],
     CrStockID: 11541,
@@ -429,7 +429,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEyMjEzMzEyMjY3MiIsIm5iZiI6MTc0NDI5NTUxOSwiZXhwIjoxODMwNjk1NTE5LCJpYXQiOjE3NDQyOTU1MTl9.bHmWuP7CwVSDmggrIptTvBzRPLOk-5JF8l8vJJGv5hE'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEyMjEzMzEyMjgzOCIsIm5iZiI6MTc0NjAyNTY2NCwiZXhwIjoxODMyNDI1NjY0LCJpYXQiOjE3NDYwMjU2NjR9.tfiWbi8-qStws9qREs-n-ZQ9_NIYwkC7IYKX9Z9vz4c'
 }
 const Auth = createSlice({
   name: 'auth',

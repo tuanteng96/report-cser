@@ -22,7 +22,8 @@ function SellProfit(props) {
     DateEnd: new Date(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 1500, // Số lượng item
-    gia_nhap_tb_khoang_tg: false // Tính theo DateStart,DateEnd, ngược lại tất cả
+    gia_nhap_tb_khoang_tg: false, // Tính theo DateStart,DateEnd, ngược lại tất cả
+    MemberIDs: ""
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -193,7 +194,7 @@ function SellProfit(props) {
                 <Tooltip id="button-tooltip">Tính theo giá cố định</Tooltip>
               }
             >
-              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
             </OverlayTrigger>
           </div>
         ),
@@ -220,7 +221,7 @@ function SellProfit(props) {
                 </Tooltip>
               }
             >
-              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
             </OverlayTrigger>
           </div>
         ),
@@ -310,7 +311,7 @@ function SellProfit(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Lợi nhuận
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -320,7 +321,7 @@ function SellProfit(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -341,7 +342,7 @@ function SellProfit(props) {
       <div className="row">
         <div className="col-md-6">
           <div className="bg-white rounded">
-            <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between flex-column flex-md-row">
+            <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between flex-column flex-md-row">
               <div className="fw-500 font-size-lg">
                 Danh sách sản phẩm / NVL
               </div>
@@ -369,7 +370,7 @@ function SellProfit(props) {
         </div>
         <div className="col-md-6">
           <div className="bg-white rounded">
-            <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between flex-column flex-md-row">
+            <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between flex-column flex-md-row">
               <div className="fw-500 font-size-lg">
                 Danh sách phụ phí / dịch vụ
               </div>

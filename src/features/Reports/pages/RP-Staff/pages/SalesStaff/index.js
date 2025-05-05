@@ -15,17 +15,57 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import moreApi from 'src/api/more.api'
 
 moment.locale('vi')
 
-const convertArray = arrays => {
+const convertArray = (arrays, configs, filters) => {
   const newArray = []
   if (!arrays || arrays.length === 0) {
     return newArray
   }
 
   for (let [index, obj] of arrays.entries()) {
+    let Threshold = null
+    if (configs) {
+      let index = configs.findIndex(x => x.ID === filters?.StockID)
+      if (
+        index > -1 &&
+        configs[index].Children &&
+        configs[index].Children.length > 0
+      ) {
+        let ThresholdIndex = configs[index].Children.findIndex(
+          x => x.FromValue <= obj.TongThuc && obj.TongThuc < x.ToValue
+        )
+        if (ThresholdIndex > -1)
+          Threshold = configs[index].Children[ThresholdIndex].Value
+      } else {
+        let index = configs.findIndex(x => x.ID === '-1')
+        if (
+          index > -1 &&
+          configs[index].Children &&
+          configs[index].Children.length > 0
+        ) {
+          let ThresholdIndex = configs[index].Children.findIndex(
+            x => x.FromValue <= obj.TongThuc && obj.TongThuc < x.ToValue
+          )
+          if (ThresholdIndex > -1)
+            Threshold = configs[index].Children[ThresholdIndex].Value
+        }
+      }
+    }
+
     for (let [o, Staff] of obj.StaffsList.entries()) {
+      let ThresholdRewards = 0
+      if (Threshold) {
+        if (Threshold <= 100) {
+          ThresholdRewards = (Threshold * Staff.TongThuc) / 100
+        } else {
+          let StaffPercent = (Staff.TongThuc / obj.TongThuc) * 100
+          ThresholdRewards = (StaffPercent * Threshold) / 100
+          //
+        }
+      }
       for (let [k, order] of Staff.OrdersList.entries()) {
         const newObj = {
           ...order,
@@ -35,6 +75,7 @@ const convertArray = arrays => {
           TongStaff: Staff.Tong,
           TongThucStaff: Staff.TongThuc,
           KhauTruStaff: Staff.KhauTru,
+          ThresholdRewards: Math.round(ThresholdRewards * 100) / 100,
           ...obj,
           rowIndex: index,
           Ids: uuidv4()
@@ -54,10 +95,74 @@ const convertArray = arrays => {
   return newArray
 }
 
+const convertArray2 = (arrays, configs, filters) => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+
+  for (let [index, obj] of arrays.entries()) {
+    let Threshold = null
+    if (configs) {
+      let index = configs.findIndex(x => x.ID === filters?.StockID)
+      if (
+        index > -1 &&
+        configs[index].Children &&
+        configs[index].Children.length > 0
+      ) {
+        let ThresholdIndex = configs[index].Children.findIndex(
+          x => x.FromValue <= obj.TongThuc && obj.TongThuc < x.ToValue
+        )
+        if (ThresholdIndex > -1)
+          Threshold = configs[index].Children[ThresholdIndex].Value
+      } else {
+        let index = configs.findIndex(x => x.ID === '-1')
+        if (
+          index > -1 &&
+          configs[index].Children &&
+          configs[index].Children.length > 0
+        ) {
+          let ThresholdIndex = configs[index].Children.findIndex(
+            x => x.FromValue <= obj.TongThuc && obj.TongThuc < x.ToValue
+          )
+          if (ThresholdIndex > -1)
+            Threshold = configs[index].Children[ThresholdIndex].Value
+        }
+      }
+    }
+
+    let newObj = {
+      ...obj,
+      StaffsList: []
+    }
+
+    for (let [o, Staff] of obj.StaffsList.entries()) {
+      let ThresholdRewards = 0
+      if (Threshold) {
+        if (Threshold <= 100) {
+          ThresholdRewards = (Threshold * Staff.TongThuc) / 100
+        } else {
+          let StaffPercent = (Staff.TongThuc / obj.TongThuc) * 100
+          ThresholdRewards = (StaffPercent * Threshold) / 100
+          //
+        }
+      }
+      newObj.StaffsList.push({
+        ...Staff,
+        ThresholdRewards: Math.round(ThresholdRewards * 100) / 100
+      })
+    }
+
+    newArray.push(newObj)
+  }
+  return newArray
+}
+
 function SalesStaff(props) {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || []
+    Stocks: auth?.Info?.Stocks || [],
+    GlobalConfig: auth?.GlobalConfig
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -107,8 +212,17 @@ function SalesStaff(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListSalarys = (isLoading = true, callback) => {
+  const getListSalarys = async (isLoading = true, callback) => {
     isLoading && setLoading(true)
+
+    let configs = null
+    if (GlobalConfig?.Admin?.kpi_ngay) {
+      let rs = await moreApi.getNameConfig('kpi_ngay')
+      if (rs.data.data && rs.data.data.length > 0 && rs.data.data[0].Value) {
+        configs = JSON.parse(rs.data.data[0].Value)
+      }
+    }
+
     reportsApi
       .getListStaffSales(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
@@ -131,8 +245,9 @@ function SalesStaff(props) {
             TongThucDoanhSo: data.result?.TongThucDoanhSo || 0,
             KhauTru: data.result?.KhauTru || 0
           }
-          setListData(convertArray(Items))
-          setListDataMobile(Items)
+
+          setListData(convertArray(Items, configs, filters))
+          setListDataMobile(convertArray2(Items, configs, filters))
           setTotalSales({ TongDoanhSo, TongThucDoanhSo, KhauTru })
           setLoading(false)
           setPageTotal(Total)
@@ -170,11 +285,32 @@ function SalesStaff(props) {
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
-        reportsApi.getListStaffSales(
-          BrowserHelpers.getRequestParamsList(filters, {
-            Total: PageTotal
+        new Promise(async resolve => {
+          let configs = null
+          if (GlobalConfig?.Admin?.kpi_ngay) {
+            let rs = await moreApi.getNameConfig('kpi_ngay')
+            if (
+              rs.data.data &&
+              rs.data.data.length > 0 &&
+              rs.data.data[0].Value
+            ) {
+              configs = JSON.parse(rs.data.data[0].Value)
+            }
+          }
+          let result = await reportsApi.getListStaffSales(
+            BrowserHelpers.getRequestParamsList(filters, {
+              Total: PageTotal
+            })
+          )
+          resolve({
+            ...result,
+            data: {
+              ...result.data,
+              configs: configs
+            }
           })
-        ),
+        }),
+
       UrlName: '/nhan-vien/doanh-so'
     })
   }
@@ -240,6 +376,21 @@ function SalesStaff(props) {
         width: 150,
         sortable: false
       },
+      {
+        key: 'ThresholdRewards',
+        title: 'Thưởng',
+        dataKey: 'ThresholdRewards',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.ThresholdRewards),
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1,
+        width: 150,
+        sortable: false,
+        hidden: !GlobalConfig?.Admin?.kpi_ngay || !filters.StockID
+      },
+
       {
         key: 'ID',
         title: 'Đơn hàng',
@@ -324,7 +475,10 @@ function SalesStaff(props) {
           <div className="spinner spinner-primary w-40px"></div> Đang tải ...
         </div>
       )
-    const indexList = [0, 1, 2, 3]
+    let indexList = [0, 1, 2, 3]
+    if (GlobalConfig?.Admin?.kpi_ngay) {
+      indexList.push(4)
+    }
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
       if (rowSpan > 1) {
@@ -346,7 +500,7 @@ function SalesStaff(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Nhân viên doanh số
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -356,7 +510,7 @@ function SalesStaff(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -375,7 +529,7 @@ function SalesStaff(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">
             Danh sách doanh số nhân viên
           </div>
@@ -395,7 +549,7 @@ function SalesStaff(props) {
                     Chi tiết doanh số
                   </Popover.Header>
                   <Popover.Body className="p-0">
-                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                       <span>Tổng</span>
                       <span>
                         {PriceHelper.formatVNDPositive(TotalSales.TongDoanhSo)}
@@ -415,7 +569,7 @@ function SalesStaff(props) {
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
                   {PriceHelper.formatVNDPositive(TotalSales.TongThucDoanhSo)}
                 </span>
-                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
               </div>
             </OverlayTrigger>
           </div>
@@ -442,6 +596,8 @@ function SalesStaff(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          GlobalConfig={GlobalConfig}
+          filters={filters}
         />
       </div>
     </div>

@@ -87,7 +87,8 @@ function FilterList({
   ten_nghiep_vu2,
   onRefresh,
   onExport,
-  isWarehouse = false
+  isWarehouse = false,
+  isAllStock = true
 }) {
   const { Stocks, KPT_Max_Type, PermissionReport, GlobalConfig, AuthID } =
     useSelector(({ auth }) => ({
@@ -131,7 +132,10 @@ function FilterList({
             ...Stocks
           ]
         } else {
-          newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+          if(isAllStock) {
+            newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+          }
+          
         }
       } else {
         let newListItems = []
@@ -784,6 +788,21 @@ function FilterList({
                         value={values.MemberID}
                         onChange={otp => {
                           setFieldValue('MemberID', otp, false)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'MemberIDs' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Khách hàng</label>
+                      <AsyncSelectMembers
+                        isMulti
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="MemberIDs"
+                        value={values.MemberIDs}
+                        onChange={otp => {
+                          setFieldValue('MemberIDs', otp, false)
                         }}
                       />
                     </div>

@@ -160,6 +160,11 @@ export const BrowserHelpers = {
         ? filters.ProductOrderID.value
         : ''
     }
+    if('MemberIDs' in filters) {
+      params.MemberIDs = filters.MemberIDs
+        ? filters.MemberIDs.map(item => item.value).join(',')
+        : ''
+    }
     if ('ProdIDs' in filters) {
       params.ProdIDs = filters.ProdIDs
         ? filters.ProdIDs.map(item => item.value).join(',')

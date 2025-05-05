@@ -19,7 +19,7 @@ export const PermissionHelpers = {
   ExportExcel: async ({ FuncStart, FuncEnd, FuncApi, UrlName }) => {
     FuncStart()
     FuncApi().then(({ data }) => {
-      if (data.error) {
+      if (data?.error) {
         Swal.fire({
           icon: 'error',
           title: 'Xảy ra lỗi.',

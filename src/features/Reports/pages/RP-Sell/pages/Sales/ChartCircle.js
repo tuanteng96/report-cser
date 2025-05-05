@@ -72,24 +72,29 @@ function ChartCircle({ loading, data }) {
 
   useEffect(() => {
     if (data && data.length > 0) {
+      let data1 = data.sort((a,b) => b.SumToPay - a.SumToPay)
+
       setDSDataChart(prevState => ({
         ...prevState,
-        labels: data.map(sets => `${sets.ProdTitle}`),
+        labels: data1.map(sets => `${sets.ProdTitle}`),
         datasets: prevState.datasets.map(sets => ({
           ...sets,
-          data: data.map(item => item.SumToPay),
-          backgroundColor: ColorsHelpers.getColorSize(data.length),
-          borderColor: ColorsHelpers.getBorderSize(data.length)
+          data: data1.map(item => item.SumToPay),
+          backgroundColor: ColorsHelpers.getColorSize(data1.length),
+          borderColor: ColorsHelpers.getBorderSize(data1.length)
         }))
       }))
+
+      let data2 = data.sort((a,b) => b.SumQty - a.SumQty)
+
       setSLDataChart(prevState => ({
         ...prevState,
-        labels: data.map(sets => `${sets.ProdTitle}`),
+        labels: data2.map(sets => `${sets.ProdTitle}`),
         datasets: prevState.datasets.map(sets => ({
           ...sets,
-          data: data.map(item => item.SumQty),
-          backgroundColor: ColorsHelpers.getColorSize(data.length),
-          borderColor: ColorsHelpers.getBorderSize(data.length)
+          data: data2.map(item => item.SumQty),
+          backgroundColor: ColorsHelpers.getColorSize(data2.length),
+          borderColor: ColorsHelpers.getBorderSize(data2.length)
         }))
       }))
     } else {
@@ -97,11 +102,11 @@ function ChartCircle({ loading, data }) {
       setDSDataChart(objData)
     }
   }, [data])
-
+  
   return (
     <Tab.Container defaultActiveKey={KeyTabs}>
       <div className="h-100 position-relative">
-        <div className="d-flex justify-content-between align-items-center flex-column flex-sm-row w-100 position-absolute top-0 right-0">
+        <div className="top-0 right-0 d-flex justify-content-between align-items-center flex-column flex-sm-row w-100 position-absolute">
           <div className="fw-500 font-size-lg">Sản phẩm, dịch vụ bán ra</div>
           <Nav
             as="ul"
@@ -121,6 +126,7 @@ function ChartCircle({ loading, data }) {
             {loading && <LoadingChart />}
             {!loading && (
               <>
+             
                 {DSDataChart.labels.length > 0 ? (
                   <ChartPie
                     data={DSDataChart}
