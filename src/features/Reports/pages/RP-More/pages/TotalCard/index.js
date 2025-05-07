@@ -194,6 +194,20 @@ function TotalCard(props) {
         }
       },
       {
+        key: 'MoneyEndDate',
+        title: 'Hạn sử dụng',
+        dataKey: 'MoneyEndDate',
+        cellRenderer: ({ rowData }) =>
+          rowData.MoneyEndDate
+            ? moment(rowData.MoneyEndDate).format('DD/MM/YYYY')
+            : '',
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'GiaBan',
         title: 'Giá bán',
         dataKey: 'GiaBan',
@@ -318,7 +332,7 @@ function TotalCard(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Báo cáo thẻ tiền
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -328,7 +342,7 @@ function TotalCard(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -347,7 +361,7 @@ function TotalCard(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách thẻ tiền</div>
           {width > 1200 ? (
             <div className="d-flex">
@@ -393,19 +407,19 @@ function TotalCard(props) {
                       Chi tiết thẻ tiền
                     </Popover.Header>
                     <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng thu</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.TongThu)}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng giá trị</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.TongGiaTri)}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
                         <span>Tổng chi</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.TongChi)}
@@ -419,7 +433,7 @@ function TotalCard(props) {
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVNDPositive(Total.ConLai)}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>
