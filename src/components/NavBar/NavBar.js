@@ -419,7 +419,7 @@ function NavBar(props) {
                       </NavLink>
                     )}
 
-                    {item.Children && item.Children.length > 0 && (
+                    {item.Children && item.Children.filter(x => !x.hidden).length > 0 && (
                       <div
                         className="btn-down"
                         onClick={() => OpenSubmenu(item.TitleKey)}
@@ -427,10 +427,10 @@ function NavBar(props) {
                         <i className="fa-solid fa-chevron-down icon-down"></i>
                       </div>
                     )}
-                    {item.Children && item.Children.length > 0 && (
+                    {item.Children && item.Children.filter(x => !x.hidden).length > 0 && (
                       <div className="ezs-navbar__sub">
                         <ul>
-                          {item.Children.map((sub, i) => (
+                          {item.Children.filter(x => !x.hidden).map((sub, i) => (
                             <li key={i}>
                               {sub.Href ===
                                 '/admin/?mdl20=R23&act20=index#rp:/bao-cao-ngay/tong-quan' &&
