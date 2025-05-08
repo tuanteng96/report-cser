@@ -88,8 +88,8 @@ function FilterListAdvancedBG({
   onExport,
   isWarehouse = false
 }) {
-  const { Stocks, KPT_Max_Type, PermissionReport, GlobalConfig, AuthID } = useSelector(
-    ({ auth }) => ({
+  const { Stocks, KPT_Max_Type, PermissionReport, GlobalConfig, AuthID, rightTree } =
+    useSelector(({ auth }) => ({
       Stocks: auth.Info?.Stocks
         ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
             ...item,
@@ -98,11 +98,11 @@ function FilterListAdvancedBG({
           }))
         : [],
       PermissionReport: auth.Info?.rightsSum?.report,
+      rightTree: auth?.Info?.rightTree,
       KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
       GlobalConfig: auth?.GlobalConfig,
       AuthID: auth?.Info?.User?.ID
-    })
-  )
+    }))
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
   const { pathname } = useLocation()
@@ -121,59 +121,131 @@ function FilterListAdvancedBG({
   }, [KPT_Max_Type])
 
   useEffect(() => {
-    let newStocks = [...Stocks]
-    if (PermissionReport?.hasRight) {
-      if (!PermissionReport?.jdata) {
-        if (isWarehouse) {
-          newStocks = [
-            { value: '', label: 'Tất cả cơ sở' },
-            { value: 778, label: 'Kho tổng' },
-            ...Stocks
-          ]
-        } else {
-          newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
-        }
-      } else {
-        let newListItems = []
-        let Groups = PermissionReport?.jdata?.groups
-          ? PermissionReport?.jdata?.groups
-          : []
-        for (let group of Groups) {
-          if (group.items) {
-            for (let item of group.items) {
-              newListItems.push(item)
+    let newStocks = []
+    if (window.isApp) {
+      if (rightTree?.groups) {
+        for (let p of rightTree?.groups) {
+          if (p.group === 'Báo cáo') {
+            if (p?.rights) {
+              for (let r of p?.rights) {
+                if (r?.name === 'report') {
+                  if (r?.IsAllStock) {
+                    if (isWarehouse) {
+                      newStocks = [
+                        { value: '', label: 'Tất cả cơ sở' },
+                        { value: 778, label: 'Kho tổng' },
+                        ...Stocks
+                      ]
+                    } else {
+                      newStocks = [
+                        { value: '', label: 'Tất cả cơ sở' },
+                        ...Stocks
+                      ]
+                    }
+                  } else {
+                    if (r?.reports?.groups) {
+                      for (let g of r?.reports?.groups) {
+                        if (g.items) {
+                          for (let i of g.items) {
+                            if (
+                              i.jdata.url &&
+                              (i.jdata.url === pathname ||
+                                i.jdata.paths.includes(pathname))
+                            ) {
+                              if (i.stocks) {
+                                newStocks = [...Stocks]
+                                const StocksPermission = i.stocks
+                                  .split(',')
+                                  .map(o => Number(o))
+                                newStocks = newStocks.filter(o =>
+                                  StocksPermission.includes(o.ID)
+                                )
+                                if (
+                                  Stocks &&
+                                  Stocks.length > 0 &&
+                                  StocksPermission.length === Stocks.length
+                                ) {
+                                  newStocks = [
+                                    { value: '', label: 'Tất cả cơ sở' },
+                                    ...Stocks
+                                  ]
+                                }
+                              } else {
+                                if (isWarehouse) {
+                                  newStocks = [
+                                    { value: '', label: 'Tất cả cơ sở' },
+                                    { value: 778, label: 'Kho tổng' },
+                                    ...Stocks
+                                  ]
+                                } else {
+                                  newStocks = [
+                                    { value: '', label: 'Tất cả cơ sở' },
+                                    ...Stocks
+                                  ]
+                                }
+                              }
+                              //return
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                //return
+              }
             }
           }
         }
-        const index = newListItems.findIndex(
-          o => o.url === pathname || o.paths.includes(pathname)
-        )
-        if (index > -1) {
-          if (newListItems[index].stocks) {
-            const StocksPermission = newListItems[index].stocks
-              .split(',')
-              .map(o => Number(o))
-            newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
-            if (
-              Stocks &&
-              Stocks.length > 0 &&
-              StocksPermission.length === Stocks.length
-            ) {
-              newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+      }
+    } else {
+      newStocks = [...Stocks]
+      if (PermissionReport?.hasRight) {
+        if (!PermissionReport?.jdata) {
+          if (isWarehouse) {
+            newStocks = [
+              { value: '', label: 'Tất cả cơ sở' },
+              { value: 778, label: 'Kho tổng' },
+              ...Stocks
+            ]
+          } else {
+            newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+          }
+        } else {
+          let newListItems = []
+          let Groups = PermissionReport?.jdata?.groups
+            ? PermissionReport?.jdata?.groups
+            : []
+          for (let group of Groups) {
+            if (group.items) {
+              for (let item of group.items) {
+                newListItems.push(item)
+              }
+            }
+          }
+          const index = newListItems.findIndex(
+            o => o.url === pathname || o.paths.includes(pathname)
+          )
+          if (index > -1) {
+            if (newListItems[index].stocks) {
+              const StocksPermission = newListItems[index].stocks
+                .split(',')
+                .map(o => Number(o))
+              newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
+            } else {
+              if (isWarehouse) {
+                newStocks = [
+                  { value: '', label: 'Tất cả cơ sở' },
+                  { value: 778, label: 'Kho tổng' },
+                  ...Stocks
+                ]
+              } else {
+                newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+              }
             }
           } else {
-            if (isWarehouse) {
-              newStocks = [
-                { value: '', label: 'Tất cả cơ sở' },
-                { value: 778, label: 'Kho tổng' },
-                ...Stocks
-              ]
-            } else {
-              newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
-            }
+            newStocks = []
           }
-        } else {
-          newStocks = []
         }
       }
     }

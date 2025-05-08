@@ -47,7 +47,11 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       for (let g of r?.reports?.groups) {
                         if (g.items) {
                           for (let i of g.items) {
-                            if (i.jdata.url && i.jdata.url === pathname) {
+                            if (
+                              i.jdata.url &&
+                              (i.jdata.url === pathname ||
+                                i.jdata.paths.includes(pathname))
+                            ) {
                               if (i.stocks) {
                                 newStocks = [...Stocks]
                                 const StocksPermission = i.stocks
@@ -101,7 +105,9 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
               }
             }
           }
-          const index = newListItems.findIndex(o => o.url === pathname)
+          const index = newListItems.findIndex(
+            o => o.url === pathname || o.paths.includes(pathname)
+          )
           if (index > -1) {
             if (newListItems[index].stocks) {
               const StocksPermission = newListItems[index].stocks
