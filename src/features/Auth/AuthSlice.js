@@ -426,10 +426,95 @@ if (DevHelpers.isDevelopment()) {
           ]
         }
       }
+    },
+    rightTree: {
+      groups: [
+        {
+          group: 'Báo cáo',
+          rights: [
+            {
+              IsAllStock: false,
+              hasRight: true,
+              name: 'report',
+              text: 'Báo cáo',
+              stocksList: [
+                {
+                  ID: 11541,
+                  Title: 'Cser Beauty Hà Nội'
+                },
+                {
+                  ID: 11542,
+                  Title: 'Cser beauty Hồ chí Minh'
+                },
+                {
+                  ID: 11543,
+                  Title: 'Cser Hue'
+                },
+                {
+                  ID: 11544,
+                  Title: 'RAZER CSER'
+                }
+              ],
+              reports: {
+                groups: [
+                  {
+                    group: 'Báo cáo ngày',
+                    items: [
+                      {
+                        text: 'Tổng quan',
+                        stocks: '11541',
+                        jdata: {
+                          paths: ['/bao-cao-ngay/danh-sach'],
+                          url: '/bao-cao-ngay/tong-quan'
+                        }
+                      },
+                      {
+                        text: 'Khách hàng',
+                        stocks: '11541',
+                        jdata: {
+                          paths: ['/khach-hang/chi-tiet-ngay'],
+                          url: '/bao-cao-ngay/khach-hang'
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    group: 'Bán hàng',
+                    items: [
+                      {
+                        text: 'Doanh số',
+                        jdata: {
+                          paths: [
+                            '/ban-hang/doanh-so-tong-quan',
+                            '/ban-hang/doanh-so-danh-sach'
+                          ],
+                          url: '/ban-hang/doanh-so'
+                        },
+                        stocks: '11541'
+                      },
+                      {
+                        text: 'Sản phẩm - dịch vụ bán ra',
+                        jdata: {
+                          paths: [
+                            '/ban-hang/doanh-so-chi-tiet',
+                            '/ban-hang/doanh-so-chi-tiet-2'
+                          ],
+                          url: '/ban-hang/sp-dv-ban-ra'
+                        },
+                        stocks: '11541'
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEyMjEzMzEyMjgzOCIsIm5iZiI6MTc0NjAyNTY2NCwiZXhwIjoxODMyNDI1NjY0LCJpYXQiOjE3NDYwMjU2NjR9.tfiWbi8-qStws9qREs-n-ZQ9_NIYwkC7IYKX9Z9vz4c'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjgxMiIsIm5iZiI6MTc0NjY3MzE1NiwiZXhwIjoxODMzMDczMTU2LCJpYXQiOjE3NDY2NzMxNTZ9.OhjXKEsFrJUdlgHTPynigv15yNIa2WGx_hRbWts8hUk'
 }
 const Auth = createSlice({
   name: 'auth',

@@ -14,7 +14,7 @@ const perfectScrollbarOptions = {
 }
 
 function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
-  const { Stocks, PermissionReport } = useSelector(({ auth }) => ({
+  const { Stocks, PermissionReport, rightTree } = useSelector(({ auth }) => ({
     Stocks: auth.Info?.Stocks
       ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
           ...item,
@@ -22,47 +22,109 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
           value: item.ID || item.value
         }))
       : [],
-    PermissionReport: auth.Info?.rightsSum?.report
+    PermissionReport: auth.Info?.rightsSum?.report,
+    rightTree: auth?.Info?.rightTree
   }))
   const [StocksList, setStocksList] = useState([])
   const { pathname } = useLocation()
+
   useEffect(() => {
-    let newStocks = [...Stocks]
-    if (PermissionReport?.hasRight) {
-      if (!PermissionReport?.jdata) {
-        newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
-      } else {
-        let newListItems = []
-        let Groups = PermissionReport?.jdata?.groups || []
-        for (let group of Groups) {
-          if (group.items) {
-            for (let item of group.items) {
-              newListItems.push(item)
+    let newStocks = []
+    if (window.isApp) {
+      if (rightTree?.groups) {
+        for (let p of rightTree?.groups) {
+          if (p.group === 'Báo cáo') {
+            if (p?.rights) {
+              for (let r of p?.rights) {
+                if (r?.name === 'report') {
+                  if (r?.IsAllStock) {
+                    newStocks = [
+                      { value: '', label: 'Tất cả cơ sở' },
+                      ...Stocks
+                    ]
+                  } else {
+                    if (r?.reports?.groups) {
+                      for (let g of r?.reports?.groups) {
+                        if (g.items) {
+                          for (let i of g.items) {
+                            if (i.jdata.url && i.jdata.url === pathname) {
+                              if (i.stocks) {
+                                newStocks = [...Stocks]
+                                const StocksPermission = i.stocks
+                                  .split(',')
+                                  .map(o => Number(o))
+                                newStocks = newStocks.filter(o =>
+                                  StocksPermission.includes(o.ID)
+                                )
+                                if (
+                                  Stocks &&
+                                  Stocks.length > 0 &&
+                                  StocksPermission.length === Stocks.length
+                                ) {
+                                  newStocks = [
+                                    { value: '', label: 'Tất cả cơ sở' },
+                                    ...Stocks
+                                  ]
+                                }
+                              } else {
+                                newStocks = [
+                                  { value: '', label: 'Tất cả cơ sở' },
+                                  ...Stocks
+                                ]
+                              }
+                              //return
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                //return
+              }
             }
           }
         }
-        const index = newListItems.findIndex(o => o.url === pathname)
-        if (index > -1) {
-          if (newListItems[index].stocks) {
-            const StocksPermission = newListItems[index].stocks
-              .split(',')
-              .map(o => Number(o))
-            newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
-            if (
-              Stocks &&
-              Stocks.length > 0 &&
-              StocksPermission.length === Stocks.length
-            ) {
+      }
+    } else {
+      newStocks = [...Stocks]
+      if (PermissionReport?.hasRight) {
+        if (!PermissionReport?.jdata) {
+          newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+        } else {
+          let newListItems = []
+          let Groups = PermissionReport?.jdata?.groups || []
+          for (let group of Groups) {
+            if (group.items) {
+              for (let item of group.items) {
+                newListItems.push(item)
+              }
+            }
+          }
+          const index = newListItems.findIndex(o => o.url === pathname)
+          if (index > -1) {
+            if (newListItems[index].stocks) {
+              const StocksPermission = newListItems[index].stocks
+                .split(',')
+                .map(o => Number(o))
+              newStocks = newStocks.filter(o => StocksPermission.includes(o.ID))
+              if (
+                Stocks &&
+                Stocks.length > 0 &&
+                StocksPermission.length === Stocks.length
+              ) {
+                newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+              }
+            } else {
               newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
             }
           } else {
-            newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
+            newStocks = []
           }
-        } else {
-          newStocks = []
         }
       }
     }
+
     setStocksList(newStocks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, PermissionReport])
@@ -81,12 +143,12 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
           return (
             <Form>
               <div className="filter-box__content">
-                <div className="filter-box__header d-flex justify-content-between align-items-center border-bottom border-gray-200 px-20px py-20px">
+                <div className="border-gray-200 filter-box__header d-flex justify-content-between align-items-center border-bottom px-20px py-20px">
                   <div className="font-size-lg fw-500 text-uppercase">
                     Bộ lọc tìm kiếm
                   </div>
                   <div
-                    className="w-30px h-30px d-flex justify-content-center align-items-center cursor-pointer"
+                    className="cursor-pointer w-30px h-30px d-flex justify-content-center align-items-center"
                     onClick={onHide}
                   >
                     <i className="fa-regular fa-xmark font-size-lg text-muted"></i>
@@ -172,7 +234,7 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                               value={item.value}
                             />
                             <span className="checkbox-icon"></span>
-                            <span className="fw-500 cursor-pointer">
+                            <span className="cursor-pointer fw-500">
                               {item.label}
                             </span>
                           </label>
