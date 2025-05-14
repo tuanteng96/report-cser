@@ -404,8 +404,11 @@ function BookService(props) {
                                     )[0].label
                                   : 'Chưa xác định'}
                               </div>
-                              {item?.Booking?.Roots &&
-                                item?.Booking?.Roots.length > 0 && (
+                              <div>
+                                Thực hiện {item?.Booking?.AtHome ? "tại nhà" : "tại spa"}
+                              </div>
+                              {item?.Booking?.UserServices &&
+                                item?.Booking?.UserServices.length > 0 && (
                                   <div>
                                     Nhân viên thực hiện :{' '}
                                     {item?.Booking?.UserServices.map(
