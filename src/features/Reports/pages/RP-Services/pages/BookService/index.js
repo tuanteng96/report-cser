@@ -69,7 +69,7 @@ function BookService(props) {
     MemberID: '',
     UserID: '', //nv dat
     UserServiceIDs: '',
-    include: "IsNewMember,OrderInDate"
+    include: 'IsNewMember,OrderInDate'
   })
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
@@ -115,7 +115,15 @@ function BookService(props) {
             PCount: data?.result?.PCount || 0,
             Sum: data?.result?.Sum || null
           }
-          setListData(Items.map(item => ({ ...item, Ids: uuidv4(), Desc: item.Desc ? item.Desc.replaceAll("\n", " | ").replaceAll("</br>", ", ") : "" })))
+          setListData(
+            Items.map(item => ({
+              ...item,
+              Ids: uuidv4(),
+              Desc: item.Desc
+                ? item.Desc.replaceAll('\n', ' | ').replaceAll('</br>', ', ')
+                : ''
+            }))
+          )
           setSumTotal(Sum)
           setPageCount(PCount)
           setLoading(false)
@@ -273,7 +281,8 @@ function BookService(props) {
         key: 'OsUsedValue',
         title: 'Giá trị sử dụng',
         dataKey: 'OsUsedValue',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.OsUsedValue),
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.OsUsedValue),
         width: 150,
         sortable: false
       },
@@ -322,9 +331,7 @@ function BookService(props) {
         title: 'Trạng thái',
         dataKey: 'IsNewMember',
         cellRenderer: ({ rowData }) => (
-          <>
-            {rowData?.IsNewMember ? "Khách mới" : "Khách cũ"}
-          </>
+          <>{rowData?.IsNewMember ? 'Khách mới' : 'Khách cũ'}</>
         ),
         width: 180,
         sortable: false
@@ -333,6 +340,114 @@ function BookService(props) {
         key: 'OrderInDate',
         title: 'Đơn hàng',
         dataKey: 'OrderInDate',
+        width: 250,
+        sortable: false
+      },
+      {
+        key: 'History',
+        title: 'Lịch sử thay đổi',
+        dataKey: 'History',
+        cellRenderer: ({ rowData }) => (
+          <>
+            {rowData?.History?.Edit && rowData?.History?.Edit.length > 0 && (
+              <>
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="bottom"
+                  overlay={
+                    <Popover id={`popover-positioned-top`}>
+                      <Popover.Body
+                        className="p-0"
+                        style={{
+                          maxHeight: '300px',
+                          overflow: 'auto'
+                        }}
+                      >
+                        {rowData?.History?.Edit.sort(
+                          (a, b) =>
+                            moment(b.CreateDate, 'HH:mm DD-MM-YYYY').valueOf() -
+                            moment(a.CreateDate, 'HH:mm DD-MM-YYYY').valueOf()
+                        ).map((item, index) => (
+                          <div
+                            className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom"
+                            key={index}
+                          >
+                            <div className="mb-2px">{item.CreateDate}</div>
+                            <div
+                              style={{
+                                fontWeight: 400
+                              }}
+                            >
+                              <div>
+                                Dịch vụ{' '}
+                                {item?.Booking?.Roots &&
+                                item?.Booking?.Roots.length > 0
+                                  ? item?.Booking?.Roots.map(x => x.label).join(
+                                      ', '
+                                    )
+                                  : 'Chưa chọn dịch vụ'}
+                              </div>
+                              <div>
+                                Thời gian :{' '}
+                                {moment(
+                                  item?.Booking?.BookDate,
+                                  'YYYY-MM-DD HH:mm'
+                                ).format('HH:mm DD-MM-YYYY')}
+                              </div>
+                              <div>
+                                Trạng thái :{' '}
+                                {item?.Booking?.Status
+                                  ? ListStatus.filter(
+                                      x => x.value === item?.Booking?.Status
+                                    )[0].label
+                                  : 'Chưa xác định'}
+                              </div>
+                              {item?.Booking?.Roots &&
+                                item?.Booking?.Roots.length > 0 && (
+                                  <div>
+                                    Nhân viên thực hiện :{' '}
+                                    {item?.Booking?.UserServices.map(
+                                      x => x.label
+                                    ).join(', ')}
+                                  </div>
+                                )}
+                              {item?.Booking?.Desc && (
+                                <div
+                                  dangerouslySetInnerHTML={{
+                                    __html: item?.Booking?.Desc.replaceAll(
+                                      '\n',
+                                      ' | '
+                                    )
+                                  }}
+                                ></div>
+                              )}
+
+                              <div>Thay đổi từ {item?.Staff?.FullName}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </Popover.Body>
+                    </Popover>
+                  }
+                >
+                  <div className="w-100 d-flex justify-content-between align-items-center">
+                    <div>
+                      Ngày{' '}
+                      {
+                        rowData?.History?.Edit[
+                          rowData?.History?.Edit.length - 1
+                        ].CreateDate
+                      }
+                    </div>
+                    <i className="fa-solid fa-circle-exclamation text-warning"></i>
+                  </div>
+                </OverlayTrigger>
+              </>
+            )}
+          </>
+        ),
         width: 250,
         sortable: false
       },
