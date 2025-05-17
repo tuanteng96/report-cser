@@ -231,7 +231,7 @@ function BookService(props) {
         key: 'Member.FullName',
         title: 'Khách hàng',
         dataKey: 'Member.FullName',
-        cellRenderer: ({ rowData }) => rowData?.Member?.FullName,
+        cellRenderer: ({ rowData }) => rowData?.Member?.MobilePhone !== "0000000000" ? rowData?.Member?.FullName : rowData?.FullName,
         width: 200,
         sortable: false,
         mobileOptions: {
@@ -242,7 +242,7 @@ function BookService(props) {
         key: 'Member.MobilePhone',
         title: 'Số điện thoại',
         dataKey: 'Member.MobilePhone',
-        cellRenderer: ({ rowData }) => rowData?.Member?.MobilePhone,
+        cellRenderer: ({ rowData }) => rowData?.Member?.MobilePhone !== "0000000000" ? rowData?.Member?.MobilePhone : rowData.Phone,
         width: 160,
         sortable: false,
         mobileOptions: {
