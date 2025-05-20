@@ -28,7 +28,8 @@ function Attrition(props) {
     Pi: 1, // Trang hiện tại
     Ps: 15, // Số lượng item
     CategoriesTK: '', // 0 => SP, 1 => NVL
-    ProdIDs: '' // Danh sách SP, NVL
+    ProdIDs: '', // Danh sách SP, NVL
+    ShowDetail: '0'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -218,7 +219,8 @@ function Attrition(props) {
           </Text>
         ),
         width: 340,
-        sortable: false
+        sortable: false,
+        hidden: filters.ShowDetail === '0'
       },
       {
         key: 'UsageList',
@@ -238,7 +240,8 @@ function Attrition(props) {
         ),
         width: 340,
         sortable: false,
-        className: 'flex-fill'
+        className: 'flex-fill',
+        hidden: filters.ShowDetail === '0'
       }
     ],
     [filters]
@@ -258,9 +261,7 @@ function Attrition(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
-            Tiêu hao
-          </span>
+          <span className="text-uppercase font-size-xl fw-600">Tiêu hao</span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
           </span>
@@ -268,7 +269,7 @@ function Attrition(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -287,7 +288,7 @@ function Attrition(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách tiêu hao</div>
           <div className="fw-500">
             Tổng

@@ -90,21 +90,27 @@ function FilterList({
   isWarehouse = false,
   isAllStock = true
 }) {
-  const { Stocks, KPT_Max_Type, PermissionReport, GlobalConfig, AuthID, rightTree } =
-    useSelector(({ auth }) => ({
-      Stocks: auth.Info?.Stocks
-        ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
-            ...item,
-            label: item.Title || item.label,
-            value: item.ID || item.value
-          }))
-        : [],
-      PermissionReport: auth.Info?.rightsSum?.report,
-      rightTree: auth?.Info?.rightTree,
-      KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
-      GlobalConfig: auth?.GlobalConfig,
-      AuthID: auth?.Info?.User?.ID
-    }))
+  const {
+    Stocks,
+    KPT_Max_Type,
+    PermissionReport,
+    GlobalConfig,
+    AuthID,
+    rightTree
+  } = useSelector(({ auth }) => ({
+    Stocks: auth.Info?.Stocks
+      ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
+          ...item,
+          label: item.Title || item.label,
+          value: item.ID || item.value
+        }))
+      : [],
+    PermissionReport: auth.Info?.rightsSum?.report,
+    rightTree: auth?.Info?.rightTree,
+    KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
+    GlobalConfig: auth?.GlobalConfig,
+    AuthID: auth?.Info?.User?.ID
+  }))
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
   const { pathname } = useLocation()
@@ -404,6 +410,49 @@ function FilterList({
                         )}
                         onChange={otp => {
                           setFieldValue('ShowsX', otp ? otp.value : '')
+                        }}
+                        noOptionsMessage={() => 'Không có dữ liệu'}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'ShowDetail' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Chế độ</label>
+                      <Select
+                        name="ShowDetail"
+                        placeholder="Chọn chế độ"
+                        classNamePrefix="select"
+                        options={[
+                          {
+                            label: 'Cơ bản',
+                            value: '0'
+                          },
+                          {
+                            label: 'Nâng cao',
+                            value: '1'
+                          }
+                        ]}
+                        className="select-control"
+                        value={[
+                          {
+                            label: 'Cơ bản',
+                            value: '0'
+                          },
+                          {
+                            label: 'Nâng cao',
+                            value: '1'
+                          }
+                        ].filter(item => item.value === values?.ShowDetail)}
+                        onChange={otp => {
+                          setFieldValue('ShowDetail', otp ? otp.value : '')
                         }}
                         noOptionsMessage={() => 'Không có dữ liệu'}
                         menuPortalTarget={document.body}
