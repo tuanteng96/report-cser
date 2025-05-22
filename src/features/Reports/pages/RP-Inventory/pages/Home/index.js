@@ -217,9 +217,25 @@ function Home(props) {
       },
       {
         key: 'QtyExport',
-        title: 'Xuất trong',
+        title: 'Xuất trong (Tổng)',
         dataKey: 'QtyExport',
         cellRenderer: ({ rowData }) => rowData?.QtyExport || 0,
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'QtyExportSell',
+        title: 'Xuất trong (Bán)',
+        dataKey: 'QtyExportSell',
+        cellRenderer: ({ rowData }) => rowData?.QtyExportSell || 0,
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'QtyExportConsumption',
+        title: 'Xuất trong (Tiêu hao)',
+        dataKey: 'QtyExportConsumption',
+        cellRenderer: ({ rowData }) => rowData?.QtyExportConsumption || 0,
         width: 150,
         sortable: false
       },
@@ -254,7 +270,7 @@ function Home(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Tồn kho
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -264,7 +280,7 @@ function Home(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -284,7 +300,7 @@ function Home(props) {
         isWarehouse={true}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách tồn kho</div>
         </div>
         <div className="p-20px">
