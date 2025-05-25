@@ -219,15 +219,23 @@ function DebtPayment(props) {
         sortable: false
       },
       {
+        key: 'StockTitle',
+        title: 'Cơ sở',
+        dataKey: 'StockTitle',
+        rowSpan: ({ rowData }) =>
+          rowData.OrderItems && rowData.OrderItems.length > 0
+            ? rowData.OrderItems.length
+            : 1,
+        width: 250,
+        sortable: false
+      },
+      {
         key: 'TTToanNoOrder',
         title: 'Thanh toán nợ',
         dataKey: 'TTToanNoOrder',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(rowData.TTToanNoOrder),
-        rowSpan: ({ rowData }) =>
-          rowData.OrderItems && rowData.OrderItems.length > 0
-            ? rowData.OrderItems.length
-            : 1,
+        rowSpan: ({ rowData }) => AmountOrderItems(rowData.ListOrders),
         width: 180,
         sortable: false
       },
@@ -258,11 +266,11 @@ function DebtPayment(props) {
                   Chi tiết thanh toán #{rowData.OrderItemsId}
                 </Popover.Header>
                 <Popover.Body className="p-0">
-                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                     <span>Tiền mặt</span>
                     <span>{PriceHelper.formatVND(rowData.DaThToan_TM)}</span>
                   </div>
-                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                     <span>Chuyển khoản</span>
                     <span>{PriceHelper.formatVND(rowData.DaThToan_CK)}</span>
                   </div>
@@ -276,7 +284,7 @@ function DebtPayment(props) {
           >
             <div className="d-flex justify-content-between align-items-center w-100">
               {PriceHelper.formatVND(rowData.DaThToan)}
-              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning"></i>
             </div>
           </OverlayTrigger>
         ),
@@ -367,7 +375,7 @@ function DebtPayment(props) {
           <div className="spinner spinner-primary w-40px"></div> Đang tải ...
         </div>
       )
-    const indexList = [0, 1, 2, 3, 4, 5]
+    const indexList = [0, 1, 2, 3, 4, 5, 6]
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
       if (rowSpan > 1) {
@@ -389,7 +397,7 @@ function DebtPayment(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Thanh toán trả nợ
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -399,7 +407,7 @@ function DebtPayment(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -418,7 +426,7 @@ function DebtPayment(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-column flex-md-row">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-md-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách thanh toán nợ</div>
           <div className="fw-500">
             Tổng thanh toán nợ{' '}
