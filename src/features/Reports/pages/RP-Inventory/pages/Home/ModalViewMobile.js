@@ -23,11 +23,11 @@ function ModalViewMobile({ show, onHide, data }) {
       scrollable={true}
     >
       <div className="modal-view-head align-items-baseline px-15px py-8px">
-        <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
+        <div className="flex-1 modal-view-title text-uppercase font-size-lg fw-500 pr-15px">
           {data?.ProdTitle || 'Chưa có tên'}
         </div>
         <div
-          className="modal-view-close font-size-h3 w-20px text-center"
+          className="text-center modal-view-close font-size-h3 w-20px"
           onClick={onHide}
         >
           <i className="fa-light fa-xmark"></i>
@@ -40,7 +40,7 @@ function ModalViewMobile({ show, onHide, data }) {
       >
         <div className="py-5px">
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Mã
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -48,7 +48,7 @@ function ModalViewMobile({ show, onHide, data }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Đơn vị
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -56,31 +56,57 @@ function ModalViewMobile({ show, onHide, data }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Tồn trước
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.QtyBefore || 'Chưa có'}
+              {data?.QtyBefore || '0'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Nhập trong
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.QtyImport || 'Chưa có'}
+              {data?.QtyImport || '0'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
-              Xuất trong
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Xuất trong (Tổng)
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.QtyExport || 'Chưa có'}
+              {data?.QtyExport || '0'}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Xuất trong (Bán)
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.QtyExportSell || '0'}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Xuất trong (Tiêu hao)
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.QtyExportConsumption || '0'}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Xuất (Đơn xuất)
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {(data?.QtyExport || 0) -
+                ((data?.QtyExportSell || 0) +
+                  (data?.QtyExportConsumption || 0))}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Hiện tại
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -93,14 +119,14 @@ function ModalViewMobile({ show, onHide, data }) {
             data.ListOrders &&
             data.ListOrders.map((item, index) => (
               <div
-                className="border mb-15px shadows border-gray-200 rounded"
+                className="border border-gray-200 rounded mb-15px shadows"
                 key={index}
               >
-                <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
                   <div>ID đơn hàng</div>
                   <div className="fw-600">#{item.Id}</div>
                 </div>
-                <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
                   <div>Ngày bán</div>
                   <div className="fw-600">
                     {item?.CreateDate
@@ -108,13 +134,13 @@ function ModalViewMobile({ show, onHide, data }) {
                       : 'Không có'}
                   </div>
                 </div>
-                <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
                   <div>Tổng tiền nợ</div>
                   <div className="fw-600">
                     {PriceHelper.formatVND(item.TongNo)}
                   </div>
                 </div>
-                <div className="border-bottom border-gray-200 p-12px">
+                <div className="border-gray-200 border-bottom p-12px">
                   <div>Sản phẩm</div>
                   <div>
                     {item.ListDebt &&

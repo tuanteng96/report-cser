@@ -236,6 +236,14 @@ function Home(props) {
         title: 'Xuất trong (Tiêu hao)',
         dataKey: 'QtyExportConsumption',
         cellRenderer: ({ rowData }) => rowData?.QtyExportConsumption || 0,
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'QtyExportTotal',
+        title: 'Xuất (Đơn xuất)',
+        dataKey: 'QtyExportTotal',
+        cellRenderer: ({ rowData }) => (rowData?.QtyExport || 0) - ((rowData?.QtyExportSell || 0) + (rowData?.QtyExportConsumption || 0)),
         width: 150,
         sortable: false
       },
