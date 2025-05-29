@@ -243,7 +243,7 @@ function Home(props) {
         key: 'QtyExportTotal',
         title: 'Xuất (Đơn xuất)',
         dataKey: 'QtyExportTotal',
-        cellRenderer: ({ rowData }) => (rowData?.QtyExport || 0) - ((rowData?.QtyExportSell || 0) + (rowData?.QtyExportConsumption || 0)),
+        cellRenderer: ({ rowData }) => (rowData?.QtyExport || 0) - Math.abs((rowData?.QtyExportSell || 0) + (rowData?.QtyExportConsumption || 0)),
         width: 150,
         sortable: false
       },

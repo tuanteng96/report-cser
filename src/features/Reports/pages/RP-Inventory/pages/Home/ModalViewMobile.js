@@ -101,7 +101,7 @@ function ModalViewMobile({ show, onHide, data }) {
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
               {(data?.QtyExport || 0) -
-                ((data?.QtyExportSell || 0) +
+                Math.abs((data?.QtyExportSell || 0) +
                   (data?.QtyExportConsumption || 0))}
             </div>
           </div>
