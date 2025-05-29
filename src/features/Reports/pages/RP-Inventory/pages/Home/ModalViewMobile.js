@@ -76,7 +76,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất trong (Tổng)
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.QtyExport || '0'}
+              {Math.abs(data?.QtyExport || 0)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -84,7 +84,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất trong (Bán)
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.QtyExportSell || '0'}
+              {Math.abs(data?.QtyExportSell || 0)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -92,7 +92,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất trong (Tiêu hao)
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.QtyExportConsumption || '0'}
+              {Math.abs(data?.QtyExportConsumption || 0)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -100,9 +100,9 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất (Đơn xuất)
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {(data?.QtyExport || 0) -
-                Math.abs((data?.QtyExportSell || 0) +
-                  (data?.QtyExportConsumption || 0))}
+              {Math.abs(data?.QtyExport || 0) -
+                Math.abs(data?.QtyExportSell || 0) +
+                Math.abs(data?.QtyExportConsumption || 0)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px line-height-sm">

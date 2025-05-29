@@ -219,7 +219,7 @@ function Home(props) {
         key: 'QtyExport',
         title: 'Xuất trong (Tổng)',
         dataKey: 'QtyExport',
-        cellRenderer: ({ rowData }) => rowData?.QtyExport || 0,
+        cellRenderer: ({ rowData }) => Math.abs(rowData?.QtyExport || 0),
         width: 150,
         sortable: false
       },
@@ -227,7 +227,7 @@ function Home(props) {
         key: 'QtyExportSell',
         title: 'Xuất trong (Bán)',
         dataKey: 'QtyExportSell',
-        cellRenderer: ({ rowData }) => rowData?.QtyExportSell || 0,
+        cellRenderer: ({ rowData }) => Math.abs(rowData?.QtyExportSell || 0),
         width: 150,
         sortable: false
       },
@@ -235,7 +235,7 @@ function Home(props) {
         key: 'QtyExportConsumption',
         title: 'Xuất trong (Tiêu hao)',
         dataKey: 'QtyExportConsumption',
-        cellRenderer: ({ rowData }) => rowData?.QtyExportConsumption || 0,
+        cellRenderer: ({ rowData }) => Math.abs(rowData?.QtyExportConsumption || 0),
         width: 200,
         sortable: false
       },
@@ -243,7 +243,7 @@ function Home(props) {
         key: 'QtyExportTotal',
         title: 'Xuất (Đơn xuất)',
         dataKey: 'QtyExportTotal',
-        cellRenderer: ({ rowData }) => (rowData?.QtyExport || 0) - Math.abs((rowData?.QtyExportSell || 0) + (rowData?.QtyExportConsumption || 0)),
+        cellRenderer: ({ rowData }) => Math.abs(rowData?.QtyExport || 0) - Math.abs((rowData?.QtyExportSell || 0)) + Math.abs((rowData?.QtyExportConsumption || 0)),
         width: 150,
         sortable: false
       },
