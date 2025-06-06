@@ -270,8 +270,16 @@ function BookService(props) {
           const stt = rowData?.Status
             ? ListStatus.filter(x => x.value === rowData?.Status)
             : ''
+
           return stt && stt.length > 0 ? (
-            <span className={clsx(stt[0].className)}>
+            <span
+              className={clsx(
+                rowData?.Desc &&
+                  rowData?.Desc.toUpperCase().indexOf('TỰ ĐỘNG ĐẶT LỊCH') > -1
+                  ? 'text-[#18c553]'
+                  : stt[0].className
+              )}
+            >
               {rowData?.Desc &&
               rowData?.Desc.toUpperCase().indexOf('TỰ ĐỘNG ĐẶT LỊCH') > -1
                 ? 'Đặt lịch dự kiến'
@@ -540,7 +548,7 @@ function BookService(props) {
                       <span>{SumTotal?.XAC_NHAN || 0}</span>
                     </div>
                     <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                      <span>Xác nhận tự động</span>
+                      <span>Đặt lịch dự kiến</span>
                       <span>{SumTotal?.XAC_NHAN_TU_DONG || 0}</span>
                     </div>
                     <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
@@ -585,7 +593,7 @@ function BookService(props) {
                 </span>
               </div>
               <div className="fw-500 pr-15px">
-                Xác nhận tự động
+                Đặt lịch dự kiến
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
                   {SumTotal?.XAC_NHAN_TU_DONG || 0}
                 </span>

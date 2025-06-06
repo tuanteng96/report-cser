@@ -517,7 +517,7 @@ export const JsonFilter = {
     },
     {
       value: 'XAC_NHAN_TU_DONG',
-      label: 'Xác nhận tự động'
+      label: 'Đặt lịch dự kiến'
     },
     {
       value: 'CHUA_XAC_NHAN',
