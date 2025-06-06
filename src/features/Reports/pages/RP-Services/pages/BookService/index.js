@@ -231,7 +231,10 @@ function BookService(props) {
         key: 'Member.FullName',
         title: 'Khách hàng',
         dataKey: 'Member.FullName',
-        cellRenderer: ({ rowData }) => rowData?.Member?.MobilePhone !== "0000000000" ? rowData?.Member?.FullName : rowData?.FullName,
+        cellRenderer: ({ rowData }) =>
+          rowData?.Member?.MobilePhone !== '0000000000'
+            ? rowData?.Member?.FullName
+            : rowData?.FullName,
         width: 200,
         sortable: false,
         mobileOptions: {
@@ -242,7 +245,10 @@ function BookService(props) {
         key: 'Member.MobilePhone',
         title: 'Số điện thoại',
         dataKey: 'Member.MobilePhone',
-        cellRenderer: ({ rowData }) => rowData?.Member?.MobilePhone !== "0000000000" ? rowData?.Member?.MobilePhone : rowData.Phone,
+        cellRenderer: ({ rowData }) =>
+          rowData?.Member?.MobilePhone !== '0000000000'
+            ? rowData?.Member?.MobilePhone
+            : rowData.Phone,
         width: 160,
         sortable: false,
         mobileOptions: {
@@ -266,8 +272,9 @@ function BookService(props) {
             : ''
           return stt && stt.length > 0 ? (
             <span className={clsx(stt[0].className)}>
-              {rowData?.Desc === 'Tự động đặt lịch'
-                ? 'Xác nhận tự động'
+              {rowData?.Desc &&
+              rowData?.Desc.toUpperCase().indexOf('TỰ ĐỘNG ĐẶT LỊCH') > -1
+                ? 'Đặt lịch dự kiến'
                 : stt[0].label}
             </span>
           ) : (
@@ -405,7 +412,8 @@ function BookService(props) {
                                   : 'Chưa xác định'}
                               </div>
                               <div>
-                                Thực hiện {item?.Booking?.AtHome ? "tại nhà" : "tại spa"}
+                                Thực hiện{' '}
+                                {item?.Booking?.AtHome ? 'tại nhà' : 'tại spa'}
                               </div>
                               {item?.Booking?.UserServices &&
                                 item?.Booking?.UserServices.length > 0 && (
