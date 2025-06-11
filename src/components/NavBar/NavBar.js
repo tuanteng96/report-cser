@@ -334,7 +334,7 @@ function NavBar(props) {
   let location = useLocation()
   const dispatch = useDispatch()
 
-  window.Menus = MenuList
+  window.ReportMenus = MenuList
 
   useEffect(() => {
     if (width < 1200) {
