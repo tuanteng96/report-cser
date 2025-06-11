@@ -334,6 +334,8 @@ function NavBar(props) {
   let location = useLocation()
   const dispatch = useDispatch()
 
+  window.Menus = MenuList
+
   useEffect(() => {
     if (width < 1200) {
       dispatch(ToggleAside(false))
