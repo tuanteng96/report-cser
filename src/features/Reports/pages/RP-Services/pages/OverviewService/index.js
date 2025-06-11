@@ -249,15 +249,31 @@ function OverviewService(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
-  const checkPriceCost = ({ CostMerthod, Cost1, Cost2, Cost3 }) => {
+  const checkPriceCost = item => {
+    if (!item) return ''
+    let { CostMerthod, Cost1, Cost2, Cost3 } = item
     if (CostMerthod === 1) {
       return PriceHelper.formatVND(Cost1)
     }
     if (CostMerthod === 2) {
-      return PriceHelper.formatVND(Cost1)
+      return PriceHelper.formatVND(Cost2)
     }
     if (CostMerthod === 3) {
       return PriceHelper.formatVND(Cost3)
+    }
+  }
+
+  const checkFCostCost = item => {
+    if (!item) return ''
+    let { FCostMethod, FCost1, FCost2, FCost3 } = item
+    if (FCostMethod === 1) {
+      return PriceHelper.formatVND(FCost1)
+    }
+    if (FCostMethod === 2) {
+      return PriceHelper.formatVND(FCost2)
+    }
+    if (FCostMethod === 3) {
+      return PriceHelper.formatVND(FCost3)
     }
   }
 
@@ -272,7 +288,7 @@ function OverviewService(props) {
             <span className="font-number position-relative zindex-10">
               {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
             </span>
-            <div className="position-absolute top-0 left-0 w-100 h-100 d-flex">
+            <div className="top-0 left-0 position-absolute w-100 h-100 d-flex">
               {renderStatusColor(rowData)}
             </div>
           </Fragment>
@@ -427,6 +443,14 @@ function OverviewService(props) {
           rowData.AddFeeTitles && rowData.AddFeeTitles.length > 0
             ? rowData.AddFeeTitles.toString()
             : 'Không có',
+        width: 200,
+        sortable: false
+      },
+      {
+        key: 'FCost',
+        title: 'Tổng phụ phí',
+        dataKey: 'FCost',
+        cellRenderer: ({ rowData }) => checkFCostCost(rowData),
         width: 200,
         sortable: false
       },
@@ -600,7 +624,7 @@ function OverviewService(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Báo cáo dịch vụ
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -610,7 +634,7 @@ function OverviewService(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -728,7 +752,7 @@ function OverviewService(props) {
           <div className="row">
             <div className="col-md-12">
               <div
-                className="bg-white rounded p-4 p-lg-5 w-100 mt-4 mt-lg-0"
+                className="p-4 mt-4 bg-white rounded p-lg-5 w-100 mt-lg-0"
                 style={{ height: heightElm > 0 ? `${heightElm}px` : 'auto' }}
               >
                 {loading && <LoadingChart />}
@@ -751,7 +775,7 @@ function OverviewService(props) {
         </div>
       </div>
       <div className="bg-white rounded mt-25px">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách dịch vụ</div>
           <div className="d-flex">
             <div className="fw-500 pr-10px">
@@ -774,7 +798,7 @@ function OverviewService(props) {
                         Chi tiết dịch vụ
                       </Popover.Header>
                       <Popover.Body className="p-0">
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                           <span>Tổng giá buổi</span>
                           <span>
                             {PriceHelper.formatVND(Total.TotalGiabuoi)}
@@ -782,15 +806,15 @@ function OverviewService(props) {
                         </div>
                         {filters.ShowsX !== '2' && (
                           <>
-                            <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                            <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                               <span>KH buổi đầu thẻ</span>
                               <span>{Total.Totalbuoidau}</span>
                             </div>
-                            <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                            <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                               <span>KH buổi cuối thẻ</span>
                               <span>{Total.Totalbuoicuoi}</span>
                             </div>
-                            <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                            <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                               <span>KH buổi đầu</span>
                               <span>{Total.Totalisfirst}</span>
                             </div>
@@ -804,7 +828,7 @@ function OverviewService(props) {
                     </Popover>
                   }
                 >
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px font-size-h5"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h5"></i>
                 </OverlayTrigger>
               )}
             </div>
@@ -954,6 +978,9 @@ function OverviewService(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          checkFCostCost={checkFCostCost}
+          checkPriceCost={checkPriceCost}
+          filters={filters}
         />
       </div>
     </div>

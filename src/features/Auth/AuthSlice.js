@@ -13,7 +13,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 11541,
+        ID: 11547,
         Title: 'Cser Hà Nội'
       },
       {
@@ -21,14 +21,14 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser HCM'
       }
     ],
-    CrStockID: 11541,
+    CrStockID: 11547,
     rightsSum: {
       report: {
         IsAllStock: true,
         hasRight: true,
         stocks: [
           {
-            ID: 11541,
+            ID: 11547,
             Title: 'Tầng 4 - 30 Mai Hắc Đế, Hà Nội'
           },
           {
@@ -439,7 +439,7 @@ if (DevHelpers.isDevelopment()) {
               text: 'Báo cáo',
               stocksList: [
                 {
-                  ID: 11541,
+                  ID: 11547,
                   Title: 'Cser Beauty Hà Nội'
                 },
                 {
@@ -462,7 +462,7 @@ if (DevHelpers.isDevelopment()) {
                     items: [
                       {
                         text: 'Tổng quan',
-                        stocks: '11541',
+                        stocks: '11547',
                         jdata: {
                           paths: ['/bao-cao-ngay/danh-sach'],
                           url: '/bao-cao-ngay/tong-quan'
@@ -470,7 +470,7 @@ if (DevHelpers.isDevelopment()) {
                       },
                       {
                         text: 'Khách hàng',
-                        stocks: '11541',
+                        stocks: '11547',
                         jdata: {
                           paths: ['/khach-hang/chi-tiet-ngay'],
                           url: '/bao-cao-ngay/khach-hang'
@@ -490,7 +490,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/doanh-so'
                         },
-                        stocks: '11541'
+                        stocks: '11547'
                       },
                       {
                         text: 'Sản phẩm - dịch vụ bán ra',
@@ -501,7 +501,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/sp-dv-ban-ra'
                         },
-                        stocks: '11541'
+                        stocks: '11547'
                       }
                     ]
                   }
@@ -514,7 +514,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjE5ODExMjAwODIiLCJuYmYiOjE3NDkwOTE3ODEsImV4cCI6MTgzNTQ5MTc4MSwiaWF0IjoxNzQ5MDkxNzgxfQ.X3cwiVgPI29gS7l7Fui4mIrnEFoFrC5wdkjqqyuSW7w'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjE5ODExMjAxMTciLCJuYmYiOjE3NDk0NzkyNjUsImV4cCI6MTgzNTg3OTI2NSwiaWF0IjoxNzQ5NDc5MjY1fQ.PFD7VbZrTRWFh8CXi3vOo5D4VeAA6SlJ-YH2x-6I_k0'
 }
 const Auth = createSlice({
   name: 'auth',
