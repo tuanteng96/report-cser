@@ -292,11 +292,11 @@ function CourseReport(props) {
         }
       },
       {
-        key: 'MinDate',
+        key: 'CourseMember.CreateDate',
         title: 'Ngày nhập học',
-        dataKey: 'MinDate',
+        dataKey: 'CourseMember.CreateDate',
         cellRenderer: ({ rowData }) =>
-          rowData.MinDate ? moment(rowData.MinDate).format('DD-MM-YYYY') : '',
+          rowData?.CourseMember?.CreateDate ? moment(rowData?.CourseMember?.CreateDate).format('DD-MM-YYYY') : '',
         width: 150,
         sortable: false
       },
@@ -364,7 +364,7 @@ function CourseReport(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Báo cáo khoá học
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -374,7 +374,7 @@ function CourseReport(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -393,7 +393,7 @@ function CourseReport(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách học viên</div>
           {width > 1200 ? (
             <div className="d-flex">
@@ -439,19 +439,19 @@ function CourseReport(props) {
                       Chi tiết khoá học
                     </Popover.Header>
                     <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng học viên</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.Total)}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng tiền</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.TongTien)}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
                         <span>Tổng thanh toán</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.TongThanhToan)}
@@ -465,7 +465,7 @@ function CourseReport(props) {
                   <span className="font-size-xl fw-600 text-danger pl-5px font-number">
                     {PriceHelper.formatVNDPositive(Total.TongNo)}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>
