@@ -282,7 +282,7 @@ function CourseReport(props) {
         title: 'Ngày hẹn TT',
         dataKey: 'CourseMember.DayToPay',
         cellRenderer: ({ rowData }) =>
-          rowData.CourseMember?.DayToPay
+          rowData?.RemainPay > 0 && rowData?.CourseMember?.DayToPay
             ? moment(rowData.CourseMember.DayToPay).format('DD-MM-YYYY')
             : '',
         width: 150,
