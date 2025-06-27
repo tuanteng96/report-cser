@@ -35,12 +35,12 @@ function CourseReport(props) {
       ToDebt: '',
       Tags: '',
       no: '', //no | khong
-      Places: ""
+      Places: ''
     },
     filterCourse: {
       StockID: CrStockID, // coso
       ID: '',
-      Tags: '',
+      Tags: ''
     },
     order: {
       CreateDate: 'desc'
@@ -296,7 +296,9 @@ function CourseReport(props) {
         title: 'Ngày nhập học',
         dataKey: 'CourseMember.CreateDate',
         cellRenderer: ({ rowData }) =>
-          rowData?.CourseMember?.CreateDate ? moment(rowData?.CourseMember?.CreateDate).format('DD-MM-YYYY') : '',
+          rowData?.CourseMember?.CreateDate
+            ? moment(rowData?.CourseMember?.CreateDate).format('DD-MM-YYYY')
+            : '',
         width: 150,
         sortable: false
       },

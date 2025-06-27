@@ -72,7 +72,7 @@ function ChartCircle({ loading, data }) {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      let data1 = data.sort((a,b) => b.SumToPay - a.SumToPay)
+      let data1 = data.sort((a, b) => b.SumToPay - a.SumToPay)
 
       setDSDataChart(prevState => ({
         ...prevState,
@@ -85,7 +85,7 @@ function ChartCircle({ loading, data }) {
         }))
       }))
 
-      let data2 = data.sort((a,b) => b.SumQty - a.SumQty)
+      let data2 = data.sort((a, b) => b.SumQty - a.SumQty)
 
       setSLDataChart(prevState => ({
         ...prevState,
@@ -102,7 +102,7 @@ function ChartCircle({ loading, data }) {
       setDSDataChart(objData)
     }
   }, [data])
-  
+
   return (
     <Tab.Container defaultActiveKey={KeyTabs}>
       <div className="h-100 position-relative">
@@ -126,7 +126,6 @@ function ChartCircle({ loading, data }) {
             {loading && <LoadingChart />}
             {!loading && (
               <>
-             
                 {DSDataChart.labels.length > 0 ? (
                   <ChartPie
                     data={DSDataChart}

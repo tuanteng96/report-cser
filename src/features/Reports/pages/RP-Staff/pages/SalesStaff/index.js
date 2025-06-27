@@ -101,7 +101,7 @@ const convertArray2 = (arrays, configs, filters) => {
     return newArray
   }
 
-  for (let [index, obj] of arrays.entries()) {
+  for (let obj of arrays) {
     let Threshold = null
     if (configs) {
       let index = configs.findIndex(x => x.ID === filters?.StockID)
@@ -136,7 +136,7 @@ const convertArray2 = (arrays, configs, filters) => {
       StaffsList: []
     }
 
-    for (let [o, Staff] of obj.StaffsList.entries()) {
+    for (let Staff of obj.StaffsList) {
       let ThresholdRewards = 0
       if (Threshold) {
         if (Threshold <= 100) {
@@ -452,6 +452,7 @@ function SalesStaff(props) {
           rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       }
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 

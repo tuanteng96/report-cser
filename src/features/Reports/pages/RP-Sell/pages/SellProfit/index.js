@@ -23,7 +23,7 @@ function SellProfit(props) {
     Pi: 1, // Trang hiện tại
     Ps: 1500, // Số lượng item
     gia_nhap_tb_khoang_tg: false, // Tính theo DateStart,DateEnd, ngược lại tất cả
-    MemberIDs: ""
+    MemberIDs: ''
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -311,9 +311,7 @@ function SellProfit(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase font-size-xl fw-600">
-            Lợi nhuận
-          </span>
+          <span className="text-uppercase font-size-xl fw-600">Lợi nhuận</span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
           </span>

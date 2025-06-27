@@ -225,6 +225,7 @@ const reportsApi = {
       `/api/v3/r23/ban-hang/doanh-so-chi-tiet-2`,
       JSON.stringify(data)
     )
-  }
+  },
+  getBookID: id => http.get(`/api/v3/mbookadmin?cmd=getbooks&id=${id}`)
 }
 export default reportsApi

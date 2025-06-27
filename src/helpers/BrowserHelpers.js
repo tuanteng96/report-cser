@@ -160,7 +160,7 @@ export const BrowserHelpers = {
         ? filters.ProductOrderID.value
         : ''
     }
-    if('MemberIDs' in filters) {
+    if ('MemberIDs' in filters) {
       params.MemberIDs = filters.MemberIDs
         ? filters.MemberIDs.map(item => item.value).join(',')
         : ''

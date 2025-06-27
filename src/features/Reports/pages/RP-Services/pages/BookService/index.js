@@ -50,6 +50,148 @@ const ListStatus = [
   }
 ]
 
+const CellHistory = ({ rowData }) => {
+  const [Item, setItem] = useState(null)
+  const [show, setShow] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (show) {
+      getHistory()
+    }
+  }, [show])
+
+  const getHistory = () => {
+    setLoading(true)
+    reportsApi.getBookID(rowData.ID).then(({ data }) => {
+      if (data?.books && data.books.length > 0) {
+        setLoading(false)
+        setItem(data?.books[0])
+      }
+    })
+  }
+
+  return (
+    <>
+      <OverlayTrigger
+        onEnter={() => {
+          setShow(true)
+        }}
+        onExiting={() => setShow(false)}
+        rootClose
+        trigger="click"
+        key="top"
+        placement="bottom"
+        overlay={
+          <Popover id={`popover-positioned-top`}>
+            <Popover.Body
+              className="p-0"
+              style={{
+                maxHeight: '300px',
+                overflow: 'auto'
+              }}
+            >
+              {loading && (
+                <div className="font-size-md px-15px py-15px">Đang tải ...</div>
+              )}
+              {!loading && (
+                <>
+                  {Item?.History?.Edit && Item?.History?.Edit.length > 0 && (
+                    <>
+                      {Item?.History?.Edit.sort(
+                        (a, b) =>
+                          moment(b.CreateDate, 'HH:mm DD-MM-YYYY').valueOf() -
+                          moment(a.CreateDate, 'HH:mm DD-MM-YYYY').valueOf()
+                      ).map((item, index) => (
+                        <div
+                          className={clsx(
+                            'border-gray-200 py-10px px-15px fw-600 font-size-md',
+                            Item?.History?.Edit.length - 1 !== index &&
+                              'border-bottom'
+                          )}
+                          key={index}
+                        >
+                          <div className="mb-2px">{item.CreateDate}</div>
+                          <div
+                            style={{
+                              fontWeight: 400
+                            }}
+                          >
+                            <div>
+                              Dịch vụ{' '}
+                              {item?.Booking?.Roots &&
+                              item?.Booking?.Roots.length > 0
+                                ? item?.Booking?.Roots.map(x => x.label).join(
+                                    ', '
+                                  )
+                                : 'Chưa chọn dịch vụ'}
+                            </div>
+                            <div>
+                              Thời gian :{' '}
+                              {moment(
+                                item?.Booking?.BookDate,
+                                'YYYY-MM-DD HH:mm'
+                              ).format('HH:mm DD-MM-YYYY')}
+                            </div>
+                            <div>
+                              Trạng thái :{' '}
+                              {item?.Booking?.Status
+                                ? ListStatus.filter(
+                                    x => x.value === item?.Booking?.Status
+                                  )[0].label
+                                : 'Chưa xác định'}
+                            </div>
+                            <div>
+                              Thực hiện{' '}
+                              {item?.Booking?.AtHome ? 'tại nhà' : 'tại spa'}
+                            </div>
+                            {item?.Booking?.UserServices &&
+                              item?.Booking?.UserServices.length > 0 && (
+                                <div>
+                                  Nhân viên thực hiện :{' '}
+                                  {item?.Booking?.UserServices.map(
+                                    x => x.label
+                                  ).join(', ')}
+                                </div>
+                              )}
+                            {item?.Booking?.Desc && (
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: item?.Booking?.Desc.replaceAll(
+                                    '\n',
+                                    ' | '
+                                  )
+                                }}
+                              ></div>
+                            )}
+
+                            <div>Thay đổi từ {item?.Staff?.FullName}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {!Item?.History?.Edit && Item?.History?.Edit.length === 0 && (
+                    <div className="font-size-md px-15px py-15px">
+                      Chưa có lịch sử
+                    </div>
+                  )}
+                </>
+              )}
+            </Popover.Body>
+          </Popover>
+        }
+      >
+        <div className="w-100 d-flex justify-content-between align-items-center">
+          <button className="btn btn-primary btn-xs" type="button">
+            <span className="open">Xem lịch sử</span>
+          </button>
+        </div>
+      </OverlayTrigger>
+    </>
+  )
+}
+
 function BookService(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -362,112 +504,8 @@ function BookService(props) {
         key: 'History',
         title: 'Lịch sử thay đổi',
         dataKey: 'History',
-        cellRenderer: ({ rowData }) => (
-          <>
-            {rowData?.History?.Edit && rowData?.History?.Edit.length > 0 && (
-              <>
-                <OverlayTrigger
-                  rootClose
-                  trigger="click"
-                  key="top"
-                  placement="bottom"
-                  overlay={
-                    <Popover id={`popover-positioned-top`}>
-                      <Popover.Body
-                        className="p-0"
-                        style={{
-                          maxHeight: '300px',
-                          overflow: 'auto'
-                        }}
-                      >
-                        {rowData?.History?.Edit.sort(
-                          (a, b) =>
-                            moment(b.CreateDate, 'HH:mm DD-MM-YYYY').valueOf() -
-                            moment(a.CreateDate, 'HH:mm DD-MM-YYYY').valueOf()
-                        ).map((item, index) => (
-                          <div
-                            className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom"
-                            key={index}
-                          >
-                            <div className="mb-2px">{item.CreateDate}</div>
-                            <div
-                              style={{
-                                fontWeight: 400
-                              }}
-                            >
-                              <div>
-                                Dịch vụ{' '}
-                                {item?.Booking?.Roots &&
-                                item?.Booking?.Roots.length > 0
-                                  ? item?.Booking?.Roots.map(x => x.label).join(
-                                      ', '
-                                    )
-                                  : 'Chưa chọn dịch vụ'}
-                              </div>
-                              <div>
-                                Thời gian :{' '}
-                                {moment(
-                                  item?.Booking?.BookDate,
-                                  'YYYY-MM-DD HH:mm'
-                                ).format('HH:mm DD-MM-YYYY')}
-                              </div>
-                              <div>
-                                Trạng thái :{' '}
-                                {item?.Booking?.Status
-                                  ? ListStatus.filter(
-                                      x => x.value === item?.Booking?.Status
-                                    )[0].label
-                                  : 'Chưa xác định'}
-                              </div>
-                              <div>
-                                Thực hiện{' '}
-                                {item?.Booking?.AtHome ? 'tại nhà' : 'tại spa'}
-                              </div>
-                              {item?.Booking?.UserServices &&
-                                item?.Booking?.UserServices.length > 0 && (
-                                  <div>
-                                    Nhân viên thực hiện :{' '}
-                                    {item?.Booking?.UserServices.map(
-                                      x => x.label
-                                    ).join(', ')}
-                                  </div>
-                                )}
-                              {item?.Booking?.Desc && (
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: item?.Booking?.Desc.replaceAll(
-                                      '\n',
-                                      ' | '
-                                    )
-                                  }}
-                                ></div>
-                              )}
-
-                              <div>Thay đổi từ {item?.Staff?.FullName}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </Popover.Body>
-                    </Popover>
-                  }
-                >
-                  <div className="w-100 d-flex justify-content-between align-items-center">
-                    <div>
-                      Ngày{' '}
-                      {
-                        rowData?.History?.Edit[
-                          rowData?.History?.Edit.length - 1
-                        ].CreateDate
-                      }
-                    </div>
-                    <i className="fa-solid fa-circle-exclamation text-warning"></i>
-                  </div>
-                </OverlayTrigger>
-              </>
-            )}
-          </>
-        ),
-        width: 250,
+        cellRenderer: ({ rowData }) => <CellHistory rowData={rowData} />,
+        width: 160,
         sortable: false
       },
       {
