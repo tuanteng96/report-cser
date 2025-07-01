@@ -59,10 +59,22 @@ export const BrowserHelpers = {
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null
     }
+    if ('From' in filters) {
+      params.From = filters.From
+        ? moment(filters.From).format('YYYY-MM-DD')
+        : null
+    }
+    if ('To' in filters) {
+      params.To = filters.To ? moment(filters.To).format('YYYY-MM-DD') : null
+    }
     if ('DebtFrom' in filters) {
       params.DebtFrom = filters.DebtFrom
         ? moment(filters.DebtFrom).format('DD/MM/yyyy')
         : null
+    }
+    if ('StockIDs' in filters) {
+      params.StockID = filters.StockIDs ? [filters.StockIDs] : []
+      delete params.StockIDs
     }
     if ('DebtTo' in filters) {
       params.DebtTo = filters.DebtTo

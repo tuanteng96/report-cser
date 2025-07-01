@@ -60,6 +60,9 @@ const reportsApi = {
   getListServices: data => {
     return http.post(`${SubApi}/dich-vu/danh-sach`, JSON.stringify(data))
   },
+  getListServicesAndPayed: data => {
+    return http.post(`/api/v3/user24@ServiceAndPayed`, JSON.stringify(data))
+  },
   getListUsedElsewhere: data => {
     return http.post(
       `${SubApi}/dich-vu/dich-vu-kh-khac-diem`,

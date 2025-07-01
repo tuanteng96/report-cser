@@ -16,7 +16,7 @@ export const PermissionHelpers = {
       Swal.close()
     }
   },
-  ExportExcel: async ({ FuncStart, FuncEnd, FuncApi, UrlName }) => {
+  ExportExcel: async ({ FuncStart, FuncEnd, FuncApi, UrlName, params }) => {
     FuncStart()
     FuncApi().then(({ data }) => {
       if (data?.error) {
@@ -30,12 +30,26 @@ export const PermissionHelpers = {
           allowOutsideClick: false
         })
       } else {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: UrlName,
-            Data: data,
-            hideLoading: () => FuncEnd()
-          })
+        if (params) {
+          window?.EzsExportExcel &&
+            window?.EzsExportExcel({
+              Url: UrlName,
+              Data: {
+                ...data,
+                param: {
+                  Body: params
+                }
+              },
+              hideLoading: () => FuncEnd()
+            })
+        } else {
+          window?.EzsExportExcel &&
+            window?.EzsExportExcel({
+              Url: UrlName,
+              Data: data,
+              hideLoading: () => FuncEnd()
+            })
+        }
       }
     })
   }

@@ -96,7 +96,10 @@ function OverviewService(props) {
     Totalrequest: 0
   })
   const [heightElm, setHeightElm] = useState(0)
+  const [heightWrap, setHeightWrap] = useState(0)
   const elementRef = useRef(null)
+  const elementWrap = useRef(null)
+
   const { width } = useWindowSize()
 
   useEffect(() => {
@@ -130,6 +133,10 @@ function OverviewService(props) {
       setHeightElm(350)
     }
   }, [elementRef, width])
+
+  useEffect(() => {
+    setHeightWrap(elementWrap?.current?.clientHeight || 0)
+  }, [elementWrap, width, loading])
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -200,49 +207,103 @@ function OverviewService(props) {
 
   const getListServices = (isLoading = true, callback) => {
     isLoading && setLoadingTable(true)
-    reportsApi
-      .getListServices(BrowserHelpers.getRequestParamsList(filters))
-      .then(({ data }) => {
-        if (data.isRight) {
-          PermissionHelpers.ErrorAccess(data.error)
-          setLoadingTable(false)
-        } else {
-          const {
-            Items,
-            Total,
-            PCount,
-            Totalbuoicuoi,
-            Totalbuoidau,
-            Totalisfirst,
-            Totalrequest,
-            TotalGiabuoi
-          } = {
-            Items: data.result?.Items || [],
-            Total: data.result?.Total || 0,
-            Totalbuoicuoi: data.result?.Totalbuoicuoi || 0,
-            Totalbuoidau: data.result?.Totalbuoidau || 0,
-            Totalisfirst: data.result?.Totalisfirst || 0,
-            Totalrequest: data.result?.Totalrequest || 0,
-            TotalGiabuoi: data.result?.TotalGiabuoi || 0,
-            PCount: data?.result?.PCount || 0
-          }
-          setListData(Items)
-          setTotal({
-            Totalbuoicuoi,
-            Totalbuoidau,
-            Totalisfirst,
-            Totalrequest,
-            TotalGiabuoi
+    if (filters.ShowsX === '1') {
+      reportsApi
+        .getListServicesAndPayed(
+          BrowserHelpers.getRequestParamsList({
+            From: filters.DateStart,
+            To: filters.DateEnd,
+            StockIDs: filters.StockID, //filters.StockID
+            Pi: filters.Pi,
+            Ps: filters.Ps
           })
-          setPageCount(PCount)
-          setLoadingTable(false)
-          setPageTotal(Total)
-          !loading && isFilter && setIsFilter(false)
-          callback && callback()
-          PermissionHelpers.HideErrorAccess()
-        }
-      })
-      .catch(error => console.log(error))
+        )
+        .then(({ data }) => {
+          if (data?.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            setLoadingTable(false)
+          } else {
+            const {
+              Items,
+              Total,
+              PCount,
+              Totalbuoicuoi,
+              Totalbuoidau,
+              Totalisfirst,
+              Totalrequest,
+              TotalGiabuoi
+            } = {
+              Items: data?.lst || [],
+              Total: data?.total || 0,
+              Totalbuoicuoi: 0,
+              Totalbuoidau: 0,
+              Totalisfirst: 0,
+              Totalrequest: 0,
+              TotalGiabuoi: 0,
+              PCount: data?.pCount || 0
+            }
+            setListData(Items)
+            setTotal({
+              Totalbuoicuoi,
+              Totalbuoidau,
+              Totalisfirst,
+              Totalrequest,
+              TotalGiabuoi
+            })
+            setPageCount(PCount)
+            setLoadingTable(false)
+            setPageTotal(Total)
+            !loading && isFilter && setIsFilter(false)
+            callback && callback()
+            PermissionHelpers.HideErrorAccess()
+          }
+        })
+        .catch(error => console.log(error))
+    } else {
+      reportsApi
+        .getListServices(BrowserHelpers.getRequestParamsList(filters))
+        .then(({ data }) => {
+          if (data.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            setLoadingTable(false)
+          } else {
+            const {
+              Items,
+              Total,
+              PCount,
+              Totalbuoicuoi,
+              Totalbuoidau,
+              Totalisfirst,
+              Totalrequest,
+              TotalGiabuoi
+            } = {
+              Items: data.result?.Items || [],
+              Total: data.result?.Total || 0,
+              Totalbuoicuoi: data.result?.Totalbuoicuoi || 0,
+              Totalbuoidau: data.result?.Totalbuoidau || 0,
+              Totalisfirst: data.result?.Totalisfirst || 0,
+              Totalrequest: data.result?.Totalrequest || 0,
+              TotalGiabuoi: data.result?.TotalGiabuoi || 0,
+              PCount: data?.result?.PCount || 0
+            }
+            setListData(Items)
+            setTotal({
+              Totalbuoicuoi,
+              Totalbuoidau,
+              Totalisfirst,
+              Totalrequest,
+              TotalGiabuoi
+            })
+            setPageCount(PCount)
+            setLoadingTable(false)
+            setPageTotal(Total)
+            !loading && isFilter && setIsFilter(false)
+            callback && callback()
+            PermissionHelpers.HideErrorAccess()
+          }
+        })
+        .catch(error => console.log(error))
+    }
   }
 
   const onPagesChange = ({ Pi, Ps }) => {
@@ -278,262 +339,409 @@ function OverviewService(props) {
   }
 
   const columns = useMemo(
-    () => [
-      {
-        key: '',
-        title: 'STT',
-        dataKey: 'index',
-        cellRenderer: ({ rowIndex, rowData }) => (
-          <Fragment>
-            <span className="font-number position-relative zindex-10">
-              {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-            </span>
-            <div className="top-0 left-0 position-absolute w-100 h-100 d-flex">
-              {renderStatusColor(rowData)}
-            </div>
-          </Fragment>
-        ),
-        width: 60,
-        sortable: false,
-        align: 'center',
-        className: 'position-relative',
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'Id',
-        title: 'ID',
-        dataKey: 'Id',
-        cellRenderer: ({ rowData }) => <div>#{rowData.Id}</div>,
-        width: 100,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'OrderID',
-        title: 'ID đơn hàng',
-        dataKey: 'OrderID',
-        cellRenderer: ({ rowData }) => <div>#{rowData.OrderID}</div>,
-        width: 100,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'BookDate',
-        title: 'Ngày đặt lịch',
-        dataKey: 'BookDate',
-        cellRenderer: ({ rowData }) =>
-          rowData.BookDate
-            ? moment(rowData.BookDate).format('HH:mm DD/MM/YYYY')
-            : 'Chưa xác định',
-        width: 150,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'StockName',
-        title: 'Cơ sở',
-        dataKey: 'StockName',
-        cellRenderer: ({ rowData }) => rowData.StockName || 'Chưa có',
-        width: 200,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'MemberName',
-        title: 'Khách hàng',
-        dataKey: 'MemberName',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>{rowData.MemberName || 'Chưa có'}</Text>
-        ),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'MemberPhone',
-        title: 'Số điện thoại',
-        dataKey: 'MemberPhone',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>{rowData.MemberPhone || 'Chưa có'}</Text>
-        ),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'ProServiceName',
-        title: 'Dịch vụ gốc',
-        dataKey: 'ProServiceName',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>
-            {rowData.ProServiceName || 'Không có dịch vụ gốc'}
-          </Text>
-        ),
-        width: 220,
-        sortable: false
-      },
-      {
-        key: 'Card',
-        title: 'Thẻ',
-        dataKey: 'Card',
-        cellRenderer: ({ rowData }) => rowData.Card || 'Không có thẻ',
-        width: 250,
-        sortable: false
-      },
-      {
-        key: 'SessionPrice',
-        title: 'Giá buổi',
-        dataKey: 'SessionPrice',
-        cellRenderer: ({ rowData }) => checkPriceCost(rowData), //SessionCost
-        width: 180,
-        sortable: false
-      },
-      // {
-      //   key: 'SessionCostExceptGift',
-      //   title: 'Giá buổi (Tặng)',
-      //   dataKey: 'SessionCostExceptGift',
-      //   cellRenderer: ({ rowData }) =>
-      //     PriceHelper.formatVND(rowData.SessionCostExceptGift),
-      //   width: 180,
-      //   sortable: false
-      // },
-      {
-        key: 'SessionIndex',
-        title: 'Buổi',
-        dataKey: 'SessionIndex',
-        cellRenderer: ({ rowData }) =>
-          rowData.Warranty
-            ? rowData.SessionWarrantyIndex
-            : rowData.SessionIndex,
-        width: 100,
-        sortable: false,
-        hidden: filters.ShowsX === '2'
-      },
-      {
-        key: 'Warranty',
-        title: 'Bảo hành',
-        dataKey: 'Warranty',
-        cellRenderer: ({ rowData }) =>
-          rowData.Warranty ? 'Bảo hành' : 'Không có',
-        width: 120,
-        sortable: false,
-        hidden: filters.ShowsX === '2'
-      },
-      {
-        key: 'Loai',
-        title: 'Loại',
-        dataKey: 'Loai',
-        width: 180,
-        sortable: false,
-        hidden: filters.ShowsX !== '2'
-      },
-      {
-        key: 'AddFeeTitles',
-        title: 'Phụ phí',
-        dataKey: 'AddFeeTitles',
-        cellRenderer: ({ rowData }) =>
-          rowData.AddFeeTitles && rowData.AddFeeTitles.length > 0
-            ? rowData.AddFeeTitles.toString()
-            : 'Không có',
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'FCost',
-        title: 'Tổng phụ phí',
-        dataKey: 'FCost',
-        cellRenderer: ({ rowData }) => checkFCostCost(rowData),
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'ProServiceType',
-        title: 'Nhóm dịch vụ',
-        dataKey: 'ProServiceType',
-        width: 200,
-        sortable: false,
-        hidden: filters.ShowsX !== '0'
-      },
-      {
-        key: 'UserFullName',
-        title: 'Nhân viên chuyển ca',
-        dataKey: 'UserFullName',
-        width: 250,
-        sortable: false,
-        hidden: filters.ShowsX !== '2'
-      },
-      {
-        key: 'StaffSalaries',
-        title: 'Nhân viên thực hiện',
-        dataKey: 'StaffSalaries',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>
-            {rowData.StaffSalaries && rowData.StaffSalaries.length > 0
-              ? rowData.StaffSalaries.map(
-                  item =>
-                    `${item.FullName} (${PriceHelper.formatVND(item.Salary)})`
-                ).join(', ')
-              : 'Chưa xác định'}
-          </Text>
-        ),
-        width: 250,
-        sortable: false
-      },
-      {
-        key: 'TotalSalary',
-        title: 'Tổng lương nhân viên',
-        dataKey: 'TotalSalary',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.TotalSalary),
-        width: 180,
-        sortable: false
-      },
-      {
-        key: 'Status',
-        title: 'Trạng thái',
-        dataKey: 'Status',
-        cellRenderer: ({ rowData }) =>
-          rowData.Status === 'done' ? (
-            <span className="badge bg-success">Hoàn thành</span>
-          ) : (
-            <span className="badge bg-warning">Đang thực hiện</span>
-          ),
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'Rate',
-        title: 'Đánh giá sao',
-        dataKey: 'Rate',
-        cellRenderer: ({ rowData }) => rowData.Rate || 'Chưa đánh giá',
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'RateNote',
-        title: 'Nội dung đánh giá',
-        dataKey: 'RateNote',
-        //cellRenderer: ({ rowData }) => rowData.RateNote || 'Chưa có',
-        width: 180,
-        sortable: false
-      },
-      {
-        key: 'Desc',
-        title: 'Mô tả',
-        dataKey: 'Desc',
-        cellRenderer: ({ rowData }) => rowData.Desc || 'Chưa có',
-        width: 220,
-        sortable: false
-      }
-    ],
+    () =>
+      filters.ShowsX !== '1'
+        ? [
+            {
+              key: '',
+              title: 'STT',
+              dataKey: 'index',
+              cellRenderer: ({ rowIndex, rowData }) => (
+                <Fragment>
+                  <span className="font-number position-relative zindex-10">
+                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
+                  </span>
+                  <div className="top-0 left-0 position-absolute w-100 h-100 d-flex">
+                    {renderStatusColor(rowData)}
+                  </div>
+                </Fragment>
+              ),
+              width: 60,
+              sortable: false,
+              align: 'center',
+              className: 'position-relative',
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'Id',
+              title: 'ID',
+              dataKey: 'Id',
+              cellRenderer: ({ rowData }) => <div>#{rowData.Id}</div>,
+              width: 100,
+              sortable: false,
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'OrderID',
+              title: 'ID đơn hàng',
+              dataKey: 'OrderID',
+              cellRenderer: ({ rowData }) => <div>#{rowData.OrderID}</div>,
+              width: 100,
+              sortable: false,
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'BookDate',
+              title: 'Ngày đặt lịch',
+              dataKey: 'BookDate',
+              cellRenderer: ({ rowData }) =>
+                rowData.BookDate
+                  ? moment(rowData.BookDate).format('HH:mm DD/MM/YYYY')
+                  : 'Chưa xác định',
+              width: 150,
+              sortable: false,
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'StockName',
+              title: 'Cơ sở',
+              dataKey: 'StockName',
+              cellRenderer: ({ rowData }) => rowData.StockName || 'Chưa có',
+              width: 200,
+              sortable: false,
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'MemberName',
+              title: 'Khách hàng',
+              dataKey: 'MemberName',
+              cellRenderer: ({ rowData }) => (
+                <Text tooltipMaxWidth={300}>
+                  {rowData.MemberName || 'Chưa có'}
+                </Text>
+              ),
+              width: 200,
+              sortable: false
+            },
+            {
+              key: 'MemberPhone',
+              title: 'Số điện thoại',
+              dataKey: 'MemberPhone',
+              cellRenderer: ({ rowData }) => (
+                <Text tooltipMaxWidth={300}>
+                  {rowData.MemberPhone || 'Chưa có'}
+                </Text>
+              ),
+              width: 200,
+              sortable: false
+            },
+            {
+              key: 'ProServiceName',
+              title: 'Dịch vụ gốc',
+              dataKey: 'ProServiceName',
+              cellRenderer: ({ rowData }) => (
+                <Text tooltipMaxWidth={300}>
+                  {rowData.ProServiceName || 'Không có dịch vụ gốc'}
+                </Text>
+              ),
+              width: 220,
+              sortable: false
+            },
+            {
+              key: 'Card',
+              title: 'Thẻ',
+              dataKey: 'Card',
+              cellRenderer: ({ rowData }) => rowData.Card || 'Không có thẻ',
+              width: 250,
+              sortable: false
+            },
+            {
+              key: 'SessionPrice',
+              title: 'Giá buổi',
+              dataKey: 'SessionPrice',
+              cellRenderer: ({ rowData }) => checkPriceCost(rowData), //SessionCost
+              width: 180,
+              sortable: false
+            },
+            // {
+            //   key: 'SessionCostExceptGift',
+            //   title: 'Giá buổi (Tặng)',
+            //   dataKey: 'SessionCostExceptGift',
+            //   cellRenderer: ({ rowData }) =>
+            //     PriceHelper.formatVND(rowData.SessionCostExceptGift),
+            //   width: 180,
+            //   sortable: false
+            // },
+            {
+              key: 'SessionIndex',
+              title: 'Buổi',
+              dataKey: 'SessionIndex',
+              cellRenderer: ({ rowData }) =>
+                rowData.Warranty
+                  ? rowData.SessionWarrantyIndex
+                  : rowData.SessionIndex,
+              width: 100,
+              sortable: false,
+              hidden: filters.ShowsX === '2'
+            },
+            {
+              key: 'Warranty',
+              title: 'Bảo hành',
+              dataKey: 'Warranty',
+              cellRenderer: ({ rowData }) =>
+                rowData.Warranty ? 'Bảo hành' : 'Không có',
+              width: 120,
+              sortable: false,
+              hidden: filters.ShowsX === '2'
+            },
+            {
+              key: 'Loai',
+              title: 'Loại',
+              dataKey: 'Loai',
+              width: 180,
+              sortable: false,
+              hidden: filters.ShowsX !== '2'
+            },
+            {
+              key: 'AddFeeTitles',
+              title: 'Phụ phí',
+              dataKey: 'AddFeeTitles',
+              cellRenderer: ({ rowData }) =>
+                rowData.AddFeeTitles && rowData.AddFeeTitles.length > 0
+                  ? rowData.AddFeeTitles.toString()
+                  : 'Không có',
+              width: 200,
+              sortable: false
+            },
+            {
+              key: 'FCost',
+              title: 'Tổng phụ phí',
+              dataKey: 'FCost',
+              cellRenderer: ({ rowData }) => checkFCostCost(rowData),
+              width: 200,
+              sortable: false
+            },
+            {
+              key: 'ProServiceType',
+              title: 'Nhóm dịch vụ',
+              dataKey: 'ProServiceType',
+              width: 200,
+              sortable: false,
+              hidden: filters.ShowsX !== '0'
+            },
+            {
+              key: 'UserFullName',
+              title: 'Nhân viên chuyển ca',
+              dataKey: 'UserFullName',
+              width: 250,
+              sortable: false,
+              hidden: filters.ShowsX !== '2'
+            },
+            {
+              key: 'StaffSalaries',
+              title: 'Nhân viên thực hiện',
+              dataKey: 'StaffSalaries',
+              cellRenderer: ({ rowData }) => (
+                <Text tooltipMaxWidth={300}>
+                  {rowData.StaffSalaries && rowData.StaffSalaries.length > 0
+                    ? rowData.StaffSalaries.map(
+                        item =>
+                          `${item.FullName} (${PriceHelper.formatVND(
+                            item.Salary
+                          )})`
+                      ).join(', ')
+                    : 'Chưa xác định'}
+                </Text>
+              ),
+              width: 250,
+              sortable: false
+            },
+            {
+              key: 'TotalSalary',
+              title: 'Tổng lương nhân viên',
+              dataKey: 'TotalSalary',
+              cellRenderer: ({ rowData }) =>
+                PriceHelper.formatVND(rowData.TotalSalary),
+              width: 180,
+              sortable: false
+            },
+            {
+              key: 'Status',
+              title: 'Trạng thái',
+              dataKey: 'Status',
+              cellRenderer: ({ rowData }) =>
+                rowData.Status === 'done' ? (
+                  <span className="badge bg-success">Hoàn thành</span>
+                ) : (
+                  <span className="badge bg-warning">Đang thực hiện</span>
+                ),
+              width: 150,
+              sortable: false
+            },
+            {
+              key: 'Rate',
+              title: 'Đánh giá sao',
+              dataKey: 'Rate',
+              cellRenderer: ({ rowData }) => rowData.Rate || 'Chưa đánh giá',
+              width: 150,
+              sortable: false
+            },
+            {
+              key: 'RateNote',
+              title: 'Nội dung đánh giá',
+              dataKey: 'RateNote',
+              //cellRenderer: ({ rowData }) => rowData.RateNote || 'Chưa có',
+              width: 180,
+              sortable: false
+            },
+            {
+              key: 'Desc',
+              title: 'Mô tả',
+              dataKey: 'Desc',
+              cellRenderer: ({ rowData }) => rowData.Desc || 'Chưa có',
+              width: 220,
+              sortable: false
+            }
+          ]
+        : [
+            {
+              key: '',
+              title: 'STT',
+              dataKey: 'index',
+              cellRenderer: ({ rowIndex, rowData }) => (
+                <Fragment>
+                  <span className="font-number position-relative zindex-10">
+                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
+                  </span>
+                </Fragment>
+              ),
+              width: 60,
+              sortable: false,
+              align: 'center',
+              className: 'position-relative',
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'User.FullName',
+              title: 'Nhân viên',
+              dataKey: 'User.FullName',
+              cellRenderer: ({ rowData }) => rowData?.User?.FullName,
+              width: 300,
+              sortable: false,
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'Stock.Title',
+              title: 'Cơ sở',
+              dataKey: 'Stock.Title',
+              cellRenderer: ({ rowData }) => rowData?.Stock?.Title,
+              width: 300,
+              sortable: false,
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'Qty',
+              title: 'Số lượng',
+              dataKey: 'Qty',
+              width: 200,
+              sortable: false,
+              mobileOptions: {
+                visible: true
+              }
+            },
+            {
+              key: 'TM/CK/QT',
+              title: 'TM/CK/QT',
+              dataKey: 'TM/CK/QT',
+              width: 200,
+              sortable: false,
+              cellRenderer: ({ rowData }) => (
+                <div className="w-100 d-flex justify-content-between align-items-center">
+                  {PriceHelper.formatVND(rowData.CK + rowData.QT + rowData.TM)}
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="auto"
+                    overlay={
+                      <Popover id={`popover-positioned-top`}>
+                        <Popover.Body className="p-0">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                            <span className="w-60">Tiền mặt</span>
+                            <span className="flex-1 text-end">
+                              {PriceHelper.formatVNDPositive(rowData.TM)}
+                            </span>
+                          </div>
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                            <span className="w-60">Chuyển khoản</span>
+                            <span className="flex-1 text-end">
+                              {PriceHelper.formatVNDPositive(rowData.CK)}
+                            </span>
+                          </div>
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                            <span className="w-60">Quẹt thẻ</span>
+                            <span className="flex-1 text-end">
+                              {PriceHelper.formatVNDPositive(rowData.QT)}
+                            </span>
+                          </div>
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+                    </div>
+                  </OverlayTrigger>
+                </div>
+              )
+            },
+            {
+              key: 'VI/TT',
+              title: 'Ví / Thẻ tiền',
+              dataKey: 'VI/TT',
+              width: 200,
+              sortable: false,
+              cellRenderer: ({ rowData }) => (
+                <div className="w-100 d-flex justify-content-between align-items-center">
+                  {PriceHelper.formatVND(rowData.VI + rowData.TT)}
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="auto"
+                    overlay={
+                      <Popover id={`popover-positioned-top`}>
+                        <Popover.Body className="p-0">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                            <span className="w-60">Ví</span>
+                            <span className="flex-1 text-end">
+                              {PriceHelper.formatVNDPositive(rowData.VI)}
+                            </span>
+                          </div>
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                            <span className="w-60">Thẻ tiền</span>
+                            <span className="flex-1 text-end">
+                              {PriceHelper.formatVNDPositive(rowData.TT)}
+                            </span>
+                          </div>
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+                    </div>
+                  </OverlayTrigger>
+                </div>
+              )
+            }
+          ],
     [filters]
   )
 
@@ -563,11 +771,27 @@ function OverviewService(props) {
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
-        reportsApi.getListServices(
-          BrowserHelpers.getRequestParamsList(filters, {
-            Total: PageTotal
-          })
-        ),
+        filters.ShowsX === '1'
+          ? reportsApi.getListServicesAndPayed(
+              BrowserHelpers.getRequestParamsList(
+                {
+                  From: filters.DateStart,
+                  To: filters.DateEnd,
+                  StockIDs: filters.StockID, //filters.StockID
+                  Pi: filters.Pi,
+                  Ps: filters.Ps
+                },
+                {
+                  Total: PageTotal
+                }
+              )
+            )
+          : reportsApi.getListServices(
+              BrowserHelpers.getRequestParamsList(filters, {
+                Total: PageTotal
+              })
+            ),
+      params: filters.ShowsX === "1" ? filters : null,
       UrlName: '/dich-vu'
     })
   }
@@ -659,6 +883,10 @@ function OverviewService(props) {
           {
             label: 'Tiêu Chuẩn',
             value: '0'
+          },
+          {
+            label: 'Nhân viên',
+            value: '1'
           }
         ]}
       />
@@ -748,6 +976,7 @@ function OverviewService(props) {
             </div>
           )}
         </div>
+
         <div className="col-lg-8">
           <div className="row">
             <div className="col-md-12">
@@ -755,20 +984,22 @@ function OverviewService(props) {
                 className="p-4 mt-4 bg-white rounded p-lg-5 w-100 mt-lg-0"
                 style={{ height: heightElm > 0 ? `${heightElm}px` : 'auto' }}
               >
-                {loading && <LoadingChart />}
-                {!loading && (
-                  <>
-                    {dataChart.labels.length > 0 ? (
-                      <ChartPie
-                        data={dataChart}
-                        options={optionsChart}
-                        height={heightElm > 0 ? `${heightElm}px` : 'auto'}
-                      />
-                    ) : (
-                      <ElementEmpty />
-                    )}
-                  </>
-                )}
+                <div className="h-100" ref={elementWrap}>
+                  {loading && <LoadingChart />}
+                  {!loading && (
+                    <>
+                      {dataChart.labels.length > 0 ? (
+                        <ChartPie
+                          data={dataChart}
+                          options={optionsChart}
+                          height={heightWrap > 0 ? `${heightWrap}px` : 'auto'}
+                        />
+                      ) : (
+                        <ElementEmpty />
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -777,104 +1008,106 @@ function OverviewService(props) {
       <div className="bg-white rounded mt-25px">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách dịch vụ</div>
-          <div className="d-flex">
-            <div className="fw-500 pr-10px">
-              Tổng dịch vụ{' '}
-              <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                {PageTotal}
-              </span>
-              {width <= 1200 && (
-                <OverlayTrigger
-                  rootClose
-                  trigger="click"
-                  key="top"
-                  placement="top"
-                  overlay={
-                    <Popover id={`popover-positioned-top`}>
-                      <Popover.Header
-                        className="py-10px text-uppercase fw-600"
-                        as="h3"
-                      >
-                        Chi tiết dịch vụ
-                      </Popover.Header>
-                      <Popover.Body className="p-0">
-                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                          <span>Tổng giá buổi</span>
-                          <span>
-                            {PriceHelper.formatVND(Total.TotalGiabuoi)}
-                          </span>
-                        </div>
-                        {filters.ShowsX !== '2' && (
-                          <>
-                            <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                              <span>KH buổi đầu thẻ</span>
-                              <span>{Total.Totalbuoidau}</span>
-                            </div>
-                            <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                              <span>KH buổi cuối thẻ</span>
-                              <span>{Total.Totalbuoicuoi}</span>
-                            </div>
-                            <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                              <span>KH buổi đầu</span>
-                              <span>{Total.Totalisfirst}</span>
-                            </div>
-                            <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                              <span>KH cần thanh toán</span>
-                              <span>{Total.Totalrequest}</span>
-                            </div>
-                          </>
-                        )}
-                      </Popover.Body>
-                    </Popover>
-                  }
-                >
-                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h5"></i>
-                </OverlayTrigger>
+          {filters.ShowsX !== '1' && (
+            <div className="d-flex">
+              <div className="fw-500 pr-10px">
+                Tổng dịch vụ{' '}
+                <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                  {PageTotal}
+                </span>
+                {width <= 1200 && (
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="top"
+                    overlay={
+                      <Popover id={`popover-positioned-top`}>
+                        <Popover.Header
+                          className="py-10px text-uppercase fw-600"
+                          as="h3"
+                        >
+                          Chi tiết dịch vụ
+                        </Popover.Header>
+                        <Popover.Body className="p-0">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                            <span>Tổng giá buổi</span>
+                            <span>
+                              {PriceHelper.formatVND(Total.TotalGiabuoi)}
+                            </span>
+                          </div>
+                          {filters.ShowsX !== '2' && (
+                            <>
+                              <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                <span>KH buổi đầu thẻ</span>
+                                <span>{Total.Totalbuoidau}</span>
+                              </div>
+                              <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                <span>KH buổi cuối thẻ</span>
+                                <span>{Total.Totalbuoicuoi}</span>
+                              </div>
+                              <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                <span>KH buổi đầu</span>
+                                <span>{Total.Totalisfirst}</span>
+                              </div>
+                              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                <span>KH cần thanh toán</span>
+                                <span>{Total.Totalrequest}</span>
+                              </div>
+                            </>
+                          )}
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h5"></i>
+                  </OverlayTrigger>
+                )}
+              </div>
+              {width >= 1200 && (
+                <Fragment>
+                  <div className="fw-500 pr-15px">
+                    Tổng giá buổi{' '}
+                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                      {PriceHelper.formatVND(Total.TotalGiabuoi)}
+                    </span>
+                  </div>
+
+                  {filters.ShowsX !== '2' && (
+                    <>
+                      <div className="fw-500 pr-15px">
+                        KH buổi đầu thẻ{' '}
+                        <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                          {Total.Totalbuoidau}
+                        </span>
+                      </div>
+                      <div className="fw-500 pr-15px">
+                        KH buổi cuối thẻ{' '}
+                        <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                          {Total.Totalbuoicuoi}
+                        </span>
+                      </div>
+                      <div className="fw-500 pr-15px">
+                        KH buổi đầu{' '}
+                        <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                          {Total.Totalisfirst}
+                        </span>
+                      </div>
+                      <div className="fw-500">
+                        KH cần thanh toán{' '}
+                        <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                          {Total.Totalrequest}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </Fragment>
               )}
             </div>
-            {width >= 1200 && (
-              <Fragment>
-                <div className="fw-500 pr-15px">
-                  Tổng giá buổi{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVND(Total.TotalGiabuoi)}
-                  </span>
-                </div>
-
-                {filters.ShowsX !== '2' && (
-                  <>
-                    <div className="fw-500 pr-15px">
-                      KH buổi đầu thẻ{' '}
-                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                        {Total.Totalbuoidau}
-                      </span>
-                    </div>
-                    <div className="fw-500 pr-15px">
-                      KH buổi cuối thẻ{' '}
-                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                        {Total.Totalbuoicuoi}
-                      </span>
-                    </div>
-                    <div className="fw-500 pr-15px">
-                      KH buổi đầu{' '}
-                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                        {Total.Totalisfirst}
-                      </span>
-                    </div>
-                    <div className="fw-500">
-                      KH cần thanh toán{' '}
-                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                        {Total.Totalrequest}
-                      </span>
-                    </div>
-                  </>
-                )}
-              </Fragment>
-            )}
-          </div>
+          )}
         </div>
         <div className="p-20px">
-          {filters.ShowsX !== '2' && (
+          {filters.ShowsX !== '2' && filters.ShowsX !== '1' && (
             <div className="d-flex mb-15px">
               <div className="d-flex mr-20px">
                 <OverlayTrigger
