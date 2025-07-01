@@ -906,7 +906,7 @@ function PayrollStaff(props) {
           </span>
         )
       }
-    ],
+    ], // eslint-disable-next-line react-hooks/exhaustive-deps
     [filters, Total]
   )
 

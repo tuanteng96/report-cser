@@ -4,12 +4,11 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { createPortal } from 'react-dom'
 import reportsApi from 'src/api/reports.api'
 import moment from 'moment'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { useApp } from 'src/app/App'
 import clsx from 'clsx'
-import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import { useSelector } from 'react-redux'
 
@@ -39,7 +38,7 @@ function PickerView({ children, item, filters }) {
 
   const { isLoading, data } = useQuery({
     queryKey: ['PreviewSale', { ...params }],
-    queryFn: async ({}) => {
+    queryFn: async () => {
       const { data } = await reportsApi.getViewSaleDetail({
         ...params,
         StockID: params?.StockID,

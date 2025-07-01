@@ -28,7 +28,7 @@ function NavBar(props) {
   const [IndexShow, setIndexShow] = useState('')
   const [locationCurent, setLocationCurrent] = useState('')
 
-  const [MenuList, setMenuList] = useState([
+  const [MenuList] = useState([
     {
       Title: 'Báo cáo ngày',
       TitleKey: 'BAO_CAO_NGAY',
@@ -421,47 +421,55 @@ function NavBar(props) {
                       </NavLink>
                     )}
 
-                    {item.Children && item.Children.filter(x => !x.hidden).length > 0 && (
-                      <div
-                        className="btn-down"
-                        onClick={() => OpenSubmenu(item.TitleKey)}
-                      >
-                        <i className="fa-solid fa-chevron-down icon-down"></i>
-                      </div>
-                    )}
-                    {item.Children && item.Children.filter(x => !x.hidden).length > 0 && (
-                      <div className="ezs-navbar__sub">
-                        <ul>
-                          {item.Children.filter(x => !x.hidden).map((sub, i) => (
-                            <li key={i}>
-                              {sub.Href ===
-                                '/admin/?mdl20=R23&act20=index#rp:/bao-cao-ngay/tong-quan' &&
-                              !window.isApp ? (
-                                <a
-                                  href="#"
-                                  onClick={() =>
-                                    (window.top.location.href =
-                                      '/admin/?mdl20=R23&act20=daily')
-                                  }
-                                >
-                                  <i className="menu-bullet menu-bullet-dot">
-                                    <span></span>
-                                  </i>
-                                  <span className="menu-text">{sub.Title}</span>
-                                </a>
-                              ) : (
-                                <NavLink to={sub.Href}>
-                                  <i className="menu-bullet menu-bullet-dot">
-                                    <span></span>
-                                  </i>
-                                  <span className="menu-text">{sub.Title}</span>
-                                </NavLink>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                    {item.Children &&
+                      item.Children.filter(x => !x.hidden).length > 0 && (
+                        <div
+                          className="btn-down"
+                          onClick={() => OpenSubmenu(item.TitleKey)}
+                        >
+                          <i className="fa-solid fa-chevron-down icon-down"></i>
+                        </div>
+                      )}
+                    {item.Children &&
+                      item.Children.filter(x => !x.hidden).length > 0 && (
+                        <div className="ezs-navbar__sub">
+                          <ul>
+                            {item.Children.filter(x => !x.hidden).map(
+                              (sub, i) => (
+                                <li key={i}>
+                                  {sub.Href ===
+                                    '/admin/?mdl20=R23&act20=index#rp:/bao-cao-ngay/tong-quan' &&
+                                  !window.isApp ? (
+                                    <a
+                                      href="#"
+                                      onClick={() =>
+                                        (window.top.location.href =
+                                          '/admin/?mdl20=R23&act20=daily')
+                                      }
+                                    >
+                                      <i className="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                      </i>
+                                      <span className="menu-text">
+                                        {sub.Title}
+                                      </span>
+                                    </a>
+                                  ) : (
+                                    <NavLink to={sub.Href}>
+                                      <i className="menu-bullet menu-bullet-dot">
+                                        <span></span>
+                                      </i>
+                                      <span className="menu-text">
+                                        {sub.Title}
+                                      </span>
+                                    </NavLink>
+                                  )}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      )}
                   </li>
                 ))}
             </ul>

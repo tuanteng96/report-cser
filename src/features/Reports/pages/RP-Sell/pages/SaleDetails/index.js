@@ -39,7 +39,8 @@ function SaleDetails(props) {
     BrandIds: '',
     CategoriesIds: '',
     ProductIds: '',
-    TimeToReal: TimeToRealList[1]
+    TimeToReal: TimeToRealList[1],
+    ShowsType: '1'
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -235,7 +236,7 @@ function SaleDetails(props) {
     <div className="py-main h-100 d-flex flex-column">
       <div className="subheader d-flex justify-content-between align-items-center flex-shrink-1">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Sản phẩm, dịch vụ bán ra
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -245,7 +246,7 @@ function SaleDetails(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -265,7 +266,7 @@ function SaleDetails(props) {
       />
       {loading && <LoadingSkeleton />}
       <div className="bg-white mb-15px">
-        <div className="px-20px py-15px border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách SP, DV bán ra</div>
           {width <= 1200 ? (
             <div className="fw-500 d-flex align-items-center">
@@ -277,11 +278,13 @@ function SaleDetails(props) {
                 overlay={
                   <Popover id={`popover-positioned-top`}>
                     <Popover.Body className="p-0">
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng thanh toán</span>
-                        <span>{PriceHelper.formatVNDPositive(Total.TongThanhToan)}</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(Total.TongThanhToan)}
+                        </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Thanh toán Sản phẩm / NVL</span>
                         <span>
                           {PriceHelper.formatVNDPositive(
@@ -289,7 +292,7 @@ function SaleDetails(props) {
                           )}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Thanh toán Dịch vụ / PP</span>
                         <span>
                           {PriceHelper.formatVNDPositive(
@@ -297,13 +300,13 @@ function SaleDetails(props) {
                           )}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Thanh toán Thẻ tiền</span>
                         <span>
                           {PriceHelper.formatVNDPositive(Total.TongThanhToanTT)}
                         </span>
                       </div>
-                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng số lượng</span>
                         <span>{PriceHelper.formatVNDPositive(Total.SL)}</span>
                       </div>
@@ -319,7 +322,7 @@ function SaleDetails(props) {
                   <span className="font-size-xl fw-600 pl-5px font-number text-success">
                     {PriceHelper.formatVNDPositive(Total.DS)}
                   </span>
-                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                 </div>
               </OverlayTrigger>
             </div>
@@ -346,7 +349,7 @@ function SaleDetails(props) {
                   overlay={
                     <Popover id={`popover-positioned-top`}>
                       <Popover.Body className="p-0">
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                           <span>Thanh toán Sản phẩm / NVL</span>
                           <span>
                             {PriceHelper.formatVNDPositive(
@@ -354,7 +357,7 @@ function SaleDetails(props) {
                             )}
                           </span>
                         </div>
-                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                           <span>Thanh toán Dịch vụ / PP</span>
                           <span>
                             {PriceHelper.formatVNDPositive(
@@ -379,7 +382,7 @@ function SaleDetails(props) {
                     <span className="font-size-xl fw-600 pl-5px font-number text-success">
                       {PriceHelper.formatVND(Total.TongThanhToan)}
                     </span>
-                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px align-text-top"></i>
+                    <i className="align-text-top cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                   </div>
                 </OverlayTrigger>
               </div>
@@ -390,10 +393,10 @@ function SaleDetails(props) {
 
       {!loading && (
         <div className="flex-grow-1">
-          <div className="row h-auto h-lg-100">
+          <div className="h-auto row h-lg-100">
             <div className="col-lg-4 mb-15px mb-lg-0 h-100">
               <div className="bg-white rounded h-100">
-                <div className="px-20px px-20px pt-20px">
+                <div className="px-20px pt-20px">
                   <div className="d-flex justify-content-between">
                     <div>
                       <div className="fw-500 font-size-lg">Sản phẩm / NVL</div>
@@ -409,17 +412,17 @@ function SaleDetails(props) {
                           sumTotalDS(dataResult.SP_NVL)
                         )}
                       </div>
-                      <div className="text-muted font-size-smm text-center">
+                      <div className="text-center text-muted font-size-smm">
                         Tổng doanh số
                       </div>
                     </div>
                   </div>
                   <div className="mt-12px">
                     <div className="d-flex justify-content-between py-12px">
-                      <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-20px pr-sm-15px">
+                      <div className="flex-1 text-muted2 text-uppercase font-size-smm fw-500 pr-20px pr-sm-15px">
                         Tên mặt hàng
                       </div>
-                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-40px pr-15px text-center">
+                      <div className="text-center text-muted2 text-uppercase font-size-smm fw-500 w-40px pr-15px">
                         SL
                       </div>
                       <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px w-sm-100px text-end">
@@ -433,7 +436,7 @@ function SaleDetails(props) {
                 </div>
                 <PerfectScrollbar
                   options={perfectScrollbarOptions}
-                  className="scroll px-20px px-20px pb-20px"
+                  className="scroll px-20px pb-20px"
                   style={{ position: 'relative', maxHeight: heighElm.Box }}
                 >
                   {dataResult.SP_NVL && dataResult.SP_NVL.length > 0 ? (
@@ -450,14 +453,14 @@ function SaleDetails(props) {
                           <PickerView item={item} filters={filters}>
                             {({ open }) => (
                               <div
-                                className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px cursor-pointer"
+                                className="flex-1 cursor-pointer font-size-md fw-500 pr-20px pr-sm-15px"
                                 onClick={open}
                               >
                                 {item.ProdTitle}
                               </div>
                             )}
                           </PickerView>
-                          <div className="w-40px fw-500 pr-15px text-center">
+                          <div className="text-center w-40px fw-500 pr-15px">
                             {item.SumQTy}
                           </div>
                           <div className="fw-500 w-70px w-sm-100px text-end">
@@ -472,19 +475,19 @@ function SaleDetails(props) {
                               overlay={
                                 <Popover id={`popover-positioned-top`}>
                                   <Popover.Body className="p-0">
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Chuyển khoản</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(item.CK)}
                                       </span>
                                     </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Quẹt thẻ</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(item.QT)}
                                       </span>
                                     </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Tiền mặt</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(item.TM)}
@@ -501,7 +504,7 @@ function SaleDetails(props) {
                                       item.CK + item.QT + item.TM
                                     )}
                                   </span>
-                                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                                 </div>
                               </div>
                             </OverlayTrigger>
@@ -514,7 +517,7 @@ function SaleDetails(props) {
                                 overlay={
                                   <Popover id={`popover-positioned-top`}>
                                     <Popover.Body className="p-0">
-                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                         <span>Ví</span>
                                         <span>
                                           {PriceHelper.formatVNDPositive(
@@ -522,7 +525,7 @@ function SaleDetails(props) {
                                           )}
                                         </span>
                                       </div>
-                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                         <span>Thẻ tiền</span>
                                         <span>
                                           {PriceHelper.formatVNDPositive(
@@ -541,7 +544,7 @@ function SaleDetails(props) {
                                         item.Vi + item.TT
                                       )}
                                     </span>
-                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                                   </div>
                                 </div>
                               </OverlayTrigger>
@@ -558,7 +561,7 @@ function SaleDetails(props) {
             </div>
             <div className="col-lg-4 mb-15px mb-lg-0 h-100">
               <div className="bg-white rounded h-100">
-                <div className="px-20px px-20px pt-20px">
+                <div className="px-20px pt-20px">
                   <div className="d-flex justify-content-between">
                     <div>
                       <div className="fw-500 font-size-lg">Dịch vụ / PP</div>
@@ -574,17 +577,17 @@ function SaleDetails(props) {
                           sumTotalDS(dataResult.DV_PP)
                         )}
                       </div>
-                      <div className="text-muted font-size-smm text-center">
+                      <div className="text-center text-muted font-size-smm">
                         Tổng doanh số
                       </div>
                     </div>
                   </div>
                   <div className="mt-12px">
                     <div className="d-flex justify-content-between py-12px">
-                      <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-20px pr-sm-15px">
+                      <div className="flex-1 text-muted2 text-uppercase font-size-smm fw-500 pr-20px pr-sm-15px">
                         Tên mặt hàng
                       </div>
-                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-40px pr-15px text-center">
+                      <div className="text-center text-muted2 text-uppercase font-size-smm fw-500 w-40px pr-15px">
                         SL
                       </div>
                       <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px w-sm-100px text-end">
@@ -598,7 +601,7 @@ function SaleDetails(props) {
                 </div>
                 <PerfectScrollbar
                   options={perfectScrollbarOptions}
-                  className="scroll px-20px px-20px pb-20px"
+                  className="scroll px-20px pb-20px"
                   style={{ position: 'relative', maxHeight: heighElm.Box }}
                 >
                   {dataResult.DV_PP.length > 0 ? (
@@ -616,14 +619,14 @@ function SaleDetails(props) {
                             <PickerView item={item} filters={filters}>
                               {({ open }) => (
                                 <div
-                                  className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px cursor-pointer"
+                                  className="flex-1 cursor-pointer font-size-md fw-500 pr-20px pr-sm-15px"
                                   onClick={open}
                                 >
                                   {item.ProdTitle}
                                 </div>
                               )}
                             </PickerView>
-                            <div className="w-40px fw-500 pr-15px text-center">
+                            <div className="text-center w-40px fw-500 pr-15px">
                               {item.SumQTy}
                             </div>
                             <div className="fw-500 w-100px text-end">
@@ -638,7 +641,7 @@ function SaleDetails(props) {
                                 overlay={
                                   <Popover id={`popover-positioned-top`}>
                                     <Popover.Body className="p-0">
-                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                         <span>Chuyển khoản</span>
                                         <span>
                                           {PriceHelper.formatVNDPositive(
@@ -646,7 +649,7 @@ function SaleDetails(props) {
                                           )}
                                         </span>
                                       </div>
-                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                         <span>Quẹt thẻ</span>
                                         <span>
                                           {PriceHelper.formatVNDPositive(
@@ -654,7 +657,7 @@ function SaleDetails(props) {
                                           )}
                                         </span>
                                       </div>
-                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                         <span>Tiền mặt</span>
                                         <span>
                                           {PriceHelper.formatVNDPositive(
@@ -673,7 +676,7 @@ function SaleDetails(props) {
                                         item.CK + item.QT + item.TM
                                       )}
                                     </span>
-                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                                   </div>
                                 </div>
                               </OverlayTrigger>
@@ -686,7 +689,7 @@ function SaleDetails(props) {
                                   overlay={
                                     <Popover id={`popover-positioned-top`}>
                                       <Popover.Body className="p-0">
-                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                           <span>Ví</span>
                                           <span>
                                             {PriceHelper.formatVNDPositive(
@@ -694,7 +697,7 @@ function SaleDetails(props) {
                                             )}
                                           </span>
                                         </div>
-                                        <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                           <span>Thẻ tiền</span>
                                           <span>
                                             {PriceHelper.formatVNDPositive(
@@ -713,7 +716,7 @@ function SaleDetails(props) {
                                           item.Vi + item.TT
                                         )}
                                       </span>
-                                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                                     </div>
                                   </div>
                                 </OverlayTrigger>
@@ -730,7 +733,7 @@ function SaleDetails(props) {
             </div>
             <div className="col-lg-4 h-100">
               <div className="bg-white rounded h-100">
-                <div className="px-20px px-20px pt-20px">
+                <div className="px-20px pt-20px">
                   <div className="d-flex justify-content-between">
                     <div>
                       <div className="fw-500 font-size-lg">Thẻ tiền</div>
@@ -745,17 +748,17 @@ function SaleDetails(props) {
                           sumTotalDS(dataResult.TT)
                         )}
                       </div>
-                      <div className="text-muted font-size-smm text-center">
+                      <div className="text-center text-muted font-size-smm">
                         Tổng doanh số
                       </div>
                     </div>
                   </div>
                   <div className="mt-12px">
                     <div className="d-flex justify-content-between py-12px">
-                      <div className="text-muted2 text-uppercase font-size-smm fw-500 flex-1 pr-20px pr-sm-15px">
+                      <div className="flex-1 text-muted2 text-uppercase font-size-smm fw-500 pr-20px pr-sm-15px">
                         Tên mặt hàng
                       </div>
-                      <div className="text-muted2 text-uppercase font-size-smm fw-500 w-40px pr-15px text-center">
+                      <div className="text-center text-muted2 text-uppercase font-size-smm fw-500 w-40px pr-15px">
                         SL
                       </div>
                       <div className="text-muted2 text-uppercase font-size-smm fw-500 w-70px w-sm-100px text-end">
@@ -769,7 +772,7 @@ function SaleDetails(props) {
                 </div>
                 <PerfectScrollbar
                   options={perfectScrollbarOptions}
-                  className="scroll px-20px px-20px pb-20px"
+                  className="scroll px-20px pb-20px"
                   style={{ position: 'relative', maxHeight: heighElm.Box }}
                 >
                   {dataResult.TT && dataResult.TT.length > 0 ? (
@@ -786,14 +789,14 @@ function SaleDetails(props) {
                           <PickerView item={item} filters={filters}>
                             {({ open }) => (
                               <div
-                                className="font-size-md fw-500 flex-1 pr-20px pr-sm-15px cursor-pointer"
+                                className="flex-1 cursor-pointer font-size-md fw-500 pr-20px pr-sm-15px"
                                 onClick={open}
                               >
                                 {item.ProdTitle}
                               </div>
                             )}
                           </PickerView>
-                          <div className="w-40px fw-500 pr-15px text-center">
+                          <div className="text-center w-40px fw-500 pr-15px">
                             {item.SumQTy}
                           </div>
                           <div className="fw-500 w-100px text-end">
@@ -808,19 +811,19 @@ function SaleDetails(props) {
                               overlay={
                                 <Popover id={`popover-positioned-top`}>
                                   <Popover.Body className="p-0">
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Chuyển khoản</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(item.CK)}
                                       </span>
                                     </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Quẹt thẻ</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(item.QT)}
                                       </span>
                                     </div>
-                                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                       <span>Tiền mặt</span>
                                       <span>
                                         {PriceHelper.formatVNDPositive(item.TM)}
@@ -837,7 +840,7 @@ function SaleDetails(props) {
                                       item.CK + item.QT + item.TM
                                     )}
                                   </span>
-                                  <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                                 </div>
                               </div>
                             </OverlayTrigger>
@@ -850,7 +853,7 @@ function SaleDetails(props) {
                                 overlay={
                                   <Popover id={`popover-positioned-top`}>
                                     <Popover.Body className="p-0">
-                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                         <span>Ví</span>
                                         <span>
                                           {PriceHelper.formatVNDPositive(
@@ -858,7 +861,7 @@ function SaleDetails(props) {
                                           )}
                                         </span>
                                       </div>
-                                      <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                         <span>Thẻ tiền</span>
                                         <span>
                                           {PriceHelper.formatVNDPositive(
@@ -877,7 +880,7 @@ function SaleDetails(props) {
                                         item.Vi + item.TT
                                       )}
                                     </span>
-                                    <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                                   </div>
                                 </div>
                               </OverlayTrigger>

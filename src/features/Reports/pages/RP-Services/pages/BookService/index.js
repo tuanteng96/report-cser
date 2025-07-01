@@ -59,6 +59,8 @@ const CellHistory = ({ rowData }) => {
     if (show) {
       getHistory()
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show])
 
   const getHistory = () => {

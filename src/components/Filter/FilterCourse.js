@@ -25,8 +25,8 @@ function FilterCourse({
   onExport,
   isWarehouse = false
 }) {
-  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree } = useSelector(
-    ({ auth }) => ({
+  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree } =
+    useSelector(({ auth }) => ({
       Stocks: auth.Info?.Stocks
         ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
             ...item,
@@ -38,8 +38,7 @@ function FilterCourse({
       rightTree: auth?.Info?.rightTree,
       GlobalConfig: auth?.GlobalConfig,
       AuthID: auth?.Info?.User?.ID
-    })
-  )
+    }))
   const [StocksList, setStocksList] = useState([])
   const { pathname } = useLocation()
 
@@ -187,8 +186,7 @@ function FilterCourse({
       >
         {formikProps => {
           // errors, touched, handleChange, handleBlur
-          const { values, setFieldValue, handleChange, handleBlur } =
-            formikProps
+          const { values, setFieldValue } = formikProps
           return (
             <Form>
               <div className="filter-box__content">

@@ -582,13 +582,13 @@ function OverviewService(props) {
     setIsModalMobile(false)
   }
 
-  const removeName = name => {
-    if (!name) return ''
-    const index = name.lastIndexOf('-')
-    if (index > -1) {
-      return name.slice(index + 1, name.length)
-    }
-  }
+  // const removeName = name => {
+  //   if (!name) return ''
+  //   const index = name.lastIndexOf('-')
+  //   if (index > -1) {
+  //     return name.slice(index + 1, name.length)
+  //   }
+  // }
 
   const renderStatusColor = row => {
     const colors = []

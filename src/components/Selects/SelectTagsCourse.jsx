@@ -12,8 +12,7 @@ const SelectTagsCourse = ({ value, ...props }) => {
 
   const getTags = () => {
     setIsLoading(true)
-    moreApi.getNameConfig("daotaotag").then(({ data }) => {
-      
+    moreApi.getNameConfig('daotaotag').then(({ data }) => {
       let rs = []
       if (data?.data && data?.data?.length > 0) {
         const result = JSON.parse(data?.data[0].Value)

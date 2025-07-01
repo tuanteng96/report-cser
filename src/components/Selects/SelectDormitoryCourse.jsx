@@ -12,8 +12,7 @@ const SelectDormitoryCourse = ({ value, ...props }) => {
 
   const getDormitory = () => {
     setIsLoading(true)
-    moreApi.getNameConfig("daotaoktx").then(({ data }) => {
-      
+    moreApi.getNameConfig('daotaoktx').then(({ data }) => {
       let rs = []
       if (data?.data && data?.data?.length > 0) {
         const result = JSON.parse(data?.data[0].Value)

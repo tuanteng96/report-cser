@@ -2,8 +2,7 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import { useSelector } from 'react-redux'
 import FilterList from 'src/components/Filter/FilterList'
-import _, { clone } from 'lodash'
-import { uuidv4 } from '@nikitababko/id-generator'
+import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import ModalViewMobile from './ModalViewMobile'
@@ -18,23 +17,23 @@ import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 moment.locale('vi')
 
-const converArray = arr => {
-  if (!arr) return []
-  const newArray = arr.map((item, index) => ({
-    ...item,
-    Ids: uuidv4(),
-    rowIndex: index,
-    children:
-      item.children && item.children.length > 0
-        ? item.children.map((sub, i) => ({
-            ...sub,
-            Ids: uuidv4(),
-            id: `${index}-detail`
-          }))
-        : []
-  }))
-  return newArray
-}
+// const converArray = arr => {
+//   if (!arr) return []
+//   const newArray = arr.map((item, index) => ({
+//     ...item,
+//     Ids: uuidv4(),
+//     rowIndex: index,
+//     children:
+//       item.children && item.children.length > 0
+//         ? item.children.map((sub, i) => ({
+//             ...sub,
+//             Ids: uuidv4(),
+//             id: `${index}-detail`
+//           }))
+//         : []
+//   }))
+//   return newArray
+// }
 
 const converItems = arr => {
   if (!arr) return []

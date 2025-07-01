@@ -88,21 +88,27 @@ function FilterListAdvancedBG({
   onExport,
   isWarehouse = false
 }) {
-  const { Stocks, KPT_Max_Type, PermissionReport, GlobalConfig, AuthID, rightTree } =
-    useSelector(({ auth }) => ({
-      Stocks: auth.Info?.Stocks
-        ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
-            ...item,
-            label: item.Title || item.label,
-            value: item.ID || item.value
-          }))
-        : [],
-      PermissionReport: auth.Info?.rightsSum?.report,
-      rightTree: auth?.Info?.rightTree,
-      KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
-      GlobalConfig: auth?.GlobalConfig,
-      AuthID: auth?.Info?.User?.ID
-    }))
+  const {
+    Stocks,
+    KPT_Max_Type,
+    PermissionReport,
+    GlobalConfig,
+    AuthID,
+    rightTree
+  } = useSelector(({ auth }) => ({
+    Stocks: auth.Info?.Stocks
+      ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
+          ...item,
+          label: item.Title || item.label,
+          value: item.ID || item.value
+        }))
+      : [],
+    PermissionReport: auth.Info?.rightsSum?.report,
+    rightTree: auth?.Info?.rightTree,
+    KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
+    GlobalConfig: auth?.GlobalConfig,
+    AuthID: auth?.Info?.User?.ID
+  }))
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
   const { pathname } = useLocation()

@@ -61,8 +61,8 @@ function FilterToggle({
   isOnlyCard,
   isWarehouse = false
 }) {
-  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree } = useSelector(
-    ({ auth }) => ({
+  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree } =
+    useSelector(({ auth }) => ({
       Stocks: auth.Info?.Stocks
         ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
             ...item,
@@ -74,8 +74,7 @@ function FilterToggle({
       rightTree: auth?.Info?.rightTree,
       GlobalConfig: auth?.GlobalConfig,
       AuthID: auth?.Info?.User?.ID
-    })
-  )
+    }))
   const [StocksList, setStocksList] = useState([])
 
   const { pathname } = useLocation()
