@@ -125,7 +125,7 @@ function FilterCourse({
     } else {
       newStocks = [...Stocks]
       if (PermissionReport?.hasRight) {
-        if (!PermissionReport?.jdata) {
+        if (!PermissionReport?.jdata || PermissionReport?.IsAllStock) {
           if (isWarehouse) {
             newStocks = [
               { value: '', label: 'Tất cả cơ sở' },
