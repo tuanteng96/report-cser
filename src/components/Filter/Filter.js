@@ -93,7 +93,7 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
     } else {
       newStocks = [...Stocks]
       if (PermissionReport?.hasRight) {
-        if (!PermissionReport?.jdata || PermissionReport?.IsAllStock) {
+        if (!PermissionReport?.jdata) {
           newStocks = [{ value: '', label: 'Tất cả cơ sở' }, ...Stocks]
         } else {
           let newListItems = []
