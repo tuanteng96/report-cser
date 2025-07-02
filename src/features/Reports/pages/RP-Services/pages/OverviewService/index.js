@@ -791,7 +791,7 @@ function OverviewService(props) {
                 Total: PageTotal
               })
             ),
-      params: filters.ShowsX === "1" ? filters : null,
+      params: filters.ShowsX === '1' ? filters : null,
       UrlName: '/dich-vu'
     })
   }

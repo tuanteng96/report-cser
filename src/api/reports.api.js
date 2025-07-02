@@ -99,6 +99,9 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getListSalesOnStock: data => {
+    return http.post(`/api/v4/r27@OrderQtyByStock`, JSON.stringify(data))
+  },
   getListTopSalesDetail: data => {
     return http.post(
       `${SubApi}/ban-hang/top-ban-hang-doanh-so`,

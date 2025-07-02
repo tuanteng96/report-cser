@@ -199,17 +199,39 @@ function SaleDetails(props) {
     const newFilters = GeneralNewFilter(
       ArrayHeplers.getFilterExport({ ...filters })
     )
-    reportsApi
-      .getListSalesDetail(newFilters)
-      .then(({ data }) => {
-        window?.EzsExportExcel &&
-          window?.EzsExportExcel({
-            Url: '/ban-hang/sp-dv-ban-ra',
-            Data: data,
-            hideLoading: () => setLoadingExport(false)
-          })
-      })
-      .catch(error => console.log(error))
+    if (filters.ShowsType === '2') {
+      reportsApi
+        .getListSalesOnStock({
+          From: moment(filters.DateStart).format('YYYY-MM-DD'),
+          To: moment(filters.DateEnd).format('YYYY-MM-DD'),
+          StockID: filters.StockID ? [filters.StockID] : []
+        })
+        .then(({ data }) => {
+          window?.EzsExportExcel &&
+            window?.EzsExportExcel({
+              Url: '/ban-hang/sp-dv-ban-ra',
+              Data: {
+                ...data,
+                param: {
+                  Body: filters
+                }
+              },
+              hideLoading: () => setLoadingExport(false)
+            })
+        })
+    } else {
+      reportsApi
+        .getListSalesDetail(newFilters)
+        .then(({ data }) => {
+          window?.EzsExportExcel &&
+            window?.EzsExportExcel({
+              Url: '/ban-hang/sp-dv-ban-ra',
+              Data: data,
+              hideLoading: () => setLoadingExport(false)
+            })
+        })
+        .catch(error => console.log(error))
+    }
   }
 
   const onRefresh = () => {

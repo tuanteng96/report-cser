@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
-import FilterList from 'src/components/Filter/FilterList'
 import reportsApi from 'src/api/reports.api'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import { AssetsHelpers } from 'src/helpers/AssetsHelpers'
