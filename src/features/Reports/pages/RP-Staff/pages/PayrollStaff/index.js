@@ -358,7 +358,7 @@ const OverlayKPI = ({ rowData, filters }) => {
               let y = rowData.DOANH_SO_THANG > 30000000 ? 500000 : -500000
               if (
                 15000000 <= rowData.DOANH_SO_THANG &&
-                rowData.DOANH_SO_THANG < 30000000
+                rowData.DOANH_SO_THANG < 45000000
               ) {
                 x = 5
               } else if (
@@ -378,12 +378,14 @@ const OverlayKPI = ({ rowData, filters }) => {
                 y
               })
             }
+
             setValues(result)
           }
         }
         setLoading(false)
       })
   }
+
   return (
     <OverlayTrigger
       rootClose
