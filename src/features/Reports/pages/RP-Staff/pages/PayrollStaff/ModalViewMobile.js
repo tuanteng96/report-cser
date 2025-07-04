@@ -24,11 +24,11 @@ function ModalViewMobile({ show, onHide, data, filters }) {
       {data?.TypeOf && (
         <Fragment>
           <div className="modal-view-head align-items-baseline px-15px py-8px">
-            <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
+            <div className="flex-1 modal-view-title text-uppercase font-size-lg fw-500 pr-15px">
               Tổng lương
             </div>
             <div
-              className="modal-view-close font-size-h3 w-20px text-center"
+              className="text-center modal-view-close font-size-h3 w-20px"
               onClick={onHide}
             >
               <i className="fa-light fa-xmark"></i>
@@ -41,7 +41,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
           >
             <div className="py-5px">
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương chính sách
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -49,7 +49,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Phụ cấp
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -57,7 +57,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               {/* <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Ngày nghỉ
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -65,7 +65,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div> */}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Thưởng
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -73,7 +73,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Phạt
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -82,7 +82,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
               </div>
 
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương ca
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -112,13 +112,13 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                     }
                   >
                     <div>
-                      <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning ml-5px"></i>
+                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                     </div>
                   </OverlayTrigger> */}
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Hoa hồng
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -126,7 +126,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   KPI
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -134,7 +134,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Thu nhập dự kiến
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -142,7 +142,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Giữ lương
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -150,7 +150,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Thực trả dự kiến
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -158,7 +158,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Tạm ứng
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -166,7 +166,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Phải trả nhân viên
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -176,7 +176,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Đã trả
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -184,7 +184,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Tồn giữ lương
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -198,11 +198,11 @@ function ModalViewMobile({ show, onHide, data, filters }) {
       {!data?.TypeOf && (
         <Fragment>
           <div className="modal-view-head align-items-baseline px-15px py-8px">
-            <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
+            <div className="flex-1 modal-view-title text-uppercase font-size-lg fw-500 pr-15px">
               {data?.Staff?.FullName || 'Chưa có tên'}
             </div>
             <div
-              className="modal-view-close font-size-h3 w-20px text-center"
+              className="text-center modal-view-close font-size-h3 w-20px"
               onClick={onHide}
             >
               <i className="fa-light fa-xmark"></i>
@@ -215,7 +215,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
           >
             <div className="py-5px">
               <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   ID
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -223,7 +223,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Cơ sở
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -233,7 +233,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương chính sách
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -241,7 +241,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Phụ cấp
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -249,7 +249,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Ngày nghỉ
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -257,7 +257,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Thưởng
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -265,7 +265,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Phạt
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -275,7 +275,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
               {Number(filters.Shows) !== 0 && (
                 <>
                   <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                       Lương cài đặt
                     </div>
                     <div className="fw-600 font-size-mdd w-60 text-end">
@@ -283,7 +283,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                     </div>
                   </div>
                   <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                       Thưởng KH chọn
                     </div>
                     <div className="fw-600 font-size-mdd w-60 text-end">
@@ -293,7 +293,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </>
               )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương ca
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -303,7 +303,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
               {Number(filters.Shows) !== 0 && (
                 <>
                   <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                       HH sản phẩm
                     </div>
                     <div className="fw-600 font-size-mdd w-60 text-end">
@@ -311,7 +311,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                     </div>
                   </div>
                   <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                       HH dịch vụ
                     </div>
                     <div className="fw-600 font-size-mdd w-60 text-end">
@@ -319,15 +319,15 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                     </div>
                   </div>
                   <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                       HH thẻ tiền
                     </div>
                     <div className="fw-600 font-size-mdd w-60 text-end">
-                      {PriceHelper.formatVND(data?.GiaTri_Thetien)}
+                      {PriceHelper.formatVND(data?.HOA_HONG_Thetien)}
                     </div>
                   </div>
                   <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                       HH NVL
                     </div>
                     <div className="fw-600 font-size-mdd w-60 text-end">
@@ -335,7 +335,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                     </div>
                   </div>
                   <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                    <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                       HH phụ phí
                     </div>
                     <div className="fw-600 font-size-mdd w-60 text-end">
@@ -345,7 +345,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </>
               )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Hoa hồng
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -353,7 +353,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   KPI Doanh số
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -361,7 +361,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Thu nhập dự kiến
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -369,7 +369,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Giữ lương
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -377,7 +377,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Thực trả dự kiến
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -385,7 +385,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Tạm ứng
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -393,7 +393,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Phải trả nhân viên
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -403,7 +403,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Đã trả
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
@@ -411,7 +411,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
-                <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Tồn giữ lương
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">

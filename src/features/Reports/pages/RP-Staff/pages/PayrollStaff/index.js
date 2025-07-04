@@ -730,11 +730,11 @@ function PayrollStaff(props) {
         hidden: Number(filters.Shows) === 0
       },
       {
-        key: 'GiaTri_Thetien',
+        key: 'HOA_HONG_Thetien',
         title: 'HH Thẻ tiền',
-        dataKey: 'GiaTri_Thetien',
+        dataKey: 'HOA_HONG_Thetien',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.GiaTri_Thetien),
+          PriceHelper.formatVND(rowData.HOA_HONG_Thetien),
         width: 150,
         sortable: false,
         hidden: Number(filters.Shows) === 0
