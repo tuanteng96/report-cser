@@ -257,6 +257,15 @@ function InventoryService(props) {
         sortable: false
       },
       {
+        key: 'CostTotal',
+        title: 'Giá trị chưa dùng',
+        dataKey: 'CostTotal',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.CostTotal),
+        width: 180,
+        sortable: false
+      },
+
+      {
         key: 'Da_Thanh_toan',
         title: 'Đã thanh toán',
         dataKey: 'Da_Thanh_toan',
@@ -269,11 +278,11 @@ function InventoryService(props) {
             overlay={
               <Popover id={`popover-positioned-top`}>
                 <Popover.Body className="p-0">
-                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                     <span>Tiền mặt</span>
                     <span>{PriceHelper.formatVND(rowData?.tien_mat)}</span>
                   </div>
-                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                     <span>Chuyển khoản</span>
                     <span>{PriceHelper.formatVND(rowData?.ck)}</span>
                   </div>
@@ -287,7 +296,7 @@ function InventoryService(props) {
           >
             <div className="d-flex justify-content-between align-items-center w-100">
               {PriceHelper.formatVND(rowData.Da_Thanh_toan)}
-              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning"></i>
             </div>
           </OverlayTrigger>
         ),
@@ -346,7 +355,7 @@ function InventoryService(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -365,7 +374,7 @@ function InventoryService(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-column flex-md-row">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-md-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách tồn dịch vụ</div>
         </div>
         <div className="p-20px">

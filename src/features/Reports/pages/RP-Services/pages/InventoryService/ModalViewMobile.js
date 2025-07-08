@@ -22,11 +22,11 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
       scrollable={true}
     >
       <div className="modal-view-head align-items-baseline px-15px py-8px">
-        <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
+        <div className="flex-1 modal-view-title text-uppercase font-size-lg fw-500 pr-15px">
           {data?.Ten_dich_vu || 'Chưa có tên'}
         </div>
         <div
-          className="modal-view-close font-size-h3 w-20px text-center"
+          className="text-center modal-view-close font-size-h3 w-20px"
           onClick={onHide}
         >
           <i className="fa-light fa-xmark"></i>
@@ -39,7 +39,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
       >
         <div className="py-5px">
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Ngày mua
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -49,7 +49,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Ngày hết hạn
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -59,7 +59,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Mã đơn hàng
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -67,7 +67,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Mã dịch vụ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -75,7 +75,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Số lượng
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -83,7 +83,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Đã sử dụng
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -91,7 +91,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Số buổi còn
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -99,7 +99,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Tổng buổi
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -107,7 +107,23 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Tổng số tiền
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {PriceHelper.formatVND(data?.Tong_tien)}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Giá trị chưa dùng
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {PriceHelper.formatVND(data?.CostTotal)}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Đã thanh toán
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -115,7 +131,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Ví
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -123,7 +139,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Thẻ tiền
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -131,7 +147,7 @@ function ModalViewMobile({ show, onHide, data, transformDetail }) {
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Công nợ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
