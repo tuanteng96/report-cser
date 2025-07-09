@@ -101,7 +101,7 @@ function ModalViewDetail({ show, onHide, Member }) {
         key: 'Tag',
         title: 'Loại',
         dataKey: 'Tag',
-        cellRenderer: ({ rowData }) => getTags(rowData.Tag),
+        cellRenderer: ({ rowData }) => getTags(rowData),
         width: 180,
         sortable: false
       },
@@ -132,12 +132,55 @@ function ModalViewDetail({ show, onHide, Member }) {
     [filters]
   )
 
-  const getTags = tag => {
-    const index = JsonFilter.TagWLList.findIndex(item => item.value === tag)
-    if (index > -1) {
-      return JsonFilter.TagWLList[index].label
+  const getTags = item => {
+    switch (true) {
+      case item.Type === "NAP_QUY" && item.Source === "" && item.Value >= 0:
+        return "Nạp ví";
+      case item.Type === "NAP_QUY" && item.Value < 0 && item.Source === "":
+        return "Trừ ví";
+      case item.Source === "CHINH_SUA_SO_BUOI_DV":
+        return "Hoàn tiền khi hoàn buổi dịch vụ";
+      case (item.Type === "MUA_HANG" &&
+        item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1) ||
+        item?.Type === "MUA_HANG_DANHMUC" ||
+        item?.Type === "MUA_HANG_SANPHAM":
+        return "Tích lũy mua hàng";
+      case item.Type === "MUA_HANG" &&
+        item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1:
+        return "Giảm bớt tích lũy do trả hàng";
+      case item.SumType === "TRA_HANG_HOAN_VI":
+        return "Hoàn tiền khi trả hàng";
+      case item.SumType === "TRA_HANG_PHI_VI":
+        return "Phí dịch vụ trả hàng";
+      case (item.Type === "GIOI_THIEU" &&
+        item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1) ||
+        item?.Type === "GIOI_THIEU_DANHMUC" ||
+        item?.Type === "GIOI_THIEU_SANPHAM":
+        return "Hoa hồng giới thiệu";
+      case item.Type === "GIOI_THIEU" &&
+        item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1:
+        return "Giảm bớt hoa hồng do trả hàng";
+      case item.Type === "CHIA_SE_MAGIAMGIA":
+        return "Hoa hồng giới thiệu ( Chia sẻ voucher )";
+      case item.SumType === "KET_THUC_THE_HOAN_VI":
+        return "Hoàn tiền khi kết thúc thẻ";
+      case item.SumType === "KET_THUC_THE_PHI_VI":
+        return "Phí dịch vụ kết thúc thẻ";
+      case item.SumType === "DANG_KY_THANH_VIEN":
+        return "Ưu đãi đăng ký tài khoản";
+      case item.SumType === "DANG_NHAP_LAN_DAU":
+        return "Ưu đãi khi đăng nhập lần đầu";
+      case item.SumType === "CHUC_MUNG_SN":
+        return "Ưu đãi mừng sinh nhật";
+      case item.SumType === "CHUC_MUNG_SN_THANG":
+        return "Ưu đãi tháng sinh nhật";
+      case item.Type === "THANH_TOAN_DH":
+        return "Thanh toán đơn hàng";
+      case item.Type === "PHI" && item.SumType === "":
+        return "Phí dịch vụ";
+      default:
+        return "Chưa xác định";
     }
-    return tag
   }
 
   const onPagesChange = ({ Pi, Ps }) => {
