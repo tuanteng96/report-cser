@@ -304,7 +304,7 @@ function SellProfit(props) {
   const getTotal = (arrays, keyName) => {
     if (!arrays) return 0
     arrays.reduce((a, b) => a + b[keyName], 0)
-    return arrays.reduce((a, b) => a + b[keyName], 0)
+    return Math.round((arrays.reduce((a, b) => a + b[keyName], 0) * 100) / 100)
   }
 
   return (
