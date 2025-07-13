@@ -175,7 +175,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Giá buổi
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {PriceHelper.formatVND(data?.Gia_buoi)}
+              {PriceHelper.formatVND(data?.giabuoi)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">

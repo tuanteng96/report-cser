@@ -346,10 +346,10 @@ function SalaryServices(props) {
         sortable: false
       },
       {
-        key: 'Gia_buoi',
+        key: 'giabuoi',
         title: 'Giá buổi',
-        dataKey: 'Gia_buoi',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Gia_buoi),
+        dataKey: 'giabuoi',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.giabuoi),
         width: 180,
         sortable: false
       },

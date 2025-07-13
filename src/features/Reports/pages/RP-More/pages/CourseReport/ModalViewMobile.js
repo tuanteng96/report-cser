@@ -76,6 +76,14 @@ function ModalViewMobile({ show, onHide, data, translateType }) {
             </div>
             <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
               <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                Khoá học
+              </div>
+              <div className="fw-600 font-size-mdd w-60 text-end">
+                {rowData?.OrderItem?.prodtitle}
+              </div>
+            </div>
+            <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+              <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                 Tags
               </div>
               <div className="fw-600 font-size-mdd w-60 text-end">

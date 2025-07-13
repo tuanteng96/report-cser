@@ -228,6 +228,17 @@ function CourseReport(props) {
         }
       },
       {
+        key: 'OrderItem.prodtitle',
+        title: 'Khoá học',
+        dataKey: 'OrderItem.prodtitle',
+        cellRenderer: ({ rowData }) => rowData?.OrderItem?.prodtitle,
+        width: 250,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'Course.Tags',
         title: 'Tags khoá học',
         dataKey: 'Course.Tags',
