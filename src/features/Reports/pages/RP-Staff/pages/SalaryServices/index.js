@@ -346,6 +346,14 @@ function SalaryServices(props) {
         sortable: false
       },
       {
+        key: 'Gia_buoi',
+        title: 'Giá buổi',
+        dataKey: 'Gia_buoi',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Gia_buoi),
+        width: 180,
+        sortable: false
+      },
+      {
         key: 'DS_PP',
         title: 'Phụ phí',
         dataKey: 'DS_PP',
