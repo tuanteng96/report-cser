@@ -232,6 +232,9 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getAccordingTimeService: data => {
+    return http.post(`/api/v4/r27@invokeMain`, JSON.stringify(data))
+  },
   getBookID: id => http.get(`/api/v3/mbookadmin?cmd=getbooks&id=${id}`)
 }
 export default reportsApi

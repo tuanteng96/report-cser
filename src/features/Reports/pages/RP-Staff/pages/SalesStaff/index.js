@@ -364,6 +364,17 @@ function SalesStaff(props) {
             : 1
       },
       {
+        key: 'Staff.StockTitle',
+        title: 'Cơ sở nhân viên',
+        dataKey: 'Staff.StockTitle',
+        width: 250,
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrdersList && rowData.OrdersList.length > 0
+            ? rowData.OrdersList.length
+            : 1
+      },
+      {
         key: 'TongThucStaff',
         title: 'Doanh số',
         dataKey: 'TongThucStaff',
@@ -476,9 +487,9 @@ function SalesStaff(props) {
           <div className="spinner spinner-primary w-40px"></div> Đang tải ...
         </div>
       )
-    let indexList = [0, 1, 2, 3]
+    let indexList = [0, 1, 2, 3, 4]
     if (GlobalConfig?.Admin?.kpi_ngay) {
-      indexList.push(4)
+      indexList.push(5)
     }
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })

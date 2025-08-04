@@ -204,7 +204,11 @@ function SaleDetails(props) {
         .getListSalesOnStock({
           From: moment(filters.DateStart).format('YYYY-MM-DD'),
           To: moment(filters.DateEnd).format('YYYY-MM-DD'),
-          StockID: filters.StockID ? [filters.StockID] : []
+          StockID: filters.StockID ? [filters.StockID] : [],
+          ProductIds:
+            filters.ProductIds && filters.ProductIds.length > 0
+              ? filters.ProductIds.map(item => item.value).join(',')
+              : ''
         })
         .then(({ data }) => {
           window?.EzsExportExcel &&

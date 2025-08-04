@@ -437,7 +437,7 @@ function FilterListAdvancedSv({
                           />
                         </div>
                       )}
-                      {values.ShowsX === '2' && (
+                      {(values.ShowsX === '2' || values.ShowsX === '3') && (
                         <>
                           {'ServiceOriginalID' in values && (
                             <div className="form-group mb-20px">
@@ -472,20 +472,24 @@ function FilterListAdvancedSv({
                               />
                             </div>
                           )}
-                          {'TransfUserID' in values && (
-                            <div className="form-group mb-20px">
-                              <label>Nhân viên chuyển ca</label>
-                              <AsyncSelectStaffs
-                                isClearable={true}
-                                menuPosition="fixed"
-                                name="TransfUserID"
-                                onChange={otp => {
-                                  setFieldValue('TransfUserID', otp, false)
-                                }}
-                                value={values.TransfUserID}
-                                StocksList={StocksList}
-                              />
-                            </div>
+                          {values.ShowsX !== '3' && (
+                            <>
+                              {'TransfUserID' in values && (
+                                <div className="form-group mb-20px">
+                                  <label>Nhân viên chuyển ca</label>
+                                  <AsyncSelectStaffs
+                                    isClearable={true}
+                                    menuPosition="fixed"
+                                    name="TransfUserID"
+                                    onChange={otp => {
+                                      setFieldValue('TransfUserID', otp, false)
+                                    }}
+                                    value={values.TransfUserID}
+                                    StocksList={StocksList}
+                                  />
+                                </div>
+                              )}
+                            </>
                           )}
                         </>
                       )}
@@ -593,20 +597,25 @@ function FilterListAdvancedSv({
                           />
                         </div>
                       )}
-                      {'MemberID' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Khách hàng</label>
-                          <AsyncSelectMembers
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="MemberID"
-                            value={values.MemberID}
-                            onChange={otp => {
-                              setFieldValue('MemberID', otp, false)
-                            }}
-                          />
-                        </div>
+                      {values.ShowsX !== '3' && (
+                        <>
+                          {'MemberID' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Khách hàng</label>
+                              <AsyncSelectMembers
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="MemberID"
+                                value={values.MemberID}
+                                onChange={otp => {
+                                  setFieldValue('MemberID', otp, false)
+                                }}
+                              />
+                            </div>
+                          )}
+                        </>
                       )}
+
                       {'ShipCode' in values && (
                         <div className="form-group mb-20px">
                           <label>Nhập Ship Code</label>
@@ -925,516 +934,521 @@ function FilterListAdvancedSv({
                           />
                         </div>
                       )}
-                      {'StaffID' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Nhân viên</label>
-                          <AsyncSelectStaffs
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="StaffID"
-                            onChange={otp => {
-                              setFieldValue('StaffID', otp, false)
-                            }}
-                            value={values.StaffID}
-                            StocksList={StocksList}
-                          />
-                        </div>
-                      )}
-                      {'UserID' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Nhân viên đặt lịch</label>
-                          <AsyncSelectStaffs
-                            addOptions={[
-                              { label: 'Đặt lịch Online', value: 0 }
-                            ]}
-                            isMulti
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="UserID"
-                            onChange={otp => {
-                              setFieldValue('UserID', otp, false)
-                            }}
-                            value={values.UserID}
-                            StocksList={StocksList}
-                          />
-                        </div>
-                      )}
-                      {'UserServiceIDs' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Nhân viên thực hiện</label>
-                          <AsyncSelectStaffs
-                            isMulti
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="UserServiceIDs"
-                            onChange={otp => {
-                              setFieldValue('UserServiceIDs', otp, false)
-                            }}
-                            value={values.UserServiceIDs}
-                            StocksList={StocksList}
-                          />
-                        </div>
-                      )}
-                      {'StatusBooking' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Trạng thái đặt lịch</label>
-                          <Select
-                            isMulti
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="StatusBooking"
-                            placeholder="Chọn trạng thái"
-                            classNamePrefix="select"
-                            options={ServiceStatusBook}
-                            className="select-control"
-                            value={values.StatusBooking}
-                            onChange={otp => {
-                              setFieldValue('StatusBooking', otp)
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'StatusMember' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Loại khách hàng</label>
-                          <Select
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="StatusMember"
-                            placeholder="Chọn loại"
-                            classNamePrefix="select"
-                            options={ServiceTypeBook}
-                            className="select-control"
-                            value={values.StatusMember}
-                            onChange={otp => {
-                              setFieldValue('StatusMember', otp)
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'StatusBook' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Loại nhân viên</label>
-                          <Select
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="StatusBook"
-                            placeholder="Chọn loại"
-                            classNamePrefix="select"
-                            options={StatusCheckedBook}
-                            className="select-control"
-                            value={values.StatusBook}
-                            onChange={otp => {
-                              setFieldValue('StatusBook', otp)
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'StatusAtHome' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Loại thực hiện</label>
-                          <Select
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="StatusAtHome"
-                            placeholder="Chọn loại"
-                            classNamePrefix="select"
-                            options={StatusAtBook}
-                            className="select-control"
-                            value={values.StatusAtHome}
-                            onChange={otp => {
-                              setFieldValue('StatusAtHome', otp)
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'ServiceCardID' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Thẻ dịch vụ & Phụ phí</label>
-                          <AsyncSelectSVPP
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="ServiceCardID"
-                            onChange={otp => {
-                              setFieldValue('ServiceCardID', otp, false)
-                            }}
-                            value={values.ServiceCardID}
-                          />
-                        </div>
-                      )}
-                      {'MaDonHang' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Mã đơn hàng</label>
-                          <input
-                            type="text"
-                            name="MaDonHang"
-                            value={values.MaDonHang}
-                            className="form-control"
-                            placeholder="Nhập mã đơn hàng"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                          />
-                        </div>
-                      )}
-                      {'OrderID' in values && (
-                        <div className="form-group mb-20px">
-                          <label>ID đơn hàng</label>
-                          <input
-                            type="text"
-                            name="OrderID"
-                            value={values.OrderID}
-                            className="form-control"
-                            placeholder="Nhập ID đơn hàng"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                          />
-                        </div>
-                      )}
-                      {'QtyNumber' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Số lượng</label>
-                          <input
-                            type="text"
-                            name="QtyNumber"
-                            value={values.QtyNumber}
-                            className="form-control"
-                            placeholder="Nhập số lượng"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            autoComplete="off"
-                          />
-                        </div>
-                      )}
-                      {'ProductId' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Sản phẩm, DV, NVL, ...</label>
-                          <AsyncSelectProducts
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="ProductId"
-                            onChange={otp => {
-                              setFieldValue('ProductId', otp, false)
-                            }}
-                            value={values.ProductId}
-                          />
-                        </div>
-                      )}
-                      {'ProductIds' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Sản phẩm, DV, NVL, ...</label>
-                          <AsyncSelectProducts
-                            isMulti
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="ProductIds"
-                            onChange={otp => {
-                              setFieldValue('ProductIds', otp, false)
-                            }}
-                            value={values.ProductIds}
-                          />
-                        </div>
-                      )}
-                      {'CategoriesId' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Danh mục</label>
-                          {isWarehouse ? (
-                            <AsyncSelectCategoriesSPNVL
-                              menuPlacement="top"
-                              isClearable={true}
-                              menuPosition="fixed"
-                              name="CategoriesId"
-                              onChange={otp => {
-                                setFieldValue('CategoriesId', otp, false)
-                              }}
-                              value={values.CategoriesId}
-                            />
-                          ) : (
-                            <AsyncSelectCategories
-                              menuPlacement="top"
-                              isClearable={true}
-                              menuPosition="fixed"
-                              name="CategoriesId"
-                              onChange={otp => {
-                                setFieldValue('CategoriesId', otp, false)
-                              }}
-                              value={values.CategoriesId}
-                            />
+                      {values.ShowsX !== '3' && (
+                        <>
+                          {'StaffID' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Nhân viên</label>
+                              <AsyncSelectStaffs
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="StaffID"
+                                onChange={otp => {
+                                  setFieldValue('StaffID', otp, false)
+                                }}
+                                value={values.StaffID}
+                                StocksList={StocksList}
+                              />
+                            </div>
                           )}
-                        </div>
+                          {'UserID' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Nhân viên đặt lịch</label>
+                              <AsyncSelectStaffs
+                                addOptions={[
+                                  { label: 'Đặt lịch Online', value: 0 }
+                                ]}
+                                isMulti
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="UserID"
+                                onChange={otp => {
+                                  setFieldValue('UserID', otp, false)
+                                }}
+                                value={values.UserID}
+                                StocksList={StocksList}
+                              />
+                            </div>
+                          )}
+                          {'UserServiceIDs' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Nhân viên thực hiện</label>
+                              <AsyncSelectStaffs
+                                isMulti
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="UserServiceIDs"
+                                onChange={otp => {
+                                  setFieldValue('UserServiceIDs', otp, false)
+                                }}
+                                value={values.UserServiceIDs}
+                                StocksList={StocksList}
+                              />
+                            </div>
+                          )}
+                          {'StatusBooking' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Trạng thái đặt lịch</label>
+                              <Select
+                                isMulti
+                                menuPosition="fixed"
+                                isClearable={true}
+                                name="StatusBooking"
+                                placeholder="Chọn trạng thái"
+                                classNamePrefix="select"
+                                options={ServiceStatusBook}
+                                className="select-control"
+                                value={values.StatusBooking}
+                                onChange={otp => {
+                                  setFieldValue('StatusBooking', otp)
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'StatusMember' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Loại khách hàng</label>
+                              <Select
+                                menuPosition="fixed"
+                                isClearable={true}
+                                name="StatusMember"
+                                placeholder="Chọn loại"
+                                classNamePrefix="select"
+                                options={ServiceTypeBook}
+                                className="select-control"
+                                value={values.StatusMember}
+                                onChange={otp => {
+                                  setFieldValue('StatusMember', otp)
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'StatusBook' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Loại nhân viên</label>
+                              <Select
+                                menuPosition="fixed"
+                                isClearable={true}
+                                name="StatusBook"
+                                placeholder="Chọn loại"
+                                classNamePrefix="select"
+                                options={StatusCheckedBook}
+                                className="select-control"
+                                value={values.StatusBook}
+                                onChange={otp => {
+                                  setFieldValue('StatusBook', otp)
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'StatusAtHome' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Loại thực hiện</label>
+                              <Select
+                                menuPosition="fixed"
+                                isClearable={true}
+                                name="StatusAtHome"
+                                placeholder="Chọn loại"
+                                classNamePrefix="select"
+                                options={StatusAtBook}
+                                className="select-control"
+                                value={values.StatusAtHome}
+                                onChange={otp => {
+                                  setFieldValue('StatusAtHome', otp)
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'ServiceCardID' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Thẻ dịch vụ & Phụ phí</label>
+                              <AsyncSelectSVPP
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="ServiceCardID"
+                                onChange={otp => {
+                                  setFieldValue('ServiceCardID', otp, false)
+                                }}
+                                value={values.ServiceCardID}
+                              />
+                            </div>
+                          )}
+                          {'MaDonHang' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Mã đơn hàng</label>
+                              <input
+                                type="text"
+                                name="MaDonHang"
+                                value={values.MaDonHang}
+                                className="form-control"
+                                placeholder="Nhập mã đơn hàng"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              />
+                            </div>
+                          )}
+                          {'OrderID' in values && (
+                            <div className="form-group mb-20px">
+                              <label>ID đơn hàng</label>
+                              <input
+                                type="text"
+                                name="OrderID"
+                                value={values.OrderID}
+                                className="form-control"
+                                placeholder="Nhập ID đơn hàng"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              />
+                            </div>
+                          )}
+                          {'QtyNumber' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Số lượng</label>
+                              <input
+                                type="text"
+                                name="QtyNumber"
+                                value={values.QtyNumber}
+                                className="form-control"
+                                placeholder="Nhập số lượng"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                autoComplete="off"
+                              />
+                            </div>
+                          )}
+                          {'ProductId' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Sản phẩm, DV, NVL, ...</label>
+                              <AsyncSelectProducts
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="ProductId"
+                                onChange={otp => {
+                                  setFieldValue('ProductId', otp, false)
+                                }}
+                                value={values.ProductId}
+                              />
+                            </div>
+                          )}
+                          {'ProductIds' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Sản phẩm, DV, NVL, ...</label>
+                              <AsyncSelectProducts
+                                isMulti
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="ProductIds"
+                                onChange={otp => {
+                                  setFieldValue('ProductIds', otp, false)
+                                }}
+                                value={values.ProductIds}
+                              />
+                            </div>
+                          )}
+                          {'CategoriesId' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Danh mục</label>
+                              {isWarehouse ? (
+                                <AsyncSelectCategoriesSPNVL
+                                  menuPlacement="top"
+                                  isClearable={true}
+                                  menuPosition="fixed"
+                                  name="CategoriesId"
+                                  onChange={otp => {
+                                    setFieldValue('CategoriesId', otp, false)
+                                  }}
+                                  value={values.CategoriesId}
+                                />
+                              ) : (
+                                <AsyncSelectCategories
+                                  menuPlacement="top"
+                                  isClearable={true}
+                                  menuPosition="fixed"
+                                  name="CategoriesId"
+                                  onChange={otp => {
+                                    setFieldValue('CategoriesId', otp, false)
+                                  }}
+                                  value={values.CategoriesId}
+                                />
+                              )}
+                            </div>
+                          )}
+                          {'CategoriesIds' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Danh mục</label>
+                              <AsyncSelectCategoriesFull
+                                isMulti
+                                menuPlacement="top"
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="CategoriesIds"
+                                onChange={otp => {
+                                  setFieldValue('CategoriesIds', otp, false)
+                                }}
+                                value={values.CategoriesIds}
+                              />
+                            </div>
+                          )}
+                          {'BrandId' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Nhãn hàng</label>
+                              <AsyncSelectBrands
+                                menuPlacement="top"
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="BrandId"
+                                onChange={otp => {
+                                  setFieldValue('BrandId', otp, false)
+                                }}
+                                value={values.BrandId}
+                              />
+                            </div>
+                          )}
+                          {'BrandIds' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Nhãn hàng</label>
+                              <AsyncSelectBrands
+                                isMulti
+                                menuPlacement="top"
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="BrandIds"
+                                onChange={otp => {
+                                  setFieldValue('BrandIds', otp, false)
+                                }}
+                                value={values.BrandIds}
+                              />
+                            </div>
+                          )}
+                          {'TimeToReal' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Thực thu tính đến</label>
+                              <Select
+                                menuPosition="fixed"
+                                isClearable={true}
+                                name="TimeToReal"
+                                placeholder="Chọn thời gian"
+                                classNamePrefix="select"
+                                options={TimeToRealList}
+                                className="select-control"
+                                value={values.TimeToReal}
+                                onChange={otp => {
+                                  setFieldValue('TimeToReal', otp)
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'IsQtyEmpty' in values && (
+                            <div>
+                              <label className="checkbox d-flex">
+                                <input
+                                  type="checkbox"
+                                  name="IsQtyEmpty"
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  value={values.IsQtyEmpty}
+                                  checked={values.IsQtyEmpty}
+                                />
+                                <span className="checkbox-icon"></span>
+                                <span className="cursor-pointer fw-500">
+                                  Lọc sản phẩm còn
+                                </span>
+                              </label>
+                            </div>
+                          )}
+                          {'gia_nhap_tb_khoang_tg' in values && (
+                            <div className="mt-10px">
+                              <label className="checkbox d-flex">
+                                <input
+                                  type="checkbox"
+                                  name="gia_nhap_tb_khoang_tg"
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  value={values.gia_nhap_tb_khoang_tg}
+                                  checked={values.gia_nhap_tb_khoang_tg}
+                                />
+                                <span className="checkbox-icon"></span>
+                                <span className="cursor-pointer fw-500">
+                                  Giá nhập TB trong khoảng thời gian
+                                </span>
+                              </label>
+                            </div>
+                          )}
+                          {'KpiType' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Loại KPI</label>
+                              <Select
+                                menuPosition="fixed"
+                                isClearable={true}
+                                name="KpiType"
+                                placeholder="Chọn loại"
+                                classNamePrefix="select"
+                                options={KpiTypeList}
+                                className="select-control"
+                                value={values.KpiType}
+                                onChange={otp => {
+                                  setFieldValue('KpiType', otp)
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'Status' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Trạng thái</label>
+                              <SelectStatusService
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="Status"
+                                onChange={otp => {
+                                  setFieldValue('Status', otp, false)
+                                }}
+                                value={values.Status}
+                              />
+                            </div>
+                          )}
+                          {'Warranty' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Bảo hành</label>
+                              <SelectWarranty
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="Warranty"
+                                onChange={otp => {
+                                  setFieldValue('Warranty', otp, false)
+                                }}
+                                value={values.Warranty}
+                              />
+                            </div>
+                          )}
+                          {'StarRating' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Đánh giá</label>
+                              <Select
+                                isMulti
+                                placeholder="Chọn đánh giá"
+                                classNamePrefix="select"
+                                options={StarRatingList}
+                                className="select-control"
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="StarRating"
+                                onChange={otp => {
+                                  setFieldValue('StarRating', otp, false)
+                                }}
+                                value={values.StarRating}
+                                components={{ Option: CustomOption }}
+                              />
+                            </div>
+                          )}
+                          {'IsMemberSet' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Khách hàng chọn nhân viên</label>
+                              <Select
+                                menuPosition="fixed"
+                                isClearable={true}
+                                name="IsMemberSet"
+                                placeholder="Chọn loại"
+                                classNamePrefix="select"
+                                options={[
+                                  {
+                                    label: 'Khách hàng chọn nhân viên',
+                                    value: 1
+                                  },
+                                  {
+                                    label: 'Khách hàng không nhân viên',
+                                    value: 0
+                                  }
+                                ]}
+                                className="select-control"
+                                value={values.IsMemberSet}
+                                onChange={otp => {
+                                  setFieldValue('IsMemberSet', otp)
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'GroupCustomerID' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Nhóm khách hàng</label>
+                              <AsyncSelectGroupsCustomer
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="GroupCustomerID"
+                                onChange={otp =>
+                                  setFieldValue('GroupCustomerID', otp, false)
+                                }
+                                value={values.GroupCustomerID}
+                              />
+                            </div>
+                          )}
+                          {'SourceName' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Nguồn khách hàng</label>
+                              <AsyncSelectSource
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="SourceName"
+                                onChange={otp => {
+                                  setFieldValue('SourceName', otp, false)
+                                }}
+                                value={values.SourceName}
+                                menuPortalTarget={document.body}
+                                styles={{
+                                  menuPortal: base => ({
+                                    ...base,
+                                    zIndex: 9999
+                                  })
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'ProvincesID' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Tỉnh / Thành Phố</label>
+                              <AsyncSelectProvinces
+                                isClearable={true}
+                                menuPosition="fixed"
+                                name="ProvincesID"
+                                value={values.ProvincesID}
+                                onChange={otp =>
+                                  setFieldValue('ProvincesID', otp, false)
+                                }
+                                menuPortalTarget={document.body}
+                                styles={{
+                                  menuPortal: base => ({
+                                    ...base,
+                                    zIndex: 9999
+                                  })
+                                }}
+                              />
+                            </div>
+                          )}
+                          {'DistrictsID' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Quận / Huyện</label>
+                              <AsyncSelectDistrics
+                                isClearable={true}
+                                key={values.ProvincesID?.value}
+                                ProvincesID={values.ProvincesID?.value}
+                                menuPosition="fixed"
+                                name="DistrictsID"
+                                value={values.DistrictsID}
+                                onChange={otp =>
+                                  setFieldValue('DistrictsID', otp, false)
+                                }
+                                menuPortalTarget={document.body}
+                                styles={{
+                                  menuPortal: base => ({
+                                    ...base,
+                                    zIndex: 9999
+                                  })
+                                }}
+                              />
+                            </div>
+                          )}
+                        </>
                       )}
-                      {'CategoriesIds' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Danh mục</label>
-                          <AsyncSelectCategoriesFull
-                            isMulti
-                            menuPlacement="top"
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="CategoriesIds"
-                            onChange={otp => {
-                              setFieldValue('CategoriesIds', otp, false)
-                            }}
-                            value={values.CategoriesIds}
-                          />
-                        </div>
-                      )}
-                      {'BrandId' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Nhãn hàng</label>
-                          <AsyncSelectBrands
-                            menuPlacement="top"
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="BrandId"
-                            onChange={otp => {
-                              setFieldValue('BrandId', otp, false)
-                            }}
-                            value={values.BrandId}
-                          />
-                        </div>
-                      )}
-                      {'BrandIds' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Nhãn hàng</label>
-                          <AsyncSelectBrands
-                            isMulti
-                            menuPlacement="top"
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="BrandIds"
-                            onChange={otp => {
-                              setFieldValue('BrandIds', otp, false)
-                            }}
-                            value={values.BrandIds}
-                          />
-                        </div>
-                      )}
-                      {'TimeToReal' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Thực thu tính đến</label>
-                          <Select
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="TimeToReal"
-                            placeholder="Chọn thời gian"
-                            classNamePrefix="select"
-                            options={TimeToRealList}
-                            className="select-control"
-                            value={values.TimeToReal}
-                            onChange={otp => {
-                              setFieldValue('TimeToReal', otp)
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'IsQtyEmpty' in values && (
-                        <div>
-                          <label className="checkbox d-flex">
-                            <input
-                              type="checkbox"
-                              name="IsQtyEmpty"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              value={values.IsQtyEmpty}
-                              checked={values.IsQtyEmpty}
-                            />
-                            <span className="checkbox-icon"></span>
-                            <span className="cursor-pointer fw-500">
-                              Lọc sản phẩm còn
-                            </span>
-                          </label>
-                        </div>
-                      )}
-                      {'gia_nhap_tb_khoang_tg' in values && (
-                        <div className="mt-10px">
-                          <label className="checkbox d-flex">
-                            <input
-                              type="checkbox"
-                              name="gia_nhap_tb_khoang_tg"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              value={values.gia_nhap_tb_khoang_tg}
-                              checked={values.gia_nhap_tb_khoang_tg}
-                            />
-                            <span className="checkbox-icon"></span>
-                            <span className="cursor-pointer fw-500">
-                              Giá nhập TB trong khoảng thời gian
-                            </span>
-                          </label>
-                        </div>
-                      )}
-                      {'KpiType' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Loại KPI</label>
-                          <Select
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="KpiType"
-                            placeholder="Chọn loại"
-                            classNamePrefix="select"
-                            options={KpiTypeList}
-                            className="select-control"
-                            value={values.KpiType}
-                            onChange={otp => {
-                              setFieldValue('KpiType', otp)
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'Status' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Trạng thái</label>
-                          <SelectStatusService
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="Status"
-                            onChange={otp => {
-                              setFieldValue('Status', otp, false)
-                            }}
-                            value={values.Status}
-                          />
-                        </div>
-                      )}
-                      {'Warranty' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Bảo hành</label>
-                          <SelectWarranty
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="Warranty"
-                            onChange={otp => {
-                              setFieldValue('Warranty', otp, false)
-                            }}
-                            value={values.Warranty}
-                          />
-                        </div>
-                      )}
-                      {'StarRating' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Đánh giá</label>
-                          <Select
-                            isMulti
-                            placeholder="Chọn đánh giá"
-                            classNamePrefix="select"
-                            options={StarRatingList}
-                            className="select-control"
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="StarRating"
-                            onChange={otp => {
-                              setFieldValue('StarRating', otp, false)
-                            }}
-                            value={values.StarRating}
-                            components={{ Option: CustomOption }}
-                          />
-                        </div>
-                      )}
-                      {'IsMemberSet' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Khách hàng chọn nhân viên</label>
-                          <Select
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="IsMemberSet"
-                            placeholder="Chọn loại"
-                            classNamePrefix="select"
-                            options={[
-                              {
-                                label: 'Khách hàng chọn nhân viên',
-                                value: 1
-                              },
-                              {
-                                label: 'Khách hàng không nhân viên',
-                                value: 0
-                              }
-                            ]}
-                            className="select-control"
-                            value={values.IsMemberSet}
-                            onChange={otp => {
-                              setFieldValue('IsMemberSet', otp)
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'GroupCustomerID' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Nhóm khách hàng</label>
-                          <AsyncSelectGroupsCustomer
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="GroupCustomerID"
-                            onChange={otp =>
-                              setFieldValue('GroupCustomerID', otp, false)
-                            }
-                            value={values.GroupCustomerID}
-                          />
-                        </div>
-                      )}
-                      {'SourceName' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Nguồn khách hàng</label>
-                          <AsyncSelectSource
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="SourceName"
-                            onChange={otp => {
-                              setFieldValue('SourceName', otp, false)
-                            }}
-                            value={values.SourceName}
-                            menuPortalTarget={document.body}
-                            styles={{
-                              menuPortal: base => ({
-                                ...base,
-                                zIndex: 9999
-                              })
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'ProvincesID' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Tỉnh / Thành Phố</label>
-                          <AsyncSelectProvinces
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="ProvincesID"
-                            value={values.ProvincesID}
-                            onChange={otp =>
-                              setFieldValue('ProvincesID', otp, false)
-                            }
-                            menuPortalTarget={document.body}
-                            styles={{
-                              menuPortal: base => ({
-                                ...base,
-                                zIndex: 9999
-                              })
-                            }}
-                          />
-                        </div>
-                      )}
-                      {'DistrictsID' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Quận / Huyện</label>
-                          <AsyncSelectDistrics
-                            isClearable={true}
-                            key={values.ProvincesID?.value}
-                            ProvincesID={values.ProvincesID?.value}
-                            menuPosition="fixed"
-                            name="DistrictsID"
-                            value={values.DistrictsID}
-                            onChange={otp =>
-                              setFieldValue('DistrictsID', otp, false)
-                            }
-                            menuPortalTarget={document.body}
-                            styles={{
-                              menuPortal: base => ({
-                                ...base,
-                                zIndex: 9999
-                              })
-                            }}
-                          />
-                        </div>
-                      )}
+
                       {'Shows' in values && (
                         <div className="form-group mb-20px">
                           <label>Chế độ</label>
@@ -1481,7 +1495,7 @@ function FilterListAdvancedSv({
                           />
                         </div>
                       )}
-                      {values.ShowsX !== '2' && (
+                      {values.ShowsX !== '2' && values.ShowsX !== '3' && (
                         <>
                           {'Dich_vu_chuyen_doi_khong_hop_le' in values && (
                             <div>

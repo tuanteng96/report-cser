@@ -22,6 +22,7 @@ import FilterListAdvancedSv from 'src/components/Filter/FilterListAdvancedSv'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { uuidv4 } from '@nikitababko/id-generator'
 
 moment.locale('vi')
 
@@ -50,6 +51,11 @@ const objData = {
       borderWidth: 1
     }
   ]
+}
+
+function roundToDecimalPlaces(num, decimalPlaces) {
+  const factor = Math.pow(10, decimalPlaces)
+  return Math.round(num * factor) / factor
 }
 
 function OverviewService(props) {
@@ -259,6 +265,49 @@ function OverviewService(props) {
           }
         })
         .catch(error => console.log(error))
+    } else if (filters.ShowsX === '3') {
+      reportsApi
+        .getAccordingTimeService({
+          _Path_: '/api/v3/r23/dich-vu/danh-sach-2',
+          StockID: filters.StockID,
+          DateStart: moment(filters.DateStart).format('DD/MM/YYYY'),
+          DateEnd: moment(filters.DateEnd).format('DD/MM/YYYY'),
+          Pi: 1,
+          Ps: 100,
+          CardServiceID: '',
+          ServiceOriginalID: ''
+        })
+        .then(({ data }) => {
+          if (data.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            setLoadingTable(false)
+          } else {
+            const { Items } = {
+              Items:
+                data.result?.items && data.result?.items.length > 0
+                  ? data.result?.items.map(x => {
+                      let obj = { ...x, ID: uuidv4() }
+                      let total = data.result?.items.reduce(
+                        (accumulator, object) => {
+                          return accumulator + object.Data.Done
+                        },
+                        0
+                      )
+                      obj.Percentage = roundToDecimalPlaces(
+                        (x?.Data?.Done / total) * 100,
+                        2
+                      )
+                      return obj
+                    })
+                  : []
+            }
+            setListData(Items)
+            setLoadingTable(false)
+            !loading && isFilter && setIsFilter(false)
+            callback && callback()
+            PermissionHelpers.HideErrorAccess()
+          }
+        })
     } else {
       reportsApi
         .getListServices(BrowserHelpers.getRequestParamsList(filters))
@@ -338,412 +387,448 @@ function OverviewService(props) {
     }
   }
 
-  const columns = useMemo(
-    () =>
-      filters.ShowsX !== '1'
-        ? [
-            {
-              key: '',
-              title: 'STT',
-              dataKey: 'index',
-              cellRenderer: ({ rowIndex, rowData }) => (
-                <Fragment>
-                  <span className="font-number position-relative zindex-10">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                  <div className="top-0 left-0 position-absolute w-100 h-100 d-flex">
-                    {renderStatusColor(rowData)}
-                  </div>
-                </Fragment>
-              ),
-              width: 60,
-              sortable: false,
-              align: 'center',
-              className: 'position-relative',
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'Id',
-              title: 'ID',
-              dataKey: 'Id',
-              cellRenderer: ({ rowData }) => <div>#{rowData.Id}</div>,
-              width: 100,
-              sortable: false,
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'OrderID',
-              title: 'ID đơn hàng',
-              dataKey: 'OrderID',
-              cellRenderer: ({ rowData }) => <div>#{rowData.OrderID}</div>,
-              width: 100,
-              sortable: false,
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'BookDate',
-              title: 'Ngày đặt lịch',
-              dataKey: 'BookDate',
-              cellRenderer: ({ rowData }) =>
-                rowData.BookDate
-                  ? moment(rowData.BookDate).format('HH:mm DD/MM/YYYY')
-                  : 'Chưa xác định',
-              width: 150,
-              sortable: false,
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'StockName',
-              title: 'Cơ sở',
-              dataKey: 'StockName',
-              cellRenderer: ({ rowData }) => rowData.StockName || 'Chưa có',
-              width: 200,
-              sortable: false,
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'MemberName',
-              title: 'Khách hàng',
-              dataKey: 'MemberName',
-              cellRenderer: ({ rowData }) => (
-                <Text tooltipMaxWidth={300}>
-                  {rowData.MemberName || 'Chưa có'}
-                </Text>
-              ),
-              width: 200,
-              sortable: false
-            },
-            {
-              key: 'MemberPhone',
-              title: 'Số điện thoại',
-              dataKey: 'MemberPhone',
-              cellRenderer: ({ rowData }) => (
-                <Text tooltipMaxWidth={300}>
-                  {rowData.MemberPhone || 'Chưa có'}
-                </Text>
-              ),
-              width: 200,
-              sortable: false
-            },
-            {
-              key: 'ProServiceName',
-              title: 'Dịch vụ gốc',
-              dataKey: 'ProServiceName',
-              cellRenderer: ({ rowData }) => (
-                <Text tooltipMaxWidth={300}>
-                  {rowData.ProServiceName || 'Không có dịch vụ gốc'}
-                </Text>
-              ),
-              width: 220,
-              sortable: false
-            },
-            {
-              key: 'Card',
-              title: 'Thẻ',
-              dataKey: 'Card',
-              cellRenderer: ({ rowData }) => rowData.Card || 'Không có thẻ',
-              width: 250,
-              sortable: false
-            },
-            {
-              key: 'SessionPrice',
-              title: 'Giá buổi',
-              dataKey: 'SessionPrice',
-              cellRenderer: ({ rowData }) => checkPriceCost(rowData), //SessionCost
-              width: 180,
-              sortable: false
-            },
-            // {
-            //   key: 'SessionCostExceptGift',
-            //   title: 'Giá buổi (Tặng)',
-            //   dataKey: 'SessionCostExceptGift',
-            //   cellRenderer: ({ rowData }) =>
-            //     PriceHelper.formatVND(rowData.SessionCostExceptGift),
-            //   width: 180,
-            //   sortable: false
-            // },
-            {
-              key: 'SessionIndex',
-              title: 'Buổi',
-              dataKey: 'SessionIndex',
-              cellRenderer: ({ rowData }) =>
-                rowData.Warranty
-                  ? rowData.SessionWarrantyIndex
-                  : rowData.SessionIndex,
-              width: 100,
-              sortable: false,
-              hidden: filters.ShowsX === '2'
-            },
-            {
-              key: 'Warranty',
-              title: 'Bảo hành',
-              dataKey: 'Warranty',
-              cellRenderer: ({ rowData }) =>
-                rowData.Warranty ? 'Bảo hành' : 'Không có',
-              width: 120,
-              sortable: false,
-              hidden: filters.ShowsX === '2'
-            },
-            {
-              key: 'Loai',
-              title: 'Loại',
-              dataKey: 'Loai',
-              width: 180,
-              sortable: false,
-              hidden: filters.ShowsX !== '2'
-            },
-            {
-              key: 'AddFeeTitles',
-              title: 'Phụ phí',
-              dataKey: 'AddFeeTitles',
-              cellRenderer: ({ rowData }) =>
-                rowData.AddFeeTitles && rowData.AddFeeTitles.length > 0
-                  ? rowData.AddFeeTitles.toString()
-                  : 'Không có',
-              width: 200,
-              sortable: false
-            },
-            {
-              key: 'FCost',
-              title: 'Tổng phụ phí',
-              dataKey: 'FCost',
-              cellRenderer: ({ rowData }) => checkFCostCost(rowData),
-              width: 200,
-              sortable: false
-            },
-            {
-              key: 'ProServiceType',
-              title: 'Nhóm dịch vụ',
-              dataKey: 'ProServiceType',
-              width: 200,
-              sortable: false,
-              hidden: filters.ShowsX !== '0'
-            },
-            {
-              key: 'UserFullName',
-              title: 'Nhân viên chuyển ca',
-              dataKey: 'UserFullName',
-              width: 250,
-              sortable: false,
-              hidden: filters.ShowsX !== '2'
-            },
-            {
-              key: 'StaffSalaries',
-              title: 'Nhân viên thực hiện',
-              dataKey: 'StaffSalaries',
-              cellRenderer: ({ rowData }) => (
-                <Text tooltipMaxWidth={300}>
-                  {rowData.StaffSalaries && rowData.StaffSalaries.length > 0
-                    ? rowData.StaffSalaries.map(
-                        item =>
-                          `${item.FullName} (${PriceHelper.formatVND(
-                            item.Salary
-                          )})`
-                      ).join(', ')
-                    : 'Chưa xác định'}
-                </Text>
-              ),
-              width: 250,
-              sortable: false
-            },
-            {
-              key: 'TotalSalary',
-              title: 'Tổng lương nhân viên',
-              dataKey: 'TotalSalary',
-              cellRenderer: ({ rowData }) =>
-                PriceHelper.formatVND(rowData.TotalSalary),
-              width: 180,
-              sortable: false
-            },
-            {
-              key: 'Status',
-              title: 'Trạng thái',
-              dataKey: 'Status',
-              cellRenderer: ({ rowData }) =>
-                rowData.Status === 'done' ? (
-                  <span className="badge bg-success">Hoàn thành</span>
-                ) : (
-                  <span className="badge bg-warning">Đang thực hiện</span>
-                ),
-              width: 150,
-              sortable: false
-            },
-            {
-              key: 'Rate',
-              title: 'Đánh giá sao',
-              dataKey: 'Rate',
-              cellRenderer: ({ rowData }) => rowData.Rate || 'Chưa đánh giá',
-              width: 150,
-              sortable: false
-            },
-            {
-              key: 'RateNote',
-              title: 'Nội dung đánh giá',
-              dataKey: 'RateNote',
-              //cellRenderer: ({ rowData }) => rowData.RateNote || 'Chưa có',
-              width: 180,
-              sortable: false
-            },
-            {
-              key: 'Desc',
-              title: 'Mô tả',
-              dataKey: 'Desc',
-              cellRenderer: ({ rowData }) => rowData.Desc || 'Chưa có',
-              width: 220,
-              sortable: false
-            }
-          ]
-        : [
-            {
-              key: '',
-              title: 'STT',
-              dataKey: 'index',
-              cellRenderer: ({ rowIndex, rowData }) => (
-                <Fragment>
-                  <span className="font-number position-relative zindex-10">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                </Fragment>
-              ),
-              width: 60,
-              sortable: false,
-              align: 'center',
-              className: 'position-relative',
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'User.FullName',
-              title: 'Nhân viên',
-              dataKey: 'User.FullName',
-              cellRenderer: ({ rowData }) => rowData?.User?.FullName,
-              width: 300,
-              sortable: false,
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'Stock.Title',
-              title: 'Cơ sở',
-              dataKey: 'Stock.Title',
-              cellRenderer: ({ rowData }) => rowData?.Stock?.Title,
-              width: 300,
-              sortable: false,
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'Qty',
-              title: 'Số lượng',
-              dataKey: 'Qty',
-              width: 200,
-              sortable: false,
-              mobileOptions: {
-                visible: true
-              }
-            },
-            {
-              key: 'TM/CK/QT',
-              title: 'TM/CK/QT',
-              dataKey: 'TM/CK/QT',
-              width: 200,
-              sortable: false,
-              cellRenderer: ({ rowData }) => (
-                <div className="w-100 d-flex justify-content-between align-items-center">
-                  {PriceHelper.formatVND(rowData.CK + rowData.QT + rowData.TM)}
-                  <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    key="top"
-                    placement="auto"
-                    overlay={
-                      <Popover id={`popover-positioned-top`}>
-                        <Popover.Body className="p-0">
-                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                            <span className="w-60">Tiền mặt</span>
-                            <span className="flex-1 text-end">
-                              {PriceHelper.formatVNDPositive(rowData.TM)}
-                            </span>
-                          </div>
-                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                            <span className="w-60">Chuyển khoản</span>
-                            <span className="flex-1 text-end">
-                              {PriceHelper.formatVNDPositive(rowData.CK)}
-                            </span>
-                          </div>
-                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                            <span className="w-60">Quẹt thẻ</span>
-                            <span className="flex-1 text-end">
-                              {PriceHelper.formatVNDPositive(rowData.QT)}
-                            </span>
-                          </div>
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <div className="d-flex justify-content-between align-items-center">
-                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
-                    </div>
-                  </OverlayTrigger>
+  const columns = useMemo(() => {
+    if (filters.ShowsX === '3') {
+      return [
+        {
+          key: 'From/To',
+          title: 'Thời gian',
+          dataKey: 'From/To',
+          cellRenderer: ({ rowData }) => (
+            <>
+              {rowData.From} - {rowData.To}
+            </>
+          ),
+          width: 300,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Data',
+          title: 'Tổng số ca',
+          dataKey: 'Data',
+          cellRenderer: ({ rowData }) => <>{rowData?.Data?.Done} Ca</>,
+          width: 300,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Percentage',
+          title: 'Tỉ lệ',
+          dataKey: 'Percentage',
+          cellRenderer: ({ rowData }) => <>{rowData?.Percentage} %</>,
+          width: 300,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        }
+      ]
+    } else if (filters.ShowsX !== '1') {
+      return [
+        {
+          key: '',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex, rowData }) => (
+            <Fragment>
+              <span className="font-number position-relative zindex-10">
+                {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
+              </span>
+              <div className="top-0 left-0 position-absolute w-100 h-100 d-flex">
+                {renderStatusColor(rowData)}
+              </div>
+            </Fragment>
+          ),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          className: 'position-relative',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Id',
+          title: 'ID',
+          dataKey: 'Id',
+          cellRenderer: ({ rowData }) => <div>#{rowData.Id}</div>,
+          width: 100,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'OrderID',
+          title: 'ID đơn hàng',
+          dataKey: 'OrderID',
+          cellRenderer: ({ rowData }) => <div>#{rowData.OrderID}</div>,
+          width: 100,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'BookDate',
+          title: 'Ngày đặt lịch',
+          dataKey: 'BookDate',
+          cellRenderer: ({ rowData }) =>
+            rowData.BookDate
+              ? moment(rowData.BookDate).format('HH:mm DD/MM/YYYY')
+              : 'Chưa xác định',
+          width: 150,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'StockName',
+          title: 'Cơ sở',
+          dataKey: 'StockName',
+          cellRenderer: ({ rowData }) => rowData.StockName || 'Chưa có',
+          width: 200,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'MemberName',
+          title: 'Khách hàng',
+          dataKey: 'MemberName',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>{rowData.MemberName || 'Chưa có'}</Text>
+          ),
+          width: 200,
+          sortable: false
+        },
+        {
+          key: 'MemberPhone',
+          title: 'Số điện thoại',
+          dataKey: 'MemberPhone',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData.MemberPhone || 'Chưa có'}
+            </Text>
+          ),
+          width: 200,
+          sortable: false
+        },
+        {
+          key: 'ProServiceName',
+          title: 'Dịch vụ gốc',
+          dataKey: 'ProServiceName',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData.ProServiceName || 'Không có dịch vụ gốc'}
+            </Text>
+          ),
+          width: 220,
+          sortable: false
+        },
+        {
+          key: 'Card',
+          title: 'Thẻ',
+          dataKey: 'Card',
+          cellRenderer: ({ rowData }) => rowData.Card || 'Không có thẻ',
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'SessionPrice',
+          title: 'Giá buổi',
+          dataKey: 'SessionPrice',
+          cellRenderer: ({ rowData }) => checkPriceCost(rowData), //SessionCost
+          width: 180,
+          sortable: false
+        },
+        // {
+        //   key: 'SessionCostExceptGift',
+        //   title: 'Giá buổi (Tặng)',
+        //   dataKey: 'SessionCostExceptGift',
+        //   cellRenderer: ({ rowData }) =>
+        //     PriceHelper.formatVND(rowData.SessionCostExceptGift),
+        //   width: 180,
+        //   sortable: false
+        // },
+        {
+          key: 'SessionIndex',
+          title: 'Buổi',
+          dataKey: 'SessionIndex',
+          cellRenderer: ({ rowData }) =>
+            rowData.Warranty
+              ? rowData.SessionWarrantyIndex
+              : rowData.SessionIndex,
+          width: 100,
+          sortable: false,
+          hidden: filters.ShowsX === '2'
+        },
+        {
+          key: 'Warranty',
+          title: 'Bảo hành',
+          dataKey: 'Warranty',
+          cellRenderer: ({ rowData }) =>
+            rowData.Warranty ? 'Bảo hành' : 'Không có',
+          width: 120,
+          sortable: false,
+          hidden: filters.ShowsX === '2'
+        },
+        {
+          key: 'Loai',
+          title: 'Loại',
+          dataKey: 'Loai',
+          width: 180,
+          sortable: false,
+          hidden: filters.ShowsX !== '2'
+        },
+        {
+          key: 'AddFeeTitles',
+          title: 'Phụ phí',
+          dataKey: 'AddFeeTitles',
+          cellRenderer: ({ rowData }) =>
+            rowData.AddFeeTitles && rowData.AddFeeTitles.length > 0
+              ? rowData.AddFeeTitles.toString()
+              : 'Không có',
+          width: 200,
+          sortable: false
+        },
+        {
+          key: 'FCost',
+          title: 'Tổng phụ phí',
+          dataKey: 'FCost',
+          cellRenderer: ({ rowData }) => checkFCostCost(rowData),
+          width: 200,
+          sortable: false
+        },
+        {
+          key: 'ProServiceType',
+          title: 'Nhóm dịch vụ',
+          dataKey: 'ProServiceType',
+          width: 200,
+          sortable: false,
+          hidden: filters.ShowsX !== '0'
+        },
+        {
+          key: 'UserFullName',
+          title: 'Nhân viên chuyển ca',
+          dataKey: 'UserFullName',
+          width: 250,
+          sortable: false,
+          hidden: filters.ShowsX !== '2'
+        },
+        {
+          key: 'StaffSalaries',
+          title: 'Nhân viên thực hiện',
+          dataKey: 'StaffSalaries',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData.StaffSalaries && rowData.StaffSalaries.length > 0
+                ? rowData.StaffSalaries.map(
+                    item =>
+                      `${item.FullName} (${PriceHelper.formatVND(item.Salary)})`
+                  ).join(', ')
+                : 'Chưa xác định'}
+            </Text>
+          ),
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'TotalSalary',
+          title: 'Tổng lương nhân viên',
+          dataKey: 'TotalSalary',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.TotalSalary),
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'Status',
+          title: 'Trạng thái',
+          dataKey: 'Status',
+          cellRenderer: ({ rowData }) =>
+            rowData.Status === 'done' ? (
+              <span className="badge bg-success">Hoàn thành</span>
+            ) : (
+              <span className="badge bg-warning">Đang thực hiện</span>
+            ),
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'Rate',
+          title: 'Đánh giá sao',
+          dataKey: 'Rate',
+          cellRenderer: ({ rowData }) => rowData.Rate || 'Chưa đánh giá',
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'RateNote',
+          title: 'Nội dung đánh giá',
+          dataKey: 'RateNote',
+          //cellRenderer: ({ rowData }) => rowData.RateNote || 'Chưa có',
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'Desc',
+          title: 'Mô tả',
+          dataKey: 'Desc',
+          cellRenderer: ({ rowData }) => rowData.Desc || 'Chưa có',
+          width: 220,
+          sortable: false
+        }
+      ]
+    } else {
+      return [
+        {
+          key: '',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex, rowData }) => (
+            <Fragment>
+              <span className="font-number position-relative zindex-10">
+                {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
+              </span>
+            </Fragment>
+          ),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          className: 'position-relative',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'User.FullName',
+          title: 'Nhân viên',
+          dataKey: 'User.FullName',
+          cellRenderer: ({ rowData }) => rowData?.User?.FullName,
+          width: 300,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Stock.Title',
+          title: 'Cơ sở',
+          dataKey: 'Stock.Title',
+          cellRenderer: ({ rowData }) => rowData?.Stock?.Title,
+          width: 300,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Qty',
+          title: 'Số lượng',
+          dataKey: 'Qty',
+          width: 200,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'TM/CK/QT',
+          title: 'TM/CK/QT',
+          dataKey: 'TM/CK/QT',
+          width: 200,
+          sortable: false,
+          cellRenderer: ({ rowData }) => (
+            <div className="w-100 d-flex justify-content-between align-items-center">
+              {PriceHelper.formatVND(rowData.CK + rowData.QT + rowData.TM)}
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="auto"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Body className="p-0">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                        <span className="w-60">Tiền mặt</span>
+                        <span className="flex-1 text-end">
+                          {PriceHelper.formatVNDPositive(rowData.TM)}
+                        </span>
+                      </div>
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                        <span className="w-60">Chuyển khoản</span>
+                        <span className="flex-1 text-end">
+                          {PriceHelper.formatVNDPositive(rowData.CK)}
+                        </span>
+                      </div>
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                        <span className="w-60">Quẹt thẻ</span>
+                        <span className="flex-1 text-end">
+                          {PriceHelper.formatVNDPositive(rowData.QT)}
+                        </span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                 </div>
-              )
-            },
-            {
-              key: 'VI/TT',
-              title: 'Ví / Thẻ tiền',
-              dataKey: 'VI/TT',
-              width: 200,
-              sortable: false,
-              cellRenderer: ({ rowData }) => (
-                <div className="w-100 d-flex justify-content-between align-items-center">
-                  {PriceHelper.formatVND(rowData.VI + rowData.TT)}
-                  <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    key="top"
-                    placement="auto"
-                    overlay={
-                      <Popover id={`popover-positioned-top`}>
-                        <Popover.Body className="p-0">
-                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                            <span className="w-60">Ví</span>
-                            <span className="flex-1 text-end">
-                              {PriceHelper.formatVNDPositive(rowData.VI)}
-                            </span>
-                          </div>
-                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                            <span className="w-60">Thẻ tiền</span>
-                            <span className="flex-1 text-end">
-                              {PriceHelper.formatVNDPositive(rowData.TT)}
-                            </span>
-                          </div>
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <div className="d-flex justify-content-between align-items-center">
-                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
-                    </div>
-                  </OverlayTrigger>
+              </OverlayTrigger>
+            </div>
+          )
+        },
+        {
+          key: 'VI/TT',
+          title: 'Ví / Thẻ tiền',
+          dataKey: 'VI/TT',
+          width: 200,
+          sortable: false,
+          cellRenderer: ({ rowData }) => (
+            <div className="w-100 d-flex justify-content-between align-items-center">
+              {PriceHelper.formatVND(rowData.VI + rowData.TT)}
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="auto"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Body className="p-0">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                        <span className="w-60">Ví</span>
+                        <span className="flex-1 text-end">
+                          {PriceHelper.formatVNDPositive(rowData.VI)}
+                        </span>
+                      </div>
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                        <span className="w-60">Thẻ tiền</span>
+                        <span className="flex-1 text-end">
+                          {PriceHelper.formatVNDPositive(rowData.TT)}
+                        </span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
                 </div>
-              )
-            }
-          ],
-    [filters]
-  )
+              </OverlayTrigger>
+            </div>
+          )
+        }
+      ]
+    }
+  }, [filters])
 
   const onFilter = values => {
     if (_.isEqual(values, filters)) {
@@ -770,27 +855,43 @@ function OverviewService(props) {
     PermissionHelpers.ExportExcel({
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
-      FuncApi: () =>
-        filters.ShowsX === '1'
-          ? reportsApi.getListServicesAndPayed(
-              BrowserHelpers.getRequestParamsList(
-                {
-                  From: filters.DateStart,
-                  To: filters.DateEnd,
-                  StockIDs: filters.StockID, //filters.StockID
-                  Pi: filters.Pi,
-                  Ps: filters.Ps
-                },
-                {
-                  Total: PageTotal
-                }
-              )
-            )
-          : reportsApi.getListServices(
-              BrowserHelpers.getRequestParamsList(filters, {
+      FuncApi: () => {
+        if (filters.ShowsX === '1') {
+          return reportsApi.getListServicesAndPayed(
+            BrowserHelpers.getRequestParamsList(
+              {
+                From: filters.DateStart,
+                To: filters.DateEnd,
+                StockIDs: filters.StockID, //filters.StockID
+                Pi: filters.Pi,
+                Ps: filters.Ps,
+                ShowsX: filters.ShowsX
+              },
+              {
                 Total: PageTotal
-              })
-            ),
+              }
+            )
+          )
+        } else if (filters.ShowsX === '3') {
+          return reportsApi.getAccordingTimeService({
+            _Path_: '/api/v3/r23/dich-vu/danh-sach-2',
+            StockID: filters.StockID,
+            DateStart: moment(filters.DateStart).format('DD/MM/YYYY'),
+            DateEnd: moment(filters.DateEnd).format('DD/MM/YYYY'),
+            Pi: 1,
+            Ps: 100,
+            CardServiceID: '',
+            ServiceOriginalID: '',
+            ShowsX: filters.ShowsX
+          })
+        } else {
+          return reportsApi.getListServices(
+            BrowserHelpers.getRequestParamsList(filters, {
+              Total: PageTotal
+            })
+          )
+        }
+      },
       params: filters.ShowsX === '1' ? filters : null,
       UrlName: '/dich-vu'
     })
@@ -887,6 +988,10 @@ function OverviewService(props) {
           {
             label: 'Nhân viên',
             value: '1'
+          },
+          {
+            label: 'Theo khung giờ',
+            value: '3'
           }
         ]}
       />
@@ -1008,7 +1113,7 @@ function OverviewService(props) {
       <div className="bg-white rounded mt-25px">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách dịch vụ</div>
-          {filters.ShowsX !== '1' && (
+          {filters.ShowsX !== '1' && filters.ShowsX !== '3' && (
             <div className="d-flex">
               <div className="fw-500 pr-10px">
                 Tổng dịch vụ{' '}
@@ -1107,96 +1212,100 @@ function OverviewService(props) {
           )}
         </div>
         <div className="p-20px">
-          {filters.ShowsX !== '2' && filters.ShowsX !== '1' && (
-            <div className="d-flex mb-15px">
-              <div className="d-flex mr-20px">
-                <OverlayTrigger
-                  rootClose
-                  trigger="click"
-                  key="top"
-                  placement="top"
-                  overlay={<Tooltip id={`tooltip-top`}>Khách buổi đầu</Tooltip>}
-                >
-                  <div
-                    className="w-40px h-15px"
-                    style={{ backgroundColor: 'rgb(144 189 86)' }}
-                  ></div>
-                </OverlayTrigger>
-                {width > 992 && (
-                  <div className="fw-500 pl-8px line-height-xs">
-                    Khách buổi đầu
-                  </div>
-                )}
+          {filters.ShowsX !== '2' &&
+            filters.ShowsX !== '1' &&
+            filters.ShowsX !== '3' && (
+              <div className="d-flex mb-15px">
+                <div className="d-flex mr-20px">
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="top"
+                    overlay={
+                      <Tooltip id={`tooltip-top`}>Khách buổi đầu</Tooltip>
+                    }
+                  >
+                    <div
+                      className="w-40px h-15px"
+                      style={{ backgroundColor: 'rgb(144 189 86)' }}
+                    ></div>
+                  </OverlayTrigger>
+                  {width > 992 && (
+                    <div className="fw-500 pl-8px line-height-xs">
+                      Khách buổi đầu
+                    </div>
+                  )}
+                </div>
+                <div className="d-flex mr-20px">
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="top"
+                    overlay={
+                      <Tooltip id={`tooltip-top`}>Cần thanh toán thêm</Tooltip>
+                    }
+                  >
+                    <div
+                      className="w-40px h-15px"
+                      style={{ backgroundColor: 'rgb(231, 195, 84)' }}
+                    ></div>
+                  </OverlayTrigger>
+                  {width > 992 && (
+                    <div className="fw-500 pl-8px line-height-xs">
+                      Cần thanh toán thêm
+                    </div>
+                  )}
+                </div>
+                <div className="d-flex mr-20px">
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="top"
+                    overlay={
+                      <Tooltip id={`tooltip-top`}>Khách thẻ buổi đầu</Tooltip>
+                    }
+                  >
+                    <div
+                      className="w-40px h-15px"
+                      style={{ backgroundColor: 'rgb(146 224 224)' }}
+                    ></div>
+                  </OverlayTrigger>
+                  {width > 992 && (
+                    <div className="fw-500 pl-8px line-height-xs">
+                      Khách thẻ buổi đầu
+                    </div>
+                  )}
+                </div>
+                <div className="d-flex">
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="top"
+                    overlay={
+                      <Tooltip id={`tooltip-top`}>Khách thẻ buổi cuối</Tooltip>
+                    }
+                  >
+                    <div
+                      className="w-40px h-15px"
+                      style={{ backgroundColor: 'rgb(255, 190, 211)' }}
+                    ></div>
+                  </OverlayTrigger>
+                  {width > 992 && (
+                    <div className="fw-500 pl-8px line-height-xs">
+                      Khách thẻ buổi cuối
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="d-flex mr-20px">
-                <OverlayTrigger
-                  rootClose
-                  trigger="click"
-                  key="top"
-                  placement="top"
-                  overlay={
-                    <Tooltip id={`tooltip-top`}>Cần thanh toán thêm</Tooltip>
-                  }
-                >
-                  <div
-                    className="w-40px h-15px"
-                    style={{ backgroundColor: 'rgb(231, 195, 84)' }}
-                  ></div>
-                </OverlayTrigger>
-                {width > 992 && (
-                  <div className="fw-500 pl-8px line-height-xs">
-                    Cần thanh toán thêm
-                  </div>
-                )}
-              </div>
-              <div className="d-flex mr-20px">
-                <OverlayTrigger
-                  rootClose
-                  trigger="click"
-                  key="top"
-                  placement="top"
-                  overlay={
-                    <Tooltip id={`tooltip-top`}>Khách thẻ buổi đầu</Tooltip>
-                  }
-                >
-                  <div
-                    className="w-40px h-15px"
-                    style={{ backgroundColor: 'rgb(146 224 224)' }}
-                  ></div>
-                </OverlayTrigger>
-                {width > 992 && (
-                  <div className="fw-500 pl-8px line-height-xs">
-                    Khách thẻ buổi đầu
-                  </div>
-                )}
-              </div>
-              <div className="d-flex">
-                <OverlayTrigger
-                  rootClose
-                  trigger="click"
-                  key="top"
-                  placement="top"
-                  overlay={
-                    <Tooltip id={`tooltip-top`}>Khách thẻ buổi cuối</Tooltip>
-                  }
-                >
-                  <div
-                    className="w-40px h-15px"
-                    style={{ backgroundColor: 'rgb(255, 190, 211)' }}
-                  ></div>
-                </OverlayTrigger>
-                {width > 992 && (
-                  <div className="fw-500 pl-8px line-height-xs">
-                    Khách thẻ buổi cuối
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+            )}
 
           <ReactTableV7
             rowKey="ID"
-            filters={filters}
+            filters={filters.ShowsX === '3' ? null : filters}
             columns={columns}
             data={ListData}
             loading={loadingTable}
