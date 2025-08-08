@@ -586,6 +586,7 @@ function PayrollStaff(props) {
         key: 'Staff.FullName',
         title: 'Tên nhân viên',
         dataKey: 'Staff.FullName',
+        cellRenderer: ({ rowData }) => rowData?.Staff?.FullName || '',
         width: 250,
         sortable: false,
         mobileOptions: {
@@ -995,7 +996,7 @@ function PayrollStaff(props) {
             pageCount={pageCount}
             onPagesChange={onPagesChange}
             optionMobile={{
-              CellModal: cell => OpenModalMobile(cell)
+              CellModal: cell => OpenModalMobile({ ...cell, TypeOf: false })
             }}
             headerHeight={[50, 50]}
             headerRenderer={headerRenderer}

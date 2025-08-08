@@ -14,6 +14,7 @@ const perfectScrollbarOptions = {
 }
 
 function ModalViewMobile({ show, onHide, data, filters }) {
+  
   return (
     <Modal
       className="modal-view-mobile"
