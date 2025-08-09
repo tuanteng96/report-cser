@@ -996,7 +996,7 @@ function PayrollStaff(props) {
             pageCount={pageCount}
             onPagesChange={onPagesChange}
             optionMobile={{
-              CellModal: cell => OpenModalMobile({ ...cell, TypeOf: false })
+              CellModal: cell => OpenModalMobile({ ...cell, TypeOf: true })
             }}
             headerHeight={[50, 50]}
             headerRenderer={headerRenderer}

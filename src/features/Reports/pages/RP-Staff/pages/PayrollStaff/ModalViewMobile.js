@@ -14,7 +14,6 @@ const perfectScrollbarOptions = {
 }
 
 function ModalViewMobile({ show, onHide, data, filters }) {
-  
   return (
     <Modal
       className="modal-view-mobile"
@@ -26,7 +25,7 @@ function ModalViewMobile({ show, onHide, data, filters }) {
         <Fragment>
           <div className="modal-view-head align-items-baseline px-15px py-8px">
             <div className="flex-1 modal-view-title text-uppercase font-size-lg fw-500 pr-15px">
-              Tổng lương
+              {data?.Staff?.FullName || 'Chưa có tên'}
             </div>
             <div
               className="text-center modal-view-close font-size-h3 w-20px"
@@ -41,6 +40,24 @@ function ModalViewMobile({ show, onHide, data, filters }) {
             style={{ position: 'relative' }}
           >
             <div className="py-5px">
+              <div className="px-15px d-flex justify-content-between py-12px border-bottom-dashed line-height-sm">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                  ID
+                </div>
+                <div className="fw-600 font-size-mdd w-60 text-end">
+                  #{data?.Staff?.ID}
+                </div>
+              </div>
+              <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                  Cơ sở
+                </div>
+                <div className="fw-600 font-size-mdd w-60 text-end">
+                  {data?.DiemQL && data?.DiemQL.length > 0
+                    ? data?.DiemQL.map(stock => stock.StockTitle).join(', ')
+                    : 'Chưa xác định'}
+                </div>
+              </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương chính sách
