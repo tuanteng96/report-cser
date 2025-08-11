@@ -133,7 +133,7 @@ function Attrition(props) {
       let meta = rowData?.Meta ? JSON.parse(rowData?.Meta) : null
       if (meta.otherUnit) {
         let [item] = meta.otherUnit
-        ProdQty = Math.round(((rowData.Unit / item.Qty) * 1000) / 1000)
+        ProdQty = Math.round((rowData.Unit / item.Qty) * 1000) / 1000
         ProdTitle = item.ProdTitle
         ProdUnit = item.ProdUnit
       }
