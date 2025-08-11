@@ -125,6 +125,26 @@ function Attrition(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
+  const getMeta = rowData => {
+    let ProdQty = ''
+    let ProdTitle = ''
+    let ProdUnit = ''
+    if (rowData?.Meta) {
+      let meta = rowData?.Meta ? JSON.parse(rowData?.Meta) : null
+      if (meta.otherUnit) {
+        let [item] = meta.otherUnit
+        ProdQty = Math.round(((rowData.Unit / item.Qty) * 1000) / 1000)
+        ProdTitle = item.ProdTitle
+        ProdUnit = item.ProdUnit
+      }
+    }
+    return {
+      ProdQty,
+      ProdTitle,
+      ProdUnit
+    }
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -201,6 +221,30 @@ function Attrition(props) {
         mobileOptions: {
           visible: true
         }
+      },
+      {
+        key: 'MetaSL',
+        title: 'Số lượng',
+        dataKey: 'MetaSL',
+        cellRenderer: ({ rowData }) => getMeta(rowData).ProdQty,
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'MetaSP',
+        title: 'Sản phẩm',
+        dataKey: 'MetaSP',
+        cellRenderer: ({ rowData }) => getMeta(rowData).ProdTitle,
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'MetaDV',
+        title: 'Đơn vị',
+        dataKey: 'MetaDV',
+        cellRenderer: ({ rowData }) => getMeta(rowData).ProdUnit,
+        width: 180,
+        sortable: false
       },
       {
         key: 'StockUsageList',
