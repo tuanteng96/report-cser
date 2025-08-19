@@ -1,11 +1,20 @@
+import clsx from 'clsx'
 import React from 'react'
+import { useLocation } from 'react-router-dom'
 import NavBar from 'src/components/NavBar/NavBar'
 
 function LayoutReport({ children }) {
+  let { pathname } = useLocation()
+
   return (
-    <div className="px-main pt-110px position-relative h-100">
+    <div
+      className={clsx(
+        'pt-110px position-relative h-100',
+        pathname.includes('bao-cao-thong-tin-pos') ? '' : 'px-main'
+      )}
+    >
       <NavBar />
-      <div className="container-fluid p-0 h-100">{children}</div>
+      <div className="p-0 container-fluid h-100">{children}</div>
     </div>
   )
 }
