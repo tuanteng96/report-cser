@@ -97,6 +97,14 @@ function ModalViewMobile({ show, onHide, data }) {
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Nhập trả hàng
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.Qtyimport3 || 0}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Nhập ( Cân kho )
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -132,7 +140,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất thực tế
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Qtydonxuat1}
+              {Math.abs(data?.Qtydonxuat1)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -140,7 +148,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất ( Cân kho )
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.Qtydonxuat2}
+              {Math.abs(data?.Qtydonxuat2)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">

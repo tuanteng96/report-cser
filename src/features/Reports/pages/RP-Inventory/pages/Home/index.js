@@ -224,6 +224,14 @@ function Home(props) {
         sortable: false
       },
       {
+        key: 'Qtyimport3',
+        title: 'Nhập trả hàng',
+        dataKey: 'Qtyimport3',
+        cellRenderer: ({ rowData }) => rowData?.Qtyimport3 || 0,
+        width: 150,
+        sortable: false
+      },
+      {
         key: 'Qtyimport2',
         title: 'Nhập ( Cân kho )',
         dataKey: 'Qtyimport2',
@@ -260,7 +268,7 @@ function Home(props) {
         key: 'Qtydonxuat1',
         title: 'Xuất thực tế',
         dataKey: 'Qtydonxuat1',
-        cellRenderer: ({ rowData }) => rowData?.Qtydonxuat1,
+        cellRenderer: ({ rowData }) => Math.abs(rowData?.Qtydonxuat1),
         width: 150,
         sortable: false
       },
@@ -268,7 +276,7 @@ function Home(props) {
         key: 'Qtydonxuat2',
         title: 'Xuất ( Cân kho )',
         dataKey: 'Qtydonxuat2',
-        cellRenderer: ({ rowData }) => rowData?.Qtydonxuat2,
+        cellRenderer: ({ rowData }) => Math.abs(rowData?.Qtydonxuat2),
         width: 150,
         sortable: false
       },
