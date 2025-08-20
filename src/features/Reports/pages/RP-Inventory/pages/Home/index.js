@@ -209,9 +209,25 @@ function Home(props) {
       },
       {
         key: 'QtyImport',
-        title: 'Nhập trong',
+        title: 'Nhập trong tổng',
         dataKey: 'QtyImport',
         cellRenderer: ({ rowData }) => rowData?.QtyImport || 0,
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Qtyimport1',
+        title: 'Nhập thực tế',
+        dataKey: 'Qtyimport1',
+        cellRenderer: ({ rowData }) => rowData?.Qtyimport1 || 0,
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Qtyimport2',
+        title: 'Nhập ( Cân kho )',
+        dataKey: 'Qtyimport2',
+        cellRenderer: ({ rowData }) => rowData?.Qtyimport2 || 0,
         width: 150,
         sortable: false
       },
@@ -241,10 +257,18 @@ function Home(props) {
         sortable: false
       },
       {
-        key: 'QtyExportTotal',
-        title: 'Xuất (Đơn xuất)',
-        dataKey: 'QtyExportTotal',
-        cellRenderer: ({ rowData }) => rowData?.QtyDonXuat,
+        key: 'Qtydonxuat1',
+        title: 'Xuất thực tế',
+        dataKey: 'Qtydonxuat1',
+        cellRenderer: ({ rowData }) => rowData?.Qtydonxuat1,
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Qtydonxuat2',
+        title: 'Xuất ( Cân kho )',
+        dataKey: 'Qtydonxuat2',
+        cellRenderer: ({ rowData }) => rowData?.Qtydonxuat2,
         width: 150,
         sortable: false
       },

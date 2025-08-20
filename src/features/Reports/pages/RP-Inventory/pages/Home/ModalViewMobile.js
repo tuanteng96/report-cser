@@ -57,18 +57,50 @@ function ModalViewMobile({ show, onHide, data }) {
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
-              Tồn trước
+              Giá nhập
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.QtyBefore || '0'}
+              {data?.ImportPrice || '0'}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
-              Nhập trong
+              Giá nhập trung bình
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {data?.QtyImport || '0'}
+              {PriceHelper.formatVND(data?.AverageCost || 0)}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Tồn trước
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.QtyBefore || 0}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Nhập trong tổng
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.QtyImport || 0}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Nhập thực tế
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.Qtyimport1 || 0}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Nhập ( Cân kho )
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.Qtyimport2 || 0}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -76,7 +108,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất trong (Tổng)
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {Math.abs(data?.QtyExport || 0)}
+              {Math.abs(data?.QtyExport)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -84,7 +116,7 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất trong (Bán)
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {Math.abs(data?.QtyExportSell || 0)}
+              {Math.abs(data?.QtyExportSell)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -92,18 +124,26 @@ function ModalViewMobile({ show, onHide, data }) {
               Xuất trong (Tiêu hao)
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {Math.abs(data?.QtyExportConsumption || 0)}
+              {Math.abs(data?.QtyExportConsumption)}
             </div>
           </div>
           <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
-              Xuất (Đơn xuất)
+              Xuất thực tế
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
-              {Math.abs(data?.QtyDonXuat || 0)}
+              {data?.Qtydonxuat1}
             </div>
           </div>
-          <div className="px-15px d-flex justify-content-between py-10px line-height-sm">
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Xuất ( Cân kho )
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {data?.Qtydonxuat2}
+            </div>
+          </div>
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
             <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Hiện tại
             </div>
@@ -111,70 +151,14 @@ function ModalViewMobile({ show, onHide, data }) {
               {data?.Qty}
             </div>
           </div>
-        </div>
-        <div className="px-15px">
-          {data &&
-            data.ListOrders &&
-            data.ListOrders.map((item, index) => (
-              <div
-                className="border border-gray-200 rounded mb-15px shadows"
-                key={index}
-              >
-                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
-                  <div>ID đơn hàng</div>
-                  <div className="fw-600">#{item.Id}</div>
-                </div>
-                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
-                  <div>Ngày bán</div>
-                  <div className="fw-600">
-                    {item?.CreateDate
-                      ? moment(data.CreateDate).format('HH:mm DD/MM/YYYY')
-                      : 'Không có'}
-                  </div>
-                </div>
-                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
-                  <div>Tổng tiền nợ</div>
-                  <div className="fw-600">
-                    {PriceHelper.formatVND(item.TongNo)}
-                  </div>
-                </div>
-                <div className="border-gray-200 border-bottom p-12px">
-                  <div>Sản phẩm</div>
-                  <div>
-                    {item.ListDebt &&
-                      item.ListDebt.map((order, orderIndex) => (
-                        <div
-                          className={`mt-10px ${clsx({
-                            'pt-10px border-top-dashed': orderIndex !== 0
-                          })}`}
-                          key={orderIndex}
-                        >
-                          <div className="d-flex py-3px">
-                            <div className="pr-5px">Tên Sản phẩm</div>
-                            <div className="fw-600">{order.ProdTitle}</div>
-                          </div>
-                          <div className="d-flex py-3px">
-                            <div className="pr-5px">Số lượng</div>
-                            <div className="fw-600">{order.Qty}</div>
-                          </div>
-                          <div className="d-flex py-3px">
-                            <div className="pr-5px">Thành tiền</div>
-                            <div className="fw-600">
-                              {PriceHelper.formatVND(order.ToPay)}
-                            </div>
-                          </div>
-                          <div className="d-flex py-3px">
-                            <div className="pr-5px">Còn nợ</div>
-                            <div className="fw-600">
-                              {PriceHelper.formatVND(order.ConNo)}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+              Tổng giá trị
+            </div>
+            <div className="fw-600 font-size-mdd w-60 text-end">
+              {PriceHelper.formatVND(data?.TotalValue)}
+            </div>
+          </div>
         </div>
       </PerfectScrollbar>
     </Modal>
