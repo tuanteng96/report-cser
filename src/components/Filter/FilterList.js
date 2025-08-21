@@ -88,7 +88,8 @@ function FilterList({
   onRefresh,
   onExport,
   isWarehouse = false,
-  isAllStock = true
+  isAllStock = true,
+  optionsAdd = []
 }) {
   const {
     Stocks,
@@ -339,7 +340,8 @@ function FilterList({
                           {
                             label: 'Nâng cao',
                             value: '2'
-                          }
+                          },
+                          ...optionsAdd
                         ]}
                         className="select-control"
                         value={[
@@ -350,7 +352,8 @@ function FilterList({
                           {
                             label: 'Nâng cao',
                             value: '2'
-                          }
+                          },
+                          ...optionsAdd
                         ].filter(
                           item =>
                             Number(item.value) === Number(values?.ShowsType)

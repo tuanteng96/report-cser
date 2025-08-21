@@ -150,7 +150,24 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
-  getListDebt: data => {
+  getListDebt: async data => {
+    if (Number(data.ShowsType) === 3) {
+      let rs = await http.post(
+        `/api/v4/r27@InvokePath?Path=Report1/cong-no/danh-sach-2`,
+        JSON.stringify(data)
+      )
+
+      return {
+        ...rs,
+        data: {
+          param: {
+            Body: data
+          },
+          result: rs?.data
+        }
+      }
+    }
+
     return http.post(`${SubApi}/cong-no/danh-sach`, JSON.stringify(data))
   },
   getListDebt2: data => {

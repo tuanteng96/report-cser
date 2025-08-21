@@ -147,13 +147,20 @@ function Home(props) {
             PermissionHelpers.ErrorAccess(data.error)
             setLoading(false)
           } else {
+            
             const { Items, Total, PCount, TongNo, DH_NO, KH_NO } = {
-              Items: data.result?.Items || [],
-              TongNo: data.result?.TongNo || 0,
-              DH_NO: (data.result?.DH_NO && data.result?.DH_NO.length) || 0,
-              KH_NO: (data.result?.KH_NO && data.result?.KH_NO.length) || 0,
-              Total: data.result?.Total || 0,
-              PCount: data?.result?.PCount || 0
+              Items: data.result?.Items || data?.Items || [],
+              TongNo: data.result?.TongNo || data.TongNo || 0,
+              DH_NO:
+                (data.result?.DH_NO && data.result?.DH_NO.length) ||
+                data?.DH_NO?.length ||
+                0,
+              KH_NO:
+                (data.result?.KH_NO && data.result?.KH_NO.length) ||
+                data?.KH_NO?.length ||
+                0,
+              Total: data.result?.Total || data?.Total || 0,
+              PCount: data?.result?.PCount || data?.PCount || 0
             }
             setListData(convertArray(Items))
             setListDataMobile(Items)
@@ -455,7 +462,6 @@ function Home(props) {
           })
         }
       }
-
       return rs
     }
     return [
@@ -601,6 +607,18 @@ function Home(props) {
         sortable: false
       },
       {
+        key: 'Staffs',
+        title: 'Nhân viên',
+        dataKey: 'Staffs',
+        cellRenderer: ({ rowData }) =>
+          rowData.Staffs &&
+          rowData.Staffs.length > 0 &&
+          rowData.Staffs.map(x => x.FullName).join(', '),
+        width: 300,
+        sortable: false,
+        hidden: Number(filters.ShowsType) !== 3
+      },
+      {
         key: 'Desc',
         title: 'Ghi chú',
         dataKey: 'Desc',
@@ -610,7 +628,7 @@ function Home(props) {
       }
     ]
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ListData])
+  }, [ListData, filters])
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
     if (Number(filters.ShowsType) !== 2 && isScrolling)
@@ -677,6 +695,12 @@ function Home(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        optionsAdd={[
+          {
+            label: 'Khác',
+            value: '3'
+          }
+        ]}
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
