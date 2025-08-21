@@ -235,6 +235,16 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
                               {PriceHelper.formatVND(order.ConNo)}
                             </div>
                           </div>
+                          {Number(filters.ShowsType) === 3 && (
+                            <div className="d-flex py-3px">
+                              <div className="pr-5px">Nhân viên</div>
+                              <div className="fw-600">
+                                {order.Staffs &&
+                                  order.Staffs.length > 0 &&
+                                  order.Staffs.map(x => x.FullName).join(', ')}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
                   </div>
