@@ -77,6 +77,7 @@ function InformationPos(props) {
           ? filters.Criterias
           : Criterias?.data?.data || []
       let newFilters = {
+        StockID: filters.StockID,
         MemberID:
           filters.MemberID && filters.MemberID.length > 0
             ? filters.MemberID.map(x => x.value).toString()
@@ -95,6 +96,44 @@ function InformationPos(props) {
       let rs = []
       if (data && data?.lst?.length > 0) {
         for (let item of data?.lst) {
+          let colors = [
+            '#C62828',
+            '#1E88E5',
+            '#43A047',
+            '#FDD835',
+            '#8E24AA',
+            '#F57C00',
+            '#AD1457',
+            '#039BE5',
+            '#7CB342',
+            '#FFEE58',
+            '#6A1B9A',
+            '#FB8C00',
+            '#D81B60',
+            '#00ACC1',
+            '#9CCC65',
+            '#FBC02D',
+            '#512DA8',
+            '#EF6C00',
+            '#E53935',
+            '#26C6DA',
+            '#AED581',
+            '#FFF176',
+            '#9575CD',
+            '#F4511E',
+            '#B71C1C',
+            '#2196F3',
+            '#66BB6A',
+            '#FFEB3B',
+            '#7E57C2',
+            '#FF7043',
+            '#880E4F',
+            '#1976D2',
+            '#81C784',
+            '#FFD54F',
+            '#5E35B1',
+            '#FF8A65'
+          ]
           let obj = {
             series: [
               //   {
@@ -125,7 +164,7 @@ function InformationPos(props) {
                   show: false
                 }
               },
-              colors: ['#77B6EA', '#545454'],
+              colors: [],
               dataLabels: {
                 enabled: true
               },
@@ -203,6 +242,7 @@ function InformationPos(props) {
             })
           )
 
+          obj.options.colors = colors.slice(0, obj.series.length)
           obj.options.yaxis.max = max
           rs.push(obj)
         }

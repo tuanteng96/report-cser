@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useApp } from 'src/app/App'
 import DatePicker, { registerLocale } from 'react-datepicker'
@@ -23,11 +23,25 @@ function FilterInformationPos({
   Criterias
 }) {
   const { GGLoading } = useApp()
-  
-  const { GlobalConfig, AuthID } = useSelector(({ auth }) => ({
+
+  const [StocksList, setStocksList] = useState([])
+
+  const { GlobalConfig, AuthID, Stocks } = useSelector(({ auth }) => ({
     GlobalConfig: auth?.GlobalConfig,
-    AuthID: auth?.Info?.User?.ID
+    AuthID: auth?.Info?.User?.ID,
+    Stocks: auth.Info?.Stocks
+      ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
+          ...item,
+          label: item.Title || item.label,
+          value: item.ID || item.value
+        }))
+      : []
   }))
+
+  useEffect(() => {
+    let newStocks = [...Stocks]
+    setStocksList(newStocks)
+  }, [])
 
   return (
     <div className={clsx('filter-box', show && 'show')}>
@@ -55,6 +69,26 @@ function FilterInformationPos({
                   </div>
                 </div>
                 <div className="filter-box__body p-20px">
+                  {'StockID' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Cơ sở của bạn</label>
+                      <Select
+                        name="StockID"
+                        placeholder="Chọn cơ cở"
+                        classNamePrefix="select"
+                        options={StocksList}
+                        className="select-control"
+                        value={StocksList.filter(
+                          item => Number(item.value) === Number(values?.StockID)
+                        )}
+                        onChange={otp => {
+                          setFieldValue('StockID', otp ? otp.value : '')
+                        }}
+                        noOptionsMessage={() => 'Không có cơ sở'}
+                      />
+                    </div>
+                  )}
+
                   <div className="form-group mb-20px">
                     <label>Khách hàng</label>
                     <AsyncSelectMembers
