@@ -216,10 +216,10 @@ function Home(props) {
         sortable: false
       },
       {
-        key: 'Qtyimport1',
+        key: 'Qtyimport2',
         title: 'Nhập thực tế',
-        dataKey: 'Qtyimport1',
-        cellRenderer: ({ rowData }) => rowData?.Qtyimport1 || 0,
+        dataKey: 'Qtyimport2',
+        cellRenderer: ({ rowData }) => rowData?.Qtyimport2 || 0,
         width: 150,
         sortable: false
       },
@@ -232,10 +232,10 @@ function Home(props) {
         sortable: false
       },
       {
-        key: 'Qtyimport2',
+        key: 'Qtyimport1',
         title: 'Nhập ( Cân kho )',
-        dataKey: 'Qtyimport2',
-        cellRenderer: ({ rowData }) => rowData?.Qtyimport2 || 0,
+        dataKey: 'Qtyimport1',
+        cellRenderer: ({ rowData }) => rowData?.Qtyimport1 || 0,
         width: 150,
         sortable: false
       },
