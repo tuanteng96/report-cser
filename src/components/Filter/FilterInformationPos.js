@@ -1,32 +1,23 @@
 import clsx from 'clsx'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useApp } from 'src/app/App'
-import DatePicker, { registerLocale } from 'react-datepicker'
-import Select, { components } from 'react-select'
+import DatePicker from 'react-datepicker'
+import Select from 'react-select'
 import { Formik, Form } from 'formik'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
-import reportsApi from 'src/api/reports.api'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { DevHelpers } from 'src/helpers/DevHelpers'
 
 function FilterInformationPos({
   show,
   onHide,
   loading,
   onRefresh,
-  loadingExport,
-  onExport,
   onSubmit,
   filters,
   Criterias
 }) {
-  const { GGLoading } = useApp()
-
   const [StocksList, setStocksList] = useState([])
 
-  const { GlobalConfig, AuthID, Stocks } = useSelector(({ auth }) => ({
+  const { Stocks } = useSelector(({ auth }) => ({
     GlobalConfig: auth?.GlobalConfig,
     AuthID: auth?.Info?.User?.ID,
     Stocks: auth.Info?.Stocks
@@ -41,6 +32,7 @@ function FilterInformationPos({
   useEffect(() => {
     let newStocks = [...Stocks]
     setStocksList(newStocks)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -52,8 +44,7 @@ function FilterInformationPos({
       >
         {formikProps => {
           // errors, touched, handleChange, handleBlur
-          const { values, setFieldValue, handleChange, handleBlur } =
-            formikProps
+          const { values, setFieldValue } = formikProps
           return (
             <Form>
               <div className="filter-box__content">

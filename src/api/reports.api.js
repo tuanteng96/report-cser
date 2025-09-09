@@ -256,6 +256,8 @@ const reportsApi = {
   getConfigsCriterias: () =>
     http.get(`/brand/global/json-information.json?` + new Date().getTime()),
   getMemberCustome: body =>
-    http.post(`/api/v4/MemberCustome@get`, JSON.stringify(body))
+    http.post(`/api/v4/MemberCustome@get`, JSON.stringify(body)),
+  getGuestsCount: body =>
+    http.post(`/api/v3/MemberCheckIn@GuestCountList`, JSON.stringify(body))
 }
 export default reportsApi

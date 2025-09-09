@@ -147,7 +147,6 @@ function Home(props) {
             PermissionHelpers.ErrorAccess(data.error)
             setLoading(false)
           } else {
-            
             const { Items, Total, PCount, TongNo, DH_NO, KH_NO } = {
               Items: data.result?.Items || data?.Items || [],
               TongNo: data.result?.TongNo || data.TongNo || 0,

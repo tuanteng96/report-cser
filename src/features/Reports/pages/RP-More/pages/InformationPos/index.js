@@ -254,6 +254,7 @@ function InformationPos(props) {
 
   useEffect(() => {
     if (isFilter && fetchStatus === 'idle') setIsFilter(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchStatus])
 
   const onOpenFilter = () => {

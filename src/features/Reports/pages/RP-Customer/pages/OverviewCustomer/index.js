@@ -64,9 +64,10 @@ const objData = {
 }
 
 function OverviewCustomer() {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || []
+    Stocks: auth?.Info?.Stocks || [],
+    GlobalConfig: auth?.GlobalConfig
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -89,6 +90,7 @@ function OverviewCustomer() {
     Total: 0,
     TotalOnline: 0
   })
+  const [GuestCountTotal, setGuestCountTotal] = useState(0)
   const [isFilter, setIsFilter] = useState(false)
   const [heightChart, setHeightChart] = useState(100)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
@@ -130,6 +132,33 @@ function OverviewCustomer() {
     getListCustomer()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
+
+  useEffect(() => {
+    if (GlobalConfig?.Admin?.cai_dat_sl_khach) {
+      getGuestsCount()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    GlobalConfig?.Admin?.cai_dat_sl_khach,
+    filters.StockID,
+    filters.DateStart,
+    filters.DateEnd
+  ])
+
+  const getGuestsCount = () => {
+    reportsApi
+      .getGuestsCount({
+        StockID: filters.StockID,
+        From: moment(filters.DateStart).format('YYYY-MM-DD'),
+        To: moment(filters.DateEnd).format('YYYY-MM-DD'),
+        Pi: 1,
+        Ps: 10
+      })
+      .then(({ data }) => {
+        setGuestCountTotal(data?.GuestCountTotal || 0)
+      })
+      .catch(error => console.log(error))
+  }
 
   const getOverviewCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
@@ -615,6 +644,14 @@ function OverviewCustomer() {
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
           {width > 1200 ? (
             <div className="d-flex">
+              {GlobalConfig?.Admin?.cai_dat_sl_khach && (
+                <div className="fw-500 pr-20px">
+                  Số lượt khách phục vụ
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {GuestCountTotal}
+                  </span>
+                </div>
+              )}
               <div className="fw-500">
                 Tổng KH
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
@@ -639,6 +676,12 @@ function OverviewCustomer() {
                 overlay={
                   <Popover id={`popover-positioned-top`}>
                     <Popover.Body className="p-0">
+                      {GlobalConfig?.Admin?.cai_dat_sl_khach && (
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                          <span>Số lượt khách phục vụ</span>
+                          <span>{GuestCountTotal}</span>
+                        </div>
+                      )}
                       <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng KH</span>
                         <span>{PageTotal.Total}</span>

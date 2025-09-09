@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Modal } from 'react-bootstrap'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import reportsApi from 'src/api/reports.api'
-import { JsonFilter } from 'src/Json/JsonFilter'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
