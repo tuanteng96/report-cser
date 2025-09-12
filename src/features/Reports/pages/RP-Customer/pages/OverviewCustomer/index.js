@@ -18,6 +18,7 @@ import Text from 'react-texty'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import PickerView from './PickerView'
 moment.locale('vi')
 
 const optionsObj = {
@@ -645,12 +646,19 @@ function OverviewCustomer() {
           {width > 1200 ? (
             <div className="d-flex">
               {GlobalConfig?.Admin?.cai_dat_sl_khach && (
-                <div className="fw-500 pr-20px">
-                  Số lượt khách phục vụ
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {GuestCountTotal}
-                  </span>
-                </div>
+                <PickerView filters={filters}>
+                  {({ open }) => (
+                    <div
+                      className="cursor-pointer fw-500 pr-20px"
+                      onClick={open}
+                    >
+                      Số lượt khách phục vụ
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {GuestCountTotal}
+                      </span>
+                    </div>
+                  )}
+                </PickerView>
               )}
               <div className="fw-500">
                 Tổng KH
@@ -677,10 +685,17 @@ function OverviewCustomer() {
                   <Popover id={`popover-positioned-top`}>
                     <Popover.Body className="p-0">
                       {GlobalConfig?.Admin?.cai_dat_sl_khach && (
-                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                          <span>Số lượt khách phục vụ</span>
-                          <span>{GuestCountTotal}</span>
-                        </div>
+                        <PickerView filters={filters}>
+                          {({ open }) => (
+                            <div
+                              onClick={open}
+                              className="border-gray-200 cursor-pointer py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                            >
+                              <span>Số lượt khách phục vụ</span>
+                              <span>{GuestCountTotal}</span>
+                            </div>
+                          )}{' '}
+                        </PickerView>
                       )}
                       <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                         <span>Tổng KH</span>
