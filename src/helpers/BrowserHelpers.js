@@ -58,6 +58,11 @@ export const BrowserHelpers = {
       params.DateEnd = filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')
         : null
+      if (filters?.DateEndTime) {
+        params.DateEnd = filters.DateEnd
+          ? moment(filters.DateEnd).format('DD/MM/yyyy HH:mm')
+          : null
+      }
     }
     if ('From' in filters) {
       params.From = filters.From

@@ -493,7 +493,14 @@ function FilterList({
                         selected={values.DateEnd}
                         placeholderText="Chọn ngày"
                         className="form-control"
-                        dateFormat="dd/MM/yyyy"
+                        dateFormat={
+                          filters.DateEndTime
+                            ? 'HH:mm dd/MM/yyyy'
+                            : 'dd/MM/yyyy'
+                        }
+                        showTimeSelect={filters.DateEndTime} // Bật chọn thời gian
+                        timeFormat="HH:mm" // Định dạng giờ (24h)
+                        timeIntervals={1} // Bước nhảy thời gian (phút)
                       />
                     </div>
                   )}

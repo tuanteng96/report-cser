@@ -23,7 +23,14 @@ function Home(props) {
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     DateStart: new Date(), // Ngày bắt đầu
-    DateEnd: new Date(), // Ngày kết thúc
+    DateEnd: moment()
+      .set({
+        hour: 23,
+        minute: 59,
+        second: 59,
+        millisecond: 0
+      })
+      .toDate(), // Ngày kết thúc
     Pi: 1, // Trang hiện tại
     Ps: 15, // Số lượng item
     CategoriesTK: '', // 0 => SP, 1 => NVL
@@ -32,7 +39,8 @@ function Home(props) {
     IsQtyEmpty: true,
     BrandId: '',
     CategoriesId: '',
-    gia_nhap_tb_khoang_tg: false // Tính theo DateStart,DateEnd, ngược lại tất cả
+    gia_nhap_tb_khoang_tg: false, // Tính theo DateStart,DateEnd, ngược lại tất cả,
+    DateEndTime: true
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
