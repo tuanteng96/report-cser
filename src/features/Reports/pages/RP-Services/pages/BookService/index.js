@@ -50,6 +50,29 @@ const ListStatus = [
   }
 ]
 
+function parseKvString(s) {
+  // 1) chuẩn hoá | thành newline
+  const normalized = s.replace(/\s*\|\s*/g, '\n')
+
+  const result = normalized
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .reduce((acc, line) => {
+      const idx = line.indexOf(':')
+      if (idx === -1) return acc
+      const key = line.slice(0, idx).trim()
+      const value = line.slice(idx + 1).trim()
+      acc[key] = value
+      return acc
+    }, {})
+
+  if (!result['Số lượng khách'] && !result['Tags'] && !result['Ghi chú']) {
+    return { 'Ghi chú': s.trim() }
+  }
+
+  return result
+}
+
 const CellHistory = ({ rowData }) => {
   const [Item, setItem] = useState(null)
   const [show, setShow] = useState(false)
@@ -511,9 +534,48 @@ function BookService(props) {
         sortable: false
       },
       {
+        key: 'SL',
+        title: 'Số lượng khách',
+        dataKey: 'SL',
+        cellRenderer: ({ rowData }) => {
+          let SL = ''
+          if (rowData.Desc) {
+            const parsed = parseKvString(rowData.Desc)
+            SL = parsed['Số lượng khách'] || ''
+          }
+          return <div>{SL}</div>
+        },
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Tags',
+        title: 'Tags',
+        dataKey: 'Tags',
+        cellRenderer: ({ rowData }) => {
+          let Tags = ''
+          if (rowData.Desc) {
+            const parsed = parseKvString(rowData.Desc)
+            Tags = parsed['Tags'] || ''
+          }
+          return <div>{Tags}</div>
+        },
+        width: 250,
+        sortable: false
+      },
+
+      {
         key: 'Desc',
         title: 'Ghi chú',
         dataKey: 'Desc',
+        cellRenderer: ({ rowData }) => {
+          let Desc = ''
+          if (rowData.Desc) {
+            const parsed = parseKvString(rowData.Desc)
+            Desc = parsed['Ghi chú'] || ''
+          }
+          return <div>{Desc}</div>
+        },
         width: 250,
         sortable: false
       }
