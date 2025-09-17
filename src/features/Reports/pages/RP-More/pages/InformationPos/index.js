@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import ReactApexChart from 'react-apexcharts'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { useSelector } from 'react-redux'
 import reportsApi from 'src/api/reports.api'
 import FilterInformationPos from 'src/components/Filter/FilterInformationPos'
@@ -69,9 +70,17 @@ function InformationPos(props) {
     }
   })
 
-  const { data, isLoading, refetch, fetchStatus, isRefetching } = useQuery({
-    queryKey: ['InformationPos', { ...filters }],
-    queryFn: async () => {
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    isLoading,
+    isRefetching,
+    fetchStatus
+  } = useInfiniteQuery({
+    queryKey: ['InformationPos'],
+    queryFn: async ({ pageParam = 1 }) => {
       let CriteriasList =
         filters.Criterias && filters.Criterias.length > 0
           ? filters.Criterias
@@ -83,12 +92,12 @@ function InformationPos(props) {
             ? filters.MemberID.map(x => x.value).toString()
             : '',
         FromDate: filters.FromDate
-          ? moment(filters.FromDate).subtract(1, 'years').format('YYYY-MM-DD')
+          ? moment(filters.FromDate).format('YYYY-MM-DD')
           : null,
         ToDate: filters.ToDate
           ? moment(filters.ToDate).format('YYYY-MM-DD')
           : null,
-        Pi: 1,
+        Pi: pageParam,
         Ps: 20
       }
       let { data } = await reportsApi.getMemberCustome(newFilters)
@@ -247,10 +256,15 @@ function InformationPos(props) {
           rs.push(obj)
         }
       }
-      return rs
+      return data ? { ...data, lst: rs } : null
+    },
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.Pi === lastPage.pCount ? undefined : lastPage.Pi + 1
     },
     enabled: Boolean(Criterias?.data)
   })
+
+  const Lists = data?.pages ? data?.pages.flatMap(page => page?.lst || []) : []
 
   useEffect(() => {
     if (isFilter && fetchStatus === 'idle') setIsFilter(false)
@@ -311,32 +325,46 @@ function InformationPos(props) {
           flexDirection: 'column',
           gap: '16px'
         }}
+        id="scrollableDiv"
       >
-        {isLoading && (
-          <div
-            className="relative bg-white rounded px-15px pt-15px"
-            style={{
-              height: '450px'
-            }}
-          >
-            <LoadingChart />
-          </div>
-        )}
-        {!isLoading && (
+        <InfiniteScroll
+          dataLength={Lists?.length}
+          next={fetchNextPage}
+          hasMore={!!hasNextPage}
+          loader={<p className="py-4 text-center">Đang tải thêm...</p>}
+          scrollableTarget="scrollableDiv"
+        >
           <>
-            {data &&
-              data.map((item, index) => (
-                <div className="bg-white rounded px-15px pt-15px" key={index}>
-                  <ReactApexChart
-                    options={item.options}
-                    series={item.series}
-                    type="line"
-                    height={450}
-                  />
-                </div>
-              ))}
+            {isLoading && (
+              <div
+                className="relative bg-white rounded px-15px pt-15px"
+                style={{
+                  height: '450px'
+                }}
+              >
+                <LoadingChart />
+              </div>
+            )}
+            {!isLoading && (
+              <>
+                {Lists &&
+                  Lists.map((item, index) => (
+                    <div
+                      className="bg-white rounded px-15px pt-15px"
+                      key={index}
+                    >
+                      <ReactApexChart
+                        options={item.options}
+                        series={item.series}
+                        type="line"
+                        height={450}
+                      />
+                    </div>
+                  ))}
+              </>
+            )}
           </>
-        )}
+        </InfiniteScroll>
       </div>
     </div>
   )
