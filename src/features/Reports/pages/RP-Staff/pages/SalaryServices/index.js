@@ -14,6 +14,7 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import FilterListLUONG from 'src/components/Filter/FilterListLUONG'
 
 moment.locale('vi')
 
@@ -30,7 +31,8 @@ function SalaryServices(props) {
     Ps: 15, // Số lượng item
     MemberID: '', // ID khách hàng
     StaffID: '', // ID nhân viên
-    ServiceCardID: ''
+    ServiceCardID: '',
+    ShowsX: '1'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -67,47 +69,95 @@ function SalaryServices(props) {
 
   const getListSalarys = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    reportsApi
-      .getListStaffSalarySV(BrowserHelpers.getRequestParamsList(filters))
-      .then(({ data }) => {
-        if (data.isRight) {
-          PermissionHelpers.ErrorAccess(data.error)
-          setLoading(false)
-        } else {
-          const {
-            Items,
-            Total,
-            PCount,
-            Tong_Luong,
-            Tong_DV,
-            Tong_PP,
-            Tong_Luong_Tat_ca_nhan_vien
-          } = {
-            Items: data.result?.Items || [],
-            Total: data.result?.Total || 0,
-            PCount: data.result?.PCount || 0,
-            Tong_Luong: data.result?.Tong_Luong || 0,
-            Tong_DV: data.result?.Tong_DV || 0,
-            Tong_PP: data.result?.Tong_PP || 0,
-            Tong_Luong_Tat_ca_nhan_vien:
-              data.result?.Tong_Luong_Tat_ca_nhan_vien || 0
+    if (filters.ShowsX === '1') {
+      reportsApi
+        .getListStaffSalarySV(BrowserHelpers.getRequestParamsList(filters))
+        .then(({ data }) => {
+          if (data.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            setLoading(false)
+          } else {
+            const {
+              Items,
+              Total,
+              PCount,
+              Tong_Luong,
+              Tong_DV,
+              Tong_PP,
+              Tong_Luong_Tat_ca_nhan_vien
+            } = {
+              Items: data.result?.Items || [],
+              Total: data.result?.Total || 0,
+              PCount: data.result?.PCount || 0,
+              Tong_Luong: data.result?.Tong_Luong || 0,
+              Tong_DV: data.result?.Tong_DV || 0,
+              Tong_PP: data.result?.Tong_PP || 0,
+              Tong_Luong_Tat_ca_nhan_vien:
+                data.result?.Tong_Luong_Tat_ca_nhan_vien || 0
+            }
+            setListData(Items)
+            setTotal({
+              Tong_Luong,
+              Tong_DV,
+              Tong_PP,
+              Tong_Luong_Tat_ca_nhan_vien
+            })
+            setPageCount(PCount)
+            setLoading(false)
+            setPageTotal(Total)
+            isFilter && setIsFilter(false)
+            callback && callback()
+            PermissionHelpers.HideErrorAccess()
           }
-          setListData(Items)
-          setTotal({
-            Tong_Luong,
-            Tong_DV,
-            Tong_PP,
-            Tong_Luong_Tat_ca_nhan_vien
-          })
-          setPageCount(PCount)
-          setLoading(false)
-          setPageTotal(Total)
-          isFilter && setIsFilter(false)
-          callback && callback()
-          PermissionHelpers.HideErrorAccess()
-        }
-      })
-      .catch(error => console.log(error))
+        })
+        .catch(error => console.log(error))
+    } else {
+      let newFilters = {
+        ...BrowserHelpers.getRequestParamsList(filters),
+        ReceiverUserID: 0,
+        SourceID: ''
+      }
+      newFilters.ReceiverUserID = newFilters.StaffID
+      newFilters.From = moment(newFilters.DateStart, 'DD/MM/YYYY').format(
+        'YYYY-MM-DD'
+      )
+      newFilters.To = moment(newFilters.DateEnd, 'DD/MM/YYYY').format(
+        'YYYY-MM-DD'
+      )
+
+      delete newFilters.StaffID
+      delete newFilters.ShowsX
+      delete newFilters.ServiceCardID
+      delete newFilters.DateStart
+      delete newFilters.DateEnd
+
+      reportsApi
+        .getListStaffTip(newFilters)
+        .then(({ data }) => {
+          if (data.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            setLoading(false)
+          } else {
+            const { Items, Total, PCount, Tong_Luong } = {
+              Items: data?.List || [],
+              Total: data?.Total || 0,
+              PCount: data.result?.PCount || 0,
+              Tong_Luong: data?.Total || 0
+            }
+            setListData(Items)
+            setTotal({
+              Tong_Luong
+            })
+            setPageCount(PCount)
+            setLoading(false)
+            setPageTotal(Total)
+            isFilter && setIsFilter(false)
+            callback && callback()
+            PermissionHelpers.HideErrorAccess()
+          }
+        })
+        .catch(error => console.log(error))
+    }
   }
 
   const onOpenFilter = () => {
@@ -131,15 +181,59 @@ function SalaryServices(props) {
   }
 
   const onExport = () => {
-    PermissionHelpers.ExportExcel({
-      FuncStart: () => setLoadingExport(true),
-      FuncEnd: () => setLoadingExport(false),
-      FuncApi: () =>
-        reportsApi.getListStaffSalarySV(
-          BrowserHelpers.getRequestParamsList(filters, { Total: PageTotal })
-        ),
-      UrlName: '/nhan-vien/luong-ca-dich-vu'
-    })
+    if (filters.ShowsX === '1') {
+      PermissionHelpers.ExportExcel({
+        FuncStart: () => setLoadingExport(true),
+        FuncEnd: () => setLoadingExport(false),
+        FuncApi: () =>
+          reportsApi.getListStaffSalarySV(
+            BrowserHelpers.getRequestParamsList(filters, { Total: PageTotal })
+          ),
+        UrlName: '/nhan-vien/luong-ca-dich-vu'
+      })
+    } else {
+      let newFilters = {
+        ...BrowserHelpers.getRequestParamsList(filters, { Total: PageTotal }),
+        ReceiverUserID: 0,
+        SourceID: ''
+      }
+      newFilters.ReceiverUserID = newFilters.StaffID
+      newFilters.From = moment(newFilters.DateStart, 'DD/MM/YYYY').format(
+        'YYYY-MM-DD'
+      )
+      newFilters.To = moment(newFilters.DateEnd, 'DD/MM/YYYY').format(
+        'YYYY-MM-DD'
+      )
+
+      delete newFilters.StaffID
+      delete newFilters.ShowsX
+      delete newFilters.ServiceCardID
+      delete newFilters.DateStart
+      delete newFilters.DateEnd
+
+      PermissionHelpers.ExportExcel({
+        FuncStart: () => setLoadingExport(true),
+        FuncEnd: () => setLoadingExport(false),
+        FuncApi: () =>
+          new Promise(async resolve => {
+            let result = await reportsApi.getListStaffTip(
+              BrowserHelpers.getRequestParamsList(filters, { Total: PageTotal })
+            )
+            resolve({
+              data: {
+                result: {
+                  ...result?.data,
+                  Items: result?.data?.List || []
+                },
+                param: {
+                  Body: filters
+                }
+              }
+            })
+          }),
+        UrlName: '/nhan-vien/luong-ca-dich-vu-tip'
+      })
+    }
   }
 
   const onPagesChange = ({ Pi, Ps }) => {
@@ -173,8 +267,213 @@ function SalaryServices(props) {
     return rs
   }
 
-  const columns = useMemo(
-    () => [
+  const columns = useMemo(() => {
+    if (filters.ShowsX === '1') {
+      return [
+        {
+          key: 'index',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex }) =>
+            filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Staffs',
+          title: 'Tên nhân viên',
+          dataKey: 'Staffs',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData?.Staffs &&
+                rowData?.Staffs.map(staff => staff.FullName).join(', ')}
+            </Text>
+          ),
+          width: 220,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'LuongCa_PPhi',
+          title: 'Lương ca và phụ phí',
+          dataKey: 'LuongCa_PPhi',
+          cellRenderer: ({ rowData }) => (
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="top"
+              overlay={
+                <Popover
+                  id={`popover-positioned-top`}
+                  style={{ minWidth: '320px' }}
+                >
+                  <Popover.Header
+                    className="py-10px text-uppercase fw-600"
+                    as="h3"
+                  >
+                    Chi tiết lương ca & phụ phí
+                  </Popover.Header>
+                  <Popover.Body className="p-0">
+                    {(rowData.LuongCa_PPhi?.DS_DV &&
+                      rowData.LuongCa_PPhi?.DS_DV.length > 0) ||
+                    (rowData.LuongCa_PPhi?.DS_PP &&
+                      rowData.LuongCa_PPhi?.DS_PP.length > 0) ||
+                    (wrapSalaryUser(rowData?.Salary?.salaryList) &&
+                      wrapSalaryUser(rowData?.Salary?.salaryList).length >
+                        0) ? (
+                      <Fragment>
+                        {rowData.LuongCa_PPhi?.DS_DV.map((item, index) => (
+                          <div
+                            className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between"
+                            key={index}
+                          >
+                            <span>{item.Title}</span>
+                            <span>
+                              {PriceHelper.formatVND(
+                                rowData?.LuongCa_PPhi?.Tong_DV ||
+                                  rowData?.LuongCa_PPhi?.Tong_DV_Extra
+                              )}
+                            </span>
+                          </div>
+                        ))}
+                        {rowData.LuongCa_PPhi?.DS_PP.map((item, index) => (
+                          <div
+                            className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
+                            key={index}
+                          >
+                            <span>{item.Title}</span>
+                            <span>{PriceHelper.formatVND(item.ToPay)}</span>
+                          </div>
+                        ))}
+                        {wrapSalaryUser(rowData?.Salary?.salaryList) &&
+                          wrapSalaryUser(rowData?.Salary?.salaryList).length >
+                            1 &&
+                          wrapSalaryUser(rowData?.Salary?.salaryList).map(
+                            (item, index) => (
+                              <div
+                                className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
+                                key={index}
+                              >
+                                <span>{item.StaffName}</span>
+                                <span>
+                                  {PriceHelper.formatVND(
+                                    sumTotal(item.Items, 'Value')
+                                  )}
+                                </span>
+                              </div>
+                            )
+                          )}
+                      </Fragment>
+                    ) : (
+                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                        <span>Không có dữ liệu</span>
+                      </div>
+                    )}
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-end justify-content-md-between align-items-center w-100">
+                {PriceHelper.formatVND(rowData.LuongCa_PPhi.Tong_Luong)}
+                <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning pl-5px"></i>
+              </div>
+            </OverlayTrigger>
+          ),
+          width: 220,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Ngay_Lam',
+          title: 'Ngày làm',
+          dataKey: 'Ngay_Lam',
+          cellRenderer: ({ rowData }) =>
+            rowData.Ngay_Lam
+              ? moment(rowData.Ngay_Lam).format('HH:mm DD-MM-YYYY')
+              : 'Không xác định',
+          width: 200,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Member.FullName',
+          title: 'Khách hàng',
+          dataKey: 'Member.FullName',
+          width: 220,
+          sortable: false
+        },
+        {
+          key: 'Member.Phone',
+          title: 'Số điện thoại',
+          dataKey: 'Member.Phone',
+          width: 200,
+          sortable: false
+        },
+        {
+          key: 'DV_Goc.ProdTitle',
+          title: 'Dịch vụ gốc',
+          dataKey: 'DV_Goc.ProdTitle',
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'The_DV.CardTitle',
+          title: 'Thẻ dịch vụ',
+          dataKey: 'The_DV.CardTitle',
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'ID_Buoi_Dv',
+          title: 'ID Buổi dịch vụ',
+          dataKey: 'ID_Buoi_Dv',
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'giabuoi',
+          title: 'Giá buổi',
+          dataKey: 'giabuoi',
+          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.giabuoi),
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'DS_PP',
+          title: 'Phụ phí',
+          dataKey: 'DS_PP',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData.LuongCa_PPhi?.DS_PP &&
+              rowData.LuongCa_PPhi?.DS_PP.length > 0
+                ? rowData.LuongCa_PPhi?.DS_PP.map(item => item.Title).join(', ')
+                : ''}
+            </Text>
+          ),
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'StockName',
+          title: 'Cơ sở',
+          dataKey: 'StockName',
+          width: 220,
+          sortable: false
+        }
+      ]
+    }
+    return [
       {
         key: 'index',
         title: 'STT',
@@ -189,121 +488,22 @@ function SalaryServices(props) {
         }
       },
       {
-        key: 'Staffs',
+        key: 'ReceiverName',
         title: 'Tên nhân viên',
-        dataKey: 'Staffs',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>
-            {rowData?.Staffs &&
-              rowData?.Staffs.map(staff => staff.FullName).join(', ')}
-          </Text>
-        ),
-        width: 220,
+        dataKey: 'ReceiverName',
+        width: 300,
         sortable: false,
         mobileOptions: {
           visible: true
         }
       },
       {
-        key: 'LuongCa_PPhi',
-        title: 'Lương ca và phụ phí',
-        dataKey: 'LuongCa_PPhi',
+        key: 'CreateDate',
+        title: 'Thời gian',
+        dataKey: 'CreateDate',
         cellRenderer: ({ rowData }) => (
-          <OverlayTrigger
-            rootClose
-            trigger="click"
-            key="top"
-            placement="top"
-            overlay={
-              <Popover
-                id={`popover-positioned-top`}
-                style={{ minWidth: '320px' }}
-              >
-                <Popover.Header
-                  className="py-10px text-uppercase fw-600"
-                  as="h3"
-                >
-                  Chi tiết lương ca & phụ phí
-                </Popover.Header>
-                <Popover.Body className="p-0">
-                  {(rowData.LuongCa_PPhi?.DS_DV &&
-                    rowData.LuongCa_PPhi?.DS_DV.length > 0) ||
-                  (rowData.LuongCa_PPhi?.DS_PP &&
-                    rowData.LuongCa_PPhi?.DS_PP.length > 0) ||
-                  (wrapSalaryUser(rowData?.Salary?.salaryList) &&
-                    wrapSalaryUser(rowData?.Salary?.salaryList).length > 0) ? (
-                    <Fragment>
-                      {rowData.LuongCa_PPhi?.DS_DV.map((item, index) => (
-                        <div
-                          className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between"
-                          key={index}
-                        >
-                          <span>{item.Title}</span>
-                          <span>
-                            {PriceHelper.formatVND(
-                              rowData?.LuongCa_PPhi?.Tong_DV ||
-                                rowData?.LuongCa_PPhi?.Tong_DV_Extra
-                            )}
-                          </span>
-                        </div>
-                      ))}
-                      {rowData.LuongCa_PPhi?.DS_PP.map((item, index) => (
-                        <div
-                          className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
-                          key={index}
-                        >
-                          <span>{item.Title}</span>
-                          <span>{PriceHelper.formatVND(item.ToPay)}</span>
-                        </div>
-                      ))}
-                      {wrapSalaryUser(rowData?.Salary?.salaryList) &&
-                        wrapSalaryUser(rowData?.Salary?.salaryList).length >
-                          1 &&
-                        wrapSalaryUser(rowData?.Salary?.salaryList).map(
-                          (item, index) => (
-                            <div
-                              className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
-                              key={index}
-                            >
-                              <span>{item.StaffName}</span>
-                              <span>
-                                {PriceHelper.formatVND(
-                                  sumTotal(item.Items, 'Value')
-                                )}
-                              </span>
-                            </div>
-                          )
-                        )}
-                    </Fragment>
-                  ) : (
-                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                      <span>Không có dữ liệu</span>
-                    </div>
-                  )}
-                </Popover.Body>
-              </Popover>
-            }
-          >
-            <div className="d-flex justify-content-end justify-content-md-between align-items-center w-100">
-              {PriceHelper.formatVND(rowData.LuongCa_PPhi.Tong_Luong)}
-              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning pl-5px"></i>
-            </div>
-          </OverlayTrigger>
+          <>{moment(rowData.CreateDate).format('HH:mm DD-MM-YYYY')}</>
         ),
-        width: 220,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'Ngay_Lam',
-        title: 'Ngày làm',
-        dataKey: 'Ngay_Lam',
-        cellRenderer: ({ rowData }) =>
-          rowData.Ngay_Lam
-            ? moment(rowData.Ngay_Lam).format('HH:mm DD-MM-YYYY')
-            : 'Không xác định',
         width: 200,
         sortable: false,
         mobileOptions: {
@@ -311,73 +511,40 @@ function SalaryServices(props) {
         }
       },
       {
-        key: 'Member.FullName',
-        title: 'Khách hàng',
-        dataKey: 'Member.FullName',
-        width: 220,
-        sortable: false
-      },
-      {
-        key: 'Member.Phone',
-        title: 'Số điện thoại',
-        dataKey: 'Member.Phone',
-        width: 200,
-        sortable: false
-      },
-      {
-        key: 'DV_Goc.ProdTitle',
-        title: 'Dịch vụ gốc',
-        dataKey: 'DV_Goc.ProdTitle',
-        width: 250,
-        sortable: false
-      },
-      {
-        key: 'The_DV.CardTitle',
-        title: 'Thẻ dịch vụ',
-        dataKey: 'The_DV.CardTitle',
-        width: 250,
-        sortable: false
-      },
-      {
-        key: 'ID_Buoi_Dv',
-        title: 'ID Buổi dịch vụ',
-        dataKey: 'ID_Buoi_Dv',
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'giabuoi',
-        title: 'Giá buổi',
-        dataKey: 'giabuoi',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.giabuoi),
-        width: 180,
-        sortable: false
-      },
-      {
-        key: 'DS_PP',
-        title: 'Phụ phí',
-        dataKey: 'DS_PP',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>
-            {rowData.LuongCa_PPhi?.DS_PP &&
-            rowData.LuongCa_PPhi?.DS_PP.length > 0
-              ? rowData.LuongCa_PPhi?.DS_PP.map(item => item.Title).join(', ')
-              : ''}
-          </Text>
-        ),
-        width: 250,
-        sortable: false
-      },
-      {
-        key: 'StockName',
+        key: 'StockTitle',
         title: 'Cơ sở',
-        dataKey: 'StockName',
-        width: 220,
-        sortable: false
+        dataKey: 'StockTitle',
+        width: 300,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Value',
+        title: 'Tiền TIP',
+        dataKey: 'Value',
+        cellRenderer: ({ rowData }) => (
+          <>{PriceHelper.formatVND(rowData?.Value)}</>
+        ),
+        width: 200,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Desc',
+        title: 'Nội dung',
+        dataKey: 'Desc',
+        width: 250,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
       }
-    ],
-    [filters]
-  )
+    ]
+  }, [filters])
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)
@@ -411,7 +578,7 @@ function SalaryServices(props) {
           <IconMenuMobile />
         </div>
       </div>
-      <FilterList
+      <FilterListLUONG
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}
@@ -432,44 +599,52 @@ function SalaryServices(props) {
               </span>
             </div> */}
             <div className="fw-500 d-flex align-items-center ml-25px">
-              Tổng lương
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="top"
-                placement="top"
-                overlay={
-                  <Popover id={`popover-positioned-top`}>
-                    <Popover.Header
-                      className="py-10px text-uppercase fw-600"
-                      as="h3"
-                    >
-                      Chi tiết tổng lương
-                    </Popover.Header>
-                    <Popover.Body className="p-0">
-                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                        <span>Tổng lương dịch vụ</span>
-                        <span>
-                          {PriceHelper.formatVNDPositive(Total.Tong_DV)}
-                        </span>
-                      </div>
-                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                        <span>Tổng lương phụ phí</span>
-                        <span>
-                          {PriceHelper.formatVNDPositive(Total.Tong_PP)}
-                        </span>
-                      </div>
-                    </Popover.Body>
-                  </Popover>
-                }
-              >
+              {filters.ShowsX === '1' ? 'Tổng lương' : 'Tổng tip'}
+              {filters.ShowsX === '1' ? (
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={
+                    <Popover id={`popover-positioned-top`}>
+                      <Popover.Header
+                        className="py-10px text-uppercase fw-600"
+                        as="h3"
+                      >
+                        Chi tiết tổng lương
+                      </Popover.Header>
+                      <Popover.Body className="p-0">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                          <span>Tổng lương dịch vụ</span>
+                          <span>
+                            {PriceHelper.formatVNDPositive(Total.Tong_DV)}
+                          </span>
+                        </div>
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                          <span>Tổng lương phụ phí</span>
+                          <span>
+                            {PriceHelper.formatVNDPositive(Total.Tong_PP)}
+                          </span>
+                        </div>
+                      </Popover.Body>
+                    </Popover>
+                  }
+                >
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                      {PriceHelper.formatVNDPositive(Total.Tong_Luong)}
+                    </span>
+                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
+                  </div>
+                </OverlayTrigger>
+              ) : (
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
                     {PriceHelper.formatVNDPositive(Total.Tong_Luong)}
                   </span>
-                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                 </div>
-              </OverlayTrigger>
+              )}
             </div>
           </div>
         </div>
