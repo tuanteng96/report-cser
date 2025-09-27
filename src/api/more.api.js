@@ -21,8 +21,8 @@ const moreApi = {
   getAllStaffStock: key => {
     return http.get(`/api/gl/select2?cmd=user&q=${key}`)
   },
-  getAllMember: key => {
-    return http.get(`/api/gl/select2?cmd=member&q=${key}`)
+  getAllMember: (key, StockID = '') => {
+    return http.get(`/api/gl/select2?cmd=member&q=${key}&stockid=${StockID}`)
   },
   getAllCategories: key => {
     return http.get(

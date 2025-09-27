@@ -7,9 +7,9 @@ AsyncSelectMembers.propTypes = {
   onChange: PropTypes.func
 }
 
-function AsyncSelectMembers({ onChange, value, ...props }) {
+function AsyncSelectMembers({ onChange, value, StockID = '', ...props }) {
   const getAllMembers = async (search, loadedOptions, { page }) => {
-    const { data } = await moreApi.getAllMember(search)
+    const { data } = await moreApi.getAllMember(search, StockID)
     const newData =
       data.data && data.data.length > 0
         ? data.data.map(item => ({

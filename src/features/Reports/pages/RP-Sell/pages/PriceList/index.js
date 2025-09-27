@@ -265,9 +265,7 @@ function PriceList(props) {
         },
         {
           key: 'hoa_hong_sale',
-          title:
-            window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van ||
-            'Hoa hồng tư vấn',
+          title: GlobalConfig?.Admin?.hoa_hong_tu_van || 'Hoa hồng tư vấn',
           dataKey: 'hoa_hong_sale',
           cellRenderer: ({ rowData }) =>
             rowData.BonusSaleLevels &&
@@ -295,7 +293,7 @@ function PriceList(props) {
         {
           key: 'hoa_hong_ktv',
           title:
-            window?.top?.GlobalConfig?.Admin?.hoa_hong_tu_van_khm ||
+            GlobalConfig?.Admin?.hoa_hong_tu_van_khm ||
             'Hoa hồng tư vấn khách mới',
           dataKey: 'hoa_hong_ktv',
           cellRenderer: ({ rowData }) =>
@@ -420,7 +418,7 @@ function PriceList(props) {
       }
     ]
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
+  }, [filters, GlobalConfig])
 
   const onExport = () => {
     PermissionHelpers.ExportExcel({

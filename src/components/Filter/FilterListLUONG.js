@@ -1,81 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import Select, { components } from 'react-select'
+import Select from 'react-select'
 import { Formik, Form } from 'formik'
 import { useSelector } from 'react-redux'
-import AsyncSelectProvinces from '../Selects/AsyncSelectProvinces'
-import AsyncSelectDistrics from '../Selects/AsyncSelectDistrics'
-import AsyncSelectGroupsCustomer from '../Selects/AsyncSelectGroupsCustomer'
-import AsyncSelectSource from '../Selects/AsyncSelectSource'
 import AsyncSelectStaffs from '../Selects/AsyncSelectStaffs'
-import SelectWarranty from '../Selects/SelectWarranty'
-import SelectStatusService from '../Selects/SelectStatusService'
-import { JsonFilter } from 'src/Json/JsonFilter'
-import AsyncSelect from 'react-select/async'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 import AsyncSelectSVPP from '../Selects/AsyncSelectSVPP'
-import AsyncSelectProductNVL from '../Selects/AsyncSelectProductNVL'
-import AsyncSelectProducts from '../Selects/AsyncSelectProducts'
-import AsyncSelectCategories from '../Selects/AsyncSelectCategories'
-import AsyncSelectBrands from '../Selects/AsyncSelectBrands'
-import AsyncSelectCardMoney from '../Selects/AsyncSelectCardMoney'
-import AsyncSelectCategoriesFull from '../Selects/AsyncSelectCategoriesFull'
 
 import vi from 'date-fns/locale/vi' // the locale you want
-import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import { useLocation } from 'react-router-dom'
-import SelectCustomType from '../Selects/SelectCustomType'
-import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
-import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 
 registerLocale('vi', vi) // register it with the name you want
-
-const {
-  VoucherList,
-  PaymentList,
-  IsMemberList,
-  TopTypeList,
-  PaymentMethodsList,
-  TypeTCList,
-  TagsTCList,
-  TypeCNList,
-  TypeCNListNum,
-  TypeCNHng,
-  CategoriesTKList,
-  TagWLList,
-  TypeTTList,
-  StatusTTList,
-  StarRatingList,
-  BrowserTypeList,
-  BrowserStatusList,
-  TypeNVList,
-  TypeNVList2,
-  TypeInventory,
-  ServiceStatusBook,
-  ServiceTypeBook,
-  StatusCheckedBook,
-  StatusAtBook,
-  TimeToRealList
-} = JsonFilter
-
-const CustomOption = ({ children, data, ...props }) => {
-  return (
-    <components.Option {...props}>
-      {data.value
-        ? Array(data.value)
-            .fill()
-            .map((star, index) => (
-              <i
-                className="fa-solid fa-star pl-6px text-warning"
-                key={index}
-              ></i>
-            ))
-        : children}
-    </components.Option>
-  )
-}
 
 function FilterListLUONG({
   show,
@@ -91,43 +28,25 @@ function FilterListLUONG({
   isAllStock = true,
   optionsAdd = []
 }) {
-  const {
-    Stocks,
-    KPT_Max_Type,
-    PermissionReport,
-    GlobalConfig,
-    AuthID,
-    rightTree
-  } = useSelector(({ auth }) => ({
-    Stocks: auth.Info?.Stocks
-      ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
-          ...item,
-          label: item.Title || item.label,
-          value: item.ID || item.value
-        }))
-      : [],
-    PermissionReport: auth.Info?.rightsSum?.report,
-    rightTree: auth?.Info?.rightTree,
-    KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
-    GlobalConfig: auth?.GlobalConfig,
-    AuthID: auth?.Info?.User?.ID
-  }))
+  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree } =
+    useSelector(({ auth }) => ({
+      Stocks: auth.Info?.Stocks
+        ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
+            ...item,
+            label: item.Title || item.label,
+            value: item.ID || item.value
+          }))
+        : [],
+      PermissionReport: auth.Info?.rightsSum?.report,
+      rightTree: auth?.Info?.rightTree,
+      KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
+      GlobalConfig: auth?.GlobalConfig,
+      AuthID: auth?.Info?.User?.ID
+    }))
   const [StocksList, setStocksList] = useState([])
-  const [KpiTypeList, setKpiTypeList] = useState([])
   const { pathname } = useLocation()
 
   const { GGLoading } = useApp()
-
-  useEffect(() => {
-    const newKpiTypeList = []
-    for (let i = 1; i <= KPT_Max_Type; i++) {
-      newKpiTypeList.push({
-        value: i,
-        label: `Loại ${i}`
-      })
-    }
-    setKpiTypeList(newKpiTypeList)
-  }, [KPT_Max_Type])
 
   useEffect(() => {
     let newStocks = [...Stocks]
@@ -275,30 +194,6 @@ function FilterListLUONG({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PermissionReport, pathname, isWarehouse])
 
-  const filterTypeTC = (inputValue, optionFilter) => {
-    if (optionFilter !== '') {
-      return TagsTCList.filter(
-        i =>
-          i.type === optionFilter &&
-          i.label.toLowerCase().includes(inputValue.toLowerCase())
-      )
-    }
-    return TagsTCList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
-    )
-  }
-
-  const handleInputChange = newValue => {
-    const inputValue = newValue.replace(/\W/g, '')
-    return inputValue
-  }
-
-  const loadOptionsTypeTC = (inputValue, callback, optionFilter) => {
-    setTimeout(() => {
-      callback(filterTypeTC(inputValue, optionFilter))
-    }, 500)
-  }
-
   return (
     <div className={clsx('filter-box', show && 'show')}>
       <Formik
@@ -308,8 +203,7 @@ function FilterListLUONG({
       >
         {formikProps => {
           // errors, touched, handleChange, handleBlur
-          const { values, setFieldValue, handleChange, handleBlur } =
-            formikProps
+          const { values, setFieldValue } = formikProps
           return (
             <Form>
               <div className="filter-box__content">

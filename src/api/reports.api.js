@@ -186,10 +186,7 @@ const reportsApi = {
     )
   },
   getListStaffTip: data => {
-    return http.post(
-      `/api/v3/Tip@Get`,
-      JSON.stringify(data)
-    )
+    return http.post(`/api/v3/Tip@Get`, JSON.stringify(data))
   },
   getListStaffRose: data => {
     return http.post(`${SubApi}/nhan-vien/hoa-hong`, JSON.stringify(data))

@@ -146,13 +146,13 @@
   &__header-cell,
   &__row-cell {
     border-right: 1px solid #eeeeee;
-    padding: 0 15px;
+    padding: 0 12px !important;
     &:last-child {
       border-right: 0;
-      padding-left: 7.5px !important;
+      padding-left: 12px !important;
     }
     &:first-child {
-      padding-left: 7.5px !important;
+      padding-left: 12px !important;
     }
   }
   &.p-not-first {

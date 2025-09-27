@@ -9,3 +9,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.dropdown-item-active.active {
+    @apply text-primary;
+    color: theme('colors.primary') !important;
+}

@@ -149,6 +149,30 @@ const InformationPos = lazy(() =>
   import('src/features/Reports/pages/RP-More/pages/InformationPos')
 )
 
+const InformationPos1 = lazy(() =>
+  import(
+    'src/features/Reports/pages/RP-More/pages/InformationPos/InformationPos1'
+  )
+)
+
+const InformationPos2 = lazy(() =>
+  import(
+    'src/features/Reports/pages/RP-More/pages/InformationPos/InformationPos2'
+  )
+)
+
+const InformationPos3 = lazy(() =>
+  import(
+    'src/features/Reports/pages/RP-More/pages/InformationPos/InformationPos3'
+  )
+)
+
+const InformationPos4 = lazy(() =>
+  import(
+    'src/features/Reports/pages/RP-More/pages/InformationPos/InformationPos4'
+  )
+)
+
 const SuspensedView = ({ children }) => {
   TopBarProgress.config({
     barColors: {
@@ -329,6 +353,10 @@ function RouterPage(props) {
         <Route path="bao-cao-su-dung-the-tien" element={<UseCardMoney />} />
         <Route path="bao-cao-khoa-hoc" element={<CourseReport />} />
         <Route path="bao-cao-thong-tin-pos" element={<InformationPos />} />
+        <Route path="bao-cao-thong-tin-pos-1" element={<InformationPos1 />} />
+        <Route path="bao-cao-thong-tin-pos-2" element={<InformationPos2 />} />
+        <Route path="bao-cao-thong-tin-pos-3" element={<InformationPos3 />} />
+        <Route path="bao-cao-thong-tin-pos-4" element={<InformationPos4 />} />
       </Route>
       {!window?.isDesktop && (
         <Route path="/app23/index.html" element={<Navigate to="/" replace />} />

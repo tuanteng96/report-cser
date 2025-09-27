@@ -12,6 +12,10 @@
     position: relative;
     &:last-child {
       padding-right: 0;
+      .ezs-navbar__sub {
+        right: 0;
+        left: auto;
+      }
     }
     > a {
       text-decoration: none;

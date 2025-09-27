@@ -5,19 +5,22 @@ import DatePicker from 'react-datepicker'
 import Select from 'react-select'
 import { Formik, Form } from 'formik'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
+import { useApp } from 'src/app/App'
 
-function FilterInformationPos({
+function FilterInformationPos4({
   show,
   onHide,
   loading,
   onRefresh,
   onSubmit,
   filters,
-  Criterias
+  Criterias,
+  loadingExport,
+  onExport
 }) {
   const [StocksList, setStocksList] = useState([])
 
-  const { Stocks } = useSelector(({ auth }) => ({
+  const { Stocks, GlobalConfig, AuthID } = useSelector(({ auth }) => ({
     GlobalConfig: auth?.GlobalConfig,
     AuthID: auth?.Info?.User?.ID,
     Stocks: auth.Info?.Stocks
@@ -28,6 +31,8 @@ function FilterInformationPos({
         }))
       : []
   }))
+
+  const { GGLoading } = useApp()
 
   useEffect(() => {
     let newStocks = [...Stocks]
@@ -84,7 +89,6 @@ function FilterInformationPos({
                     <label>Khách hàng</label>
                     <AsyncSelectMembers
                       StockID={values.StockID}
-                      isMulti
                       isClearable={true}
                       menuPosition="fixed"
                       name="MemberID"
@@ -124,7 +128,7 @@ function FilterInformationPos({
                   <div className="form-group mb-20px">
                     <label>Tiêu chí</label>
                     <Select
-                      isMulti
+                      isClearable={false}
                       isLoading={Criterias.isLoading}
                       isDisabled={Criterias.isLoading}
                       name="Criterias"
@@ -149,6 +153,23 @@ function FilterInformationPos({
                   </div>
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
+                  {(GlobalConfig?.Admin?.byAdminExcel
+                    ? AuthID === 1
+                    : !GlobalConfig?.Admin?.byAdminExcel) && (
+                    <button
+                      type="button"
+                      className={clsx(
+                        'btn btn-primary me-2 max-w-135px text-truncate',
+                        (loadingExport || loading || GGLoading) &&
+                          'spinner spinner-white spinner-right'
+                      )}
+                      disabled={loadingExport || GGLoading}
+                      onClick={onExport}
+                    >
+                      <i className="far fa-file-excel pr-8px"></i>
+                      {GGLoading ? 'Đang tải tài nguyên ...' : 'Xuất Excel'}
+                    </button>
+                  )}
                   <button
                     type="button"
                     className={clsx(
@@ -182,4 +203,4 @@ function FilterInformationPos({
   )
 }
 
-export default FilterInformationPos
+export default FilterInformationPos4

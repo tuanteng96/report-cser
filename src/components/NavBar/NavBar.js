@@ -96,16 +96,16 @@ function NavBar(props) {
           Href: hasRouter() + '/dich-vu/bao-cao-nghiep-vu'
         },
         {
-          Title: 'Dịch vụ điểm này, sử dụng điểm khác',
-          Href: hasRouter() + '/dich-vu/dv-diem-sd-diem-khac'
-        },
-        {
           Title: 'Tồn dịch vụ',
           Href: hasRouter() + '/dich-vu/ton-dich-vu'
         },
         {
           Title: 'Báo cáo đặt lịch',
           Href: hasRouter() + '/dich-vu/bao-cao-dat-lich'
+        },
+        {
+          Title: 'Dịch vụ làm khác điểm',
+          Href: hasRouter() + '/dich-vu/dv-diem-sd-diem-khac'
         }
       ]
     },

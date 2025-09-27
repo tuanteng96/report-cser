@@ -6,7 +6,7 @@ import Select from 'react-select'
 import { Formik, Form } from 'formik'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 
-function FilterInformationPos({
+function FilterInformationPos1({
   show,
   onHide,
   loading,
@@ -84,7 +84,6 @@ function FilterInformationPos({
                     <label>Khách hàng</label>
                     <AsyncSelectMembers
                       StockID={values.StockID}
-                      isMulti
                       isClearable={true}
                       menuPosition="fixed"
                       name="MemberID"
@@ -182,4 +181,4 @@ function FilterInformationPos({
   )
 }
 
-export default FilterInformationPos
+export default FilterInformationPos1
