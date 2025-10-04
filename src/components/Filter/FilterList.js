@@ -303,7 +303,17 @@ function FilterList({
     <div className={clsx('filter-box', show && 'show')}>
       <Formik
         initialValues={filters}
-        onSubmit={onSubmit}
+        onSubmit={(values, formik) => {
+          onSubmit(
+            {
+              ...values,
+              StocksRoles: StocksList.filter(x => x.value)
+                .map(x => x.value)
+                .toString()
+            },
+            formik
+          )
+        }}
         enableReinitialize={true}
       >
         {formikProps => {
@@ -1667,7 +1677,7 @@ function FilterList({
                   <button
                     type="submit"
                     className={clsx(
-                      'btn btn-success ms-2 ms-2 max-w-135px text-truncate',
+                      'btn btn-success ms-2 max-w-135px text-truncate',
                       loading && 'spinner spinner-white spinner-right'
                     )}
                     disabled={loading}

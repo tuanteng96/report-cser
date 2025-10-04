@@ -144,6 +144,7 @@ const RenderTable = ({ item, filters }) => {
       newOtps.series[0].data = item.Items.map(x => Number(x['Value'] || 0))
     }
     setOptions(newOtps)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item])
 
   let ValueType = ''
