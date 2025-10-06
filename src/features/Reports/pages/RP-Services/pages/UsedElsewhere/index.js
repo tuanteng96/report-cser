@@ -13,14 +13,17 @@ import moment from 'moment'
 import 'moment/locale/vi'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import ModalViewMobile from './ModalViewMobile'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 
 moment.locale('vi')
 
 function UsedElsewhere(props) {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || []
+    Stocks: auth?.Info?.Stocks || [],
+    GlobalConfig: auth?.GlobalConfig
   }))
+
   const [StockName, setStockName] = useState('')
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -38,6 +41,9 @@ function UsedElsewhere(props) {
   const [loadingExport, setLoadingExport] = useState(false)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
+  const [isLoadingSum, setIsLoadingSum] = useState(false)
+  const [Sums, setSums] = useState(null)
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
     const index = Stocks.findIndex(
@@ -56,11 +62,18 @@ function UsedElsewhere(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
+  useEffect(() => {
+    if (show) {
+      getListUsedTotal()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show])
+
   const getListUsedElsewhere = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     reportsApi
       .getListUsedElsewhere(BrowserHelpers.getRequestParamsList(filters))
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
@@ -80,6 +93,39 @@ function UsedElsewhere(props) {
         }
       })
       .catch(error => console.log(error))
+  }
+
+  const getListUsedTotal = async () => {
+    setIsLoadingSum(true)
+    let rsTotal = await reportsApi.getListUsedElsewhere({
+      ...BrowserHelpers.getRequestParamsList(filters),
+      Pi: 1,
+      Ps: PageTotal || 0
+    })
+    let rs = []
+    if (rsTotal.data?.result?.Items && rsTotal.data?.result?.Items.length > 0) {
+      for (let item of rsTotal.data?.result?.Items) {
+        let index = rs.findIndex(x => x.Title === item.Diem_mua)
+        if (index > -1) {
+          rs[index].Values = [...rs[index].Values, item.Gia_tri_buoi]
+        } else {
+          rs.push({
+            Title: item.Diem_mua,
+            Values: [item.Gia_tri_buoi]
+          })
+        }
+      }
+    }
+    setSums(
+      rs.map(x => ({
+        ...x,
+        Total:
+          (x.Values.reduce((sum, value) => sum + value, 0) *
+            Number(GlobalConfig.Admin.benlam)) /
+          100
+      }))
+    )
+    setIsLoadingSum(false)
   }
 
   const onOpenFilter = () => {
@@ -279,6 +325,50 @@ function UsedElsewhere(props) {
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-md-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách sử dụng</div>
+          {GlobalConfig.Admin.benlam && (
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="bottom"
+              show={show}
+              onToggle={nextShow => setShow(nextShow)}
+              placement="bottom"
+              overlay={
+                <Popover
+                  id={`popover-positioned-top`}
+                  style={{
+                    minWidth: '250px'
+                  }}
+                >
+                  <Popover.Body className="p-0 overflow-auto max-h-250px">
+                    {isLoadingSum && (
+                      <div className="py-10px px-15px font-size-md">
+                        Đang tải ...
+                      </div>
+                    )}
+                    {!isLoadingSum && (
+                      <>
+                        {Sums &&
+                          Sums.map((x, index) => (
+                            <div
+                              className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                              key={index}
+                            >
+                              <span>{x.Title}</span>
+                              <span>{PriceHelper.formatVND(x.Total)}</span>
+                            </div>
+                          ))}
+                      </>
+                    )}
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="cursor-pointer text-primary font-size-md text-underline fw-500">
+                Chi tiết
+              </div>
+            </OverlayTrigger>
+          )}
         </div>
         <div className="p-20px">
           <ReactTableV7

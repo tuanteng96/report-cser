@@ -261,6 +261,8 @@ const reportsApi = {
   getMemberCustome: body =>
     http.post(`/api/v4/MemberCustome@get`, JSON.stringify(body)),
   getGuestsCount: body =>
-    http.post(`/api/v3/MemberCheckIn@GuestCountList`, JSON.stringify(body))
+    http.post(`/api/v3/MemberCheckIn@GuestCountList`, JSON.stringify(body)),
+  updateGuestsCount: body =>
+    http.post(`/api/v3/MemberCheckIn@GuestCount`, JSON.stringify(body))
 }
 export default reportsApi

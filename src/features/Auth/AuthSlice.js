@@ -509,6 +509,22 @@ if (DevHelpers.isDevelopment()) {
               }
             }
           ]
+        },
+        {
+          group: 'Chức năng khác',
+          rights: [
+            {
+              name: 'adminTools',
+              subs: [
+                {
+                  name: 'adminTools_byStock',
+                  IsAllStock: false,
+                  hasRight: true,
+                  stocksList: [{ ID: 11593 }]
+                }
+              ]
+            }
+          ]
         }
       ]
     }

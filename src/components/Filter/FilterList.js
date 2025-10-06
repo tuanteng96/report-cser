@@ -451,7 +451,8 @@ function FilterList({
                           {
                             label: 'Nâng cao',
                             value: '1'
-                          }
+                          },
+                          ...optionsAdd
                         ]}
                         className="select-control"
                         value={[
@@ -462,7 +463,8 @@ function FilterList({
                           {
                             label: 'Nâng cao',
                             value: '1'
-                          }
+                          },
+                          ...optionsAdd
                         ].filter(item => item.value === values?.ShowDetail)}
                         onChange={otp => {
                           setFieldValue('ShowDetail', otp ? otp.value : '')

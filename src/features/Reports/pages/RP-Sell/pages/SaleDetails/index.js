@@ -199,7 +199,7 @@ function SaleDetails(props) {
     const newFilters = GeneralNewFilter(
       ArrayHeplers.getFilterExport({ ...filters })
     )
-    if (filters.ShowsType === '2') {
+    if (filters.ShowsType === '2' || filters.ShowsType === '3') {
       reportsApi
         .getListSalesOnStock({
           From: moment(filters.DateStart).format('YYYY-MM-DD'),
@@ -289,6 +289,12 @@ function SaleDetails(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        optionsAdd={[
+          {
+            label: 'Nâng cao 2',
+            value: '3'
+          }
+        ]}
       />
       {loading && <LoadingSkeleton />}
       <div className="bg-white mb-15px">

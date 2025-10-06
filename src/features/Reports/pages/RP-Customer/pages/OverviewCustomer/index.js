@@ -646,7 +646,7 @@ function OverviewCustomer() {
           {width > 1200 ? (
             <div className="d-flex">
               {GlobalConfig?.Admin?.cai_dat_sl_khach && (
-                <PickerView filters={filters}>
+                <PickerView filters={filters} refetch={onRefresh}>
                   {({ open }) => (
                     <div
                       className="cursor-pointer fw-500 pr-20px"
@@ -685,7 +685,7 @@ function OverviewCustomer() {
                   <Popover id={`popover-positioned-top`}>
                     <Popover.Body className="p-0">
                       {GlobalConfig?.Admin?.cai_dat_sl_khach && (
-                        <PickerView filters={filters}>
+                        <PickerView filters={filters} refetch={onRefresh}>
                           {({ open }) => (
                             <div
                               onClick={open}

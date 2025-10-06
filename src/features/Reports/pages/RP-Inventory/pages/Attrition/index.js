@@ -62,7 +62,10 @@ function Attrition(props) {
   const getListAttrition = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     reportsApi
-      .getInventoryAttrition(BrowserHelpers.getRequestParamsList(filters))
+      .getInventoryAttrition({
+        ...BrowserHelpers.getRequestParamsList(filters),
+        ShowDetail: filters.ShowDetail === '0' ? filters.ShowDetail : '1'
+      })
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -112,11 +115,13 @@ function Attrition(props) {
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
-        reportsApi.getInventoryAttrition(
-          BrowserHelpers.getRequestParamsList(filters, {
+        reportsApi.getInventoryAttrition({
+          ...BrowserHelpers.getRequestParamsList(filters, {
             Total: PageTotal
-          })
-        ),
+          }),
+          ShowDetail: filters.ShowDetail === '0' ? filters.ShowDetail : '1',
+          ShowDetailX: filters.ShowDetail
+        }),
       UrlName: '/ton-kho/tieu-hao'
     })
   }
@@ -332,6 +337,12 @@ function Attrition(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        optionsAdd={[
+          {
+            label: 'Nâng cao 2',
+            value: '3'
+          }
+        ]}
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
