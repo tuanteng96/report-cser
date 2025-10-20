@@ -156,7 +156,7 @@ function PayrollStaff2(props) {
             ...item,
             PHAT_SINH_KHAC: 0
           }
-          let index = others?.items.findIndex(x => item?.User?.ID === x?.UserID)
+          let index = others?.items.findIndex(x => item?.User?.ID === x?.UserID && Number(x.Status) === 3)
           if (index > -1) {
             newObj.PHAT_SINH_KHAC = others?.items[index]?.Value || 0 // Phụ cấp gửi xe
           }
