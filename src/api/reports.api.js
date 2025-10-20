@@ -263,6 +263,12 @@ const reportsApi = {
   getGuestsCount: body =>
     http.post(`/api/v3/MemberCheckIn@GuestCountList`, JSON.stringify(body)),
   updateGuestsCount: body =>
-    http.post(`/api/v3/MemberCheckIn@GuestCount`, JSON.stringify(body))
+    http.post(`/api/v3/MemberCheckIn@GuestCount`, JSON.stringify(body)),
+  getConfigSalary: data =>
+    http.post(`/api/v3/UserSalaryConfig27@get`, JSON.stringify(data)),
+  getConfigSalaryOther: data =>
+    http.post(`/api/v4/UserAllow@get`, JSON.stringify(data)),
+  getMonSalary: data =>
+    http.post(`/api/v3/UserSalary24@get`, JSON.stringify(data))
 }
 export default reportsApi
