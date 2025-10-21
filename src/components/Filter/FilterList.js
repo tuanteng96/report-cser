@@ -89,7 +89,8 @@ function FilterList({
   onExport,
   isWarehouse = false,
   isAllStock = true,
-  optionsAdd = []
+  optionsAdd = [],
+  updateStocksRole
 }) {
   const {
     Stocks,
@@ -160,9 +161,14 @@ function FilterList({
                         if (g.items) {
                           for (let i of g.items) {
                             if (
-                              i.jdata.url &&
-                              (i.jdata.url === pathname ||
-                                i.jdata.paths.includes(pathname))
+                              (i.jdata.url &&
+                                (i.jdata.url === pathname ||
+                                  i.jdata.paths.includes(pathname))) ||
+                              (pathname === '/nhan-vien/bang-luong-2' &&
+                                (i.jdata.url === '/nhan-vien/bang-luong' ||
+                                  i.jdata.paths.includes(
+                                    '/nhan-vien/bang-luong'
+                                  )))
                             ) {
                               if (i.stocks) {
                                 newStocks = [...Stocks]
@@ -237,9 +243,19 @@ function FilterList({
               }
             }
           }
-          const index = newListItems.findIndex(
+
+          let index = newListItems.findIndex(
             o => o.url === pathname || o.paths.includes(pathname)
           )
+
+          if (pathname === '/nhan-vien/bang-luong-2') {
+            index = newListItems.findIndex(
+              o =>
+                o.url === '/nhan-vien/bang-luong' ||
+                o.paths.includes('/nhan-vien/bang-luong')
+            )
+          }
+
           if (index > -1) {
             if (newListItems[index].stocks) {
               const StocksPermission = newListItems[index].stocks
@@ -274,6 +290,12 @@ function FilterList({
     setStocksList(newStocks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PermissionReport, pathname, isWarehouse])
+
+  useEffect(() => {
+    if (StocksList && StocksList.length > 0) {
+      updateStocksRole && updateStocksRole(StocksList)
+    }
+  }, [StocksList])
 
   const filterTypeTC = (inputValue, optionFilter) => {
     if (optionFilter !== '') {

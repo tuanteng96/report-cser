@@ -92,7 +92,8 @@ function PayrollStaff2(props) {
     queryFn: async () => {
       let { data: configs } = await reportsApi.getConfigSalary({
         Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
-        StockID: filters.StockID ? [filters.StockID] : []
+        StockID: filters.StockID ? [filters.StockID] : [],
+        StocksRoles: filters.StocksRoles
       })
 
       let { data: others } = await reportsApi.getConfigSalaryOther({
@@ -102,19 +103,22 @@ function PayrollStaff2(props) {
           //"ID": ",2,3",
           Status: '',
           Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
-        }
+        },
+        StocksRoles: filters.StocksRoles
       })
 
       let { data: payrolls } = await reportsApi.getListStaffPayroll({
         ...BrowserHelpers.getRequestParamsList(filters),
-        Ps: configs?.lst?.length || 0
+        Ps: configs?.lst?.length || 0,
+        StocksRoles: filters.StocksRoles
       })
 
       let { data: timekeepings } = await reportsApi.getMonSalary({
         mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
         pi: 1,
         ps: configs?.lst?.length || 0,
-        stockid: filters.StockID || ''
+        stockid: filters.StockID || '',
+        StocksRoles: filters.StocksRoles
       })
       let rs = [...timekeepings?.list]
 
@@ -156,7 +160,9 @@ function PayrollStaff2(props) {
             ...item,
             PHAT_SINH_KHAC: 0
           }
-          let index = others?.items.findIndex(x => item?.User?.ID === x?.UserID && Number(x.Status) === 3)
+          let index = others?.items.findIndex(
+            x => item?.User?.ID === x?.UserID && Number(x.Status) === 3
+          )
           if (index > -1) {
             newObj.PHAT_SINH_KHAC = others?.items[index]?.Value || 0 // Phụ cấp gửi xe
           }
@@ -339,7 +345,8 @@ function PayrollStaff2(props) {
 
       return rs
     },
-    keepPreviousData: true
+    keepPreviousData: true,
+    enabled: typeof filters.StocksRoles !== 'undefined'
   })
 
   const RoundAmount = price => {
@@ -418,6 +425,12 @@ function PayrollStaff2(props) {
         loading={isLoading}
         loadingExport={loadingExport}
         onExport={onExport}
+        updateStocksRole={val => {
+          setFilters(prevState => ({
+            ...prevState,
+            StocksRoles: val ? val.map(x => x.value).toString() : ''
+          }))
+        }}
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
