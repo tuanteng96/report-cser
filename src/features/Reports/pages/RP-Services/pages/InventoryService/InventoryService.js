@@ -171,7 +171,7 @@ function InventoryService(props) {
         title: 'Ngày mua',
         dataKey: 'NgayMua',
         cellRenderer: ({ rowData }) =>
-          moment(rowData.NgayMua).format('HH:mm DD-MM-YYYY'),
+          moment(rowData.NgayMua).format('DD-MM-YYYY'),
         width: 200,
         sortable: false
       },
@@ -180,7 +180,7 @@ function InventoryService(props) {
         title: 'Ngày hết hạn',
         dataKey: 'NgayHetHan',
         cellRenderer: ({ rowData }) =>
-          moment(rowData.NgayHetHan).format('HH:mm DD-MM-YYYY'),
+          moment(rowData.NgayHetHan).format('DD-MM-YYYY'),
         width: 200,
         sortable: false
       },
