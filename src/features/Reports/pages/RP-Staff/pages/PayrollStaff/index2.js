@@ -188,6 +188,10 @@ function PayrollStaff2(props) {
             Items: item?.SETTINGS?.Settings,
             Name: 'DK_PHU_CAP_CHUYEN_CAN'
           })
+
+          newObj['TINH_THEO_CONG'] =
+            item.NGAY_CONG > 0 || item.NGAY_NGHI_CHO_PHEP > 0
+
           newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
             Name: 'GIAM_TRU_GIA_CANH'
@@ -277,7 +281,7 @@ function PayrollStaff2(props) {
 
           newObj['TONG_LUONG_THANG'] = 0
 
-          if (item.NGAY_CONG) {
+          if (newObj.TINH_THEO_CONG) {
             newObj['TONG_LUONG_THANG'] += newObj.LUONG_THEO_NGAY_CONG || 0
           } else {
             newObj['TONG_LUONG_THANG'] += newObj.LUONG_THEO_GIO || 0
@@ -317,8 +321,6 @@ function PayrollStaff2(props) {
                 (THU_NHAP_TINH_THUE - NGUONG_TNCN_CURRENT.Min) *
                   (NGUONG_TNCN_CURRENT.PercentDifference / 100)
             )
-          }
-          if (item?.User?.ID === 11397) {
           }
 
           let LUONG_NV_THUC_NHAN = RoundAmount(
@@ -565,18 +567,23 @@ function PayrollStaff2(props) {
                     >
                       HH bán thẻ
                     </th>
-                    <th
-                      rowSpan={2}
-                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
-                    >
-                      HH phụ phí
-                    </th>
-                    <th
-                      rowSpan={2}
-                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
-                    >
-                      HH NVL
-                    </th>
+                    {!GlobalConfig?.Admin?.bc_an_hhpp_hhnvl && (
+                      <>
+                        <th
+                          rowSpan={2}
+                          className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                        >
+                          HH phụ phí
+                        </th>
+                        <th
+                          rowSpan={2}
+                          className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                        >
+                          HH NVL
+                        </th>
+                      </>
+                    )}
+
                     <th
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
@@ -740,32 +747,32 @@ function PayrollStaff2(props) {
                             : 'Chưa xác định'}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {rowData?.NGAY_CONG
+                          {rowData?.TINH_THEO_CONG
                             ? PriceHelper.formatVND(rowData?.LUONG_CO_BAN_THANG)
                             : ''}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {rowData?.NGAY_CONG || ''}
+                          {rowData?.TINH_THEO_CONG || ''}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {rowData?.NGAY_CONG > 0
+                          {rowData?.TINH_THEO_CONG > 0
                             ? rowData?.NGAY_CONG_THUC_TE
                             : ''}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {rowData?.NGAY_CONG
+                          {rowData?.TINH_THEO_CONG
                             ? PriceHelper.formatVND(
                                 rowData.LUONG_THEO_NGAY_CONG
                               )
                             : ''}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {!rowData?.NGAY_CONG
+                          {!rowData?.TINH_THEO_CONG
                             ? PriceHelper.formatVND(rowData?.GIO_PARTIME)
                             : ''}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {!rowData?.NGAY_CONG
+                          {!rowData?.TINH_THEO_CONG
                             ? PriceHelper.formatVND(rowData?.LUONG_THEO_GIO)
                             : ''}
                         </td>
@@ -809,16 +816,21 @@ function PayrollStaff2(props) {
                             rowData?.BANGLUONGBC?.HOA_HONG_Thetien
                           )}
                         </td>
-                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
-                            rowData?.BANGLUONGBC?.HOA_HONG_Phuphi
-                          )}
-                        </td>
-                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
-                            rowData?.BANGLUONGBC?.HOA_HONG_NVL
-                          )}
-                        </td>
+                        {!GlobalConfig?.Admin?.bc_an_hhpp_hhnvl && (
+                          <>
+                            <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                              {PriceHelper.formatVND(
+                                rowData?.BANGLUONGBC?.HOA_HONG_Phuphi
+                              )}
+                            </td>
+                            <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                              {PriceHelper.formatVND(
+                                rowData?.BANGLUONGBC?.HOA_HONG_NVL
+                              )}
+                            </td>
+                          </>
+                        )}
+
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHU_CAP_NGOAI_GIO)}
                         </td>
