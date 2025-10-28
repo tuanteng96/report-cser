@@ -188,9 +188,17 @@ function PayrollStaff2(props) {
             Items: item?.SETTINGS?.Settings,
             Name: 'DK_PHU_CAP_CHUYEN_CAN'
           })
+          let NGAY_CONG_SETUP = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'NGAY_CONG'
+          })
+          let NGAY_NGHI_SETUP = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'NGAY_NGHI'
+          })
 
           newObj['TINH_THEO_CONG'] =
-            item.NGAY_CONG > 0 || item.NGAY_NGHI_CHO_PHEP > 0
+            NGAY_CONG_SETUP > 0 || NGAY_NGHI_SETUP > 0
 
           newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
