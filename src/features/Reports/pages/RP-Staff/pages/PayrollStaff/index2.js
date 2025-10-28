@@ -173,10 +173,10 @@ function PayrollStaff2(props) {
       rs = rs
         .map(item => ({
           ...item,
-          NGAY_CONG: getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'NGAY_CONG'
-          })
+          // NGAY_CONG: getValueByName({
+          //   Items: item?.SETTINGS?.Settings,
+          //   Name: 'NGAY_CONG'
+          // })
         }))
         .map(item => {
           let newObj = { ...item }
@@ -541,7 +541,7 @@ function PayrollStaff2(props) {
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
-                      Phụ phí tháng
+                      Phụ cấp tháng
                     </th>
                     <th
                       rowSpan={2}
