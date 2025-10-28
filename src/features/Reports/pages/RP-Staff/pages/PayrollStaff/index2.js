@@ -541,7 +541,7 @@ function PayrollStaff2(props) {
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
-                      Phụ cấp khác
+                      Phụ phí tháng
                     </th>
                     <th
                       rowSpan={2}
@@ -752,7 +752,7 @@ function PayrollStaff2(props) {
                             : ''}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {rowData?.TINH_THEO_CONG || ''}
+                          {rowData?.TINH_THEO_CONG ? rowData?.NGAY_CONG : ''}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.TINH_THEO_CONG > 0
