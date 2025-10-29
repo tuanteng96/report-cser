@@ -5,7 +5,6 @@ import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import reportsApi from 'src/api/reports.api'
-import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -172,7 +171,7 @@ function PayrollStaff2(props) {
 
       rs = rs
         .map(item => ({
-          ...item,
+          ...item
           // NGAY_CONG: getValueByName({
           //   Items: item?.SETTINGS?.Settings,
           //   Name: 'NGAY_CONG'
@@ -197,8 +196,7 @@ function PayrollStaff2(props) {
             Name: 'NGAY_NGHI'
           })
 
-          newObj['TINH_THEO_CONG'] =
-            NGAY_CONG_SETUP > 0 || NGAY_NGHI_SETUP > 0
+          newObj['TINH_THEO_CONG'] = NGAY_CONG_SETUP > 0 || NGAY_NGHI_SETUP > 0
 
           newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
@@ -352,8 +350,7 @@ function PayrollStaff2(props) {
             TONG_QUY_LUONG_CTY_TRA
           }
         })
-
-      return rs
+      return rs.filter(x => x?.User?.Gender > 0)
     },
     keepPreviousData: true,
     enabled: typeof filters.StocksRoles !== 'undefined'
@@ -463,6 +460,12 @@ function PayrollStaff2(props) {
                       className="uppercase p-3 font-semibold text-left min-w-[100px] max-w-[100px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
                       ID
+                    </th>
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[150px] max-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
+                      Mã nhân viên
                     </th>
                     <th
                       rowSpan={2}
@@ -742,6 +745,9 @@ function PayrollStaff2(props) {
                         </td>
                         <td className="p-3 bg-white max-w-[100px] min-w-[100px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           #{rowData?.User?.ID}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {rowData?.User?.YahooID}
                         </td>
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-0">
                           {rowData?.User?.FullName}
