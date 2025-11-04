@@ -17,6 +17,7 @@ import ModalViewMobile from './ModalViewMobile'
 import clsx from 'clsx'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import FilterListAdvanced from 'src/components/Filter/FilterListAdvanced'
+import { useReactToPrint } from 'react-to-print'
 
 import moment from 'moment'
 import 'moment/locale/vi'
@@ -24,9 +25,10 @@ import 'moment/locale/vi'
 moment.locale('vi')
 
 function Sales(props) {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || []
+    Stocks: auth?.Info?.Stocks || [],
+    GlobalConfig: auth?.GlobalConfig
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -46,6 +48,7 @@ function Sales(props) {
     no: ''
   })
   const [StockName, setStockName] = useState('')
+  const [StockAddress, setStockAddress] = useState('')
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [isFilter, setIsFilter] = useState(false)
@@ -73,6 +76,9 @@ function Sales(props) {
   const elementRef = useRef(null)
   const { width } = useWindowSize()
 
+  const contentRef = useRef(null)
+  const reactToPrintFn = useReactToPrint({ contentRef })
+
   useEffect(() => {
     if (width > 767) {
       setHeightElm(elementRef?.current?.clientHeight || 0)
@@ -87,6 +93,7 @@ function Sales(props) {
     )
     if (index > -1) {
       setStockName(Stocks[index].Title)
+      setStockAddress(Stocks[index].Desc)
     } else {
       setStockName('Tất cả cơ sở')
     }
@@ -789,7 +796,7 @@ function Sales(props) {
       <div className="bg-white rounded mt-25px">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách đơn hàng</div>
-          <div className="d-flex">
+          <div className="items-center d-flex">
             <div className="fw-500 pr-sm-15px d-flex align-items-center">
               <div className="fw-500 pl-15px">
                 Tổng ĐH{' '}
@@ -956,6 +963,88 @@ function Sales(props) {
                 </div>
               </Fragment>
             )}
+            {GlobalConfig?.Admin?.print_bc_ds && (
+              <div
+                className="flex items-center justify-center ml-4 text-white rounded-sm cursor-pointer bg-primary w-40px h-40px"
+                onClick={reactToPrintFn}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokewidth="2"
+                  stroke="currentColor"
+                  className="w-6"
+                >
+                  <path
+                    strokelinecap="round"
+                    strokelinejoin="round"
+                    d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"
+                  />
+                </svg>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="hidden">
+          <div
+            className="print:fixed print:top-0 print:left-0 print:w-full print:h-auto print:break-before-auto print:break-after-auto print:break-inside-auto"
+            ref={contentRef}
+          >
+            <div className="px-3.5 text-center mb-6">
+              <div className="mb-1 text-xl font-bold uppercase">
+                {StockName}
+              </div>
+              {StockAddress && <div>{StockAddress}</div>}
+
+              {moment(filters.DateStart).format('DD.MM.YYYY') ===
+              moment(filters.DateEnd).format('DD.MM.YYYY') ? (
+                <div className="mt-2 text-xl font-bold uppercase">
+                  Doanh thu ngày {moment(filters.DateEnd).format('DD.MM.YYYY')}
+                </div>
+              ) : (
+                <div className="mt-2 text-xl font-bold uppercase">
+                  Doanh thu ngày
+                  <div>
+                    {moment(filters.DateStart).format('DD.MM.YYYY')}
+                    <span className="px-1.5">-</span>
+                    {moment(filters.DateEnd).format('DD.MM.YYYY')}
+                  </div>
+                </div>
+              )}
+
+              <div>{moment().format('DD.MM.YYYY HH:mm')}</div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-1.5">
+                <div>Tổng hoá đơn</div>
+                <div className="font-semibold">{PageTotal}</div>
+              </div>
+              <div className="flex justify-between mb-1.5">
+                <div>Tổng thu</div>
+                <div className="font-semibold">
+                  {PriceHelper.formatVND(Total.DaThToan)}
+                </div>
+              </div>
+              <div className="flex justify-between mb-1.5">
+                <div>-- Tiền mặt</div>
+                <div className="font-semibold">
+                  {PriceHelper.formatVND(Total.DaThToan_TM)}
+                </div>
+              </div>
+              <div className="flex justify-between mb-1.5">
+                <div>-- Chuyển khoản</div>
+                <div className="font-semibold">
+                  {PriceHelper.formatVND(Total.DaThToan_CK)}
+                </div>
+              </div>
+              <div className="flex justify-between mb-1.5">
+                <div>-- Quyẹt thẻ</div>
+                <div className="font-semibold">
+                  {PriceHelper.formatVND(Total.DaThToan_QT)}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="p-20px">
