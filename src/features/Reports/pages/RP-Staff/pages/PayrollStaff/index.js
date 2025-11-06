@@ -981,6 +981,7 @@ function PayrollStaff(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        limitDateType="THEO_THANG"
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">

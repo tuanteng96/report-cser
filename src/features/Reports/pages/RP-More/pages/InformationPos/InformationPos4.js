@@ -371,6 +371,8 @@ function InformationPos4(props) {
         onSubmit={onFilter}
         onRefresh={refetch}
         loading={isLoading || isRefetching}
+        limitDateType="THEO_THANG"
+        limitEndMonth={true}
       />
       <div
         className="overflow-auto h-100 px-main py-main"

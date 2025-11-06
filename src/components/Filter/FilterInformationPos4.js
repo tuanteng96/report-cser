@@ -6,6 +6,7 @@ import Select from 'react-select'
 import { Formik, Form } from 'formik'
 import AsyncSelectMembers from '../Selects/AsyncSelectMembers'
 import { useApp } from 'src/app/App'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 function FilterInformationPos4({
   show,
@@ -16,11 +17,14 @@ function FilterInformationPos4({
   filters,
   Criterias,
   loadingExport,
-  onExport
+  onExport,
+  limitDateType = 'THEO_NGAY',
+  noMaximum = false,
+  limitEndMonth = false
 }) {
   const [StocksList, setStocksList] = useState([])
 
-  const { Stocks, GlobalConfig, AuthID } = useSelector(({ auth }) => ({
+  const { Stocks, GlobalConfig, AuthID, Auth } = useSelector(({ auth }) => ({
     GlobalConfig: auth?.GlobalConfig,
     AuthID: auth?.Info?.User?.ID,
     Stocks: auth.Info?.Stocks
@@ -29,7 +33,8 @@ function FilterInformationPos4({
           label: item.Title || item.label,
           value: item.ID || item.value
         }))
-      : []
+      : [],
+    Auth: auth
   }))
 
   const { GGLoading } = useApp()
@@ -109,6 +114,20 @@ function FilterInformationPos4({
                       placeholderText="Chọn ngày"
                       className="form-control"
                       dateFormat="dd/MM/yyyy"
+                      minDate={ArrayHeplers.getDateLimit({
+                        Auth,
+                        Action: 'minDate',
+                        Type: limitDateType,
+                        noMaximum,
+                        limitEndMonth
+                      })}
+                      maxDate={ArrayHeplers.getDateLimit({
+                        Auth,
+                        Action: 'maxDate',
+                        Type: limitDateType,
+                        noMaximum,
+                        limitEndMonth
+                      })}
                     />
                   </div>
 
@@ -122,6 +141,20 @@ function FilterInformationPos4({
                       placeholderText="Chọn ngày"
                       className="form-control"
                       dateFormat="dd/MM/yyyy"
+                      minDate={ArrayHeplers.getDateLimit({
+                        Auth,
+                        Action: 'minDate',
+                        Type: limitDateType,
+                        noMaximum,
+                        limitEndMonth
+                      })}
+                      maxDate={ArrayHeplers.getDateLimit({
+                        Auth,
+                        Action: 'maxDate',
+                        Type: limitDateType,
+                        noMaximum,
+                        limitEndMonth
+                      })}
                     />
                   </div>
 

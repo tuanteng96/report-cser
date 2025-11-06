@@ -31,6 +31,7 @@ import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import AsyncSelectSVOriginal from '../Selects/AsyncSelectSVOriginal'
 import AsyncSelectSVCardOnly from '../Selects/AsyncSelectSVCardOnly'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -97,7 +98,8 @@ function FilterListAdvancedSv({
     PermissionReport,
     GlobalConfig,
     AuthID,
-    rightTree
+    rightTree,
+    Auth
   } = useSelector(({ auth }) => ({
     Stocks: auth.Info?.Stocks
       ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
@@ -110,7 +112,8 @@ function FilterListAdvancedSv({
     rightTree: auth?.Info?.rightTree,
     KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
     GlobalConfig: auth?.GlobalConfig,
-    AuthID: auth?.Info?.User?.ID
+    AuthID: auth?.Info?.User?.ID,
+    Auth: auth
   }))
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
@@ -351,6 +354,16 @@ function FilterListAdvancedSv({
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: 'THEO_NGAY'
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: 'THEO_NGAY'
+                        })}
                       />
                     </div>
                   )}
@@ -365,6 +378,16 @@ function FilterListAdvancedSv({
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: 'THEO_NGAY'
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: 'THEO_NGAY'
+                        })}
                       />
                     </div>
                   )}

@@ -686,6 +686,8 @@ function Home(props) {
         </div>
       </div>
       <FilterList
+        noMaximum={true}
+        limitDateType="THEO_THANG"
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}

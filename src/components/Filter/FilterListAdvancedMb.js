@@ -17,6 +17,7 @@ import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import AsyncSelectCategoriesSV from '../Selects/AsyncSelectCategoriesSV'
 import { useLocation } from 'react-router-dom'
 import { useApp } from 'src/app/App'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -46,7 +47,7 @@ function FilterListAdvancedMb({
   regimes,
   isWarehouse = false
 }) {
-  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree } =
+  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree, Auth } =
     useSelector(({ auth }) => ({
       Stocks: auth.Info?.Stocks
         ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
@@ -58,7 +59,8 @@ function FilterListAdvancedMb({
       PermissionReport: auth.Info?.rightsSum?.report,
       rightTree: auth?.Info?.rightTree,
       GlobalConfig: auth?.GlobalConfig,
-      AuthID: auth?.Info?.User?.ID
+      AuthID: auth?.Info?.User?.ID,
+      Auth: auth
     }))
   const [StocksList, setStocksList] = useState([])
 
@@ -266,6 +268,16 @@ function FilterListAdvancedMb({
                           placeholderText="Chọn ngày"
                           className="form-control"
                           dateFormat="dd/MM/yyyy"
+                          minDate={ArrayHeplers.getDateLimit({
+                            Auth,
+                            Action: 'minDate',
+                            Type: 'THEO_NGAY'
+                          })}
+                          maxDate={ArrayHeplers.getDateLimit({
+                            Auth,
+                            Action: 'maxDate',
+                            Type: 'THEO_NGAY'
+                          })}
                         />
                       </div>
                     )}
@@ -283,6 +295,16 @@ function FilterListAdvancedMb({
                           placeholderText="Chọn ngày"
                           className="form-control"
                           dateFormat="dd/MM/yyyy"
+                          minDate={ArrayHeplers.getDateLimit({
+                            Auth,
+                            Action: 'minDate',
+                            Type: 'THEO_NGAY'
+                          })}
+                          maxDate={ArrayHeplers.getDateLimit({
+                            Auth,
+                            Action: 'maxDate',
+                            Type: 'THEO_NGAY'
+                          })}
                         />
                       </div>
                     )}

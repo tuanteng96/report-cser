@@ -71,6 +71,7 @@ function UseCardMoney(props) {
   const [TotalValue, setTotalValue] = useState(0)
   const [PageTotal, setPageTotal] = useState(0)
   const [pageCount, setPageCount] = useState(0)
+  const [ValueN, setValueN] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
@@ -100,11 +101,12 @@ function UseCardMoney(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, PCount, TongTien } = {
+          const { Items, Total, PCount, TongTien, ValueN } = {
             Items: data.result?.Items || [],
             Total: data.result?.Total || [],
             TongTien: data.result?.TongTien || 0,
-            PCount: data?.result?.PCount || 0
+            PCount: data?.result?.PCount || 0,
+            ValueN: data?.result?.ValueN || 0
           }
           setListData(convertArray(Items))
           setListDataMobile(Items)
@@ -112,6 +114,7 @@ function UseCardMoney(props) {
           setLoading(false)
           setPageTotal(Total)
           setPageCount(PCount)
+          setValueN(ValueN)
           isFilter && setIsFilter(false)
           callback && callback()
           PermissionHelpers.HideErrorAccess()
@@ -313,7 +316,7 @@ function UseCardMoney(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Báo cáo sử dụng thẻ tiền
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -323,7 +326,7 @@ function UseCardMoney(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -342,13 +345,19 @@ function UseCardMoney(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách sử dụng thẻ tiền</div>
-          <div className="d-flex">
+          <div className="gap-4 d-flex">
             <div className="fw-500 d-flex align-items-center">
               Tổng tiền
               <span className="font-size-xl fw-600 text-success pl-5px font-number">
                 {PriceHelper.formatVND(TotalValue)}
+              </span>
+            </div>
+            <div className="fw-500 d-flex align-items-center">
+              Tổng tiền sử dụng
+              <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                {PriceHelper.formatVND(Math.abs(ValueN))}
               </span>
             </div>
           </div>

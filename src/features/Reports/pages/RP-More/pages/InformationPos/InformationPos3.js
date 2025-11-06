@@ -362,6 +362,8 @@ function InformationPos3(props) {
         loading={isLoading}
         loadingExport={loadingExport}
         onExport={onExport}
+        limitDateType="THEO_THANG"
+        limitEndMonth={true}
       />
       <div className="py-main">
         <div className="bg-white rounded">

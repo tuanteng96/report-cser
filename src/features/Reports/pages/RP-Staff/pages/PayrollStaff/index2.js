@@ -91,7 +91,7 @@ function PayrollStaff2(props) {
     queryFn: async () => {
       let { data: configs } = await reportsApi.getConfigSalary({
         Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
-        StockID: filters.StockID ? [filters.StockID] : [],
+        StockID: filters.StockID ? [filters.StockID] : Stocks.map(x => x.ID),
         StocksRoles: filters.StocksRoles
       })
 

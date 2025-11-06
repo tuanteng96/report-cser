@@ -29,6 +29,8 @@ import SelectCustomType from '../Selects/SelectCustomType'
 import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
+import moment from 'moment'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -90,7 +92,10 @@ function FilterList({
   isWarehouse = false,
   isAllStock = true,
   optionsAdd = [],
-  updateStocksRole
+  updateStocksRole,
+  limitDateType = 'THEO_NGAY',
+  noMaximum = false,
+  limitEndMonth = false
 }) {
   const {
     Stocks,
@@ -98,7 +103,8 @@ function FilterList({
     PermissionReport,
     GlobalConfig,
     AuthID,
-    rightTree
+    rightTree,
+    Auth
   } = useSelector(({ auth }) => ({
     Stocks: auth.Info?.Stocks
       ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
@@ -111,7 +117,8 @@ function FilterList({
     rightTree: auth?.Info?.rightTree,
     KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
     GlobalConfig: auth?.GlobalConfig,
-    AuthID: auth?.Info?.User?.ID
+    AuthID: auth?.Info?.User?.ID,
+    Auth: auth
   }))
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
@@ -514,6 +521,20 @@ function FilterList({
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: limitDateType,
+                          noMaximum,
+                          limitEndMonth
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: limitDateType,
+                          noMaximum,
+                          limitEndMonth
+                        })}
                       />
                     </div>
                   )}
@@ -535,6 +556,20 @@ function FilterList({
                         showTimeSelect={filters.DateEndTime} // Bật chọn thời gian
                         timeFormat="HH:mm" // Định dạng giờ (24h)
                         timeIntervals={1} // Bước nhảy thời gian (phút)
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: limitDateType,
+                          noMaximum,
+                          limitEndMonth
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: limitDateType,
+                          noMaximum,
+                          limitEndMonth
+                        })}
                       />
                     </div>
                   )}
@@ -553,6 +588,18 @@ function FilterList({
                         showMonthYearPicker
                         showFullMonthYearPicker
                         showTwoColumnMonthYearPicker
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: limitDateType,
+                          noMaximum
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: limitDateType,
+                          noMaximum
+                        })}
                       />
                     </div>
                   )}
@@ -586,6 +633,16 @@ function FilterList({
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: 'THEO_NGAY'
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: 'THEO_NGAY'
+                        })}
                       />
                     </div>
                   )}

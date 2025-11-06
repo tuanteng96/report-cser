@@ -194,7 +194,8 @@ function Sales(props) {
             ReducedValue,
             ToPay,
             TotalValue,
-            Value
+            Value,
+            Totalcpayed
           } = {
             Items: data.result?.Items || [],
             Total: data.result?.Total || 0,
@@ -209,7 +210,8 @@ function Sales(props) {
             ReducedValue: data.result?.ReducedValue || 0,
             ToPay: data.result?.ToPay || 0,
             TotalValue: data.result?.TotalValue || 0,
-            Value: data.result?.Value || 0
+            Value: data.result?.Value || 0,
+            Totalcpayed: data.result?.Totalcpayed || 0
           }
           setListData(Items)
           setTotal({
@@ -223,7 +225,8 @@ function Sales(props) {
             ReducedValue,
             ToPay,
             TotalValue,
-            Value
+            Value,
+            Totalcpayed
           })
           setLoadingTable(false)
           setPageTotal(Total)
@@ -986,6 +989,7 @@ function Sales(props) {
             )}
           </div>
         </div>
+
         <div className="hidden">
           <div
             className="print:fixed print:top-0 print:left-0 print:w-full print:h-auto print:break-before-auto print:break-after-auto print:break-inside-auto"
@@ -1018,7 +1022,7 @@ function Sales(props) {
             <div>
               <div className="flex justify-between mb-1.5">
                 <div>Tổng hoá đơn</div>
-                <div className="font-semibold">{PageTotal}</div>
+                <div className="font-semibold">{Total.Totalcpayed}</div>
               </div>
               <div className="flex justify-between mb-1.5">
                 <div>Tổng thu</div>

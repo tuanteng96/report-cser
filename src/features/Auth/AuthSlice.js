@@ -7,6 +7,17 @@ if (DevHelpers.isDevelopment()) {
       UserName: 'admin',
       ID: 1
     },
+    Groups: [
+      {
+        Title: '11617.order'
+      },
+      {
+        Title: 'Administrator'
+      },
+      // {
+      //   Title: 'Báo cáo - 3'
+      // }
+    ],
     Stocks: [
       {
         ID: 778,

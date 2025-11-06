@@ -29,6 +29,7 @@ import SelectCustomType from '../Selects/SelectCustomType'
 import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -94,6 +95,7 @@ function FilterListAdvancedTC({
     PermissionReport,
     GlobalConfig,
     AuthID,
+    Auth,
     rightTree
   } = useSelector(({ auth }) => ({
     Stocks: auth.Info?.Stocks
@@ -107,7 +109,8 @@ function FilterListAdvancedTC({
     rightTree: auth?.Info?.rightTree,
     KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
     GlobalConfig: auth?.GlobalConfig,
-    AuthID: auth?.Info?.User?.ID
+    AuthID: auth?.Info?.User?.ID,
+    Auth: auth
   }))
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
@@ -365,6 +368,16 @@ function FilterListAdvancedTC({
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: 'THEO_NGAY'
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: 'THEO_NGAY'
+                        })}
                       />
                     </div>
                   )}
@@ -379,6 +392,16 @@ function FilterListAdvancedTC({
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: 'THEO_NGAY'
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: 'THEO_NGAY'
+                        })}
                       />
                     </div>
                   )}
@@ -430,6 +453,16 @@ function FilterListAdvancedTC({
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: 'THEO_NGAY'
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: 'THEO_NGAY'
+                        })}
                       />
                     </div>
                   )}

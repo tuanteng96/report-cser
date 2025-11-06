@@ -16,6 +16,11 @@
   }
 }
 
+.react-datepicker__day--disabled, .react-datepicker__month--disabled {
+  opacity: .3;
+  cursor: no-drop !important;
+}
+
 .react-datepicker-popper {
   z-index: 100 !important;
   .react-datepicker {

@@ -11,6 +11,7 @@ import AsyncSelectSVPP from '../Selects/AsyncSelectSVPP'
 import vi from 'date-fns/locale/vi' // the locale you want
 import { useLocation } from 'react-router-dom'
 import { useApp } from 'src/app/App'
+import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -28,7 +29,7 @@ function FilterListLUONG({
   isAllStock = true,
   optionsAdd = []
 }) {
-  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree } =
+  const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree, Auth } =
     useSelector(({ auth }) => ({
       Stocks: auth.Info?.Stocks
         ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
@@ -41,7 +42,8 @@ function FilterListLUONG({
       rightTree: auth?.Info?.rightTree,
       KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
       GlobalConfig: auth?.GlobalConfig,
-      AuthID: auth?.Info?.User?.ID
+      AuthID: auth?.Info?.User?.ID,
+      Auth: auth
     }))
   const [StocksList, setStocksList] = useState([])
   const { pathname } = useLocation()
@@ -275,6 +277,16 @@ function FilterListLUONG({
                         placeholderText="Chọn ngày"
                         className="form-control"
                         dateFormat="dd/MM/yyyy"
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: 'THEO_NGAY'
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: 'THEO_NGAY'
+                        })}
                       />
                     </div>
                   )}
@@ -296,6 +308,16 @@ function FilterListLUONG({
                         showTimeSelect={filters.DateEndTime} // Bật chọn thời gian
                         timeFormat="HH:mm" // Định dạng giờ (24h)
                         timeIntervals={1} // Bước nhảy thời gian (phút)
+                        minDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'minDate',
+                          Type: 'THEO_NGAY'
+                        })}
+                        maxDate={ArrayHeplers.getDateLimit({
+                          Auth,
+                          Action: 'maxDate',
+                          Type: 'THEO_NGAY'
+                        })}
                       />
                     </div>
                   )}
