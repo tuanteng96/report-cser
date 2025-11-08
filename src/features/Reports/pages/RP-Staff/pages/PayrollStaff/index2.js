@@ -457,19 +457,19 @@ function PayrollStaff2(props) {
                     </th>
                     <th
                       rowSpan={2}
-                      className="uppercase p-3 font-semibold text-left min-w-[100px] max-w-[100px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[60px] bg-[#f8f8f8]"
+                      className="uppercase p-3 font-semibold text-left min-w-[140px] max-w-[140px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[60px] bg-[#f8f8f8]"
                     >
-                      ID
+                      Mã nhân viên
                     </th>
                     <th
                       rowSpan={2}
-                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[160px] bg-[#f8f8f8]"
+                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[200px] bg-[#f8f8f8]"
                     >
                       Tên nhân viên
                     </th>
                     <th
                       rowSpan={2}
-                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[360px] bg-[#f8f8f8]"
+                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[400px] bg-[#f8f8f8]"
                     >
                       Cấp bậc
                     </th>
@@ -743,13 +743,13 @@ function PayrollStaff2(props) {
                         <td className="p-3 bg-white max-w-[60px] min-w-[60px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-0">
                           {index + 1}
                         </td>
-                        <td className="p-3 bg-white max-w-[100px] min-w-[100px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-[60px]">
-                          #{rowData?.User?.ID}
+                        <td className="p-3 bg-white max-w-[140px] min-w-[140px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-[60px]">
+                          {rowData?.User?.YahooID}
                         </td>
-                        <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-[160px]">
+                        <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-[200px]">
                           {rowData?.User?.FullName}
                         </td>
-                        <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-[360px]">
+                        <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-[400px]">
                           {rowData?.User?.Level}
                         </td>
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
