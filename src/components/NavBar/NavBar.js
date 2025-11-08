@@ -214,7 +214,8 @@ function NavBar(props) {
         },
         {
           Title: 'Bảng lương',
-          Href: hasRouter() + '/nhan-vien/bang-luong'
+          Href: hasRouter() + '/nhan-vien/bang-luong',
+          hidden: GlobalConfig?.Admin?.chinhsachluongchitiet
         },
         {
           Title: 'Bảng lương 2',
