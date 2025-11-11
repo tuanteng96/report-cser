@@ -328,11 +328,11 @@ function OverviewService(props) {
             } = {
               Items: data.result?.Items || [],
               Total: data.result?.Total || 0,
-              Totalbuoicuoi: data.result?.Totalbuoicuoi || 0,
-              Totalbuoidau: data.result?.Totalbuoidau || 0,
-              Totalisfirst: data.result?.Totalisfirst || 0,
-              Totalrequest: data.result?.Totalrequest || 0,
-              TotalGiabuoi: data.result?.TotalGiabuoi || 0,
+              Totalbuoicuoi: Math.round(data.result?.Totalbuoicuoi || 0),
+              Totalbuoidau: Math.round(data.result?.Totalbuoidau || 0),
+              Totalisfirst: Math.round(data.result?.Totalisfirst || 0),
+              Totalrequest: Math.round(data.result?.Totalrequest || 0),
+              TotalGiabuoi: Math.round(data.result?.TotalGiabuoi || 0),
               PCount: data?.result?.PCount || 0
             }
             setListData(Items)
