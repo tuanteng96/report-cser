@@ -253,22 +253,22 @@ function PayrollStaff2(props) {
           newObj['LUONG_NOP_BHXH'] = LUONG_NOP_BHXH
 
           newObj['NSD_LD_TRA'] = {
-            '17_5_percent': RoundAmount(LUONG_NOP_BHXH * (17.5 / 100)),
-            '3_percent': RoundAmount(LUONG_NOP_BHXH * (3 / 100)),
-            '1_percent': RoundAmount(LUONG_NOP_BHXH * (1 / 100)),
+            '17_5_percent': LUONG_NOP_BHXH * (17.5 / 100),
+            '3_percent': LUONG_NOP_BHXH * (3 / 100),
+            '1_percent': LUONG_NOP_BHXH * (1 / 100),
             total:
-              RoundAmount(LUONG_NOP_BHXH * (17.5 / 100)) +
-              RoundAmount(LUONG_NOP_BHXH * (3 / 100)) +
-              RoundAmount(LUONG_NOP_BHXH * (1 / 100))
+              LUONG_NOP_BHXH * (17.5 / 100) +
+              LUONG_NOP_BHXH * (3 / 100) +
+              LUONG_NOP_BHXH * (1 / 100)
           }
           newObj['NLD_TRA'] = {
-            '8_percent': RoundAmount(LUONG_NOP_BHXH * (8 / 100)),
-            '1_5_percent': RoundAmount(LUONG_NOP_BHXH * (1.5 / 100)),
-            '1_percent': RoundAmount(LUONG_NOP_BHXH * (1 / 100)),
+            '8_percent': LUONG_NOP_BHXH * (8 / 100),
+            '1_5_percent': LUONG_NOP_BHXH * (1.5 / 100),
+            '1_percent': LUONG_NOP_BHXH * (1 / 100),
             total:
-              RoundAmount(LUONG_NOP_BHXH * (8 / 100)) +
-              RoundAmount(LUONG_NOP_BHXH * (1.5 / 100)) +
-              RoundAmount(LUONG_NOP_BHXH * (1 / 100))
+              LUONG_NOP_BHXH * (8 / 100) +
+              LUONG_NOP_BHXH * (1.5 / 100) +
+              LUONG_NOP_BHXH * (1 / 100)
           }
 
           newObj['PHU_CAP_NGOAI_GIO'] =
@@ -322,11 +322,10 @@ function PayrollStaff2(props) {
               (item.Max ? THU_NHAP_TINH_THUE <= item.Max : true)
           )
           if (NGUONG_TNCN_CURRENT) {
-            THUE_TNCN = RoundAmount(
+            THUE_TNCN =
               NGUONG_TNCN_CURRENT.Value +
-                (THU_NHAP_TINH_THUE - NGUONG_TNCN_CURRENT.Min) *
-                  (NGUONG_TNCN_CURRENT.PercentDifference / 100)
-            )
+              (THU_NHAP_TINH_THUE - NGUONG_TNCN_CURRENT.Min) *
+                (NGUONG_TNCN_CURRENT.PercentDifference / 100)
           }
 
           let LUONG_NV_THUC_NHAN = RoundAmount(

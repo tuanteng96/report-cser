@@ -357,6 +357,18 @@ function OverviewCustomer() {
         sortable: false
       },
       {
+        key: 'AFF',
+        title: 'Người giới thiệu',
+        dataKey: 'AFF',
+        width: 200,
+        sortable: false,
+        cellRenderer: ({ rowData }) => (
+          <Text tooltipMaxWidth={300}>
+            {rowData.AFF ? `#${rowData.AFF?.MID} - ${rowData.AFF?.Name}` : ''}
+          </Text>
+        )
+      },
+      {
         key: 'GroupCustomerName',
         title: 'Nhóm khách hàng',
         dataKey: 'GroupCustomerName',
