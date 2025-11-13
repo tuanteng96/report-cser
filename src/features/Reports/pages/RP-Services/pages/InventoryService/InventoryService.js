@@ -14,6 +14,7 @@ import moment from 'moment'
 import 'moment/locale/vi'
 import ModalViewMobile from './ModalViewMobile'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
+import clsx from 'clsx'
 
 moment.locale('vi')
 
@@ -41,6 +42,7 @@ function InventoryService(props) {
   const [loading, setLoading] = useState(false)
   const [PageTotal, setPageTotal] = useState(0)
   const [pageCount, setPageCount] = useState(0)
+  const [TotalObj, setTotalObj] = useState(null)
   const [loadingExport, setLoadingExport] = useState(false)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
@@ -71,11 +73,16 @@ function InventoryService(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
+          let rs = JSON.parse(JSON.stringify(data.result))
+          if (rs.Items) {
+            delete rs.Items
+          }
           const { Items, Total, PCount } = {
             Items: data.result?.Items || [],
             Total: data.result?.Total || 0,
             PCount: data?.result?.PCount || 0
           }
+          setTotalObj(rs)
           setListData(Items.map(item => ({ ...item, Ids: uuidv4() })))
           setPageCount(PCount)
           setLoading(false)
@@ -125,7 +132,7 @@ function InventoryService(props) {
       UrlName: '/dich-vu/ton-dich-vu'
     })
   }
-
+  
   const columns = useMemo(
     () => [
       {
@@ -222,7 +229,12 @@ function InventoryService(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {TotalObj?.so_luong}
+          </span>
+        )
       },
       {
         key: 'Da_su_dung',
@@ -230,7 +242,12 @@ function InventoryService(props) {
         dataKey: 'Da_su_dung',
         cellRenderer: ({ rowData }) => rowData.Da_su_dung || 0,
         width: 120,
-        sortable: false
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {TotalObj?.da_su_dung}
+          </span>
+        )
       },
       {
         key: 'so_buoi_con',
@@ -239,14 +256,24 @@ function InventoryService(props) {
         width: 120,
         sortable: false,
         cellRenderer: ({ rowData }) =>
-          (rowData.Tong_buoi || 0) - (rowData.Da_su_dung || 0)
+          (rowData.Tong_buoi || 0) - (rowData.Da_su_dung || 0),
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {TotalObj?.so_buoi_con}
+          </span>
+        )
       },
       {
         key: 'Tong_buoi',
         title: 'Tổng số buổi',
         dataKey: 'Tong_buoi',
         width: 120,
-        sortable: false
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {TotalObj?.tong_so_buoi}
+          </span>
+        )
       },
       {
         key: 'Tong_tien',
@@ -254,7 +281,12 @@ function InventoryService(props) {
         dataKey: 'Tong_tien',
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Tong_tien),
         width: 180,
-        sortable: false
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(TotalObj?.tong_so_tien)}
+          </span>
+        )
       },
       {
         key: 'CostTotal',
@@ -328,7 +360,7 @@ function InventoryService(props) {
         sortable: false
       }
     ],
-    [filters]
+    [filters, TotalObj]
   )
 
   const OpenModalMobile = value => {
@@ -339,6 +371,29 @@ function InventoryService(props) {
   const HideModalMobile = () => {
     setInitialValuesMobile(null)
     setIsModalMobile(false)
+  }
+
+  const headerRenderer = ({ cells, columns, headerIndex }) => {
+    if (headerIndex === 0) {
+      return cells
+    }
+    const groupCells = []
+    columns.forEach((column, columnIndex) => {
+      groupCells.push(
+        <div
+          className={clsx(
+            cells[columnIndex].props.className,
+            !column.footerRenderer && 'bg-stripes',
+            'bg-gray-200'
+          )}
+          key={`header-group-cell-${column.key}`}
+          style={{ ...cells[columnIndex].props.style }}
+        >
+          {column.footerRenderer && column.footerRenderer()}
+        </div>
+      )
+    })
+    return groupCells
   }
 
   return (
@@ -391,6 +446,8 @@ function InventoryService(props) {
             optionMobile={{
               CellModal: cell => OpenModalMobile(cell)
             }}
+            headerHeight={[50, 50]}
+            headerRenderer={headerRenderer}
           />
         </div>
       </div>
