@@ -474,6 +474,12 @@ function PayrollStaff2(props) {
                     </th>
                     <th
                       rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[600px] bg-[#f8f8f8]"
+                    >
+                      Loại hợp đồng
+                    </th>
+                    <th
+                      rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
                       Cơ sở
@@ -546,12 +552,6 @@ function PayrollStaff2(props) {
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
                       Phụ cấp ăn trưa
-                    </th>
-                    <th
-                      rowSpan={2}
-                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
-                    >
-                      Phụ cấp tháng
                     </th>
                     <th
                       rowSpan={2}
@@ -751,6 +751,9 @@ function PayrollStaff2(props) {
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-[400px]">
                           {rowData?.User?.Level}
                         </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 sticky top-0 left-[600px]">
+                          {rowData?.User?.Address}
+                        </td>
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.BANGLUONGBC?.DiemQL &&
                           rowData?.BANGLUONGBC?.DiemQL.length > 0
@@ -805,9 +808,6 @@ function PayrollStaff2(props) {
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHU_CAP_AN_TRUA)}
-                        </td>
-                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.BANGLUONGBC?.PHU_CAP)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(
