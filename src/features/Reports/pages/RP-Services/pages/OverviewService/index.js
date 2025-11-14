@@ -79,7 +79,8 @@ function OverviewService(props) {
     CardServiceID: '',
     ServiceOriginalID: '',
     TransfUserID: '',
-    ShowsX: '2'
+    ShowsX: '2',
+    MemberGroupID: ''
   })
   const [dataChart, setDataChart] = useState(objData)
   const [optionsChart, setOptionsChart] = useState(optionsObj)

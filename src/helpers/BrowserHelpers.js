@@ -356,6 +356,11 @@ export const BrowserHelpers = {
         : ''
       delete params.StatusBooking
     }
+    if ('MemberGroupID' in filters) {
+      params.MemberGroupID = filters.MemberGroupID
+        ? filters.MemberGroupID.map(item => item.value).join(',')
+        : ''
+    }
     if ('UserServiceIDs' in filters) {
       params.UserServiceIDs = filters?.UserServiceIDs
         ? filters.UserServiceIDs.map(item => item.value).join(',')

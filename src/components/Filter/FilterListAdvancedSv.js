@@ -638,7 +638,21 @@ function FilterListAdvancedSv({
                           )}
                         </>
                       )}
-
+                      {'MemberGroupID' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Nhóm khách hàng</label>
+                          <AsyncSelectGroupsCustomer
+                            isMulti
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="MemberGroupID"
+                            onChange={otp =>
+                              setFieldValue('MemberGroupID', otp, false)
+                            }
+                            value={values.MemberGroupID}
+                          />
+                        </div>
+                      )}
                       {'ShipCode' in values && (
                         <div className="form-group mb-20px">
                           <label>Nhập Ship Code</label>
