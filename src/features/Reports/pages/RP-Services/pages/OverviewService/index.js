@@ -523,6 +523,20 @@ function OverviewService(props) {
           sortable: false
         },
         {
+          key: 'MemberGroups',
+          title: 'Nhóm khách hàng',
+          dataKey: 'MemberGroups',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData.MemberGroups && rowData.MemberGroups.length > 0
+                ? rowData.MemberGroups.map(x => x.Title).toString()
+                : ''}
+            </Text>
+          ),
+          width: 250,
+          sortable: false
+        },
+        {
           key: 'ProServiceName',
           title: 'Dịch vụ gốc',
           dataKey: 'ProServiceName',
