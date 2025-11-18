@@ -434,6 +434,21 @@ function SalaryServices(props) {
           sortable: false
         },
         {
+          key: 'ID_DH',
+          title: 'ID Đơn hàng',
+          dataKey: 'ID_DH',
+          cellRenderer: ({ rowData }) => {
+            let OrderID =
+              rowData?.Salary?.salaryList &&
+              rowData?.Salary?.salaryList.length > 0
+                ? rowData?.Salary?.salaryList[0].OrderID
+                : ''
+            return OrderID
+          },
+          width: 150,
+          sortable: false
+        },
+        {
           key: 'ID_Buoi_Dv',
           title: 'ID Buổi dịch vụ',
           dataKey: 'ID_Buoi_Dv',
