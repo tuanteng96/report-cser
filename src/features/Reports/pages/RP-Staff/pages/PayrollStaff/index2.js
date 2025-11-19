@@ -328,6 +328,15 @@ function PayrollStaff2(props) {
                 (NGUONG_TNCN_CURRENT.PercentDifference / 100)
           }
 
+          if (
+            item?.User?.Address &&
+            (item?.User?.Address.toUpperCase() === 'PART TIME' ||
+              item?.User?.Address.toUpperCase() === 'THỬ VIỆC')
+          ) {
+            THUE_TNCN = newObj['TONG_LUONG_THANG'] * 0.1
+            THU_NHAP_TINH_THUE = 0
+          }
+
           let LUONG_NV_THUC_NHAN = RoundAmount(
             Number(newObj['TONG_LUONG_THANG']) -
               Number(newObj['NLD_TRA'].total) -
