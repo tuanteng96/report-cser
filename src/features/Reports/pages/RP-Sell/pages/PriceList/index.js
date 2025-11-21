@@ -306,29 +306,55 @@ function PriceList(props) {
           key: 'luong_ca',
           title: 'Lương ca',
           dataKey: 'luong_ca',
-          cellRenderer: ({ rowData }) => (
-            <Text tooltipMaxWidth={300}>
-              {rowData.luong_ca_dv_goc &&
-                rowData.luong_ca_dv_goc.map((o, index) => (
-                  <span key={index}>
-                    {o.RootTitle} -{' '}
-                    {o.Luong_ca_cap_bac && o.Luong_ca_cap_bac.length > 0 ? (
-                      <div>
-                        {o.Luong_ca_cap_bac.map((x, idx) => (
-                          <code className="px-2 fw-600 font-size-md" key={idx}>
-                            {x.LevelName} {PriceHelper.formatVND(x?.Salary)}
-                          </code>
-                        )).reduce((prev, curr) => [prev, ', ', curr])}
-                      </div>
-                    ) : (
-                      <code className="fw-600 font-size-md px-2px">
-                        Lương ca {PriceHelper.formatVND(o?.Luong_ca)}
+          cellRenderer: ({ rowData }) => {
+            if (
+              rowData?.Luong_ca > 0 ||
+              (rowData?.Luong_ca_cap_bac &&
+                rowData?.Luong_ca_cap_bac.length > 0)
+            ) {
+              return (
+                <Text tooltipMaxWidth={300}>
+                  {rowData.Luong_ca_cap_bac &&
+                  rowData.Luong_ca_cap_bac.length > 0 ? (
+                    rowData.Luong_ca_cap_bac.map((o, index) => (
+                      <code className="px-2 fw-600 font-size-md" key={index}>
+                        {o.LevelName} {PriceHelper.formatVND(o?.Salary)}
                       </code>
-                    )}
-                  </span>
-                ))}
-            </Text>
-          ),
+                    ))
+                  ) : (
+                    <code className="fw-600 font-size-md px-2px">
+                      Lương ca {PriceHelper.formatVND(rowData?.Luong_ca)}
+                    </code>
+                  )}
+                </Text>
+              )
+            }
+            return (
+              <Text tooltipMaxWidth={300}>
+                {rowData.luong_ca_dv_goc &&
+                  rowData.luong_ca_dv_goc.map((o, index) => (
+                    <span key={index}>
+                      {o.Luong_ca_cap_bac && o.Luong_ca_cap_bac.length > 0 ? (
+                        <div>
+                          {o.Luong_ca_cap_bac.map((x, idx) => (
+                            <code
+                              className="px-2 fw-600 font-size-md"
+                              key={idx}
+                            >
+                              {x.LevelName} {PriceHelper.formatVND(x?.Salary)}
+                            </code>
+                          )).reduce((prev, curr) => [prev, ', ', curr])}
+                        </div>
+                      ) : (
+                        <code className="fw-600 font-size-md px-2px">
+                          Lương ca {PriceHelper.formatVND(o?.Luong_ca)}
+                        </code>
+                      )}
+                    </span>
+                  ))}
+              </Text>
+            )
+          },
           width: 300,
           sortable: false,
           className: 'flex-fill'
