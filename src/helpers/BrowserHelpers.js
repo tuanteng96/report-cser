@@ -207,6 +207,9 @@ export const BrowserHelpers = {
         ? filters.StatusTT.map(item => item.value).join(',')
         : ''
     }
+    if ('Jobs' in filters) {
+      params.Jobs = filters.Jobs ? filters.Jobs.value : ''
+    }
     if ('ProvincesID' in filters) {
       params.ProvincesID = filters.ProvincesID ? filters.ProvincesID.value : ''
     }

@@ -17,6 +17,73 @@ import FilterListLUONG from 'src/components/Filter/FilterListLUONG'
 
 moment.locale('vi')
 
+const RenderSum = ({ Items, loading }) => {
+  const columns = useMemo(() => {
+    return [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) => rowIndex + 1,
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'UserID',
+        title: 'ID Nhân viên',
+        dataKey: 'UserID',
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'UserFullName',
+        title: 'Tên nhân viên',
+        dataKey: 'UserFullName',
+        width: 300,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Value',
+        title: 'Tổng lương',
+        dataKey: 'Value',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Value),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      }
+    ]
+  }, [])
+
+  return (
+    <div className="bg-white rounded mt-15px">
+      <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
+        <div className="fw-500 font-size-lg">Danh sách nhân viên lương ca</div>
+        <div className="d-flex"></div>
+      </div>
+      <div className="p-20px">
+        <ReactTableV7
+          rowKey="ID"
+          columns={columns}
+          data={Items}
+          loading={loading}
+        />
+      </div>
+    </div>
+  )
+}
+
 function SalaryServices(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -68,7 +135,7 @@ function SalaryServices(props) {
 
   const getListSalarys = (isLoading = true, callback) => {
     isLoading && setLoading(true)
-    if (filters.ShowsX === '1') {
+    if (filters.ShowsX === '1' || filters.ShowsX === '3') {
       reportsApi
         .getListStaffSalarySV(BrowserHelpers.getRequestParamsList(filters))
         .then(({ data }) => {
@@ -83,23 +150,26 @@ function SalaryServices(props) {
               Tong_Luong,
               Tong_DV,
               Tong_PP,
-              Tong_Luong_Tat_ca_nhan_vien
+              Tong_Luong_Tat_ca_nhan_vien,
+              sum
             } = {
-              Items: data.result?.Items || [],
+              Items: data.result?.Items || data.result?.List || [],
               Total: data.result?.Total || 0,
               PCount: data.result?.PCount || 0,
               Tong_Luong: data.result?.Tong_Luong || 0,
               Tong_DV: data.result?.Tong_DV || 0,
               Tong_PP: data.result?.Tong_PP || 0,
               Tong_Luong_Tat_ca_nhan_vien:
-                data.result?.Tong_Luong_Tat_ca_nhan_vien || 0
+                data.result?.Tong_Luong_Tat_ca_nhan_vien || 0,
+              sum: data.result?.sum || []
             }
             setListData(Items)
             setTotal({
               Tong_Luong,
               Tong_DV,
               Tong_PP,
-              Tong_Luong_Tat_ca_nhan_vien
+              Tong_Luong_Tat_ca_nhan_vien,
+              sum
             })
             setPageCount(PCount)
             setLoading(false)
@@ -380,7 +450,7 @@ function SalaryServices(props) {
               }
             >
               <div className="d-flex justify-content-end justify-content-md-between align-items-center w-100">
-                {PriceHelper.formatVND(rowData.LuongCa_PPhi.Tong_Luong)}
+                {PriceHelper.formatVND(rowData?.LuongCa_PPhi?.Tong_Luong)}
                 <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning pl-5px"></i>
               </div>
             </OverlayTrigger>
@@ -486,78 +556,190 @@ function SalaryServices(props) {
           sortable: false
         }
       ]
+    } else if (filters.ShowsX === '3') {
+      return [
+        {
+          key: 'index',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex }) =>
+            filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'OrderServiceID',
+          title: 'ID Dịch vụ',
+          dataKey: 'OrderServiceID',
+          width: 150,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'CreateDate',
+          title: 'Thời gian',
+          dataKey: 'CreateDate',
+          cellRenderer: ({ rowData }) =>
+            rowData.CreateDate
+              ? moment(rowData.CreateDate).format('HH:mm DD-MM-YYYY')
+              : 'Không xác định',
+          width: 200,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'StockID',
+          title: 'Cơ sở',
+          dataKey: 'StockID',
+          width: 220,
+          sortable: false
+        },
+        {
+          key: 'UserFullName',
+          title: 'Tên nhân viên',
+          dataKey: 'UserFullName',
+          width: 220,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Value',
+          title: 'Tổng lương',
+          dataKey: 'Value',
+          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Value),
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'ValueSetup',
+          title: 'Theo Setup',
+          dataKey: 'ValueSetup',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.ValueSetup),
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'Extra',
+          title: 'Extra',
+          dataKey: 'Extra',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.ValueExtra),
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'Root.Title',
+          title: 'Dịch vụ gốc',
+          dataKey: 'Root.Title',
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'Prod.Title',
+          title: 'Thẻ dịch vụ',
+          dataKey: 'Prod.Title',
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'Member.FullName',
+          title: 'Khách hàng',
+          dataKey: 'Member.FullName',
+          width: 220,
+          sortable: false
+        },
+        {
+          key: 'Member.MobilePhone',
+          title: 'Số điện thoại',
+          dataKey: 'Member.MobilePhone',
+          width: 200,
+          sortable: false
+        }
+      ]
+    } else {
+      return [
+        {
+          key: 'index',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex }) =>
+            filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'ReceiverName',
+          title: 'Tên nhân viên',
+          dataKey: 'ReceiverName',
+          width: 300,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'CreateDate',
+          title: 'Thời gian',
+          dataKey: 'CreateDate',
+          cellRenderer: ({ rowData }) => (
+            <>{moment(rowData.CreateDate).format('HH:mm DD-MM-YYYY')}</>
+          ),
+          width: 200,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'StockTitle',
+          title: 'Cơ sở',
+          dataKey: 'StockTitle',
+          width: 300,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Value',
+          title: 'Tiền TIP',
+          dataKey: 'Value',
+          cellRenderer: ({ rowData }) => (
+            <>{PriceHelper.formatVND(rowData?.Value)}</>
+          ),
+          width: 200,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Desc',
+          title: 'Nội dung',
+          dataKey: 'Desc',
+          width: 250,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        }
+      ]
     }
-    return [
-      {
-        key: 'index',
-        title: 'STT',
-        dataKey: 'index',
-        cellRenderer: ({ rowIndex }) =>
-          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
-        width: 60,
-        sortable: false,
-        align: 'center',
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'ReceiverName',
-        title: 'Tên nhân viên',
-        dataKey: 'ReceiverName',
-        width: 300,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'CreateDate',
-        title: 'Thời gian',
-        dataKey: 'CreateDate',
-        cellRenderer: ({ rowData }) => (
-          <>{moment(rowData.CreateDate).format('HH:mm DD-MM-YYYY')}</>
-        ),
-        width: 200,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'StockTitle',
-        title: 'Cơ sở',
-        dataKey: 'StockTitle',
-        width: 300,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'Value',
-        title: 'Tiền TIP',
-        dataKey: 'Value',
-        cellRenderer: ({ rowData }) => (
-          <>{PriceHelper.formatVND(rowData?.Value)}</>
-        ),
-        width: 200,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'Desc',
-        title: 'Nội dung',
-        dataKey: 'Desc',
-        width: 250,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      }
-    ]
   }, [filters])
 
   const OpenModalMobile = value => {
@@ -612,54 +794,56 @@ function SalaryServices(props) {
                 {PriceHelper.formatVNDPositive(Total.Tong_Luong_Tat_ca_nhan_vien)}
               </span>
             </div> */}
-            <div className="fw-500 d-flex align-items-center ml-25px">
-              {filters.ShowsX === '1' ? 'Tổng lương' : 'Tổng tip'}
-              {filters.ShowsX === '1' ? (
-                <OverlayTrigger
-                  rootClose
-                  trigger="click"
-                  key="top"
-                  placement="top"
-                  overlay={
-                    <Popover id={`popover-positioned-top`}>
-                      <Popover.Header
-                        className="py-10px text-uppercase fw-600"
-                        as="h3"
-                      >
-                        Chi tiết tổng lương
-                      </Popover.Header>
-                      <Popover.Body className="p-0">
-                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                          <span>Tổng lương dịch vụ</span>
-                          <span>
-                            {PriceHelper.formatVNDPositive(Total.Tong_DV)}
-                          </span>
-                        </div>
-                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                          <span>Tổng lương phụ phí</span>
-                          <span>
-                            {PriceHelper.formatVNDPositive(Total.Tong_PP)}
-                          </span>
-                        </div>
-                      </Popover.Body>
-                    </Popover>
-                  }
-                >
+            {filters.ShowsX !== '3' && (
+              <div className="fw-500 d-flex align-items-center ml-25px">
+                {filters.ShowsX === '1' ? 'Tổng lương' : 'Tổng tip'}
+                {filters.ShowsX === '1' ? (
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    key="top"
+                    placement="top"
+                    overlay={
+                      <Popover id={`popover-positioned-top`}>
+                        <Popover.Header
+                          className="py-10px text-uppercase fw-600"
+                          as="h3"
+                        >
+                          Chi tiết tổng lương
+                        </Popover.Header>
+                        <Popover.Body className="p-0">
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                            <span>Tổng lương dịch vụ</span>
+                            <span>
+                              {PriceHelper.formatVNDPositive(Total.Tong_DV)}
+                            </span>
+                          </div>
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                            <span>Tổng lương phụ phí</span>
+                            <span>
+                              {PriceHelper.formatVNDPositive(Total.Tong_PP)}
+                            </span>
+                          </div>
+                        </Popover.Body>
+                      </Popover>
+                    }
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {PriceHelper.formatVNDPositive(Total.Tong_Luong)}
+                      </span>
+                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
+                    </div>
+                  </OverlayTrigger>
+                ) : (
                   <div className="d-flex justify-content-between align-items-center">
                     <span className="font-size-xl fw-600 text-success pl-5px font-number">
                       {PriceHelper.formatVNDPositive(Total.Tong_Luong)}
                     </span>
-                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                   </div>
-                </OverlayTrigger>
-              ) : (
-                <div className="d-flex justify-content-between align-items-center">
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVNDPositive(Total.Tong_Luong)}
-                  </span>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="p-20px">
@@ -682,6 +866,9 @@ function SalaryServices(props) {
           data={initialValuesMobile}
         />
       </div>
+      {filters.ShowsX === '3' && (
+        <RenderSum Items={Total?.sum || []} loading={loading} />
+      )}
     </div>
   )
 }

@@ -236,6 +236,10 @@ function FilterListLUONG({
                           {
                             label: 'TIP',
                             value: '2'
+                          },
+                          {
+                            label: 'Nâng cao',
+                            value: '3'
                           }
                         ]}
                         className="select-control"
@@ -247,6 +251,10 @@ function FilterListLUONG({
                           {
                             label: 'TIP',
                             value: '2'
+                          },
+                          {
+                            label: 'Nâng cao',
+                            value: '3'
                           }
                         ].filter(
                           item => Number(item.value) === Number(values?.ShowsX)
@@ -341,7 +349,7 @@ function FilterListLUONG({
                     </div>
                   )}
 
-                  {values.ShowsX !== '2' && (
+                  {(values.ShowsX !== '2' && values.ShowsX !== '3') && (
                     <>
                       {'MemberID' in values && (
                         <div className="form-group mb-20px">
@@ -376,7 +384,7 @@ function FilterListLUONG({
                     </div>
                   )}
 
-                  {values.ShowsX !== '2' && (
+                  {(values.ShowsX !== '2' && values.ShowsX !== '3') && (
                     <>
                       {'ServiceCardID' in values && (
                         <div className="form-group mb-20px">

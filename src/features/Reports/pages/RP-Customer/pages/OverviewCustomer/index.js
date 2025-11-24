@@ -80,7 +80,8 @@ function OverviewCustomer() {
     ProvincesID: '', // ID Thành phố
     DistrictsID: '', //ID Huyện
     SourceName: '', // ID Nguồn
-    StaffID: ''
+    StaffID: '',
+    Jobs: ''
   })
   const [StockName, setStockName] = useState('')
   const [OverviewData, setOverviewData] = useState(null)
@@ -356,6 +357,7 @@ function OverviewCustomer() {
         width: 220,
         sortable: false
       },
+
       {
         key: 'AFF',
         title: 'Người giới thiệu',
@@ -367,6 +369,13 @@ function OverviewCustomer() {
             {rowData.AFF ? `#${rowData.AFF?.MID} - ${rowData.AFF?.Name}` : ''}
           </Text>
         )
+      },
+      {
+        key: 'Jobs',
+        title: 'Nghề nghiệp',
+        dataKey: 'Jobs',
+        width: 200,
+        sortable: false
       },
       {
         key: 'GroupCustomerName',

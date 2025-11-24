@@ -31,6 +31,7 @@ import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import moment from 'moment'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { SelectJobs } from '../Selects/SelectJobs'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -95,7 +96,21 @@ function FilterList({
   updateStocksRole,
   limitDateType = 'THEO_NGAY',
   noMaximum = false,
-  limitEndMonth = false
+  limitEndMonth = false,
+  ShowsXOptions = [
+    {
+      label: 'Nhanh',
+      value: '2'
+    },
+    {
+      label: 'Tiêu Chuẩn',
+      value: '0'
+    },
+    {
+      label: 'Tách dòng',
+      value: '1'
+    }
+  ]
 }) {
   const {
     Stocks,
@@ -419,35 +434,9 @@ function FilterList({
                         name="ShowsX"
                         placeholder="Chọn chế độ"
                         classNamePrefix="select"
-                        options={[
-                          {
-                            label: 'Nhanh',
-                            value: '2'
-                          },
-                          {
-                            label: 'Tiêu Chuẩn',
-                            value: '0'
-                          },
-                          {
-                            label: 'Tách dòng',
-                            value: '1'
-                          }
-                        ]}
+                        options={ShowsXOptions}
                         className="select-control"
-                        value={[
-                          {
-                            label: 'Nhanh',
-                            value: '2'
-                          },
-                          {
-                            label: 'Tiêu Chuẩn',
-                            value: '0'
-                          },
-                          {
-                            label: 'Tách dòng',
-                            value: '1'
-                          }
-                        ].filter(
+                        value={ShowsXOptions.filter(
                           item => Number(item.value) === Number(values?.ShowsX)
                         )}
                         onChange={otp => {
@@ -1625,6 +1614,28 @@ function FilterList({
                           setFieldValue('SourceName', otp, false)
                         }}
                         value={values.SourceName}
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'Jobs' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Nghề nghiệp</label>
+                      <SelectJobs
+                        className="select-control"
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="Jobs"
+                        onChange={otp => {
+                          setFieldValue('Jobs', otp, false)
+                        }}
+                        value={values.Jobs}
                         menuPortalTarget={document.body}
                         styles={{
                           menuPortal: base => ({

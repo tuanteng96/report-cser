@@ -18,6 +18,156 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 moment.locale('vi')
 
+const RenderSum = ({ Items, loading }) => {
+  const columns = useMemo(() => {
+    return [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowIndex }) => rowIndex + 1,
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'nv_id',
+        title: 'ID Nhân viên',
+        dataKey: 'nv_id',
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'nhan_vien',
+        title: 'Tên nhân viên',
+        dataKey: 'nhan_vien',
+        width: 300,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'gia_tri',
+        title: 'Tổng hoa hồng',
+        dataKey: 'gia_tri',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.gia_tri),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'gia_tri_sanpham',
+        title: 'HH sản phẩm',
+        dataKey: 'gia_tri_sanpham',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.gia_tri_sanpham),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'gia_tri_dichvu',
+        title: 'HH dịch vụ',
+        dataKey: 'gia_tri_dichvu',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.gia_tri_dichvu),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'gia_tri_thetien',
+        title: 'HH thẻ tiền',
+        dataKey: 'gia_tri_thetien',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.gia_tri_thetien),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'gia_tri_nvl',
+        title: 'HH NVL',
+        dataKey: 'gia_tri_nvl',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.gia_tri_nvl),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'gia_tri_phuphi',
+        title: 'HH phụ phí',
+        dataKey: 'gia_tri_phuphi',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.gia_tri_phuphi),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'khau_tru',
+        title: 'Khấu trừ',
+        dataKey: 'khau_tru',
+        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData?.khau_tru),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'gia_tri',
+        title: 'Còn lại',
+        dataKey: 'gia_tri',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.gia_tri - rowData?.khau_tru),
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      }
+    ]
+  }, [])
+
+  return (
+    <div className="bg-white rounded mt-15px">
+      <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
+        <div className="fw-500 font-size-lg">Hoa hồng nhân viên</div>
+        <div className="d-flex"></div>
+      </div>
+      <div className="p-20px">
+        <ReactTableV7
+          rowKey="ID"
+          columns={columns}
+          data={Items}
+          loading={loading}
+        />
+      </div>
+    </div>
+  )
+}
+
 const convertArray = arrays => {
   const newArray = []
   if (!arrays || arrays.length === 0) {
@@ -68,7 +218,8 @@ function RoseStaff(props) {
     CategoriesId: '', // ID 1 danh mục
     BrandId: '', //ID 1 nhãn hàng
     ProductId: '', // ID 1 SP, DV, NVL, ...
-    ProdOrService: ''
+    ProdOrService: '',
+    ShowsX: '1'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -80,7 +231,8 @@ function RoseStaff(props) {
   const [TotalHoaHong, setTotalHoaHong] = useState({
     TongHoaHong: 0,
     KhauTru: 0,
-    TongThucHoahong: 0
+    TongThucHoahong: 0,
+    sum: []
   })
   const [PageTotal, setPageTotal] = useState(0)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
@@ -118,18 +270,20 @@ function RoseStaff(props) {
             PCount,
             TongHoaHong,
             TongThucHoahong,
-            KhauTru
+            KhauTru,
+            sum
           } = {
-            Items: data.result?.Items || [],
+            Items: data.result?.List || data.result?.Items || [],
             TongHoaHong: data.result?.TongHoaHong || 0,
             KhauTru: data.result?.KhauTru || 0,
             TongThucHoahong: data.result?.TongThucHoahong || 0,
             Total: data.result?.Total || 0,
-            PCount: data?.result?.PCount || 0
+            PCount: data?.result?.PCount || 0,
+            sum: data?.result?.sum || []
           }
-          setListData(convertArray(Items))
+          setListData(filters.ShowsX === '3' ? Items : convertArray(Items))
           setListDataMobile(Items)
-          setTotalHoaHong({ TongHoaHong, TongThucHoahong, KhauTru })
+          setTotalHoaHong({ TongHoaHong, TongThucHoahong, KhauTru, sum })
           setLoading(false)
           setPageTotal(Total)
           setPageCount(PCount)
@@ -175,8 +329,178 @@ function RoseStaff(props) {
     })
   }
 
-  const columns = useMemo(
-    () => [
+  const columns = useMemo(() => {
+    if (filters.ShowsX === '3') {
+      return [
+        {
+          key: 'ngay',
+          title: 'Ngày',
+          dataKey: 'ngay',
+          cellRenderer: ({ rowData }) =>
+            moment(rowData.ngay).format('DD/MM/YYYY'),
+          width: 180,
+          sortable: false,
+          rowSpan: ({ rowData }) => AmountMember(rowData.StaffsList),
+          mobileOptions: {
+            visible: true
+          },
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'nhan_vien',
+          title: 'Nhân viên',
+          dataKey: 'nhan_vien',
+          width: 250,
+          sortable: false,
+          rowSpan: ({ rowData }) =>
+            rowData.OrdersList && rowData.OrdersList.length > 0
+              ? rowData.OrdersList.length
+              : 1,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'khau_tru',
+          title: 'Hoa hồng',
+          dataKey: 'khau_tru',
+          cellRenderer: ({ rowData }) =>
+            rowData.tra_lai_don_hang
+              ? PriceHelper.formatVND(rowData.khau_tru)
+              : PriceHelper.formatVND(rowData.gia_tri),
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'sp_dv',
+          title: 'SP/DV',
+          dataKey: 'sp_dv',
+          width: 250,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'khach_hang',
+          title: 'Khách hàng',
+          dataKey: 'khach_hang',
+          width: 250,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'kh_sdt',
+          title: 'Số điện thoại',
+          dataKey: 'kh_sdt',
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'StockTitle',
+          title: 'Cơ sở',
+          dataKey: 'StockTitle',
+          width: 280,
+          sortable: false,
+          rowSpan: ({ rowData }) =>
+            rowData.OrdersList && rowData.OrdersList.length > 0
+              ? rowData.OrdersList.length
+              : 1,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'don_hang',
+          title: 'Đơn hàng',
+          dataKey: 'don_hang',
+          cellRenderer: ({ rowData }) => `#${rowData.don_hang}`,
+          width: 120,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'gia_tri_sanpham',
+          title: 'HH sản phẩm',
+          dataKey: 'gia_tri_sanpham',
+          cellRenderer: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? (
+              <></>
+            ) : (
+              PriceHelper.formatVND(rowData.gia_tri_sanpham)
+            ),
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'gia_tri_dichvu',
+          title: 'HH Dịch vụ',
+          dataKey: 'gia_tri_dichvu',
+          cellRenderer: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? (
+              <></>
+            ) : (
+              PriceHelper.formatVND(rowData.gia_tri_dichvu)
+            ),
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'gia_tri_thetien',
+          title: 'HH thẻ tiền',
+          dataKey: 'gia_tri_thetien',
+          cellRenderer: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? (
+              <></>
+            ) : (
+              PriceHelper.formatVND(rowData.gia_tri_thetien)
+            ),
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'gia_tri_nvl',
+          title: 'HH NVL',
+          dataKey: 'gia_tri_nvl',
+          cellRenderer: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? (
+              <></>
+            ) : (
+              PriceHelper.formatVND(rowData.gia_tri_nvl)
+            ),
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'gia_tri_phuphi',
+          title: 'HH Phụ phí',
+          dataKey: 'gia_tri_phuphi',
+          cellRenderer: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? (
+              <></>
+            ) : (
+              PriceHelper.formatVND(rowData.gia_tri_phuphi)
+            ),
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        }
+      ]
+    }
+    return [
       {
         key: 'CreateDate',
         title: 'Ngày',
@@ -326,14 +650,15 @@ function RoseStaff(props) {
         dataKey: 'Lines',
         cellRenderer: ({ rowData }) => (
           <Text tooltipMaxWidth={300}>
-            {rowData.Lines.map(
-              line =>
-                `${line.ProdTitle} ( ${
-                  line.GiaTri > 0
-                    ? PriceHelper.formatVND(line.GiaTri)
-                    : `- ${PriceHelper.formatVND(line.KhauTru)}`
-                } )`
-            ).join(', ')}
+            {rowData.Lines &&
+              rowData.Lines.map(
+                line =>
+                  `${line.ProdTitle} ( ${
+                    line.GiaTri > 0
+                      ? PriceHelper.formatVND(line.GiaTri)
+                      : `- ${PriceHelper.formatVND(line.KhauTru)}`
+                  } )`
+              ).join(', ')}
           </Text>
         ),
         width: 350,
@@ -341,9 +666,8 @@ function RoseStaff(props) {
         className: ({ rowData }) =>
           rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
       }
-    ],
-    []
-  )
+    ]
+  }, [filters])
 
   const onPagesChange = ({ Pi, Ps }) => {
     setFilters({ ...filters, Pi, Ps })
@@ -397,7 +721,7 @@ function RoseStaff(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Nhân viên hoa hồng
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -407,7 +731,7 @@ function RoseStaff(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -424,60 +748,74 @@ function RoseStaff(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        ShowsXOptions={[
+          {
+            label: 'Cơ bản',
+            value: '1'
+          },
+          {
+            label: 'Nâng cao',
+            value: '3'
+          }
+        ]}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-md-center justify-content-between flex-column flex-md-row">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-md-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">
             Danh sách hoa hồng nhân viên
           </div>
-          <div className="fw-500 d-flex align-items-center ml-25px">
-            Tổng hoa hồng
-            <OverlayTrigger
-              rootClose
-              trigger="click"
-              key="top"
-              placement="top"
-              overlay={
-                <Popover id={`popover-positioned-top`}>
-                  <Popover.Header
-                    className="py-10px text-uppercase fw-600"
-                    as="h3"
-                  >
-                    Chi tiết hoa hồng
-                  </Popover.Header>
-                  <Popover.Body className="p-0">
-                    <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
-                      <span>Tổng</span>
-                      <span>
-                        {PriceHelper.formatVNDPositive(
-                          TotalHoaHong.TongHoaHong
-                        )}
-                      </span>
-                    </div>
-                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                      <span>Khấu trừ</span>
-                      <span className="text-danger">
-                        {PriceHelper.formatVNDPositive(TotalHoaHong.KhauTru)}
-                      </span>
-                    </div>
-                  </Popover.Body>
-                </Popover>
-              }
-            >
-              <div className="d-flex justify-content-between align-items-center">
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PriceHelper.formatVNDPositive(TotalHoaHong.TongThucHoahong)}
-                </span>
-                <i className="fa-solid fa-circle-exclamation cursor-pointer text-success ml-5px"></i>
-              </div>
-            </OverlayTrigger>
-          </div>
+          {filters.ShowsX !== '3' && (
+            <div className="fw-500 d-flex align-items-center ml-25px">
+              Tổng hoa hồng
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Header
+                      className="py-10px text-uppercase fw-600"
+                      as="h3"
+                    >
+                      Chi tiết hoa hồng
+                    </Popover.Header>
+                    <Popover.Body className="p-0">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                        <span>Tổng</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(
+                            TotalHoaHong.TongHoaHong
+                          )}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                        <span>Khấu trừ</span>
+                        <span className="text-danger">
+                          {PriceHelper.formatVNDPositive(TotalHoaHong.KhauTru)}
+                        </span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {PriceHelper.formatVNDPositive(
+                      TotalHoaHong.TongThucHoahong
+                    )}
+                  </span>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
+                </div>
+              </OverlayTrigger>
+            </div>
+          )}
         </div>
         <div className="p-20px">
           <ReactTableV7
             rowKey="Ids"
             overscanRowCount={50}
-            useIsScrolling
+            useIsScrolling={filters.ShowsX !== '3'}
             filters={filters}
             columns={columns}
             data={ListData}
@@ -488,7 +826,7 @@ function RoseStaff(props) {
             optionMobile={{
               CellModal: cell => OpenModalMobile(cell)
             }}
-            rowRenderer={rowRenderer}
+            rowRenderer={filters.ShowsX !== '3' && rowRenderer}
           />
         </div>
         <ModalViewMobile
@@ -497,6 +835,9 @@ function RoseStaff(props) {
           data={initialValuesMobile}
         />
       </div>
+      {filters.ShowsX === '3' && (
+        <RenderSum Items={TotalHoaHong?.sum || []} loading={loading} />
+      )}
     </div>
   )
 }
