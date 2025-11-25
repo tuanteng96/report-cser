@@ -250,7 +250,7 @@ function SalaryServices(props) {
   }
 
   const onExport = () => {
-    if (filters.ShowsX === '1') {
+    if (filters.ShowsX === '1' || filters.ShowsX === '3') {
       PermissionHelpers.ExportExcel({
         FuncStart: () => setLoadingExport(true),
         FuncEnd: () => setLoadingExport(false),
@@ -596,9 +596,9 @@ function SalaryServices(props) {
           }
         },
         {
-          key: 'StockID',
+          key: 'Stock.Title',
           title: 'Cơ sở',
-          dataKey: 'StockID',
+          dataKey: 'Stock.Title',
           width: 220,
           sortable: false
         },
