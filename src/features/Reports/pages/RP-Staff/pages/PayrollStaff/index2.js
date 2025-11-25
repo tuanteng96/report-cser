@@ -219,6 +219,10 @@ function PayrollStaff2(props) {
               Math.round(item?.TrackValue?.WorkQty)
           )
 
+          if (newObj['PHU_CAP_AN_TRUA'] > 300000) {
+            newObj['PHU_CAP_AN_TRUA'] = 300000
+          }
+
           let WorkTimeSetting = item?.User?.WorkTimeSetting
             ? JSON.parse(item?.User?.WorkTimeSetting)
             : null
