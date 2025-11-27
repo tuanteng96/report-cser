@@ -37,7 +37,8 @@ const convertArray = arrays => {
             TTToanNoCustomer: customer.TTToanNo,
             ...obj,
             rowIndex: index,
-            Ids: uuidv4()
+            Ids: uuidv4(),
+            rowSpanIndex: k
           }
           if (x === 0 && o === 0 && k === 0) {
           } else {
@@ -369,13 +370,26 @@ function DebtPayment(props) {
   }
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    if (isScrolling)
-      return (
-        <div className="pl-15px d-flex align-items">
-          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
-        </div>
-      )
+    // if (isScrolling)
+    //   return (
+    //     <div className="pl-15px d-flex align-items">
+    //       <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+    //     </div>
+    //   )
     const indexList = [0, 1, 2, 3, 4, 5, 6]
+
+    if (rowData.rowSpanIndex > 0) {
+      indexList.forEach(i => {
+        const cell = cells[i]
+
+        // replace nội dung cell bằng rỗng
+        cells[i] = React.cloneElement(cell, {
+          children: null,
+          border: 'none'
+        })
+      })
+    }
+
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
       if (rowSpan > 1) {

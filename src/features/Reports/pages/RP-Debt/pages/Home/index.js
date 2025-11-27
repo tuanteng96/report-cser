@@ -33,7 +33,8 @@ const convertArray = arrays => {
           OrderTongNo: order.TongNo,
           ...obj,
           rowIndex: index,
-          Ids: uuidv4()
+          Ids: uuidv4(),
+          _debtIndex: o
         }
         if (x === 0 && o === 0) {
         } else {
@@ -630,27 +631,49 @@ function Home(props) {
   }, [ListData, filters])
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    if (Number(filters.ShowsType) !== 2 && isScrolling)
-      return (
-        <div className="pl-15px d-flex align-items">
-          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
-        </div>
-      )
-    const indexList = [0, 1, 2, 3, 4, 5, 6]
-    for (let index of indexList) {
-      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
-      if (rowSpan > 1) {
+    // if (isScrolling && Number(filters.ShowsType) !== 2)
+    //   return (
+    //     <div className="pl-15px d-flex align-items">
+    //       <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+    //     </div>
+    //   )
+    const indexList = [0, 1, 2, 3, 4, 5, 6] // cột rowSpan
+    if (rowData._debtIndex > 0) {
+      indexList.forEach(index => {
         const cell = cells[index]
-        const style = {
-          ...cell.props.style,
-          backgroundColor: '#fff',
-          height: rowSpan * 50 - 1,
-          alignSelf: 'flex-start',
-          zIndex: 1
+        if (!cell) return
+        cells[index] = React.cloneElement(cell, {
+          children: null, // làm rỗng nội dung
+          style: {
+            ...cell.props.style,
+            border: 'none', // bỏ border
+            backgroundColor: '#fff',
+            height: columns[index].rowSpan({ rowData, rowIndex }) * 50 - 1,
+            alignSelf: 'flex-start',
+            zIndex: 0
+          }
+        })
+      })
+    } else {
+      // Dòng đầu vẫn giữ style rowSpan
+      indexList.forEach(index => {
+        const cell = cells[index]
+        if (!cell) return
+        const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+        if (rowSpan > 1) {
+          cells[index] = React.cloneElement(cell, {
+            style: {
+              ...cell.props.style,
+              backgroundColor: '#fff',
+              height: rowSpan * 50 - 1,
+              alignSelf: 'flex-start',
+              zIndex: 1
+            }
+          })
         }
-        cells[index] = React.cloneElement(cell, { style })
-      }
+      })
     }
+
     return cells
   }
 

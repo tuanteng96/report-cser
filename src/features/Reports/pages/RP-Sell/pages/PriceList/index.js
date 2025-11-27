@@ -35,7 +35,8 @@ const convertArray = arrays => {
         rowIndex: index,
         NVLTT: NVL && NVL.length > 0 ? NVL[i] : null,
         NVLG: Root.NVL && Root.NVL.length > 0 ? Root.NVL[i] : null,
-        rowSpan: i !== 0 ? 1 : count
+        rowSpan: i !== 0 ? 1 : count,
+        rowSpanIndex: i
       }
       newArray.push(object)
     }
@@ -471,13 +472,26 @@ function PriceList(props) {
   }
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    if (isScrolling)
-      return (
-        <div className="pl-15px d-flex align-items">
-          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
-        </div>
-      )
+    // if (isScrolling)
+    //   return (
+    //     <div className="pl-15px d-flex align-items">
+    //       <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+    //     </div>
+    //   )
     const indexList = [0, 1, 2]
+
+    if (rowData.rowSpanIndex > 0) {
+      indexList.forEach(i => {
+        const cell = cells[i]
+
+        // replace nội dung cell bằng rỗng
+        cells[i] = React.cloneElement(cell, {
+          children: null,
+          border: 'none'
+        })
+      })
+    }
+
     for (let index of indexList) {
       const rowSpan =
         columns[index] &&

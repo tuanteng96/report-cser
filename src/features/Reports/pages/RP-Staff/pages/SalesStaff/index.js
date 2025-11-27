@@ -481,16 +481,29 @@ function SalesStaff(props) {
   }
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    if (isScrolling)
-      return (
-        <div className="pl-15px d-flex align-items">
-          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
-        </div>
-      )
+    // if (isScrolling)
+    //   return (
+    //     <div className="pl-15px d-flex align-items">
+    //       <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+    //     </div>
+    //   )
     let indexList = [0, 1, 2, 3, 4]
     if (GlobalConfig?.Admin?.kpi_ngay) {
       indexList.push(5)
     }
+
+    if (rowData.rowSpanIndex > 0) {
+      indexList.forEach(i => {
+        const cell = cells[i]
+
+        // replace nội dung cell bằng rỗng
+        cells[i] = React.cloneElement(cell, {
+          children: null,
+          border: 'none'
+        })
+      })
+    }
+    
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
       if (rowSpan > 1) {

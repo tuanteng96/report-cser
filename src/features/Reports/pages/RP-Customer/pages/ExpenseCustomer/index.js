@@ -32,7 +32,8 @@ const convertArray = arrays => {
         CoSoMuaHang: order.StockName,
         NgayMuaHang: order.CreateDate,
         rowIndex: index,
-        Id: uuidv4()
+        Id: uuidv4(),
+        rowSpanIndex: x
       }
       if (x !== 0) delete newObj.OrdersList
       newArray.push(newObj)
@@ -329,11 +330,11 @@ function ExpenseCustomer(props) {
                   Chi tiết thanh toán #{rowData.ID}
                 </Popover.Header>
                 <Popover.Body className="p-0">
-                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                     <span>Tiền mặt</span>
                     <span>{PriceHelper.formatVND(rowData.TM)}</span>
                   </div>
-                  <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                     <span>Chuyển khoản</span>
                     <span>{PriceHelper.formatVND(rowData.CK)}</span>
                   </div>
@@ -347,7 +348,7 @@ function ExpenseCustomer(props) {
           >
             <div className="d-flex justify-content-between align-items-center w-100">
               {PriceHelper.formatVND(rowData.DaThanhToan)}
-              <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning"></i>
+              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning"></i>
             </div>
           </OverlayTrigger>
         ),
@@ -375,13 +376,26 @@ function ExpenseCustomer(props) {
   )
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    if (isScrolling)
-      return (
-        <div className="pl-15px d-flex align-items">
-          <div className="spinner spinner-primary w-40px"></div> Đang tải ...
-        </div>
-      )
+    // if (isScrolling)
+    //   return (
+    //     <div className="pl-15px d-flex align-items">
+    //       <div className="spinner spinner-primary w-40px"></div> Đang tải ...
+    //     </div>
+    //   )
     const indexList = [0, 1, 2, 3, 4, 5]
+
+    if (rowData.rowSpanIndex > 0) {
+      indexList.forEach(i => {
+        const cell = cells[i]
+
+        // replace nội dung cell bằng rỗng
+        cells[i] = React.cloneElement(cell, {
+          children: null,
+          border: 'none'
+        })
+      })
+    }
+
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
       if (rowSpan > 1) {
@@ -403,7 +417,7 @@ function ExpenseCustomer(props) {
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
         <div className="flex-1">
-          <span className="text-uppercase text-uppercase font-size-xl fw-600">
+          <span className="text-uppercase font-size-xl fw-600">
             Khách hàng chi tiêu
           </span>
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
@@ -413,7 +427,7 @@ function ExpenseCustomer(props) {
         <div className="w-85px d-flex justify-content-end">
           <button
             type="button"
-            className="btn btn-primary p-0 w-40px h-35px"
+            className="p-0 btn btn-primary w-40px h-35px"
             onClick={onOpenFilter}
           >
             <i className="fa-regular fa-filters font-size-lg mt-5px"></i>
@@ -432,7 +446,7 @@ function ExpenseCustomer(props) {
         onExport={onExport}
       />
       <div className="bg-white rounded">
-        <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between">
+        <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
         </div>
         <div className="p-20px">
