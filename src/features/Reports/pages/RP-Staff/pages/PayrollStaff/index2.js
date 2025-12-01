@@ -275,10 +275,14 @@ function PayrollStaff2(props) {
               LUONG_NOP_BHXH * (1 / 100)
           }
 
+          newObj['TAM_UNG'] =
+            (newObj?.BANGLUONGBC?.TAM_UNG || 0) -
+            (newObj?.BANGLUONGBC?.HOAN_UNG || 0)
+
           newObj['PHU_CAP_NGOAI_GIO'] = 0
-            //item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
+          //item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
           newObj['PHAT_DI_TRE_VE_SOM'] = 0
-            //item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
+          //item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
 
           newObj['TONG_PHU_CAP'] =
             (newObj.PHU_CAP_CHUC_VU || 0) +
@@ -354,12 +358,60 @@ function PayrollStaff2(props) {
           let TONG_QUY_LUONG_CTY_TRA =
             Number(LUONG_NV_THUC_NHAN) + Number(newObj['NSD_LD_TRA'].total)
 
+          let TONG = newObj?.LUONG_CO_BAN_THANG || 0
+
+          if (newObj?.TINH_THEO_CONG) {
+            TONG += newObj?.LUONG_THEO_NGAY_CONG || 0
+          } else {
+            TONG += (newObj?.GIO_PARTIME || 0) + (newObj?.LUONG_THEO_GIO || 0)
+          }
+
+          TONG +=
+            (newObj?.PHU_CAP_CHUC_VU || 0) + (newObj?.PHU_CAP_THAM_NIEN || 0)
+
+          if (GlobalConfig?.Admin?.chiphikhacbangluong) {
+            TONG += newObj?.PHAT_SINH_KHAC || 0
+          }
+
+          TONG +=
+            (newObj?.PHU_CAP_CHUYEN_CAN || 0) +
+            (newObj?.PHU_CAP_AN_TRUA || 0) +
+            (newObj?.BANGLUONGBC?.LUONG_CA || 0) +
+            (newObj?.BANGLUONGBC?.HOA_HONG_Sanpham || 0) +
+            (newObj?.BANGLUONGBC?.HOA_HONG_Dichvu || 0) +
+            (newObj?.BANGLUONGBC?.HOA_HONG_Thetien || 0)
+
+          if (!GlobalConfig?.Admin?.bc_an_hhpp_hhnvl) {
+            TONG +=
+              (newObj?.BANGLUONGBC?.HOA_HONG_Phuphi || 0) +
+              (newObj?.BANGLUONGBC?.HOA_HONG_NVL || 0)
+          }
+
+          TONG +=
+            (newObj?.PHU_CAP_NGOAI_GIO || 0) +
+            (newObj?.PHAT_DI_TRE_VE_SOM || 0) +
+            (newObj?.BANGLUONGBC?.TRU_PHAT || 0) +
+            (newObj?.BANGLUONGBC?.THUONG || 0) +
+            (newObj?.BANGLUONGBC?.KPI_Hoa_hong || 0) +
+            (newObj?.TONG_PHU_CAP || 0) +
+            (newObj?.TONG_LUONG_THANG || 0) +
+            (newObj?.LUONG_NOP_BHXH || 0) +
+            (newObj?.NSD_LD_TRA['total'] || 0) +
+            (newObj?.NLD_TRA['total'] || 0) +
+            (newObj?.GIAM_TRU_GIA_CANH || 0) +
+            (newObj?.THU_NHAP_TINH_THUE || 0) +
+            (newObj?.THUE_TNCN || 0) +
+            (newObj?.TAM_UNG || 0) +
+            (newObj?.LUONG_NV_THUC_NHAN || 0) +
+            (newObj?.TONG_QUY_LUONG_CTY_TRA || 0)
+
           return {
             ...newObj,
             THU_NHAP_TINH_THUE,
             THUE_TNCN,
             LUONG_NV_THUC_NHAN,
-            TONG_QUY_LUONG_CTY_TRA
+            TONG_QUY_LUONG_CTY_TRA,
+            TONG
           }
         })
       return rs.filter(x => x?.User?.Gender > 0)
@@ -710,6 +762,12 @@ function PayrollStaff2(props) {
                     >
                       Tổng quỹ lương CTY trả
                     </th>
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
+                      Tổng
+                    </th>
                   </tr>
                   <tr>
                     {/* ------- */}
@@ -927,10 +985,7 @@ function PayrollStaff2(props) {
                           {PriceHelper.formatVND(rowData?.THUE_TNCN)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
-                            rowData?.BANGLUONGBC?.TAM_UNG -
-                              rowData?.BANGLUONGBC?.HOAN_UNG
-                          )}
+                          {PriceHelper.formatVND(rowData?.TAM_UNG)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.LUONG_NV_THUC_NHAN)}
@@ -939,6 +994,9 @@ function PayrollStaff2(props) {
                           {PriceHelper.formatVND(
                             rowData?.TONG_QUY_LUONG_CTY_TRA
                           )}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.TONG)}
                         </td>
                       </tr>
                     ))}
