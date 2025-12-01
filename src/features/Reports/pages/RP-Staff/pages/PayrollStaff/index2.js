@@ -275,10 +275,10 @@ function PayrollStaff2(props) {
               LUONG_NOP_BHXH * (1 / 100)
           }
 
-          newObj['PHU_CAP_NGOAI_GIO'] =
-            item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
-          newObj['PHAT_DI_TRE_VE_SOM'] =
-            item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
+          newObj['PHU_CAP_NGOAI_GIO'] = 0
+            //item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
+          newObj['PHAT_DI_TRE_VE_SOM'] = 0
+            //item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
 
           newObj['TONG_PHU_CAP'] =
             (newObj.PHU_CAP_CHUC_VU || 0) +
