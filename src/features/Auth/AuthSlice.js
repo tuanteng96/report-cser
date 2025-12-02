@@ -47,7 +47,7 @@ if (DevHelpers.isDevelopment()) {
     CrStockID: 11626,
     rightsSum: {
       report: {
-        IsAllStock: false,
+        IsAllStock: true,
         hasRight: true,
         stocks: [
           {

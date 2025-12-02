@@ -46,26 +46,69 @@ function AsyncSelectStaffs({
     if (StocksList && StocksList.findIndex(o => !o.value) === -1) {
       const stockIds = new Set(StocksList.map(x => x.ID))
 
-      newData = newData.reduce((acc, item) => {
-        const obj = { ...item }
+      newData = newData
+        .map(item => {
+          const obj = { ...item }
 
-        // Lọc options nếu groupid không thuộc stockIds
-        if (!stockIds.has(obj.groupid)) {
-          obj.options = (obj.options || []).filter(k =>
-            stockIds.has(k?.source?.StockID)
-          )
-        }
+          // Nếu groupid không thuộc StocksList → lọc options
+          if (!stockIds.has(item.groupid)) {
+            obj.options2 = (item.options || []).filter(k =>
+              stockIds.has(k?.source?.StockID)
+            )
+          }
 
-        // Điều kiện giữ lại
-        if (stockIds.has(obj.groupid) || obj.options.length > 0) {
-          acc.push(obj)
-        }
+          return obj
+        })
+        .filter(obj => {
+          // Giữ lại item có groupid hợp lệ
+          if (stockIds.has(obj.groupid)) return true
 
-        return acc
-      }, [])
+          // Hoặc options2 > 0
+          return obj.options2 && obj.options2.length > 0
+        })
+        .map(obj => {
+          // Nếu có options2 → thay options
+          if (obj.options2 && obj.options2.length > 0) {
+            return { ...obj, options: obj.options2 }
+          }
+          return obj
+        })
+
+      const map = new Map()
+      newData.forEach(item => {
+        map.set(item.groupid, { ...item, options: [...item.options] })
+      })
+
+      // Xử lý chuyển option
+      newData.forEach(item => {
+        item.options.forEach(opt => {
+          const targetId = opt.source.StockID
+
+          // Nếu option không thuộc groupid hiện tại → cần chuyển
+          if (targetId !== item.groupid) {
+            const currentGroup = map.get(item.groupid)
+            const targetGroup = map.get(targetId)
+
+            // Xóa option khỏi group cũ
+            currentGroup.options = currentGroup.options.filter(
+              o => o.id !== opt.id
+            )
+
+            // Và group đích tồn tại
+            if (targetGroup) {
+              // **Chỉ thêm nếu chưa có**
+              const exists = targetGroup.options.some(o => o.id === opt.id)
+              if (!exists) {
+                targetGroup.options.push(opt)
+              }
+            }
+          }
+        })
+      })
+
+      // Kết quả cuối
+      newData = Array.from(map.values())
     }
-
-    console.log(newData)
 
     return {
       options: [...addOptions, ...newData],
