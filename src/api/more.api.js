@@ -19,7 +19,7 @@ const moreApi = {
     return http.post(`${SubApi}/more/danh-sach-nhan-vien`, JSON.stringify(data))
   },
   getAllStaffStock: key => {
-    return http.get(`/api/gl/select2?cmd=user&q=${key}`)
+    return http.get(`/api/gl/select2?cmd=user&q=${key}&includeSource=1`)
   },
   getAllMember: (key, StockID = '') => {
     return http.get(`/api/gl/select2?cmd=member&q=${key}&stockid=${StockID}`)

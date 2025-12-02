@@ -44,8 +44,28 @@ function AsyncSelectStaffs({
     }
 
     if (StocksList && StocksList.findIndex(o => !o.value) === -1) {
-      newData = newData.filter(o => StocksList.some(x => x.ID === o.groupid))
+      const stockIds = new Set(StocksList.map(x => x.ID))
+
+      newData = newData.reduce((acc, item) => {
+        const obj = { ...item }
+
+        // Lọc options nếu groupid không thuộc stockIds
+        if (!stockIds.has(obj.groupid)) {
+          obj.options = (obj.options || []).filter(k =>
+            stockIds.has(k?.source?.StockID)
+          )
+        }
+
+        // Điều kiện giữ lại
+        if (stockIds.has(obj.groupid) || obj.options.length > 0) {
+          acc.push(obj)
+        }
+
+        return acc
+      }, [])
     }
+
+    console.log(newData)
 
     return {
       options: [...addOptions, ...newData],

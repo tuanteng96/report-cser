@@ -9,11 +9,11 @@ if (DevHelpers.isDevelopment()) {
     },
     Groups: [
       {
-        Title: '12320.order'
+        Title: '11626.order'
       },
       {
         Title: 'Administrator'
-      },
+      }
       // {
       //   Title: 'Báo cáo - 3'
       // }
@@ -24,27 +24,51 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 12320,
+        ID: 11620,
         Title: 'Cser Hà Nội'
       },
       {
-        ID: 11542,
+        ID: 11621,
         Title: 'Cser HCM'
+      },
+      {
+        ID: 11623,
+        Title: 'Cser Đà nẵng'
+      },
+      {
+        ID: 11625,
+        Title: 'Cser CS A'
+      },
+      {
+        ID: 11626,
+        Title: 'Cser CS B'
       }
     ],
-    CrStockID: 12320,
+    CrStockID: 11626,
     rightsSum: {
       report: {
-        IsAllStock: true,
+        IsAllStock: false,
         hasRight: true,
         stocks: [
           {
-            ID: 12320,
-            Title: 'Tầng 4 - 30 Mai Hắc Đế, Hà Nội'
+            ID: 11620,
+            Title: 'Cser Hà Nội'
           },
           {
-            ID: 11314,
-            Title: 'TA Beauty - Linh Lang'
+            ID: 11621,
+            Title: 'Cser HCM'
+          },
+          {
+            ID: 11623,
+            Title: 'Cser Đà nẵng'
+          },
+          {
+            ID: 11625,
+            Title: 'Cser CS A'
+          },
+          {
+            ID: 11626,
+            Title: 'Cser CS B'
           }
         ],
         jdata: {
@@ -450,7 +474,7 @@ if (DevHelpers.isDevelopment()) {
               text: 'Báo cáo',
               stocksList: [
                 {
-                  ID: 12320,
+                  ID: 11626,
                   Title: 'Cser Beauty Hà Nội'
                 },
                 {
@@ -473,7 +497,7 @@ if (DevHelpers.isDevelopment()) {
                     items: [
                       {
                         text: 'Tổng quan',
-                        stocks: '12320',
+                        stocks: '11626',
                         jdata: {
                           paths: ['/bao-cao-ngay/danh-sach'],
                           url: '/bao-cao-ngay/tong-quan'
@@ -481,7 +505,7 @@ if (DevHelpers.isDevelopment()) {
                       },
                       {
                         text: 'Khách hàng',
-                        stocks: '12320',
+                        stocks: '11626',
                         jdata: {
                           paths: ['/khach-hang/chi-tiet-ngay'],
                           url: '/bao-cao-ngay/khach-hang'
@@ -501,7 +525,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/doanh-so'
                         },
-                        stocks: '12320'
+                        stocks: '11626'
                       },
                       {
                         text: 'Sản phẩm - dịch vụ bán ra',
@@ -512,7 +536,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/sp-dv-ban-ra'
                         },
-                        stocks: '12320'
+                        stocks: '11626'
                       }
                     ]
                   }
@@ -531,7 +555,7 @@ if (DevHelpers.isDevelopment()) {
                   name: 'adminTools_byStock',
                   IsAllStock: false,
                   hasRight: true,
-                  stocksList: [{ ID: 12320 }]
+                  stocksList: [{ ID: 11626 }]
                 }
               ]
             }
@@ -541,7 +565,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjExMjYwMTA0NDM2MDAwMTMiLCJuYmYiOjE3NTk0NzU3MDQsImV4cCI6MTg0NTg3NTcwNCwiaWF0IjoxNzU5NDc1NzA0fQ.46cJLwS1qD4DwtEPoCMUxc_aZXTB1gBafIvVNUWLvIo'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxMTQ0MiIsIlRva2VuSWQiOiIxMTMzNjAzNTI0NDAwMDI0IiwibmJmIjoxNzY0NjY2Mjg4LCJleHAiOjE4NTEwNjYyODgsImlhdCI6MTc2NDY2NjI4OH0.fR5BZnMRVsA98p2qWFjV2zWwypNxSd_KAspiCcgql1w'
 }
 const Auth = createSlice({
   name: 'auth',
