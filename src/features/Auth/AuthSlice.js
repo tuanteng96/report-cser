@@ -9,7 +9,7 @@ if (DevHelpers.isDevelopment()) {
     },
     Groups: [
       {
-        Title: '11626.order'
+        Title: '11287.order'
       },
       {
         Title: 'Administrator'
@@ -40,11 +40,11 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser CS A'
       },
       {
-        ID: 11626,
+        ID: 11287,
         Title: 'Cser CS B'
       }
     ],
-    CrStockID: 11626,
+    CrStockID: 11287,
     rightsSum: {
       report: {
         IsAllStock: true,
@@ -67,7 +67,7 @@ if (DevHelpers.isDevelopment()) {
             Title: 'Cser CS A'
           },
           {
-            ID: 11626,
+            ID: 11287,
             Title: 'Cser CS B'
           }
         ],
@@ -474,7 +474,7 @@ if (DevHelpers.isDevelopment()) {
               text: 'Báo cáo',
               stocksList: [
                 {
-                  ID: 11626,
+                  ID: 11287,
                   Title: 'Cser Beauty Hà Nội'
                 },
                 {
@@ -497,7 +497,7 @@ if (DevHelpers.isDevelopment()) {
                     items: [
                       {
                         text: 'Tổng quan',
-                        stocks: '11626',
+                        stocks: '11287',
                         jdata: {
                           paths: ['/bao-cao-ngay/danh-sach'],
                           url: '/bao-cao-ngay/tong-quan'
@@ -505,7 +505,7 @@ if (DevHelpers.isDevelopment()) {
                       },
                       {
                         text: 'Khách hàng',
-                        stocks: '11626',
+                        stocks: '11287',
                         jdata: {
                           paths: ['/khach-hang/chi-tiet-ngay'],
                           url: '/bao-cao-ngay/khach-hang'
@@ -525,7 +525,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/doanh-so'
                         },
-                        stocks: '11626'
+                        stocks: '11287'
                       },
                       {
                         text: 'Sản phẩm - dịch vụ bán ra',
@@ -536,7 +536,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/sp-dv-ban-ra'
                         },
-                        stocks: '11626'
+                        stocks: '11287'
                       }
                     ]
                   }
@@ -555,7 +555,7 @@ if (DevHelpers.isDevelopment()) {
                   name: 'adminTools_byStock',
                   IsAllStock: false,
                   hasRight: true,
-                  stocksList: [{ ID: 11626 }]
+                  stocksList: [{ ID: 11287 }]
                 }
               ]
             }
@@ -565,7 +565,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxMTQ0MiIsIlRva2VuSWQiOiIxMTMzNjAzNTI0NDAwMDI0IiwibmJmIjoxNzY0NjY2Mjg4LCJleHAiOjE4NTEwNjYyODgsImlhdCI6MTc2NDY2NjI4OH0.fR5BZnMRVsA98p2qWFjV2zWwypNxSd_KAspiCcgql1w'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjExMjYwMTA0NDM2MDAwMTMiLCJuYmYiOjE3NjQ4MzYzOTQsImV4cCI6MTg1MTIzNjM5NCwiaWF0IjoxNzY0ODM2Mzk0fQ.dd5tHXDusxifDBiGOo3a0i6vhHJt9cWviT6_DhCfE58'
 }
 const Auth = createSlice({
   name: 'auth',

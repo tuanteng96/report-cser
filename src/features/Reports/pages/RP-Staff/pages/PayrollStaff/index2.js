@@ -298,6 +298,24 @@ function PayrollStaff2(props) {
             (newObj?.PHU_CAP_NGOAI_GIO || 0) +
             (item?.PHAT_SINH_KHAC || 0) // Phụ cấp gửi xe
 
+          // newObj['TONG_PHU_CAP'] =
+          //   (newObj.PHU_CAP_CHUC_VU || 0) +
+          //   (newObj.PHU_CAP_THAM_NIEN || 0) +
+          //   (newObj.PHU_CAP_CHUYEN_CAN || 0) +
+          //   (newObj.PHU_CAP_AN_TRUA || 0) +
+          //   (item?.BANGLUONGBC?.LUONG_CA || 0) +
+          //   (item?.BANGLUONGBC?.HOA_HONG_Sanpham || 0) +
+          //   (item?.BANGLUONGBC?.HOA_HONG_Dichvu || 0) +
+          //   (item?.BANGLUONGBC?.HOA_HONG_Thetien || 0) +
+          //   (item?.BANGLUONGBC?.HOA_HONG_Phuphi || 0) +
+          //   (item?.BANGLUONGBC?.HOA_HONG_NVL || 0) +
+          //   (newObj?.PHU_CAP_NGOAI_GIO || 0) +
+          //   (item?.PHAT_SINH_KHAC || 0) +
+          //   (Math.abs(newObj.PHAT_DI_TRE_VE_SOM || 0) +
+          //     Math.abs(item?.BANGLUONGBC?.TRU_PHAT || 0)) +
+          //   (item?.BANGLUONGBC?.THUONG || 0) +
+          //   (item?.BANGLUONGBC?.KPI_Hoa_hong || 0)
+
           newObj['TONG_LUONG_THANG'] = 0
 
           if (newObj.TINH_THEO_CONG) {
@@ -305,6 +323,8 @@ function PayrollStaff2(props) {
           } else {
             newObj['TONG_LUONG_THANG'] += newObj.LUONG_THEO_GIO || 0
           }
+
+          //newObj['TONG_LUONG_THANG'] += newObj['TONG_PHU_CAP']
 
           newObj['TONG_LUONG_THANG'] +=
             newObj['TONG_PHU_CAP'] +
