@@ -16,6 +16,7 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import moment from 'moment'
 import 'moment/locale/vi'
 import moreApi from 'src/api/more.api'
+import Swal from 'sweetalert2'
 
 moment.locale('vi')
 
@@ -104,7 +105,9 @@ const convertArray2 = (arrays, configs, filters) => {
   for (let obj of arrays) {
     let Threshold = null
     if (configs) {
-      let index = configs.findIndex(x => x.ID === filters?.StockID)
+      let index = configs.findIndex(
+        x => x.ID === (x?.StockID || filters?.StockID)
+      )
       if (
         index > -1 &&
         configs[index].Children &&
@@ -158,6 +161,68 @@ const convertArray2 = (arrays, configs, filters) => {
   return newArray
 }
 
+const convertArray3 = (arrays, configs) => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+
+  for (let [index, obj] of arrays.entries()) {
+    let newObj = { ...obj }
+    let Threshold = null
+    if (configs) {
+      let index = configs.findIndex(x => x.ID === obj?.StockID)
+      if (
+        index > -1 &&
+        configs[index].Children &&
+        configs[index].Children.length > 0
+      ) {
+        let ThresholdIndex = configs[index].Children.findIndex(
+          x => x.FromValue <= obj.TongThuc && obj.TongThuc < x.ToValue
+        )
+        if (ThresholdIndex > -1)
+          Threshold = configs[index].Children[ThresholdIndex].Value
+      } else {
+        let index = configs.findIndex(x => x.ID === '-1')
+        if (
+          index > -1 &&
+          configs[index].Children &&
+          configs[index].Children.length > 0
+        ) {
+          let ThresholdIndex = configs[index].Children.findIndex(
+            x => x.FromValue <= obj.TongThuc && obj.TongThuc < x.ToValue
+          )
+          if (ThresholdIndex > -1)
+            Threshold = configs[index].Children[ThresholdIndex].Value
+        }
+      }
+    }
+
+    newObj.StaffsList = newObj.StaffsList
+      ? newObj.StaffsList.map(Staff => {
+          let ThresholdRewards = 0
+          if (Threshold) {
+            if (Threshold <= 100) {
+              ThresholdRewards = (Threshold * Staff.TongThuc) / 100
+            } else {
+              let StaffPercent = (Staff.TongThuc / obj.TongThuc) * 100
+              ThresholdRewards = (StaffPercent * Threshold) / 100
+              //
+            }
+          }
+          return {
+            ...Staff,
+            ThresholdRewards: Math.round(ThresholdRewards), //Math.round(ThresholdRewards * 100) / 100,
+            CreateDate: obj.CreateDate
+          }
+        })
+      : []
+
+    newArray.push(newObj)
+  }
+  return newArray
+}
+
 function SalesStaff(props) {
   const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -177,7 +242,8 @@ function SalesStaff(props) {
     BrandId: '', //ID 1 nhãn hàng
     ProductId: '', // ID 1 SP, DV, NVL, ...
     KpiType: '',
-    ProdOrService: ''
+    ProdOrService: '',
+    ShowsType: '1'
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -222,42 +288,116 @@ function SalesStaff(props) {
         configs = JSON.parse(rs.data.data[0].Value)
       }
     }
+    if (filters.ShowsType === '2') {
+      let list = [filters.StockID]
+      if (filters.StockID === '') {
+        list = filters.StocksRoles.split(',')
+      }
+      let rs = []
+      let index = 0
 
-    reportsApi
-      .getListStaffSales(BrowserHelpers.getRequestParamsList(filters))
-      .then(({ data }) => {
-        if (data.isRight) {
-          PermissionHelpers.ErrorAccess(data.error)
-          setLoading(false)
-        } else {
-          const {
-            Items,
-            Total,
-            PCount,
-            TongDoanhSo,
-            TongThucDoanhSo,
-            KhauTru
-          } = {
-            Items: data.result?.Items || [],
-            Total: data.result?.Total || 0,
-            PCount: data?.result?.PCount || 0,
-            TongDoanhSo: data.result?.TongDoanhSo || 0,
-            TongThucDoanhSo: data.result?.TongThucDoanhSo || 0,
-            KhauTru: data.result?.KhauTru || 0
-          }
-
-          setListData(convertArray(Items, configs, filters))
-          setListDataMobile(convertArray2(Items, configs, filters))
-          setTotalSales({ TongDoanhSo, TongThucDoanhSo, KhauTru })
-          setLoading(false)
-          setPageTotal(Total)
-          setPageCount(PCount)
-          isFilter && setIsFilter(false)
-          callback && callback()
-          PermissionHelpers.HideErrorAccess()
+      Swal.fire({
+        title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`,
+        text: 'Vui lòng đợi ...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        },
+        showConfirmButton: false,
+        customClass: {
+          container: '!z-[99999]'
         }
       })
-      .catch(error => console.log(error))
+
+      for (let stock of list) {
+        const start = Date.now()
+
+        index++
+
+        Swal.update({
+          title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`
+        })
+
+        Swal.showLoading()
+
+        let newFilters = BrowserHelpers.getRequestParamsList(filters)
+        newFilters.StockID = stock
+        newFilters.Ps = 500
+
+        let { data } = await reportsApi.getListStaffSales(newFilters)
+        if (!data.isRight) {
+          rs = [
+            ...rs,
+            ...(data.result?.Items.map(x => ({
+              ...x,
+              StockID: Number(stock)
+            })) || [])
+          ]
+        }
+        const duration = Date.now() - start
+        if (duration < 2000) {
+          await new Promise(r => setTimeout(r, 2000 - duration))
+        }
+
+        if (index === list.length) {
+          Swal.close()
+        }
+      }
+
+      let newRs = convertArray3(rs, configs)
+        .flatMap(x => x.StaffsList)
+        .map(x => ({
+          ...x,
+          Ids: uuidv4()
+        }))
+        .filter(x => x.ThresholdRewards > 0)
+      setListData(newRs)
+      setListDataMobile(convertArray2(rs, configs, filters))
+      setTotalSales({
+        TongThuong: newRs.reduce((acc, curr) => acc + curr.ThresholdRewards, 0)
+      })
+      setLoading(false)
+      isFilter && setIsFilter(false)
+      callback && callback()
+    } else {
+      let newFilters = BrowserHelpers.getRequestParamsList(filters)
+
+      reportsApi
+        .getListStaffSales(newFilters)
+        .then(({ data }) => {
+          if (data.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            setLoading(false)
+          } else {
+            const {
+              Items,
+              Total,
+              PCount,
+              TongDoanhSo,
+              TongThucDoanhSo,
+              KhauTru
+            } = {
+              Items: data.result?.Items || [],
+              Total: data.result?.Total || 0,
+              PCount: data?.result?.PCount || 0,
+              TongDoanhSo: data.result?.TongDoanhSo || 0,
+              TongThucDoanhSo: data.result?.TongThucDoanhSo || 0,
+              KhauTru: data.result?.KhauTru || 0
+            }
+
+            setListData(convertArray(Items, configs, filters))
+            setListDataMobile(convertArray2(Items, configs, filters))
+            setTotalSales({ TongDoanhSo, TongThucDoanhSo, KhauTru })
+            setLoading(false)
+            setPageTotal(Total)
+            setPageCount(PCount)
+            isFilter && setIsFilter(false)
+            callback && callback()
+            PermissionHelpers.HideErrorAccess()
+          }
+        })
+        .catch(error => console.log(error))
+    }
   }
 
   const onOpenFilter = () => {
@@ -280,39 +420,57 @@ function SalesStaff(props) {
     getListSalarys()
   }
 
-  const onExport = () => {
-    PermissionHelpers.ExportExcel({
-      FuncStart: () => setLoadingExport(true),
-      FuncEnd: () => setLoadingExport(false),
-      FuncApi: () =>
-        new Promise(async resolve => {
-          let configs = null
-          if (GlobalConfig?.Admin?.kpi_ngay) {
-            let rs = await moreApi.getNameConfig('kpi_ngay')
-            if (
-              rs.data.data &&
-              rs.data.data.length > 0 &&
-              rs.data.data[0].Value
-            ) {
-              configs = JSON.parse(rs.data.data[0].Value)
-            }
-          }
-          let result = await reportsApi.getListStaffSales(
-            BrowserHelpers.getRequestParamsList(filters, {
-              Total: PageTotal
-            })
-          )
-          resolve({
-            ...result,
-            data: {
-              ...result.data,
-              configs: configs
-            }
-          })
-        }),
+  const onExport = async () => {
+    if (filters.ShowsType === '2') {
+      setLoadingExport(true)
+      
+      await new Promise(resolve => setTimeout(resolve, 50))
 
-      UrlName: '/nhan-vien/doanh-so'
-    })
+      window?.EzsExportNoFechExcel({
+        Title: `Thưởng doanh số nhân viên ${moment(filters.DateStart).format(
+          'DD/MM/YYYY'
+        )} - ${moment(filters.DateEnd).format('DD/MM/YYYY')}`,
+        filters,
+        Url: '/nhan-vien/doanh-so-kpi-ngay',
+        Data: ListData || [],
+        hideLoading: () => {
+          setLoadingExport(false)
+        }
+      })
+    } else {
+      PermissionHelpers.ExportExcel({
+        FuncStart: () => setLoadingExport(true),
+        FuncEnd: () => setLoadingExport(false),
+        FuncApi: () =>
+          new Promise(async resolve => {
+            let configs = null
+            if (GlobalConfig?.Admin?.kpi_ngay) {
+              let rs = await moreApi.getNameConfig('kpi_ngay')
+              if (
+                rs.data.data &&
+                rs.data.data.length > 0 &&
+                rs.data.data[0].Value
+              ) {
+                configs = JSON.parse(rs.data.data[0].Value)
+              }
+            }
+            let result = await reportsApi.getListStaffSales(
+              BrowserHelpers.getRequestParamsList(filters, {
+                Total: PageTotal
+              })
+            )
+            resolve({
+              ...result,
+              data: {
+                ...result.data,
+                configs: configs
+              }
+            })
+          }),
+
+        UrlName: '/nhan-vien/doanh-so'
+      })
+    }
   }
 
   const OpenModalMobile = value => {
@@ -326,145 +484,188 @@ function SalesStaff(props) {
   }
 
   const columns = useMemo(
-    () => [
-      {
-        key: 'CreateDate',
-        title: 'Ngày',
-        dataKey: 'CreateDate',
-        cellRenderer: ({ rowData }) =>
-          moment(rowData.CreateDate).format('DD/MM/YYYY'),
-        width: 180,
-        sortable: false,
-        rowSpan: ({ rowData }) => AmountMember(rowData.StaffsList),
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'TongThuc',
-        title: 'Tổng doanh số',
-        dataKey: 'TongThuc',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.TongThuc),
-        width: 150,
-        sortable: false,
-        rowSpan: ({ rowData }) => AmountMember(rowData.StaffsList),
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'Staff.FullName',
-        title: 'Nhân viên',
-        dataKey: 'Staff.FullName',
-        width: 250,
-        sortable: false,
-        rowSpan: ({ rowData }) =>
-          rowData.OrdersList && rowData.OrdersList.length > 0
-            ? rowData.OrdersList.length
-            : 1
-      },
-      {
-        key: 'Staff.StockTitle',
-        title: 'Cơ sở nhân viên',
-        dataKey: 'Staff.StockTitle',
-        width: 250,
-        sortable: false,
-        rowSpan: ({ rowData }) =>
-          rowData.OrdersList && rowData.OrdersList.length > 0
-            ? rowData.OrdersList.length
-            : 1
-      },
-      {
-        key: 'TongThucStaff',
-        title: 'Doanh số',
-        dataKey: 'TongThucStaff',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.TongThucStaff),
-        rowSpan: ({ rowData }) =>
-          rowData.OrdersList && rowData.OrdersList.length > 0
-            ? rowData.OrdersList.length
-            : 1,
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'ThresholdRewards',
-        title: 'Thưởng',
-        dataKey: 'ThresholdRewards',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.ThresholdRewards),
-        rowSpan: ({ rowData }) =>
-          rowData.OrdersList && rowData.OrdersList.length > 0
-            ? rowData.OrdersList.length
-            : 1,
-        width: 150,
-        sortable: false,
-        hidden: !GlobalConfig?.Admin?.kpi_ngay || !filters.StockID
-      },
-
-      {
-        key: 'ID',
-        title: 'Đơn hàng',
-        dataKey: 'ID',
-        cellRenderer: ({ rowData }) => `#${rowData.ID}`,
-        width: 120,
-        sortable: false,
-        className: ({ rowData }) =>
-          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
-      },
-      {
-        key: 'Member.FullName',
-        title: 'Khách hàng',
-        dataKey: 'Member.FullName',
-        width: 250,
-        sortable: false,
-        className: ({ rowData }) =>
-          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
-      },
-      {
-        key: 'Member.Phone',
-        title: 'Số điện thoại',
-        dataKey: 'Member.Phone',
-        width: 150,
-        sortable: false,
-        className: ({ rowData }) =>
-          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
-      },
-      {
-        key: 'GiaTriThuc',
-        title: 'Doanh số',
-        dataKey: 'GiaTriThuc',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.GiaTriThuc),
-        width: 150,
-        sortable: false,
-        className: ({ rowData }) =>
-          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
-      },
-      {
-        key: 'Lines',
-        title: 'Chi tiết',
-        dataKey: 'Lines',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>
-            {rowData.Lines.map(
-              line =>
-                `${line.ProdTitle} ( ${
-                  line.GiaTri > 0
-                    ? PriceHelper.formatVND(line.GiaTri)
-                    : `- ${PriceHelper.formatVND(line.KhauTru)}`
-                } )`
-            ).join(', ')}
-          </Text>
-        ),
-        width: 350,
-        sortable: false,
-        className: ({ rowData }) =>
-          rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+    () => {
+      if (filters.ShowsType === '2') {
+        return [
+          {
+            key: 'CreateDate',
+            title: 'Ngày',
+            dataKey: 'CreateDate',
+            cellRenderer: ({ rowData }) =>
+              moment(rowData.CreateDate).format('DD/MM/YYYY'),
+            width: 180,
+            sortable: false,
+            mobileOptions: {
+              visible: true
+            }
+          },
+          {
+            key: 'Staff.FullName',
+            title: 'Nhân viên',
+            dataKey: 'Staff.FullName',
+            width: 250,
+            sortable: false
+          },
+          {
+            key: 'Staff.StockTitle',
+            title: 'Cơ sở nhân viên',
+            dataKey: 'Staff.StockTitle',
+            width: 250,
+            sortable: false
+          },
+          {
+            key: 'ThresholdRewards',
+            title: 'Thưởng',
+            dataKey: 'ThresholdRewards',
+            cellRenderer: ({ rowData }) =>
+              PriceHelper.formatVND(rowData.ThresholdRewards),
+            width: 150,
+            sortable: false,
+            hidden: !GlobalConfig?.Admin?.kpi_ngay
+          }
+        ]
       }
-    ],
+      return [
+        {
+          key: 'CreateDate',
+          title: 'Ngày',
+          dataKey: 'CreateDate',
+          cellRenderer: ({ rowData }) =>
+            moment(rowData.CreateDate).format('DD/MM/YYYY'),
+          width: 180,
+          sortable: false,
+          rowSpan: ({ rowData }) => AmountMember(rowData.StaffsList),
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'TongThuc',
+          title: 'Tổng doanh số',
+          dataKey: 'TongThuc',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.TongThuc),
+          width: 150,
+          sortable: false,
+          rowSpan: ({ rowData }) => AmountMember(rowData.StaffsList),
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Staff.FullName',
+          title: 'Nhân viên',
+          dataKey: 'Staff.FullName',
+          width: 250,
+          sortable: false,
+          rowSpan: ({ rowData }) =>
+            rowData.OrdersList && rowData.OrdersList.length > 0
+              ? rowData.OrdersList.length
+              : 1
+        },
+        {
+          key: 'Staff.StockTitle',
+          title: 'Cơ sở nhân viên',
+          dataKey: 'Staff.StockTitle',
+          width: 250,
+          sortable: false,
+          rowSpan: ({ rowData }) =>
+            rowData.OrdersList && rowData.OrdersList.length > 0
+              ? rowData.OrdersList.length
+              : 1
+        },
+        {
+          key: 'TongThucStaff',
+          title: 'Doanh số',
+          dataKey: 'TongThucStaff',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.TongThucStaff),
+          rowSpan: ({ rowData }) =>
+            rowData.OrdersList && rowData.OrdersList.length > 0
+              ? rowData.OrdersList.length
+              : 1,
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'ThresholdRewards',
+          title: 'Thưởng',
+          dataKey: 'ThresholdRewards',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.ThresholdRewards),
+          rowSpan: ({ rowData }) =>
+            rowData.OrdersList && rowData.OrdersList.length > 0
+              ? rowData.OrdersList.length
+              : 1,
+          width: 150,
+          sortable: false,
+          hidden: !GlobalConfig?.Admin?.kpi_ngay || !filters.StockID
+        },
+        {
+          key: 'ID',
+          title: 'Đơn hàng',
+          dataKey: 'ID',
+          cellRenderer: ({ rowData }) => `#${rowData.ID}`,
+          width: 120,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'Member.FullName',
+          title: 'Khách hàng',
+          dataKey: 'Member.FullName',
+          width: 250,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'Member.Phone',
+          title: 'Số điện thoại',
+          dataKey: 'Member.Phone',
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'GiaTriThuc',
+          title: 'Doanh số',
+          dataKey: 'GiaTriThuc',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.GiaTriThuc),
+          width: 150,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        },
+        {
+          key: 'Lines',
+          title: 'Chi tiết',
+          dataKey: 'Lines',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData.Lines &&
+                rowData.Lines.map(
+                  line =>
+                    `${line.ProdTitle} ( ${
+                      line.GiaTri > 0
+                        ? PriceHelper.formatVND(line.GiaTri)
+                        : `- ${PriceHelper.formatVND(line.KhauTru)}`
+                    } )`
+                ).join(', ')}
+            </Text>
+          ),
+          width: 350,
+          sortable: false,
+          className: ({ rowData }) =>
+            rowData.tra_lai_don_hang ? 'bg-danger-o-90' : ''
+        }
+      ]
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [filters.ShowsType]
   )
 
   const onPagesChange = ({ Pi, Ps }) => {
@@ -481,6 +682,9 @@ function SalesStaff(props) {
   }
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
+    if (filters.ShowsType === '2') {
+      return cells
+    }
     // if (isScrolling)
     //   return (
     //     <div className="pl-15px d-flex align-items">
@@ -503,7 +707,7 @@ function SalesStaff(props) {
         })
       })
     }
-    
+
     for (let index of indexList) {
       const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
       if (rowSpan > 1) {
@@ -559,44 +763,54 @@ function SalesStaff(props) {
             Danh sách doanh số nhân viên
           </div>
           <div className="fw-500 d-flex align-items-center ml-25px">
-            Tổng doanh số
-            <OverlayTrigger
-              rootClose
-              trigger="click"
-              key="top"
-              placement="top"
-              overlay={
-                <Popover id={`popover-positioned-top`}>
-                  <Popover.Header
-                    className="py-10px text-uppercase fw-600"
-                    as="h3"
-                  >
-                    Chi tiết doanh số
-                  </Popover.Header>
-                  <Popover.Body className="p-0">
-                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                      <span>Tổng</span>
-                      <span>
-                        {PriceHelper.formatVNDPositive(TotalSales.TongDoanhSo)}
-                      </span>
-                    </div>
-                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                      <span>Khấu trừ</span>
-                      <span className="text-danger">
-                        {PriceHelper.formatVNDPositive(TotalSales.KhauTru)}
-                      </span>
-                    </div>
-                  </Popover.Body>
-                </Popover>
-              }
-            >
+            {filters.ShowsType === '2' ? 'Tổng thưởng' : 'Tổng doanh số'}
+            {filters.ShowsType === '2' ? (
               <div className="d-flex justify-content-between align-items-center">
                 <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PriceHelper.formatVNDPositive(TotalSales.TongThucDoanhSo)}
+                  {PriceHelper.formatVNDPositive(TotalSales.TongThuong)}
                 </span>
-                <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
               </div>
-            </OverlayTrigger>
+            ) : (
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Header
+                      className="py-10px text-uppercase fw-600"
+                      as="h3"
+                    >
+                      Chi tiết doanh số
+                    </Popover.Header>
+                    <Popover.Body className="p-0">
+                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                        <span>Tổng</span>
+                        <span>
+                          {PriceHelper.formatVNDPositive(
+                            TotalSales.TongDoanhSo
+                          )}
+                        </span>
+                      </div>
+                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                        <span>Khấu trừ</span>
+                        <span className="text-danger">
+                          {PriceHelper.formatVNDPositive(TotalSales.KhauTru)}
+                        </span>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {PriceHelper.formatVNDPositive(TotalSales.TongThucDoanhSo)}
+                  </span>
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
+                </div>
+              </OverlayTrigger>
+            )}
           </div>
         </div>
         <div className="p-20px">
@@ -604,7 +818,7 @@ function SalesStaff(props) {
             rowKey="Ids"
             overscanRowCount={50}
             useIsScrolling
-            filters={filters}
+            filters={filters.ShowsType === '2' ? null : filters}
             columns={columns}
             data={ListData}
             dataMobile={ListDataMobile}

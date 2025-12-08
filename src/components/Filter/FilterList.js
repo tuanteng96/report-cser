@@ -353,7 +353,8 @@ function FilterList({
               ...values,
               StocksRoles: StocksList.filter(x => x.value)
                 .map(x => x.value)
-                .toString()
+                .toString(),
+              StocksRolesAll: StocksList
             },
             formik
           )
