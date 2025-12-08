@@ -351,6 +351,8 @@ function SalesStaff(props) {
           Ids: uuidv4()
         }))
         .filter(x => x.ThresholdRewards > 0)
+        .sort((a, b) => new Date(a.CreateDate) - new Date(b.CreateDate))
+
       setListData(newRs)
       setListDataMobile(convertArray2(rs, configs, filters))
       setTotalSales({
@@ -423,7 +425,7 @@ function SalesStaff(props) {
   const onExport = async () => {
     if (filters.ShowsType === '2') {
       setLoadingExport(true)
-      
+
       await new Promise(resolve => setTimeout(resolve, 50))
 
       window?.EzsExportNoFechExcel({
@@ -498,6 +500,13 @@ function SalesStaff(props) {
             mobileOptions: {
               visible: true
             }
+          },
+          {
+            key: 'Staff.ID',
+            title: 'ID Nhân viên',
+            dataKey: 'Staff.ID',
+            width: 150,
+            sortable: false
           },
           {
             key: 'Staff.FullName',
