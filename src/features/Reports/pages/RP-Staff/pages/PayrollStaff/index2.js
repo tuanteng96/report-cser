@@ -342,7 +342,7 @@ function PayrollStaff2(props) {
           let THU_NHAP_TINH_THUE =
             newObj['TONG_LUONG_THANG'] -
             newObj['NLD_TRA'].total -
-            11000000 -
+            15500000 -
             newObj['GIAM_TRU_GIA_CANH']
 
           THU_NHAP_TINH_THUE = THU_NHAP_TINH_THUE > 0 ? THU_NHAP_TINH_THUE : 0

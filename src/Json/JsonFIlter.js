@@ -579,5 +579,23 @@ export const JsonFilter = {
       value: 1,
       label: 'Ngày theo thời gian lọc'
     }
+  ],
+  TypeDates: [
+    {
+      label: 'Theo Tuần',
+      value: 1
+    },
+    {
+      label: 'Theo Tháng',
+      value: 2
+    },
+    {
+      label: 'Theo Quý',
+      value: 3
+    },
+    {
+      label: 'Theo Năm',
+      value: 4
+    }
   ]
 }

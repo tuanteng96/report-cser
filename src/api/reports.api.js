@@ -99,6 +99,12 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getChartSalesDetail2: data => {
+    return http.post(`/api/v5/OI27@Compare`, JSON.stringify(data))
+  },
+  getListSalesDetail2: data => {
+    return http.post(`/api/v5/OI27@Get`, JSON.stringify(data))
+  },
   getListSalesOnStock: data => {
     return http.post(`/api/v4/r27@OrderQtyByStock`, JSON.stringify(data))
   },
