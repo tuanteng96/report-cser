@@ -16,43 +16,31 @@ moment.locale('vi')
 let NGUONG_TNCN = [
   {
     Min: 0,
-    Max: 5000000,
+    Max: 10000000,
     Value: 0,
     PercentDifference: 5
   },
   {
-    Min: 5000000,
-    Max: 10000000,
-    Value: 250000,
+    Min: 10000000,
+    Max: 30000000,
+    Value: 500000,
     PercentDifference: 10
   },
   {
-    Min: 10000000,
-    Max: 18000000,
-    Value: 750000,
-    PercentDifference: 15
-  },
-  {
-    Min: 18000000,
-    Max: 32000000,
-    Value: 1950000,
+    Min: 30000000,
+    Max: 60000000,
+    Value: 2500000,
     PercentDifference: 20
   },
   {
-    Min: 32000000,
-    Max: 52000000,
-    Value: 4750000,
-    PercentDifference: 25
-  },
-  {
-    Min: 52000000,
-    Max: 80000000,
-    Value: 9750000,
+    Min: 60000000,
+    Max: 100000000,
+    Value: 8500000,
     PercentDifference: 30
   },
   {
-    Min: 80000000,
-    Value: 18150000,
+    Min: 100000000,
+    Value: 20500000,
     PercentDifference: 35
   }
 ]
