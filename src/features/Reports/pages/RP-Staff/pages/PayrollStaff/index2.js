@@ -327,10 +327,12 @@ function PayrollStaff2(props) {
             (item?.BANGLUONGBC?.THUONG || 0) +
             (item?.BANGLUONGBC?.KPI_Hoa_hong || 0)
 
+          let THU_NHAP_TOI_THIEU = 15500000
+
           let THU_NHAP_TINH_THUE =
             newObj['TONG_LUONG_THANG'] -
             newObj['NLD_TRA'].total -
-            15500000 -
+            THU_NHAP_TOI_THIEU -
             newObj['GIAM_TRU_GIA_CANH']
 
           THU_NHAP_TINH_THUE = THU_NHAP_TINH_THUE > 0 ? THU_NHAP_TINH_THUE : 0
@@ -376,7 +378,8 @@ function PayrollStaff2(props) {
             THU_NHAP_TINH_THUE,
             THUE_TNCN,
             LUONG_NV_THUC_NHAN,
-            TONG_QUY_LUONG_CTY_TRA
+            TONG_QUY_LUONG_CTY_TRA,
+            THU_NHAP_TOI_THIEU
           }
         })
       return rs.filter(x => x?.User?.Gender > 0)
@@ -698,6 +701,12 @@ function PayrollStaff2(props) {
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
+                      Thu nhập tối thiểu
+                    </th>
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Thu nhập tính thuế
                       <div>(acessable income)</div>
                     </th>
@@ -936,6 +945,9 @@ function PayrollStaff2(props) {
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.GIAM_TRU_GIA_CANH)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.THU_NHAP_TOI_THIEU)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.THU_NHAP_TINH_THUE)}

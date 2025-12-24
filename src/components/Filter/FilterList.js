@@ -29,7 +29,6 @@ import SelectCustomType from '../Selects/SelectCustomType'
 import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
-import moment from 'moment'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { SelectJobs } from '../Selects/SelectJobs'
 
@@ -82,6 +81,7 @@ const CustomOption = ({ children, data, ...props }) => {
 
 function FilterList({
   show,
+  ShowsKey = null,
   onHide,
   filters,
   onSubmit,
@@ -1297,7 +1297,11 @@ function FilterList({
                       />
                     </div>
                   )}
-                  {'ProdOrService' in values && (
+
+                  {('ProdOrService' in values ||
+                    (ShowsKey &&
+                      ShowsKey?.value === values.ShowsType &&
+                      ShowsKey.Keys.includes('ProdOrService'))) && (
                     <div className="form-group mb-20px">
                       <label>Loại</label>
                       <Select
@@ -1315,7 +1319,11 @@ function FilterList({
                       />
                     </div>
                   )}
-                  {'ProductId' in values && (
+
+                  {('ProductId' in values ||
+                    (ShowsKey &&
+                      ShowsKey?.value === values.ShowsType &&
+                      ShowsKey.Keys.includes('ProductId'))) && (
                     <div className="form-group mb-20px">
                       <label>Sản phẩm, DV, NVL, ...</label>
                       <AsyncSelectProducts
@@ -1329,21 +1337,27 @@ function FilterList({
                       />
                     </div>
                   )}
-                  {'ProductIds' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Sản phẩm, DV, NVL, ...</label>
-                      <AsyncSelectProducts
-                        isMulti
-                        isClearable={true}
-                        menuPosition="fixed"
-                        name="ProductIds"
-                        onChange={otp => {
-                          setFieldValue('ProductIds', otp, false)
-                        }}
-                        value={values.ProductIds}
-                      />
-                    </div>
+
+                  {values.ShowsType !== '4' && (
+                    <>
+                      {'ProductIds' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Sản phẩm, DV, NVL, ...</label>
+                          <AsyncSelectProducts
+                            isMulti
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="ProductIds"
+                            onChange={otp => {
+                              setFieldValue('ProductIds', otp, false)
+                            }}
+                            value={values.ProductIds}
+                          />
+                        </div>
+                      )}
+                    </>
                   )}
+
                   {'CategoriesId' in values && (
                     <div className="form-group mb-20px">
                       <label>Danh mục</label>
@@ -1372,71 +1386,76 @@ function FilterList({
                       )}
                     </div>
                   )}
-                  {'CategoriesIds' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Danh mục</label>
-                      <AsyncSelectCategoriesFull
-                        isMulti
-                        menuPlacement="top"
-                        isClearable={true}
-                        menuPosition="fixed"
-                        name="CategoriesIds"
-                        onChange={otp => {
-                          setFieldValue('CategoriesIds', otp, false)
-                        }}
-                        value={values.CategoriesIds}
-                      />
-                    </div>
+                  {values.ShowsType !== '4' && (
+                    <>
+                      {'CategoriesIds' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Danh mục</label>
+                          <AsyncSelectCategoriesFull
+                            isMulti
+                            menuPlacement="top"
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="CategoriesIds"
+                            onChange={otp => {
+                              setFieldValue('CategoriesIds', otp, false)
+                            }}
+                            value={values.CategoriesIds}
+                          />
+                        </div>
+                      )}
+                      {'BrandId' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Nhãn hàng</label>
+                          <AsyncSelectBrands
+                            menuPlacement="top"
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="BrandId"
+                            onChange={otp => {
+                              setFieldValue('BrandId', otp, false)
+                            }}
+                            value={values.BrandId}
+                          />
+                        </div>
+                      )}
+                      {'BrandIds' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Nhãn hàng</label>
+                          <AsyncSelectBrands
+                            isMulti
+                            menuPlacement="top"
+                            isClearable={true}
+                            menuPosition="fixed"
+                            name="BrandIds"
+                            onChange={otp => {
+                              setFieldValue('BrandIds', otp, false)
+                            }}
+                            value={values.BrandIds}
+                          />
+                        </div>
+                      )}
+                      {'TimeToReal' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Thực thu tính đến</label>
+                          <Select
+                            menuPosition="fixed"
+                            isClearable={true}
+                            name="TimeToReal"
+                            placeholder="Chọn thời gian"
+                            classNamePrefix="select"
+                            options={TimeToRealList}
+                            className="select-control"
+                            value={values.TimeToReal}
+                            onChange={otp => {
+                              setFieldValue('TimeToReal', otp)
+                            }}
+                          />
+                        </div>
+                      )}
+                    </>
                   )}
-                  {'BrandId' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Nhãn hàng</label>
-                      <AsyncSelectBrands
-                        menuPlacement="top"
-                        isClearable={true}
-                        menuPosition="fixed"
-                        name="BrandId"
-                        onChange={otp => {
-                          setFieldValue('BrandId', otp, false)
-                        }}
-                        value={values.BrandId}
-                      />
-                    </div>
-                  )}
-                  {'BrandIds' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Nhãn hàng</label>
-                      <AsyncSelectBrands
-                        isMulti
-                        menuPlacement="top"
-                        isClearable={true}
-                        menuPosition="fixed"
-                        name="BrandIds"
-                        onChange={otp => {
-                          setFieldValue('BrandIds', otp, false)
-                        }}
-                        value={values.BrandIds}
-                      />
-                    </div>
-                  )}
-                  {'TimeToReal' in values && (
-                    <div className="form-group mb-20px">
-                      <label>Thực thu tính đến</label>
-                      <Select
-                        menuPosition="fixed"
-                        isClearable={true}
-                        name="TimeToReal"
-                        placeholder="Chọn thời gian"
-                        classNamePrefix="select"
-                        options={TimeToRealList}
-                        className="select-control"
-                        value={values.TimeToReal}
-                        onChange={otp => {
-                          setFieldValue('TimeToReal', otp)
-                        }}
-                      />
-                    </div>
-                  )}
+
                   {'IsQtyEmpty' in values && (
                     <div>
                       <label className="checkbox d-flex">
