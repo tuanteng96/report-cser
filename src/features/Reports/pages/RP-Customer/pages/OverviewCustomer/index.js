@@ -453,6 +453,13 @@ function OverviewCustomer() {
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.tich_diem),
         width: 120,
         sortable: false
+      },
+      {
+        key: 'ReceiveInformation',
+        title: 'Ghi chú',
+        dataKey: 'ReceiveInformation',
+        width: 250,
+        sortable: false
       }
     ],
     [filters]
