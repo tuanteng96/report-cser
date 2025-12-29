@@ -184,7 +184,11 @@ function PayrollStaff2(props) {
             Name: 'NGAY_NGHI'
           })
 
-          newObj['TINH_THEO_CONG'] = NGAY_CONG_SETUP > 0 || NGAY_NGHI_SETUP > 0
+          newObj['TINH_THEO_CONG'] = true
+
+          if(item?.User?.Address.toUpperCase() === 'PART TIME') {
+            newObj['TINH_THEO_CONG'] = false
+          }
 
           newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
