@@ -186,7 +186,7 @@ function PayrollStaff2(props) {
 
           newObj['TINH_THEO_CONG'] = true
 
-          if(item?.User?.Address.toUpperCase() === 'PART TIME') {
+          if (item?.User?.Address.toUpperCase() === 'PART TIME') {
             newObj['TINH_THEO_CONG'] = false
           }
 
@@ -331,7 +331,14 @@ function PayrollStaff2(props) {
             (item?.BANGLUONGBC?.THUONG || 0) +
             (item?.BANGLUONGBC?.KPI_Hoa_hong || 0)
 
-          let THU_NHAP_TOI_THIEU = 15500000
+          let THU_NHAP_TOI_THIEU = 0
+
+          if (
+            item?.User?.Address &&
+            item?.User?.Address.toUpperCase() === 'NHÂN VIÊN CHÍNH THỨC'
+          ) {
+            THU_NHAP_TOI_THIEU = 15500000
+          }
 
           let THU_NHAP_TINH_THUE =
             newObj['TONG_LUONG_THANG'] -
