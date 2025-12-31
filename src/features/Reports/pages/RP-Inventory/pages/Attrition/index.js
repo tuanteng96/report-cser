@@ -119,7 +119,7 @@ function Attrition(props) {
           ...BrowserHelpers.getRequestParamsList(filters, {
             Total: PageTotal
           }),
-          ShowDetail: filters.ShowDetail === '0' ? filters.ShowDetail : '1',
+          ShowDetail: filters.ShowDetail,
           ShowDetailX: filters.ShowDetail
         }),
       UrlName: '/ton-kho/tieu-hao'
@@ -340,7 +340,7 @@ function Attrition(props) {
         optionsAdd={[
           {
             label: 'Nâng cao 2',
-            value: '3'
+            value: '2'
           }
         ]}
       />

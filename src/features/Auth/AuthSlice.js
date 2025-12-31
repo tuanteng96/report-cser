@@ -502,7 +502,7 @@ if (DevHelpers.isDevelopment()) {
         IsPublic: 1
       }
     ],
-    CrStockID: 11620,
+    CrStockID: 11643,
     rightsSum: {
       report: {
         IsAllStock: true,
