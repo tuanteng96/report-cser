@@ -349,7 +349,7 @@ function FilterListLUONG({
                     </div>
                   )}
 
-                  {(values.ShowsX !== '2' && values.ShowsX !== '3') && (
+                  {values.ShowsX !== '2' && values.ShowsX !== '3' && (
                     <>
                       {'MemberID' in values && (
                         <div className="form-group mb-20px">
@@ -372,6 +372,7 @@ function FilterListLUONG({
                     <div className="form-group mb-20px">
                       <label>Nhân viên</label>
                       <AsyncSelectStaffs
+                        isMulti
                         isClearable={true}
                         menuPosition="fixed"
                         name="StaffID"
@@ -384,7 +385,7 @@ function FilterListLUONG({
                     </div>
                   )}
 
-                  {(values.ShowsX !== '2' && values.ShowsX !== '3') && (
+                  {values.ShowsX !== '2' && values.ShowsX !== '3' && (
                     <>
                       {'ServiceCardID' in values && (
                         <div className="form-group mb-20px">

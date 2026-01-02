@@ -17,9 +17,10 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 moment.locale('vi')
 
 function Attrition(props) {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || []
+    Stocks: auth?.Info?.Stocks || [],
+    GlobalConfig: auth?.GlobalConfig
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -64,20 +65,80 @@ function Attrition(props) {
     reportsApi
       .getInventoryAttrition({
         ...BrowserHelpers.getRequestParamsList(filters),
-        ShowDetail: filters.ShowDetail === '0' ? filters.ShowDetail : '1'
+        ShowDetail: filters.ShowDetail
       })
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, TotalVal, Total, PCount } = {
+          const { Items, TotalVal, Total, PCount, Prods } = {
             Items: data.result?.Items || [],
             TotalVal: data.result?.TotalValue || 0,
             Total: data.result?.Total || 0,
-            PCount: data?.result?.PCount || 0
+            PCount: data?.result?.PCount || 0,
+            Prods: data.result?.Prods || []
           }
-          setListData(Items)
+          let newItems = [...Items]
+
+          if (filters.ShowDetail === '2') {
+            newItems = newItems.map(item => {
+              let newItem = { ...item }
+              let index = Stocks.findIndex(x => x.ID === item.StockID)
+              let obj = {
+                ID: '',
+                Title: '',
+                City: '',
+                NameFr: ''
+              }
+
+              if (index > -1) {
+                obj.ID = Stocks[index].ID
+
+                let newDesc = Stocks[index].DescSEO
+                  ? JSON.parse(Stocks[index].DescSEO)
+                  : null
+                if (newDesc && newDesc.place && newDesc.place.length > 0) {
+                  obj.City = newDesc.place[0].Title
+                }
+
+                obj.NameFr = Stocks[index].TitleSEO || ''
+
+                obj.Title = Stocks[index].Title || ''
+              }
+
+              let Product = {
+                SProdTitle: '',
+                ProdUnit: item.ProdCode,
+                ProdTitle: '',
+                Unit: '',
+                SUnit: '',
+                Qty: 0
+              }
+
+              let indexProduct = Prods.findIndex(
+                x => x.DynamicID === item.ProdCode
+              )
+              if (indexProduct > -1) {
+                Product.SProdTitle = Prods[indexProduct].Title || ''
+                Product.SUnit = Prods[indexProduct].StockUnit || ''
+                let Meta = Prods[indexProduct].Meta
+                  ? JSON.parse(Prods[indexProduct].Meta)
+                  : null
+                if (Meta.otherUnit && Meta.otherUnit.length > 0) {
+                  Product = {
+                    ...Product,
+                    ...Meta.otherUnit[0]
+                  }
+                }
+              }
+              newItem.StockInfo = obj
+              newItem.Product = Product
+              return newItem
+            })
+          }
+
+          setListData(newItems)
           setTotalValue(TotalVal)
           setLoading(false)
           setPageTotal(Total)
@@ -152,151 +213,266 @@ function Attrition(props) {
     }
   }
 
-  const columns = useMemo(
-    () => [
-      {
-        key: 'index',
-        title: 'STT',
-        dataKey: 'index',
-        cellRenderer: ({ rowIndex }) =>
-          filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
-        width: 60,
-        sortable: false,
-        align: 'center',
-        mobileOptions: {
-          visible: true
+  const columns = useMemo(() => {
+    if (filters.ShowDetail === '2') {
+      return [
+        {
+          key: 'index',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex }) =>
+            filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'StockInfo.Title',
+          title: 'Cơ sở',
+          dataKey: 'StockInfo.Title',
+          width: 350,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'StockInfo.NameFr',
+          title: 'Mã cơ sở',
+          dataKey: 'StockInfo.NameFr',
+          width: 150,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          },
+          hidden: !GlobalConfig.Admin.dinh_dang_ma_don_nhap_xuat_kho
+        },
+        {
+          key: 'StockInfo.City',
+          title: 'Vùng (Thành phố)',
+          dataKey: 'StockInfo.City',
+          width: 180,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'ProdCode',
+          title: 'Mã NVL',
+          dataKey: 'ProdCode',
+          width: 150,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Product.SProdTitle',
+          title: 'Tên NVL',
+          dataKey: 'Product.SProdTitle',
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'Product.SUnit',
+          title: 'Đơn vị NVL',
+          dataKey: 'Product.SUnit',
+          width: 250,
+          sortable: false
+        },
+        {
+          key: 'Qty',
+          title: 'Số lượng',
+          dataKey: 'Qty',
+          width: 180,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Product.Qty',
+          title: 'Số lượng (*)',
+          dataKey: 'Product.Qty',
+          cellRenderer: ({ rowData }) =>
+            Number.isFinite(rowData.Qty / rowData?.Product?.Qty)
+              ? rowData.Qty / rowData?.Product?.Qty
+              : 0,
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'Product.ProdTitle',
+          title: 'Tên sản phẩm',
+          dataKey: 'Product.ProdTitle',
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'Product.Unit',
+          title: 'Đơn vị SP',
+          dataKey: 'Product.Unit',
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'Product.Qty',
+          title: 'Tỉ lệ chuyển đổi',
+          dataKey: 'Product.Qty',
+          width: 180,
+          sortable: false
         }
-      },
-      {
-        key: 'ProdTitle',
-        title: 'Tên',
-        dataKey: 'ProdTitle',
-        width: 350,
-        sortable: false,
-        mobileOptions: {
-          visible: true
+      ]
+    } else {
+      return [
+        {
+          key: 'index',
+          title: 'STT',
+          dataKey: 'index',
+          cellRenderer: ({ rowIndex }) =>
+            filters.Ps * (filters.Pi - 1) + (rowIndex + 1),
+          width: 60,
+          sortable: false,
+          align: 'center',
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'ProdTitle',
+          title: 'Tên',
+          dataKey: 'ProdTitle',
+          width: 350,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Code',
+          title: 'Mã',
+          dataKey: 'Code',
+          width: 150,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'ProdPriceBase',
+          title: 'Giá gốc',
+          dataKey: 'ProdPriceBase',
+          cellRenderer: ({ rowData }) =>
+            PriceHelper.formatVND(rowData.ProdPriceBase),
+          width: 180,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'Unit',
+          title: 'Sử dụng',
+          dataKey: 'Unit',
+          cellRenderer: ({ rowData }) => rowData?.Unit || 'Chưa xác định',
+          width: 150,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'SUnit',
+          title: 'Đơn vị',
+          dataKey: 'SUnit',
+          cellRenderer: ({ rowData }) => rowData?.SUnit || 'Chưa xác định',
+          width: 150,
+          sortable: false
+        },
+        {
+          key: 'Total',
+          title: 'Tổng',
+          dataKey: 'Total',
+          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Total),
+          width: 180,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'MetaSL',
+          title: 'Số lượng',
+          dataKey: 'MetaSL',
+          cellRenderer: ({ rowData }) => getMeta(rowData).ProdQty,
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'MetaSP',
+          title: 'Sản phẩm',
+          dataKey: 'MetaSP',
+          cellRenderer: ({ rowData }) => getMeta(rowData).ProdTitle,
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'MetaDV',
+          title: 'Đơn vị',
+          dataKey: 'MetaDV',
+          cellRenderer: ({ rowData }) => getMeta(rowData).ProdUnit,
+          width: 180,
+          sortable: false
+        },
+        {
+          key: 'StockUsageList',
+          title: 'Tỉ lệ theo cơ sở',
+          dataKey: 'StockUsageList',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData?.StockUsageList
+                ? rowData?.StockUsageList.map(
+                    item =>
+                      `${item.Title || 'Chưa xác định'} (${item?.Unit} ${
+                        item?.SUnit
+                      })`
+                  ).join(', ')
+                : 'Chưa xác định'}
+            </Text>
+          ),
+          width: 340,
+          sortable: false,
+          hidden: filters.ShowDetail === '0'
+        },
+        {
+          key: 'UsageList',
+          title: 'Tỉ lệ vào các dịch vụ',
+          dataKey: 'UsageList',
+          cellRenderer: ({ rowData }) => (
+            <Text tooltipMaxWidth={300}>
+              {rowData?.UsageList
+                ? rowData?.UsageList.map(
+                    item =>
+                      `${item.Title || 'Chưa xác định'} (${item?.Unit} ${
+                        item?.SUnit
+                      })`
+                  ).join(', ')
+                : 'Chưa xác định'}
+            </Text>
+          ),
+          width: 340,
+          sortable: false,
+          className: 'flex-fill',
+          hidden: filters.ShowDetail === '0'
         }
-      },
-      {
-        key: 'Code',
-        title: 'Mã',
-        dataKey: 'Code',
-        width: 150,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'ProdPriceBase',
-        title: 'Giá gốc',
-        dataKey: 'ProdPriceBase',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.ProdPriceBase),
-        width: 180,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'Unit',
-        title: 'Sử dụng',
-        dataKey: 'Unit',
-        cellRenderer: ({ rowData }) => rowData?.Unit || 'Chưa xác định',
-        width: 150,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'SUnit',
-        title: 'Đơn vị',
-        dataKey: 'SUnit',
-        cellRenderer: ({ rowData }) => rowData?.SUnit || 'Chưa xác định',
-        width: 150,
-        sortable: false
-      },
-      {
-        key: 'Total',
-        title: 'Tổng',
-        dataKey: 'Total',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Total),
-        width: 180,
-        sortable: false,
-        mobileOptions: {
-          visible: true
-        }
-      },
-      {
-        key: 'MetaSL',
-        title: 'Số lượng',
-        dataKey: 'MetaSL',
-        cellRenderer: ({ rowData }) => getMeta(rowData).ProdQty,
-        width: 180,
-        sortable: false
-      },
-      {
-        key: 'MetaSP',
-        title: 'Sản phẩm',
-        dataKey: 'MetaSP',
-        cellRenderer: ({ rowData }) => getMeta(rowData).ProdTitle,
-        width: 180,
-        sortable: false
-      },
-      {
-        key: 'MetaDV',
-        title: 'Đơn vị',
-        dataKey: 'MetaDV',
-        cellRenderer: ({ rowData }) => getMeta(rowData).ProdUnit,
-        width: 180,
-        sortable: false
-      },
-      {
-        key: 'StockUsageList',
-        title: 'Tỉ lệ theo cơ sở',
-        dataKey: 'StockUsageList',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>
-            {rowData?.StockUsageList
-              ? rowData?.StockUsageList.map(
-                  item =>
-                    `${item.Title || 'Chưa xác định'} (${item?.Unit} ${
-                      item?.SUnit
-                    })`
-                ).join(', ')
-              : 'Chưa xác định'}
-          </Text>
-        ),
-        width: 340,
-        sortable: false,
-        hidden: filters.ShowDetail === '0'
-      },
-      {
-        key: 'UsageList',
-        title: 'Tỉ lệ vào các dịch vụ',
-        dataKey: 'UsageList',
-        cellRenderer: ({ rowData }) => (
-          <Text tooltipMaxWidth={300}>
-            {rowData?.UsageList
-              ? rowData?.UsageList.map(
-                  item =>
-                    `${item.Title || 'Chưa xác định'} (${item?.Unit} ${
-                      item?.SUnit
-                    })`
-                ).join(', ')
-              : 'Chưa xác định'}
-          </Text>
-        ),
-        width: 340,
-        sortable: false,
-        className: 'flex-fill',
-        hidden: filters.ShowDetail === '0'
-      }
-    ],
-    [filters]
-  )
+      ]
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)

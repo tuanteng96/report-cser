@@ -109,7 +109,13 @@ export const BrowserHelpers = {
         : ''
     }
     if ('StaffID' in filters) {
-      params.StaffID = filters.StaffID ? filters.StaffID.value : ''
+      if (filters.StaffID && Array.isArray(filters.StaffID)) {
+        params.StaffID = filters.StaffID
+          ? filters.StaffID.map(x => x.value).toString()
+          : ''
+      } else {
+        params.StaffID = filters.StaffID ? filters.StaffID.value : ''
+      }
     }
     if ('KpiType' in filters) {
       params.KpiType = filters.KpiType ? filters.KpiType.value : ''
