@@ -335,7 +335,7 @@ function PayrollStaff2(props) {
 
           if (
             item?.User?.Address &&
-            item?.User?.Address.toUpperCase() === 'NHÂN VIÊN CHÍNH THỨC'
+            item?.User?.Address.toUpperCase().includes("CHÍNH THỨC")
           ) {
             THU_NHAP_TOI_THIEU = 15500000
           }
