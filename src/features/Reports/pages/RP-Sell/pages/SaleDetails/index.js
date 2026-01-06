@@ -1890,9 +1890,9 @@ function SaleDetails(props) {
                       <tr>
                         <th
                           rowSpan={2}
-                          className="p-3 font-semibold text-left min-w-[90px] max-w-[90px] lg:min-w-[120px] lg:max-w-[120px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 font-number text-sm uppercase h-[50px] lg:sticky lg:top-0 lg:left-0 bg-[#f8f8f8]"
+                          className="p-3 font-semibold text-left min-w-[200px] max-w-[200px] lg:min-w-[200px] lg:max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 font-number text-sm uppercase h-[50px] lg:sticky lg:top-0 lg:left-0 bg-[#f8f8f8]"
                         >
-                          Mã
+                          Loại
                         </th>
                         <th
                           rowSpan={2}
@@ -1932,6 +1932,7 @@ function SaleDetails(props) {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
+                      
                       {data?.Items &&
                         data?.Items?.map((item, index) => (
                           <Fragment key={index}>
@@ -1939,10 +1940,10 @@ function SaleDetails(props) {
                               <tr key={i}>
                                 <td
                                   className={clsx(
-                                    'p-3 bg-white min-w-[90px] max-w-[90px] lg:min-w-[120px] lg:max-w-[120px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 lg:sticky lg:top-0 lg:left-0'
+                                    'p-3 bg-white min-w-[200px] max-w-[200px] lg:min-w-[200px] lg:max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 lg:sticky lg:top-0 lg:left-0'
                                   )}
                                 >
-                                  {prod?.ProdCode}
+                                  {!prod?.isSum && item?.TypeTitle}
                                 </td>
                                 <td
                                   className={clsx(
