@@ -276,10 +276,10 @@ function PayrollStaff2(props) {
           newObj['PHAT_DI_TRE_VE_SOM'] =
             item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
 
-          // if (item?.User?.Address.toUpperCase() === 'PART TIME') {
-          //   newObj['PHU_CAP_NGOAI_GIO'] = 0
-          //   newObj['PHAT_DI_TRE_VE_SOM'] = 0
-          // }
+          if (item?.User?.Address.toUpperCase() === 'PART TIME' && GlobalConfig?.Admin?.chinhsachluongchitiet_partime) {
+            newObj['PHU_CAP_NGOAI_GIO'] = 0
+            newObj['PHAT_DI_TRE_VE_SOM'] = 0
+          }
 
           newObj['TONG_PHU_CAP'] =
             (newObj.PHU_CAP_CHUC_VU || 0) +
