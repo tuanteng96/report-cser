@@ -328,7 +328,10 @@ function SaleDetails(props) {
       )
       let { data } = await reportsApi.getChartSalesDetail2({
         StockID: filters2.StockID,
-        ProdOrService: filters2.ProdOrService?.value || null,
+        ProdOrService:
+          filters2.ProdOrService?.value === ''
+            ? null
+            : filters2.ProdOrService?.value,
         ProdIDs: filters2.ProductId?.value || '',
         BlockTimes: BlockTimes.map(x => [x.start, x.end]),
         Ps: 10000
@@ -380,7 +383,10 @@ function SaleDetails(props) {
         index = index + 1
         let { data } = await reportsApi.getListSalesDetail2({
           StockID: filters2.StockID,
-          ProdOrService: filters2.ProdOrService?.value || null,
+          ProdOrService:
+            filters2.ProdOrService?.value === ''
+              ? null
+              : filters2.ProdOrService?.value,
           ProdIDs: filters2.ProductId?.value || '',
           BlockTime: [item.start, item.end],
           Ps: 10000
@@ -394,11 +400,10 @@ function SaleDetails(props) {
                   const key = item.ProdID
 
                   if (!map.has(key)) {
-                    // clone item đầu tiên
                     map.set(key, { ...item })
                   } else {
-                    // chỉ cộng Qty
                     map.get(key).Qty += item.Qty
+                    map.get(key).ToPay += item.ToPay
                   }
 
                   return map
@@ -773,7 +778,13 @@ function SaleDetails(props) {
   }
 
   const onRefresh = () => {
-    getSalesDetail()
+    if (View === 1) {
+      refetch()
+      ChartSales2.refetch()
+      return
+    } else {
+      getSalesDetail()
+    }
   }
 
   const onOpenFilter = () => {
@@ -1932,7 +1943,6 @@ function SaleDetails(props) {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      
                       {data?.Items &&
                         data?.Items?.map((item, index) => (
                           <Fragment key={index}>
