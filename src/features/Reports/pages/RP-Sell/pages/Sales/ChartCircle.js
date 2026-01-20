@@ -7,12 +7,52 @@ import ElementEmpty from 'src/components/Empty/ElementEmpty'
 import { ColorsHelpers } from 'src/helpers/ColorsHelpers'
 import LoadingChart from 'src/components/Loading/LoadingChart'
 
+const getLegendOptions = position => ({
+  position,
+  onHover: (_event, legendItem, legend) => {
+    const chart = legend?.chart
+    const meta = chart?.getDatasetMeta(0)
+    const element = meta?.data?.[legendItem?.index]
+    if (!chart || !element) return
+    chart.setActiveElements([{ datasetIndex: 0, index: legendItem.index }])
+    chart.tooltip?.setActiveElements(
+      [{ datasetIndex: 0, index: legendItem.index }],
+      element.tooltipPosition()
+    )
+    chart.update()
+  },
+  onLeave: (_event, _legendItem, legend) => {
+    const chart = legend?.chart
+    if (!chart) return
+    chart.setActiveElements([])
+    chart.tooltip?.setActiveElements([], { x: 0, y: 0 })
+    chart.update()
+  }
+})
+
+const getTooltipOptions = () => ({
+  callbacks: {
+    label: context => {
+      const dataset = context?.dataset
+      const data = dataset?.data || []
+      const value = context?.parsed ?? 0
+      const total = data.reduce((sum, item) => sum + (Number(item) || 0), 0)
+      const percent = total ? ((value / total) * 100).toFixed(1) : '0.0'
+      const label = context?.label ? `${context.label}: ` : ''
+      return `${label}${value} (${percent}%)`
+    }
+  }
+})
+
 const optionsObj = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'right'
+      ...getLegendOptions('right')
+    },
+    tooltip: {
+      ...getTooltipOptions()
     },
     title: {
       display: false,
@@ -53,7 +93,10 @@ function ChartCircle({ loading, data }) {
         plugins: {
           ...prevState.plugins,
           legend: {
-            position: 'right'
+            ...getLegendOptions('right')
+          },
+          tooltip: {
+            ...getTooltipOptions()
           }
         }
       }))
@@ -63,7 +106,10 @@ function ChartCircle({ loading, data }) {
         plugins: {
           ...prevState.plugins,
           legend: {
-            position: 'bottom'
+            ...getLegendOptions('bottom')
+          },
+          tooltip: {
+            ...getTooltipOptions()
           }
         }
       }))
