@@ -872,7 +872,7 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(
             rowData.THUC_TRA_DU_KIEN - (rowData.TAM_UNG - rowData.HOAN_UNG)
           ),
-        width: 150,
+        width: 200,
         sortable: false,
         footerRenderer: () => (
           <span className="font-size-md font-number text-success">

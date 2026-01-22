@@ -1,7 +1,15 @@
 export const PriceHelper = {
   countDecimals: value => {
-    if (Math.floor(value) === value) return 0
-    return value.toString().split('.')[1].length || 0
+    if (value === null || value === undefined) return 0
+    const numberValue = Number(value)
+    if (
+      !Number.isFinite(numberValue) ||
+      Math.floor(numberValue) === numberValue
+    ) {
+      return 0
+    }
+    const decimalPart = numberValue.toString().split('.')[1]
+    return decimalPart ? decimalPart.length : 0
   },
   formatVND: price => {
     if (!price || price === 0) return '0'

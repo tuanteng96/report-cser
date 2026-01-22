@@ -175,14 +175,14 @@ function PayrollStaff2(props) {
             Items: item?.SETTINGS?.Settings,
             Name: 'DK_PHU_CAP_CHUYEN_CAN'
           })
-          let NGAY_CONG_SETUP = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'NGAY_CONG'
-          })
-          let NGAY_NGHI_SETUP = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'NGAY_NGHI'
-          })
+          // let NGAY_CONG_SETUP = getValueByName({
+          //   Items: item?.SETTINGS?.Settings,
+          //   Name: 'NGAY_CONG'
+          // })
+          // let NGAY_NGHI_SETUP = getValueByName({
+          //   Items: item?.SETTINGS?.Settings,
+          //   Name: 'NGAY_NGHI'
+          // })
 
           newObj['TINH_THEO_CONG'] = true
 
@@ -194,30 +194,33 @@ function PayrollStaff2(props) {
             Items: item?.SETTINGS?.Settings,
             Name: 'GIAM_TRU_GIA_CANH'
           })
-          newObj['PHU_CAP_CHUC_VU'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'PHU_CAP_CHUC_VU'
-          })
-          newObj['PHU_CAP_THAM_NIEN'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'PHU_CAP_THAM_NIEN'
-          })
-          newObj['PHU_CAP_AN_TRUA'] = RoundAmount(
-            (getValueByName({
-              Items: item?.SETTINGS?.Settings,
-              Name: 'PHU_CAP_TIEN_AN'
-            }) /
-              item?.NGAY_CONG) *
-              Math.round(item?.TrackValue?.WorkQty)
-          )
+          newObj['PHU_CAP_CHUC_VU'] = 0
+          // newObj['PHU_CAP_CHUC_VU'] = getValueByName({
+          //   Items: item?.SETTINGS?.Settings,
+          //   Name: 'PHU_CAP_CHUC_VU'
+          // })
+          newObj['PHU_CAP_THAM_NIEN'] = 0
+          // newObj['PHU_CAP_THAM_NIEN'] = getValueByName({
+          //   Items: item?.SETTINGS?.Settings,
+          //   Name: 'PHU_CAP_THAM_NIEN'
+          // })
+          newObj['PHU_CAP_AN_TRUA'] = 0
+          // newObj['PHU_CAP_AN_TRUA'] = RoundAmount(
+          //   (getValueByName({
+          //     Items: item?.SETTINGS?.Settings,
+          //     Name: 'PHU_CAP_TIEN_AN'
+          //   }) /
+          //     item?.NGAY_CONG) *
+          //     Math.round(item?.TrackValue?.WorkQty)
+          // )
 
-          if (newObj['PHU_CAP_AN_TRUA'] > 300000) {
-            newObj['PHU_CAP_AN_TRUA'] = 300000
-          }
+          // if (newObj['PHU_CAP_AN_TRUA'] > 300000) {
+          //   newObj['PHU_CAP_AN_TRUA'] = 300000
+          // }
 
-          let WorkTimeSetting = item?.User?.WorkTimeSetting
-            ? JSON.parse(item?.User?.WorkTimeSetting)
-            : null
+          // let WorkTimeSetting = item?.User?.WorkTimeSetting
+          //   ? JSON.parse(item?.User?.WorkTimeSetting)
+          //   : null
 
           newObj['NGAY_CONG_THUC_TE'] = item?.TrackValue?.WorkQty || 0
 
@@ -225,12 +228,25 @@ function PayrollStaff2(props) {
             (item?.LUONG_CO_BAN_THANG / item?.NGAY_CONG) *
               newObj.NGAY_CONG_THUC_TE
           )
-          newObj['GIO_PARTIME'] =
-            Math.floor(((item?.TrackValue?.WorkMinutes || 0) / 60) * 10) / 10
 
-          newObj['LUONG_THEO_GIO'] = RoundAmount(
-            (WorkTimeSetting?.SalaryHours || 0) * newObj.GIO_PARTIME
-          )
+          newObj['PHU_CAP_TIEN_AN'] = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'PHU_CAP_TIEN_AN'
+          })
+
+          newObj['THUONG_HIEU_SUAT'] =
+            (newObj.PHU_CAP_TIEN_AN / item?.NGAY_CONG) *
+            newObj.NGAY_CONG_THUC_TE
+          // newObj['GIO_PARTIME'] =
+          //   Math.floor(((item?.TrackValue?.WorkMinutes || 0) / 60) * 10) / 10
+
+          newObj['GIO_PARTIME'] = 0
+
+          // newObj['LUONG_THEO_GIO'] = RoundAmount(
+          //   (WorkTimeSetting?.SalaryHours || 0) * newObj.GIO_PARTIME
+          // )
+
+          newObj['LUONG_THEO_GIO'] = 0
 
           if (
             Number(item?.TrackValue?.SO_LAN_DI_MUON_CN || 0) +
@@ -276,7 +292,10 @@ function PayrollStaff2(props) {
           newObj['PHAT_DI_TRE_VE_SOM'] =
             item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
 
-          if (item?.User?.Address.toUpperCase() === 'PART TIME' && GlobalConfig?.Admin?.chinhsachluongchitiet_partime) {
+          if (
+            item?.User?.Address.toUpperCase() === 'PART TIME' &&
+            GlobalConfig?.Admin?.chinhsachluongchitiet_partime
+          ) {
             newObj['PHU_CAP_NGOAI_GIO'] = 0
             newObj['PHAT_DI_TRE_VE_SOM'] = 0
           }
@@ -329,13 +348,14 @@ function PayrollStaff2(props) {
             (Math.abs(newObj.PHAT_DI_TRE_VE_SOM || 0) +
               Math.abs(item?.BANGLUONGBC?.TRU_PHAT || 0)) +
             (item?.BANGLUONGBC?.THUONG || 0) +
-            (item?.BANGLUONGBC?.KPI_Hoa_hong || 0)
+            (item?.BANGLUONGBC?.KPI_Hoa_hong || 0) +
+            newObj.THUONG_HIEU_SUAT
 
           let THU_NHAP_TOI_THIEU = 0
 
           if (
             item?.User?.Address &&
-            item?.User?.Address.toUpperCase().includes("CHÍNH THỨC")
+            item?.User?.Address.toUpperCase().includes('CHÍNH THỨC')
           ) {
             THU_NHAP_TOI_THIEU = 15500000
           }
@@ -548,11 +568,17 @@ function PayrollStaff2(props) {
                     </th>
                     <th
                       rowSpan={2}
-                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
                       Lương theo ngày công
                     </th>
                     <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
+                      Thưởng hiệu suất
+                    </th>
+                    {/* <th
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
@@ -563,8 +589,8 @@ function PayrollStaff2(props) {
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
                       Lương theo giờ
-                    </th>
-                    <th
+                    </th> */}
+                    {/* <th
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
@@ -575,7 +601,7 @@ function PayrollStaff2(props) {
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
                       Phụ cấp thâm niên
-                    </th>
+                    </th> */}
                     {GlobalConfig?.Admin?.chiphikhacbangluong && (
                       <th
                         rowSpan={2}
@@ -591,12 +617,12 @@ function PayrollStaff2(props) {
                     >
                       Phụ cấp chuyên cần
                     </th>
-                    <th
+                    {/* <th
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
                       Phụ cấp ăn trưa
-                    </th>
+                    </th> */}
                     <th
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
@@ -825,7 +851,7 @@ function PayrollStaff2(props) {
                             ? rowData?.NGAY_CONG_THUC_TE
                             : ''}
                         </td>
-                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                        <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.TINH_THEO_CONG
                             ? PriceHelper.formatVND(
                                 rowData.LUONG_THEO_NGAY_CONG
@@ -833,6 +859,9 @@ function PayrollStaff2(props) {
                             : ''}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.THUONG_HIEU_SUAT)}
+                        </td>
+                        {/* <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {!rowData?.TINH_THEO_CONG
                             ? PriceHelper.formatVND(rowData?.GIO_PARTIME)
                             : ''}
@@ -841,13 +870,13 @@ function PayrollStaff2(props) {
                           {!rowData?.TINH_THEO_CONG
                             ? PriceHelper.formatVND(rowData?.LUONG_THEO_GIO)
                             : ''}
-                        </td>
-                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                        </td> */}
+                        {/* <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHU_CAP_CHUC_VU)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHU_CAP_THAM_NIEN)}
-                        </td>
+                        </td> */}
                         {GlobalConfig?.Admin?.chiphikhacbangluong && (
                           <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                             {PriceHelper.formatVND(rowData?.PHAT_SINH_KHAC)}
@@ -856,9 +885,9 @@ function PayrollStaff2(props) {
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHU_CAP_CHUYEN_CAN)}
                         </td>
-                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                        {/* <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHU_CAP_AN_TRUA)}
-                        </td>
+                        </td> */}
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(
                             rowData?.BANGLUONGBC?.LUONG_CA
