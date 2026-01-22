@@ -234,9 +234,10 @@ function PayrollStaff2(props) {
             Name: 'PHU_CAP_TIEN_AN'
           })
 
-          newObj['THUONG_HIEU_SUAT'] =
+          newObj['THUONG_HIEU_SUAT'] = RoundAmount(
             (newObj.PHU_CAP_TIEN_AN / item?.NGAY_CONG) *
-            newObj.NGAY_CONG_THUC_TE
+              newObj.NGAY_CONG_THUC_TE
+          )
           // newObj['GIO_PARTIME'] =
           //   Math.floor(((item?.TrackValue?.WorkMinutes || 0) / 60) * 10) / 10
 
