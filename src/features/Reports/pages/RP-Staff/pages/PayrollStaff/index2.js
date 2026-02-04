@@ -388,7 +388,7 @@ function PayrollStaff2(props) {
             (item?.User?.Address.toUpperCase() === 'PART TIME' ||
               item?.User?.Address.toUpperCase() === 'THỬ VIỆC')
           ) {
-            THUE_TNCN = newObj['TONG_LUONG_THANG'] * 0.1
+            THUE_TNCN = newObj['TONG_LUONG_THANG'] >= 2000000 ? newObj['TONG_LUONG_THANG'] * 0.1 : 0
             THU_NHAP_TINH_THUE = 0
           }
 
