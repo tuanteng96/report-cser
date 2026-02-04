@@ -186,9 +186,9 @@ function PayrollStaff2(props) {
 
           newObj['TINH_THEO_CONG'] = true
 
-          if (item?.User?.Address.toUpperCase() === 'PART TIME') {
-            newObj['TINH_THEO_CONG'] = false
-          }
+          // if (item?.User?.Address.toUpperCase() === 'PART TIME') {
+          //   newObj['TINH_THEO_CONG'] = false
+          // }
 
           newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
