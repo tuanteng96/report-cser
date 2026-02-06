@@ -388,7 +388,10 @@ function PayrollStaff2(props) {
             (item?.User?.Address.toUpperCase() === 'PART TIME' ||
               item?.User?.Address.toUpperCase() === 'THỬ VIỆC')
           ) {
-            THUE_TNCN = newObj['TONG_LUONG_THANG'] >= 2000000 ? newObj['TONG_LUONG_THANG'] * 0.1 : 0
+            THUE_TNCN =
+              newObj['TONG_LUONG_THANG'] >= 2000000
+                ? newObj['TONG_LUONG_THANG'] * 0.1
+                : 0
             THU_NHAP_TINH_THUE = 0
           }
 
@@ -705,6 +708,12 @@ function PayrollStaff2(props) {
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
+                      Thưởng năm
+                    </th>
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Tổng lương tháng
                     </th>
                     <th
@@ -923,7 +932,6 @@ function PayrollStaff2(props) {
                             </td>
                           </>
                         )}
-
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHU_CAP_NGOAI_GIO)}
                         </td>
@@ -944,7 +952,13 @@ function PayrollStaff2(props) {
                           )}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.TONG_PHU_CAP)}
+                          {PriceHelper.formatVND(
+                            rowData?.TONG_PHU_CAP -
+                              rowData?.BANGLUONGBC?.PHU_CAP
+                          )}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.BANGLUONGBC?.PHU_CAP)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.TONG_LUONG_THANG)}
