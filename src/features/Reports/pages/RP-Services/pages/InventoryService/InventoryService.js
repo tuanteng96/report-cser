@@ -132,7 +132,7 @@ function InventoryService(props) {
       UrlName: '/dich-vu/ton-dich-vu'
     })
   }
-  
+
   const columns = useMemo(
     () => [
       {
@@ -171,6 +171,21 @@ function InventoryService(props) {
         title: 'Số điện thoại',
         dataKey: 'SenderPhone',
         width: 200,
+        sortable: false
+      },
+      {
+        key: 'StockID',
+        title: 'Cơ sở',
+        dataKey: 'StockID',
+        cellRenderer: ({ rowData }) => {
+          let Stock = Stocks.find(
+            item => Number(item.ID) === Number(rowData.StockID)
+          )
+          console.log(Stocks)
+          console.log(rowData)
+          return <div>{Stock?.Title || ''}</div>
+        },
+        width: 250,
         sortable: false
       },
       {
@@ -231,9 +246,7 @@ function InventoryService(props) {
           visible: true
         },
         footerRenderer: () => (
-          <span className="font-size-md font-number">
-            {TotalObj?.so_luong}
-          </span>
+          <span className="font-size-md font-number">{TotalObj?.so_luong}</span>
         )
       },
       {
@@ -360,7 +373,7 @@ function InventoryService(props) {
         sortable: false
       }
     ],
-    [filters, TotalObj]
+    [filters, TotalObj, Stocks]
   )
 
   const OpenModalMobile = value => {

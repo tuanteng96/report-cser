@@ -493,7 +493,7 @@ if (DevHelpers.isDevelopment()) {
         IsPublic: 1
       },
       {
-        ID: 12290,
+        ID: 12649,
         Title: 'Vincom Phan Văn Trị',
         Lat: 0,
         Lng: 0,
@@ -502,7 +502,7 @@ if (DevHelpers.isDevelopment()) {
         IsPublic: 1
       }
     ],
-    CrStockID: 11643,
+    CrStockID: 12649,
     rightsSum: {
       report: {
         IsAllStock: true,
