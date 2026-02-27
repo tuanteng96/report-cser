@@ -181,8 +181,6 @@ function InventoryService(props) {
           let Stock = Stocks.find(
             item => Number(item.ID) === Number(rowData.StockID)
           )
-          console.log(Stocks)
-          console.log(rowData)
           return <div>{Stock?.Title || ''}</div>
         },
         width: 250,
