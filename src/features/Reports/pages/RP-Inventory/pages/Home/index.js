@@ -47,6 +47,7 @@ function Home(props) {
   const [ListData, setListData] = useState([])
   const [PageTotal, setPageTotal] = useState(0)
   const [pageCount, setPageCount] = useState(0)
+  const [TotalValue, setTotalValue] = useState(0)
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
@@ -78,15 +79,17 @@ function Home(props) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
-          const { Items, Total, PCount } = {
+          const { Items, Total, PCount, TotalValue } = {
             Items: data.result?.Items || [],
             Total: data.result?.Total || 0,
-            PCount: data?.result?.PCount || 0
+            PCount: data?.result?.PCount || 0,
+            TotalValue: data?.result?.TotalValue || 0
           }
           setListData(Items)
           setLoading(false)
           setPageTotal(Total)
           setPageCount(PCount)
+          setTotalValue(TotalValue)
           isFilter && setIsFilter(false)
           callback && callback()
           PermissionHelpers.HideErrorAccess()
@@ -349,6 +352,12 @@ function Home(props) {
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách tồn kho</div>
+          <div className="fw-500 pr-15px">
+            Tổng giá trị tồn{' '}
+            <span className="font-size-xl fw-600 text-success pl-5px font-number">
+              {PriceHelper.formatVND(TotalValue)}
+            </span>
+          </div>
         </div>
         <div className="p-20px">
           <ReactTableV7
