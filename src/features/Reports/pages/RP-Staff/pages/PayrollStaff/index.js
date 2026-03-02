@@ -609,6 +609,55 @@ function PayrollStaff(props) {
       },
       {
         key: 'LUONG_CHAM_CONG',
+        title: 'Lương chấm công',
+        dataKey: 'LUONG_CHAM_CONG',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(
+            rowData?.TrackValue?.WorkQty * rowData?.NGAY_LUONG_CO_BAN
+          ),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'DI_SOM_VE_MUON',
+        title: 'Đi sớm, Về muộn',
+        dataKey: 'LUONG_CHAM_CONG',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(
+            rowData?.TrackValue?.DI_SOM + rowData?.TrackValue?.VE_MUON
+          ),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'DI_SOM_VE_MUON',
+        title: 'Đi muộn, Về sớm',
+        dataKey: 'LUONG_CHAM_CONG',
+        cellRenderer: ({ rowData }) =>
+          rowData?.TrackValue?.DI_MUON + rowData?.TrackValue?.VE_SOM > 0
+            ? PriceHelper.formatVND(
+                (rowData?.TrackValue?.DI_MUON + rowData?.TrackValue?.VE_SOM) *
+                  -1
+              )
+            : PriceHelper.formatVND(
+                rowData?.TrackValue?.DI_MUON + rowData?.TrackValue?.VE_SOM
+              ),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'PHU_CAP_NGAY',
+        title: 'Phụ cấp ngày',
+        dataKey: 'PHU_CAP_NGAY',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(
+            (rowData?.TrackValue?.WorkQtyAllowance || 0) * rowData?.TRO_CAP_NGAY
+          ),
+        width: 180,
+        sortable: false
+      },
+      {
+        key: 'LUONG_CHAM_CONG',
         title: 'Lương chính sách',
         dataKey: 'LUONG_CHAM_CONG',
         cellRenderer: ({ rowData }) => (

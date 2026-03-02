@@ -9,7 +9,7 @@ if (DevHelpers.isDevelopment()) {
     },
     Groups: [
       {
-        Title: '11287.order'
+        Title: '11620.order'
       },
       {
         Title: 'Administrator'
@@ -21,30 +21,488 @@ if (DevHelpers.isDevelopment()) {
     Stocks: [
       {
         ID: 778,
-        Title: 'Quản lý cơ sở'
+        Title: 'Quản lý cơ sở',
+        ParentID: 0
       },
       {
         ID: 11620,
-        Title: 'Cser Hà Nội'
+        Title: 'Saigon Office',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'ac:a3:1e:4:e2:35',
+        WifiName: 'Face Wash Fox',
+        IsPublic: 1
       },
       {
-        ID: 11621,
-        Title: 'Cser HCM'
+        ID: 12356,
+        Title: 'Vincom Plaza 3-2',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'b8:29:3:f7:6f:29',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
       },
       {
-        ID: 11623,
-        Title: 'Cser Đà nẵng'
+        ID: 12357,
+        Title: 'Yên Hoa Hà Nội',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'a0:89:66:ca:14:9',
+        WifiName: 'FACEWASHFOX',
+        IsPublic: 1
       },
       {
-        ID: 11625,
-        Title: 'Cser CS A'
+        ID: 12358,
+        Title: 'Hạ Long Vũng Tàu',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 0
       },
       {
-        ID: 11287,
-        Title: 'Cser CS B'
+        ID: 12359,
+        Title: 'Nguyễn Du Q1',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12360,
+        Title: 'Vincom Plaza Skylake',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12361,
+        Title: 'Vincom Phạm Ngọc Thạch',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'b8:29:3:e5:72:a8',
+        WifiName: 'FACEWASHFOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12362,
+        Title: 'Starlake',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12363,
+        Title: 'Marina',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12365,
+        Title: 'Greenbay',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12366,
+        Title: 'Lumiere',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12367,
+        Title: 'Times City',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12368,
+        Title: 'HANOI TOWER',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12369,
+        Title: 'SAIGON PEARL',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12370,
+        Title: 'Vincom Saigonres',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12371,
+        Title: 'Diamond Island',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12372,
+        Title: 'Vincom Bắc Từ Liêm',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12373,
+        Title: 'LOTTE HANOI',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12374,
+        Title: 'HANOI CENTRE',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12333,
+        Title: 'Aeon Mall Tân Phú Celadon',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:d1:d7:19',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12329,
+        Title: 'Đảo Ngọc Ngũ Xã HN',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '0:c8:96:29:e5:21',
+        WifiName: 'Face Wash Fox',
+        IsPublic: 1
+      },
+      {
+        ID: 12330,
+        Title: 'Gold Coast Nha Trang',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:d9:41:99',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12331,
+        Title: 'Trương Định Q3',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:e7:10:91',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12336,
+        Title: 'Trần Phú Đà Nẵng',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12338,
+        Title: 'Sương Nguyệt Ánh Q1',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:ac:89:41',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12344,
+        Title: 'TTTM Estella Place',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'b8:29:3:69:5a:91',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12345,
+        Title: 'SC VivoCity',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'ac:a3:1e:4:e2:36',
+        WifiName: 'fwfwifi',
+        IsPublic: 1
+      },
+      {
+        ID: 12346,
+        Title: 'Midtown Q7',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:ac:89:41',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12347,
+        Title: 'Aeon Mall Bình Tân',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'b8:29:3:27:4a:a1',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12348,
+        Title: 'Nowzone Q1',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'cc:71:90:9a:3f:99',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12350,
+        Title: 'Ha Noi Office',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12351,
+        Title: 'Saigon Centre',
+        Lat: 10.7732077801471,
+        Lng: 106.701059803134,
+        WifiID: 'b8:29:3:c7:7c:41',
+        WifiName: 'FACE WASH FOX_5G',
+        IsPublic: 1
+      },
+      {
+        ID: 12352,
+        Title: 'Hub Kho Saigon ',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'b8:29:3:c7:f8:79',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12353,
+        Title: 'THI SÁCH Q1',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'b8:29:3:d4:65:31',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12354,
+        Title: 'Kosmo Tây Hồ',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'cc:71:90:61:d7:81',
+        WifiName: 'FACEWASHFOX 5G',
+        IsPublic: 1
+      },
+      {
+        ID: 12301,
+        Title: 'Riviera Point Q7',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:fc:77:69',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12302,
+        Title: 'Vincom Bà Triệu',
+        Lat: 21.0112658,
+        Lng: 105.8499174,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12306,
+        Title: 'Vincom Lê Văn Việt',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'cc:71:90:5c:5f:b1',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12307,
+        Title: 'Vincom Thảo Điền',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:5f:36:e1',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12313,
+        Title: 'Parc Mall Q8',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:ac:89:41',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12315,
+        Title: 'Vista Verde',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:94:38:f1',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12316,
+        Title: 'Westpoint Phạm Hùng',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '3c:f9:f0:5b:c3:13',
+        WifiName: 'Face Wash Fox',
+        IsPublic: 1
+      },
+      {
+        ID: 12320,
+        Title: 'Crescent Mall Q7',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:ac:89:41',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12322,
+        Title: 'The Botanica QTB',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:b2:83:41',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12323,
+        Title: 'Hoa Lan Q PN',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'cc:71:90:5c:5f:b1',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12324,
+        Title: 'Everrich Infinity Q5',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:ce:4:9',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12325,
+        Title: 'Thống Nhất Vũng Tàu',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '',
+        WifiName: '',
+        IsPublic: 1
+      },
+      {
+        ID: 12326,
+        Title: 'Võ Thị Sáu Q1',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:ce:3:71',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12327,
+        Title: 'Imperia Sky Garden HN',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '0:c8:96:21:ba:b1',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 11620,
+        Title: 'The Sun Avenue',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '24:b:2a:82:49:2',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 11288,
+        Title: 'Vincom Landmark 81',
+        Lat: 0,
+        Lng: 0,
+        WifiID: 'cc:71:90:5c:5f:b1',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 11289,
+        Title: 'Vincom Quang Trung',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:5a:f4:61',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
+      },
+      {
+        ID: 12649,
+        Title: 'Vincom Phan Văn Trị',
+        Lat: 0,
+        Lng: 0,
+        WifiID: '4c:12:e8:62:5f:f9',
+        WifiName: 'FACE WASH FOX',
+        IsPublic: 1
       }
     ],
-    CrStockID: 11287,
+    CrStockID: 12649,
     rightsSum: {
       report: {
         IsAllStock: true,
@@ -67,7 +525,7 @@ if (DevHelpers.isDevelopment()) {
             Title: 'Cser CS A'
           },
           {
-            ID: 11287,
+            ID: 11620,
             Title: 'Cser CS B'
           }
         ],
@@ -474,7 +932,7 @@ if (DevHelpers.isDevelopment()) {
               text: 'Báo cáo',
               stocksList: [
                 {
-                  ID: 11287,
+                  ID: 11620,
                   Title: 'Cser Beauty Hà Nội'
                 },
                 {
@@ -497,7 +955,7 @@ if (DevHelpers.isDevelopment()) {
                     items: [
                       {
                         text: 'Tổng quan',
-                        stocks: '11287',
+                        stocks: '11620',
                         jdata: {
                           paths: ['/bao-cao-ngay/danh-sach'],
                           url: '/bao-cao-ngay/tong-quan'
@@ -505,7 +963,7 @@ if (DevHelpers.isDevelopment()) {
                       },
                       {
                         text: 'Khách hàng',
-                        stocks: '11287',
+                        stocks: '11620',
                         jdata: {
                           paths: ['/khach-hang/chi-tiet-ngay'],
                           url: '/bao-cao-ngay/khach-hang'
@@ -525,7 +983,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/doanh-so'
                         },
-                        stocks: '11287'
+                        stocks: '11620'
                       },
                       {
                         text: 'Sản phẩm - dịch vụ bán ra',
@@ -536,7 +994,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/sp-dv-ban-ra'
                         },
-                        stocks: '11287'
+                        stocks: '11620'
                       }
                     ]
                   }
@@ -555,7 +1013,7 @@ if (DevHelpers.isDevelopment()) {
                   name: 'adminTools_byStock',
                   IsAllStock: false,
                   hasRight: true,
-                  stocksList: [{ ID: 11287 }]
+                  stocksList: [{ ID: 11620 }]
                 }
               ]
             }
@@ -565,7 +1023,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjExMjYwMTA0NDM2MDAwMTMiLCJuYmYiOjE3NjQ4MzYzOTQsImV4cCI6MTg1MTIzNjM5NCwiaWF0IjoxNzY0ODM2Mzk0fQ.dd5tHXDusxifDBiGOo3a0i6vhHJt9cWviT6_DhCfE58'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjExMjQ2MTAxMDE5MDAwMDEiLCJuYmYiOjE3Njc4NjAwNzMsImV4cCI6MTg1NDI2MDA3MywiaWF0IjoxNzY3ODYwMDczfQ.t0IqEGueTW_MFKmXVOh00di2hz8bV96m4OgQX3aI7pE'
 }
 const Auth = createSlice({
   name: 'auth',
