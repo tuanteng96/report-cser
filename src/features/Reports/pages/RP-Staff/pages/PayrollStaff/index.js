@@ -621,7 +621,7 @@ function PayrollStaff(props) {
       {
         key: 'DI_SOM_VE_MUON',
         title: 'Đi sớm, Về muộn',
-        dataKey: 'LUONG_CHAM_CONG',
+        dataKey: 'DI_SOM_VE_MUON',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(
             rowData?.TrackValue?.DI_SOM + rowData?.TrackValue?.VE_MUON
@@ -632,7 +632,7 @@ function PayrollStaff(props) {
       {
         key: 'DI_SOM_VE_MUON',
         title: 'Đi muộn, Về sớm',
-        dataKey: 'LUONG_CHAM_CONG',
+        dataKey: 'DI_SOM_VE_MUON',
         cellRenderer: ({ rowData }) =>
           rowData?.TrackValue?.DI_MUON + rowData?.TrackValue?.VE_SOM > 0
             ? PriceHelper.formatVND(
