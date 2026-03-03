@@ -217,6 +217,32 @@ const CellHistory = ({ rowData }) => {
   )
 }
 
+const convertArray = arrays => {
+  const newArray = []
+  if (!arrays || arrays.length === 0) {
+    return newArray
+  }
+
+  for (let [index, obj] of arrays.entries()) {
+    if (obj?.OrderInDateInfo && obj?.OrderInDateInfo.length > 0) {
+      for (let [i, order] of (obj?.OrderInDateInfo || []).entries()) {
+        const newObj = {
+          ...obj,
+          OrderInDate: order
+        }
+        if (i !== 0) {
+          delete newObj.OrderInDateInfo
+        }
+        newArray.push(newObj)
+      }
+    } else {
+      newArray.push(obj)
+    }
+  }
+
+  return newArray
+}
+
 function BookService(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -236,7 +262,8 @@ function BookService(props) {
     MemberID: '',
     UserID: '', //nv dat
     UserServiceIDs: '',
-    include: 'IsNewMember,OrderInDate'
+    include: 'IsNewMember,OrderInDate',
+    ShowsType: '1'
   })
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
@@ -270,14 +297,23 @@ function BookService(props) {
   const getBookService = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     reportsApi
-      .getBookService(BrowserHelpers.getRequestParamsList(filters))
+      .getBookService({
+        ...BrowserHelpers.getRequestParamsList(filters),
+        include:
+          filters.ShowsType === '2'
+            ? 'IsNewMember,OrderInDate,OrderInDateFull'
+            : 'IsNewMember,OrderInDate'
+      })
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
         } else {
           const { Items, Total, PCount, Sum } = {
-            Items: data.result?.Items || [],
+            Items:
+              filters.ShowsType === '2'
+                ? convertArray(data.result?.Items || [])
+                : data.result?.Items || [],
             Total: data.result?.Total || 0,
             PCount: data?.result?.PCount || 0,
             Sum: data?.result?.Sum || null
@@ -332,11 +368,15 @@ function BookService(props) {
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
-        reportsApi.getBookService(
-          BrowserHelpers.getRequestParamsList(filters, {
+        reportsApi.getBookService({
+          ...BrowserHelpers.getRequestParamsList(filters, {
             Total: PageTotal
-          })
-        ),
+          }),
+          include:
+            filters.ShowsType === '2'
+              ? 'IsNewMember,OrderInDate,OrderInDateFull'
+              : 'IsNewMember,OrderInDate'
+        }),
       UrlName: '/dich-vu/dat-lich'
     })
   }
@@ -355,7 +395,11 @@ function BookService(props) {
         className: 'position-relative',
         mobileOptions: {
           visible: true
-        }
+        },
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'CreateDate',
@@ -368,7 +412,11 @@ function BookService(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'BookDate',
@@ -381,7 +429,11 @@ function BookService(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'Stock.Title',
@@ -392,7 +444,11 @@ function BookService(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'Member.FullName',
@@ -406,7 +462,11 @@ function BookService(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'Member.MobilePhone',
@@ -420,14 +480,22 @@ function BookService(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        }
+        },
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'RootTitles',
         title: 'Dịch vụ',
         dataKey: 'RootTitles',
         width: 220,
-        sortable: false
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'Status',
@@ -457,7 +525,11 @@ function BookService(props) {
           )
         },
         width: 150,
-        sortable: false
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'OsUsedValue',
@@ -466,7 +538,11 @@ function BookService(props) {
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(rowData.OsUsedValue),
         width: 150,
-        sortable: false
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'AtHome',
@@ -474,7 +550,11 @@ function BookService(props) {
         dataKey: 'AtHome',
         width: 120,
         cellRenderer: ({ rowData }) => (rowData.AtHome ? 'Tại nhà' : 'Tại Spa'),
-        sortable: false
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'UserServices',
@@ -485,7 +565,11 @@ function BookService(props) {
           rowData.UserServices.length > 0 &&
           rowData.UserServices.map(x => x.FullName).join(', '),
         width: 220,
-        sortable: false
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'UserName',
@@ -494,7 +578,11 @@ function BookService(props) {
         cellRenderer: ({ rowData }) =>
           rowData.UserName ? rowData.UserName : 'Đặt lịch Online',
         width: 180,
-        sortable: false
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'BookCount',
@@ -506,7 +594,11 @@ function BookService(props) {
           </>
         ),
         width: 180,
-        sortable: false
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'IsNewMember',
@@ -516,14 +608,146 @@ function BookService(props) {
           <>{rowData?.IsNewMember ? 'Khách mới' : 'Khách cũ'}</>
         ),
         width: 180,
-        sortable: false
+        sortable: false,
+        rowSpan: ({ rowData }) =>
+          rowData.OrderInDateInfo && rowData.OrderInDateInfo.length > 0
+            ? rowData.OrderInDateInfo.length
+            : 1
       },
       {
         key: 'OrderInDate',
         title: 'Đơn hàng',
         dataKey: 'OrderInDate',
+        cellRenderer: ({ rowData }) =>
+          rowData?.OrderInDate?.OrderID || rowData?.OrderInDate,
         width: 250,
         sortable: false
+      },
+      {
+        key: 'OrderToPay',
+        title: 'Giá trị đơn hàng',
+        dataKey: 'OrderToPay',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.OrderInDate?.ToPay),
+        width: 180,
+        sortable: false,
+        hidden: filters.ShowsType !== '2'
+      },
+      {
+        key: 'OrderToPayed',
+        title: 'Thanh toán',
+        dataKey: 'OrderToPayed',
+        cellRenderer: ({ rowData }) => (
+          <div className="w-100 d-flex justify-content-between align-items-center">
+            {PriceHelper.formatVND(
+              rowData?.OrderInDate?.TM +
+                rowData?.OrderInDate?.CK +
+                rowData?.OrderInDate?.QT +
+                rowData?.OrderInDate?.VI +
+                rowData?.OrderInDate?.TT
+            )}
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="auto"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Body className="p-0">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                      <span className="w-60">Tiền mặt</span>
+                      <span className="flex-1 text-end">
+                        {PriceHelper.formatVNDPositive(
+                          rowData?.OrderInDate?.TM
+                        )}
+                      </span>
+                    </div>
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                      <span className="w-60">Chuyển khoản</span>
+                      <span className="flex-1 text-end">
+                        {PriceHelper.formatVNDPositive(
+                          rowData?.OrderInDate?.CK
+                        )}
+                      </span>
+                    </div>
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                      <span className="w-60">Quẹt thẻ</span>
+                      <span className="flex-1 text-end">
+                        {PriceHelper.formatVNDPositive(
+                          rowData?.OrderInDate?.QT
+                        )}
+                      </span>
+                    </div>
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                      <span className="w-60">Ví</span>
+                      <span className="flex-1 text-end">
+                        {PriceHelper.formatVNDPositive(
+                          rowData?.OrderInDate?.VI
+                        )}
+                      </span>
+                    </div>
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                      <span className="w-60">Thẻ tiền</span>
+                      <span className="flex-1 text-end">
+                        {PriceHelper.formatVNDPositive(
+                          rowData?.OrderInDate?.TT
+                        )}
+                      </span>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+              </div>
+            </OverlayTrigger>
+          </div>
+        ),
+        width: 180,
+        sortable: false,
+        hidden: filters.ShowsType !== '2'
+      },
+      {
+        key: 'HH',
+        title: 'Hoa hồng',
+        dataKey: 'HH',
+        cellRenderer: ({ rowData }) => (
+          <div className="w-100 d-flex justify-content-between align-items-center">
+            {PriceHelper.formatVND(rowData?.OrderInDate?.HH)}
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="auto"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Body className="p-0">
+                    {rowData?.OrderInDate?.HHList &&
+                      rowData?.OrderInDate?.HHList.map((item, index) => (
+                        <div
+                          className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                          key={index}
+                        >
+                          <span className="w-60">{item?.Name}</span>
+                          <span className="flex-1 text-end">
+                            {PriceHelper.formatVNDPositive(item?.Value)}
+                          </span>
+                        </div>
+                      ))}
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+              </div>
+            </OverlayTrigger>
+          </div>
+        ),
+        width: 180,
+        sortable: false,
+        hidden: filters.ShowsType !== '2'
       },
       {
         key: 'History',
@@ -591,6 +815,38 @@ function BookService(props) {
   const HideModalMobile = () => {
     setInitialValuesMobile(null)
     setIsModalMobile(false)
+  }
+
+  const rowRenderer = ({ rowData, rowIndex, cells, columns }) => {
+    const indexList = Array.from({ length: 14 }, (_, i) => i)
+
+    if (rowData.rowSpanIndex > 0) {
+      indexList.forEach(i => {
+        const cell = cells[i]
+
+        // replace nội dung cell bằng rỗng
+        cells[i] = React.cloneElement(cell, {
+          children: null,
+          border: 'none'
+        })
+      })
+    }
+
+    for (let index of indexList) {
+      const rowSpan = columns[index].rowSpan({ rowData, rowIndex })
+      if (rowSpan > 1) {
+        const cell = cells[index]
+        const style = {
+          ...cell.props.style,
+          backgroundColor: '#fff',
+          height: rowSpan * 50 - 1,
+          alignSelf: 'flex-start',
+          zIndex: 1
+        }
+        cells[index] = React.cloneElement(cell, { style })
+      }
+    }
+    return cells
   }
 
   return (
@@ -729,6 +985,7 @@ function BookService(props) {
             optionMobile={{
               CellModal: cell => OpenModalMobile(cell)
             }}
+            rowRenderer={filters.ShowsType === '2' ? rowRenderer : undefined}
           />
         </div>
         <ModalViewMobile
