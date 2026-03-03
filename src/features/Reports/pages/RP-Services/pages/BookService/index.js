@@ -635,16 +635,14 @@ function BookService(props) {
       },
       {
         key: 'OrderToPayed',
-        title: 'Thanh toán',
+        title: 'Thanh toán TM/CK/QT',
         dataKey: 'OrderToPayed',
         cellRenderer: ({ rowData }) => (
           <div className="w-100 d-flex justify-content-between align-items-center">
             {PriceHelper.formatVND(
               rowData?.OrderInDate?.TM +
                 rowData?.OrderInDate?.CK +
-                rowData?.OrderInDate?.QT +
-                rowData?.OrderInDate?.VI +
-                rowData?.OrderInDate?.TT
+                rowData?.OrderInDate?.QT
             )}
             <OverlayTrigger
               rootClose
@@ -670,7 +668,7 @@ function BookService(props) {
                         )}
                       </span>
                     </div>
-                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
                       <span className="w-60">Quẹt thẻ</span>
                       <span className="flex-1 text-end">
                         {PriceHelper.formatVNDPositive(
@@ -678,6 +676,37 @@ function BookService(props) {
                         )}
                       </span>
                     </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+              </div>
+            </OverlayTrigger>
+          </div>
+        ),
+        width: 180,
+        sortable: false,
+        hidden: filters.ShowsType !== '2'
+      },
+      {
+        key: 'OrderToPayed2',
+        title: 'Thanh toán Ví/T.Tiền',
+        dataKey: 'OrderToPayed2',
+        cellRenderer: ({ rowData }) => (
+          <div className="w-100 d-flex justify-content-between align-items-center">
+            {PriceHelper.formatVND(
+              rowData?.OrderInDate?.VI + rowData?.OrderInDate?.TT
+            )}
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="auto"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Body className="p-0">
                     <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                       <span className="w-60">Ví</span>
                       <span className="flex-1 text-end">
@@ -715,34 +744,79 @@ function BookService(props) {
         cellRenderer: ({ rowData }) => (
           <div className="w-100 d-flex justify-content-between align-items-center">
             {PriceHelper.formatVND(rowData?.OrderInDate?.HH)}
-            <OverlayTrigger
-              rootClose
-              trigger="click"
-              key="top"
-              placement="auto"
-              overlay={
-                <Popover id={`popover-positioned-top`}>
-                  <Popover.Body className="p-0">
-                    {rowData?.OrderInDate?.HHList &&
-                      rowData?.OrderInDate?.HHList.map((item, index) => (
-                        <div
-                          className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
-                          key={index}
-                        >
-                          <span className="w-60">{item?.Name}</span>
-                          <span className="flex-1 text-end">
-                            {PriceHelper.formatVNDPositive(item?.Value)}
-                          </span>
-                        </div>
-                      ))}
-                  </Popover.Body>
-                </Popover>
-              }
-            >
-              <div className="d-flex justify-content-between align-items-center">
-                <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
-              </div>
-            </OverlayTrigger>
+            {rowData?.OrderInDate?.HH > 0 && (
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="auto"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Body className="p-0">
+                      {rowData?.OrderInDate?.HHList &&
+                        rowData?.OrderInDate?.HHList.map((item, index) => (
+                          <div
+                            className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                            key={index}
+                          >
+                            <span className="w-60">{item?.Name}</span>
+                            <span className="flex-1 text-end">
+                              {PriceHelper.formatVNDPositive(item?.Value)}
+                            </span>
+                          </div>
+                        ))}
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+                </div>
+              </OverlayTrigger>
+            )}
+          </div>
+        ),
+        width: 180,
+        sortable: false,
+        hidden: filters.ShowsType !== '2'
+      },
+      {
+        key: 'DS',
+        title: 'Doanh số',
+        dataKey: 'DS',
+        cellRenderer: ({ rowData }) => (
+          <div className="w-100 d-flex justify-content-between align-items-center">
+            {PriceHelper.formatVND(rowData?.OrderInDate?.DS)}
+            {rowData?.OrderInDate?.DS > 0 && (
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="auto"
+                overlay={
+                  <Popover id={`popover-positioned-top`}>
+                    <Popover.Body className="p-0">
+                      {rowData?.OrderInDate?.DSList &&
+                        rowData?.OrderInDate?.DSList.map((item, index) => (
+                          <div
+                            className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                            key={index}
+                          >
+                            <span className="w-60">{item?.Name}</span>
+                            <span className="flex-1 text-end">
+                              {PriceHelper.formatVNDPositive(item?.Value)}
+                            </span>
+                          </div>
+                        ))}
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+                </div>
+              </OverlayTrigger>
+            )}
           </div>
         ),
         width: 180,
