@@ -266,7 +266,8 @@ function SaleDetails(props) {
     DateEnd: moment().endOf('isoWeek').toDate(), // Ngày,
     ProdOrService: null, //null, 0,1,2,3,4
     ProductId: '',
-    TypeDate: 1
+    TypeDate: 1,
+    CategoriesIds: ''
   })
   const [StockName, setStockName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -334,6 +335,9 @@ function SaleDetails(props) {
             : filters2.ProdOrService?.value,
         ProdIDs: filters2.ProductId?.value || '',
         BlockTimes: BlockTimes.map(x => [x.start, x.end]),
+        CategoriesIds: filters2?.CategoriesIds
+          ? filters2?.CategoriesIds.map(x => x.value).toString()
+          : '',
         Ps: 10000
       })
 
@@ -389,6 +393,9 @@ function SaleDetails(props) {
               : filters2.ProdOrService?.value,
           ProdIDs: filters2.ProductId?.value || '',
           BlockTime: [item.start, item.end],
+          CategoriesIds: filters2?.CategoriesIds
+            ? filters2?.CategoriesIds.map(x => x.value).toString()
+            : '',
           Ps: 10000
         })
 
@@ -1903,7 +1910,7 @@ function SaleDetails(props) {
                           rowSpan={2}
                           className="p-3 font-semibold text-left min-w-[200px] max-w-[200px] lg:min-w-[200px] lg:max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 font-number text-sm uppercase h-[50px] lg:sticky lg:top-0 lg:left-0 bg-[#f8f8f8]"
                         >
-                          Loại
+                          Danh mục
                         </th>
                         <th
                           rowSpan={2}
