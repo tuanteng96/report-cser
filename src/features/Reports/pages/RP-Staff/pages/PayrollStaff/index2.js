@@ -184,8 +184,6 @@ function PayrollStaff2(props) {
           //   Name: 'NGAY_NGHI'
           // })
 
-          newObj['TINH_THEO_CONG'] = true
-
           // if (item?.User?.Address.toUpperCase() === 'PART TIME') {
           //   newObj['TINH_THEO_CONG'] = false
           // }
@@ -224,6 +222,12 @@ function PayrollStaff2(props) {
 
           newObj['NGAY_CONG_THUC_TE'] = item?.TrackValue?.WorkQty || 0
 
+          newObj['CONG_THUC_TE'] = item?.TrackValue?.WorkQtyRatio || 0
+
+          newObj['CONG_NGAY_NGHI'] = newObj['NGAY_CONG_THUC_TE'] - newObj['CONG_THUC_TE']
+
+          newObj['TINH_THEO_CONG'] = true
+
           newObj['LUONG_THEO_NGAY_CONG'] = RoundAmount(
             (item?.LUONG_CO_BAN_THANG / item?.NGAY_CONG) *
               newObj.NGAY_CONG_THUC_TE
@@ -235,8 +239,7 @@ function PayrollStaff2(props) {
           })
 
           newObj['THUONG_HIEU_SUAT'] = RoundAmount(
-            (newObj.PHU_CAP_TIEN_AN / item?.NGAY_CONG) *
-              newObj.NGAY_CONG_THUC_TE
+            (newObj.PHU_CAP_TIEN_AN / item?.NGAY_CONG) * newObj.CONG_THUC_TE
           )
           // newObj['GIO_PARTIME'] =
           //   Math.floor(((item?.TrackValue?.WorkMinutes || 0) / 60) * 10) / 10
@@ -568,7 +571,19 @@ function PayrollStaff2(props) {
                       rowSpan={2}
                       className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
                     >
+                      Tổng công
+                    </th>
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Công thực tế
+                    </th>
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
+                      Công ngày nghỉ
                     </th>
                     <th
                       rowSpan={2}
@@ -859,6 +874,16 @@ function PayrollStaff2(props) {
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.TINH_THEO_CONG > 0
                             ? rowData?.NGAY_CONG_THUC_TE
+                            : ''}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {rowData?.TINH_THEO_CONG > 0
+                            ? rowData?.CONG_THUC_TE
+                            : ''}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {rowData?.TINH_THEO_CONG > 0
+                            ? rowData?.CONG_NGAY_NGHI
                             : ''}
                         </td>
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
