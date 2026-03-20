@@ -290,7 +290,7 @@ function SaleDetails(props) {
     Content: 'calc(100% - 55px)',
     Box: 'calc(100% - 120px)'
   })
-  const [View, setView] = useState(0)
+  const [View, setView] = useState(1)
   const { width } = useWindowSize()
 
   useEffect(() => {
@@ -371,6 +371,29 @@ function SaleDetails(props) {
     keepPreviousData: true,
     enabled: View === 1
   })
+
+  const getTotalBlocks = Items => {
+    let newItems = Items.map(x => ({
+      ...x,
+      Items: x.Items.filter(k => k.isSum)
+    }))
+
+    const result = newItems.reduce((acc, curr) => {
+      const blockTimes = curr.Items[0].BlockTimes
+
+      blockTimes.forEach((item, index) => {
+        if (!acc[index]) {
+          acc[index] = { Qty: 0, actualAmount: 0 }
+        }
+
+        acc[index].Qty += item.Qty
+        acc[index].actualAmount += item.actualAmount
+      })
+
+      return acc
+    }, [])
+    return result
+  }
 
   const { isLoading, data, refetch } = useQuery({
     queryKey: ['SalesProductService2', filters2],
@@ -498,9 +521,35 @@ function SaleDetails(props) {
         return newObj
       })
 
+      let BlockTimesAll = getTotalBlocks(newRs)
+
+      let SumAll = {
+        ProdType: 0,
+        TypeTitle: 'Tất cả',
+        Items: [
+          {
+            isTotal: true,
+            ProdTitle: 'Tổng',
+            ProdCode: '',
+            BlockTimes: BlockTimesAll
+          }
+        ]
+      }
+      newRs.push(SumAll)
+
+      let TotalAll = BlockTimesAll.reduce(
+        (acc, item) => {
+          acc.Qty += item.Qty
+          acc.actualAmount += item.actualAmount
+          return acc
+        },
+        { Qty: 0, actualAmount: 0 }
+      )
+
       return {
         Items: newRs,
-        BlockTimes
+        BlockTimes,
+        TotalAll
       }
     },
     keepPreviousData: true,
@@ -1957,29 +2006,43 @@ function SaleDetails(props) {
                               <tr key={i}>
                                 <td
                                   className={clsx(
-                                    'p-3 bg-white min-w-[200px] max-w-[200px] lg:min-w-[200px] lg:max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 lg:sticky lg:top-0 lg:left-0'
+                                    'p-3 min-w-[200px] max-w-[200px] lg:min-w-[200px] lg:max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 lg:sticky lg:top-0 lg:left-0'
                                   )}
                                 >
-                                  {!prod?.isSum && item?.TypeTitle}
+                                  {!prod.isTotal &&
+                                    !prod?.isSum &&
+                                    item?.TypeTitle}
                                 </td>
                                 <td
                                   className={clsx(
                                     'p-3 min-w-[230px] max-w-[230px] lg:min-w-[300px] lg:max-w-[300px]  border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 lg:sticky lg:top-0 lg:left-[120px]',
-                                    prod?.isSum
-                                      ? 'bg-[#f2e783] font-semibold uppercase'
-                                      : 'bg-white'
+                                    prod?.isSum &&
+                                      'bg-[#f2e783] font-semibold uppercase',
+                                    prod?.isTotal &&
+                                      'bg-danger text-white font-semibold uppercase'
                                   )}
                                 >
                                   {prod?.ProdTitle}
+                                  {prod?.isTotal ? (
+                                    <span className="pl-1.5">
+                                      ({data?.TotalAll?.Qty || 0} /{' '}
+                                      {PriceHelper.formatVND(
+                                        data?.TotalAll?.actualAmount || 0
+                                      )})
+                                    </span>
+                                  ) : (
+                                    <></>
+                                  )}
                                 </td>
                                 {prod?.BlockTimes?.map((block, idx) => (
                                   <Fragment key={idx}>
                                     <td
                                       className={clsx(
                                         'p-3 lg:min-w-[180px] lg:max-w-[180px] min-w-[120px] max-w-[120px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0',
-                                        prod?.isSum
-                                          ? 'bg-[#f2e783] font-bold'
-                                          : 'bg-white'
+                                        prod?.isSum &&
+                                          'bg-[#f2e783] uppercase font-bold',
+                                        prod?.isTotal &&
+                                          'bg-danger text-white uppercase font-bold'
                                       )}
                                     >
                                       {block?.Qty || 0}
@@ -1987,9 +2050,10 @@ function SaleDetails(props) {
                                     <td
                                       className={clsx(
                                         'p-3 lg:min-w-[180px] lg:max-w-[180px] min-w-[120px] max-w-[120px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0',
-                                        prod?.isSum
-                                          ? 'bg-[#f2e783] font-bold'
-                                          : 'bg-white'
+                                        prod?.isSum &&
+                                          'bg-[#f2e783] uppercase font-bold',
+                                        prod?.isTotal &&
+                                          'bg-danger text-white uppercase font-bold'
                                       )}
                                     >
                                       {PriceHelper.formatVND(
