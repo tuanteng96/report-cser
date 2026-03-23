@@ -31,6 +31,7 @@ import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { SelectJobs } from '../Selects/SelectJobs'
+import { SelectTagsOrder } from '../Selects/SelectTagsOrder'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -981,7 +982,11 @@ function FilterList({
                       />
                     </div>
                   )}
-                  {'IsMember' in values && (
+
+                  {('IsMember' in values ||
+                    (ShowsKey &&
+                      ShowsKey?.value === values.ShowsType &&
+                      ShowsKey.Keys.includes('IsMember'))) && (
                     <div className="form-group mb-20px">
                       <label>Loại khách hàng</label>
                       <Select
@@ -993,7 +998,7 @@ function FilterList({
                         options={IsMemberList}
                         className="select-control"
                         value={IsMemberList.filter(
-                          item => Number(item.value) === values?.IsMember
+                          item => item.value === values?.IsMember
                         )}
                         onChange={otp => {
                           setFieldValue('IsMember', otp ? otp.value : '')
@@ -1001,6 +1006,27 @@ function FilterList({
                       />
                     </div>
                   )}
+
+                  {('TagsOrder' in values ||
+                    (ShowsKey &&
+                      ShowsKey?.value === values.ShowsType &&
+                      ShowsKey.Keys.includes('TagsOrder'))) && (
+                    <div className="form-group mb-20px">
+                      <label>Tag đơn hàng</label>
+                      <SelectTagsOrder
+                        //isMulti
+                        isClearable={true}
+                        name="TagsOrder"
+                        placeholder="Chọn tag đơn hàng"
+                        value={values.TagsOrder}
+                        onChange={otp => {
+                          setFieldValue('TagsOrder', otp)
+                        }}
+                        className="select-control"
+                      />
+                    </div>
+                  )}
+
                   {'MemberID' in values && (
                     <div className="form-group mb-20px">
                       <label>Khách hàng</label>

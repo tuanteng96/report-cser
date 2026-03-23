@@ -228,6 +228,9 @@ export const BrowserHelpers = {
     if ('IsMemberSet' in filters) {
       params.IsMemberSet = filters.IsMemberSet ? filters.IsMemberSet.value : ''
     }
+    if ('TagsOrder' in filters) {
+      params.TagsOrder = filters.TagsOrder ? filters.TagsOrder.value : ''
+    }
     if ('Warranty' in filters) {
       params.Warranty = filters.Warranty ? filters.Warranty.value : ''
     }

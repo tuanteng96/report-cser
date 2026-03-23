@@ -30,6 +30,7 @@ import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import { SelectTagsOrder } from '../Selects/SelectTagsOrder'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -875,6 +876,27 @@ function FilterListAdvanced({
                           />
                         </div>
                       )}
+                      {values.ShowsX === '3' && (
+                        <>
+                          {'TagsOrder' in values && (
+                            <div className="form-group mb-20px">
+                              <label>Tag đơn hàng</label>
+                              <SelectTagsOrder
+                                //isMulti
+                                isClearable={true}
+                                name="TagsOrder"
+                                placeholder="Chọn tag đơn hàng"
+                                value={values.TagsOrder}
+                                onChange={otp => {
+                                  setFieldValue('TagsOrder', otp)
+                                }}
+                                className="select-control"
+                              />
+                            </div>
+                          )}
+                        </>
+                      )}
+
                       {'ten_nghiep_vu' in values && (
                         <div className="form-group mb-20px">
                           <label>Loại</label>

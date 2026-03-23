@@ -605,6 +605,8 @@ function SaleDetails(props) {
           moment(filters.DateStart).format('YYYY-MM-DD'),
           moment(filters.DateEnd).format('YYYY-MM-DD')
         ],
+        TagsOrder: filters?.TagsOrder?.value || '',
+        IsMember: filters?.IsMember !== '' ? filters?.IsMember : '',
         Pi: filters.Pi,
         Ps: filters.Ps || 20
       })
@@ -764,8 +766,11 @@ function SaleDetails(props) {
               moment(filters.DateStart).format('YYYY-MM-DD'),
               moment(filters.DateEnd).format('YYYY-MM-DD')
             ],
+            TagsOrder: filters?.TagsOrder?.value || '',
+            IsMember: filters?.IsMember !== '' ? filters?.IsMember : '',
             Pi: 1,
-            Ps: useSalesProduct?.data?.Total
+            Ps: useSalesProduct?.data?.Total,
+            ShowsType: filters.ShowsType
           })
           .then(rs => {
             window?.EzsExportExcel &&
@@ -1103,6 +1108,29 @@ function SaleDetails(props) {
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.MPayed),
         width: 150,
         sortable: false
+      },
+      {
+        key: 'IsNewMember',
+        title: 'Loại',
+        dataKey: 'IsNewMember',
+        cellRenderer: ({ rowData }) => (
+          <span
+            className={`${clsx({
+              'text-success': rowData.IsNewMember === 1
+            })} fw-500`}
+          >
+            Khách {rowData.IsNewMember === 0 ? 'Cũ' : 'Mới'}
+          </span>
+        ),
+        width: 250,
+        sortable: false
+      },
+      {
+        key: 'TagOrder',
+        title: 'Tags đơn hàng',
+        dataKey: 'TagOrder',
+        width: 250,
+        sortable: false
       }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1181,7 +1209,7 @@ function SaleDetails(props) {
         <FilterList
           ShowsKey={{
             value: '4',
-            Keys: ['ProdOrService', 'ProductId']
+            Keys: ['ProdOrService', 'ProductId', 'IsMember', 'TagsOrder']
           }}
           show={isFilter}
           filters={filters}
@@ -2028,7 +2056,8 @@ function SaleDetails(props) {
                                       ({data?.TotalAll?.Qty || 0} /{' '}
                                       {PriceHelper.formatVND(
                                         data?.TotalAll?.actualAmount || 0
-                                      )})
+                                      )}
+                                      )
                                     </span>
                                   ) : (
                                     <></>

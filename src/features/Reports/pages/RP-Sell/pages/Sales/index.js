@@ -45,7 +45,8 @@ function Sales(props) {
     ShowsX: '2',
     DebtFrom: '',
     DebtTo: '',
-    no: ''
+    no: '',
+    TagsOrder: ''
   })
   const [StockName, setStockName] = useState('')
   const [StockAddress, setStockAddress] = useState('')
@@ -535,9 +536,17 @@ function Sales(props) {
             Khách {rowData.IsNewMember === 0 ? 'Cũ' : 'Mới'}
           </span>
         ),
-        width: 150,
+        width: 250,
         sortable: false,
         hidden: filters.ShowsX === '2'
+      },
+      {
+        key: 'TagOrder',
+        title: 'Tags đơn hàng',
+        dataKey: 'TagOrder',
+        width: 250,
+        sortable: false,
+        hidden: filters.ShowsX !== '3'
       },
       {
         key: 'ShipCode',
@@ -652,6 +661,10 @@ function Sales(props) {
           {
             label: 'Tách dòng 2',
             value: '11'
+          },
+          {
+            label: 'Theo Tags',
+            value: '3'
           }
         ]}
       />
