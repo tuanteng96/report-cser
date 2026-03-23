@@ -290,7 +290,7 @@ function SaleDetails(props) {
     Content: 'calc(100% - 55px)',
     Box: 'calc(100% - 120px)'
   })
-  const [View, setView] = useState(1)
+  const [View, setView] = useState(0)
   const { width } = useWindowSize()
 
   useEffect(() => {
