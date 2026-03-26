@@ -664,9 +664,10 @@ function Sales(props) {
           },
           {
             label: 'Theo Tags',
-            value: '3'
+            value: '3',
+            hidden: !GlobalConfig?.Admin?.tagorder_show
           }
-        ]}
+        ].filter(x => !x?.hidden)}
       />
       <div className="row">
         <div className="col-md-12 col-lg-5" ref={elementRef}>

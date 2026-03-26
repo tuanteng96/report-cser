@@ -1123,14 +1123,16 @@ function SaleDetails(props) {
           </span>
         ),
         width: 250,
-        sortable: false
+        sortable: false,
+        hidden: !GlobalConfig?.Admin?.tagorder_show
       },
       {
         key: 'TagOrder',
         title: 'Tags đơn hàng',
         dataKey: 'TagOrder',
         width: 250,
-        sortable: false
+        sortable: false,
+        hidden: !GlobalConfig?.Admin?.tagorder_show
       }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1209,7 +1211,9 @@ function SaleDetails(props) {
         <FilterList
           ShowsKey={{
             value: '4',
-            Keys: ['ProdOrService', 'ProductId', 'IsMember', 'TagsOrder']
+            Keys: GlobalConfig?.Admin?.tagorder_show
+              ? ['ProdOrService', 'ProductId', 'IsMember', 'TagsOrder']
+              : ['ProdOrService', 'ProductId']
           }}
           show={isFilter}
           filters={filters}

@@ -18,10 +18,13 @@ const SelectTagsOrder = ({ value, ...props }) => {
         const result = data?.data[0].Value
           ? JSON.parse(data?.data[0].Value)
           : []
-        rs = result.map(x => ({
-          label: x.Title,
-          value: x.Title
-        }))
+        rs = result
+          .map(x => ({
+            ...x,
+            label: x.Title,
+            value: x.Title
+          }))
+          .sort((a, b) => a.Index - b.Index)
       }
       setOptions(rs)
       setIsLoading(false)
