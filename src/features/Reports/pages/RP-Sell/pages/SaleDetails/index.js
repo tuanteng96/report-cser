@@ -988,6 +988,16 @@ function SaleDetails(props) {
         }
       },
       {
+        key: 'ProdCode',
+        title: 'Mã mặt hàng',
+        dataKey: 'ProdCode',
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'ProdTitle',
         title: 'Tên mặt hàng',
         dataKey: 'ProdTitle',

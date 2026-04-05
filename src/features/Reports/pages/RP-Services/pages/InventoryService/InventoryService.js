@@ -235,6 +235,16 @@ function InventoryService(props) {
         }
       },
       {
+        key: 'Ton_dich_vu_goc',
+        title: 'Dịch vụ gốc',
+        dataKey: 'Ton_dich_vu_goc',
+        width: 300,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'SoLuong',
         title: 'Số lượng',
         dataKey: 'SoLuong',
