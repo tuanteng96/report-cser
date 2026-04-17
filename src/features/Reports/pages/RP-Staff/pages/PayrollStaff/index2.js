@@ -224,7 +224,9 @@ function PayrollStaff2(props) {
 
           newObj['CONG_THUC_TE'] = item?.TrackValue?.WorkQtyRatio || 0
 
-          newObj['CONG_NGAY_NGHI'] = newObj['CONG_THUC_TE'] ? newObj['NGAY_CONG_THUC_TE'] - newObj['CONG_THUC_TE'] : 0
+          newObj['CONG_NGAY_NGHI'] = newObj['CONG_THUC_TE']
+            ? newObj['NGAY_CONG_THUC_TE'] - newObj['CONG_THUC_TE']
+            : 0
 
           newObj['TINH_THEO_CONG'] = true
 
@@ -239,7 +241,8 @@ function PayrollStaff2(props) {
           })
 
           newObj['THUONG_HIEU_SUAT'] = RoundAmount(
-            (newObj.PHU_CAP_TIEN_AN / item?.NGAY_CONG) * (newObj.CONG_THUC_TE || newObj.NGAY_CONG_THUC_TE)
+            (newObj.PHU_CAP_TIEN_AN / item?.NGAY_CONG) *
+              (newObj.CONG_THUC_TE || newObj.NGAY_CONG_THUC_TE)
           )
           // newObj['GIO_PARTIME'] =
           //   Math.floor(((item?.TrackValue?.WorkMinutes || 0) / 60) * 10) / 10

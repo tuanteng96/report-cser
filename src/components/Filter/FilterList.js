@@ -1364,24 +1364,23 @@ function FilterList({
                     </div>
                   )}
 
-                  {values.ShowsType !== '4' && (
-                    <>
-                      {'ProductIds' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Sản phẩm, DV, NVL, ...</label>
-                          <AsyncSelectProducts
-                            isMulti
-                            isClearable={true}
-                            menuPosition="fixed"
-                            name="ProductIds"
-                            onChange={otp => {
-                              setFieldValue('ProductIds', otp, false)
-                            }}
-                            value={values.ProductIds}
-                          />
-                        </div>
-                      )}
-                    </>
+                  {('ProductIds' in values ||
+                    (ShowsKey &&
+                      ShowsKey?.value === values.ShowsType &&
+                      ShowsKey.Keys.includes('ProductId'))) && (
+                    <div className="form-group mb-20px">
+                      <label>Sản phẩm, DV, NVL, ...</label>
+                      <AsyncSelectProducts
+                        isMulti
+                        isClearable={true}
+                        menuPosition="fixed"
+                        name="ProductIds"
+                        onChange={otp => {
+                          setFieldValue('ProductIds', otp, false)
+                        }}
+                        value={values.ProductIds}
+                      />
+                    </div>
                   )}
 
                   {'CategoriesId' in values && (

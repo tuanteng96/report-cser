@@ -600,7 +600,9 @@ function SaleDetails(props) {
       let rs = await reportsApi.getListSalesDetail2({
         StockID: filters.StockID,
         ProdOrService: filters.ProdOrService?.value || '',
-        ProdIDs: filters.ProductId?.value || '',
+        ProdIDs: filters.ProductIds
+          ? filters.ProductIds.map(x => x.value).toString()
+          : '',
         BlockTime: [
           moment(filters.DateStart).format('YYYY-MM-DD'),
           moment(filters.DateEnd).format('YYYY-MM-DD')
@@ -1222,8 +1224,8 @@ function SaleDetails(props) {
           ShowsKey={{
             value: '4',
             Keys: GlobalConfig?.Admin?.tagorder_show
-              ? ['ProdOrService', 'ProductId', 'IsMember', 'TagsOrder']
-              : ['ProdOrService', 'ProductId']
+              ? ['ProdOrService', 'ProductIds', 'IsMember', 'TagsOrder']
+              : ['ProdOrService', 'ProductIds']
           }}
           show={isFilter}
           filters={filters}
