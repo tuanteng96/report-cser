@@ -16,6 +16,8 @@ import { JsonFilter } from 'src/Json/JsonFilter'
 import { Dropdown } from 'react-bootstrap'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
+import { PriceHelper } from 'src/helpers/PriceHelper'
+import Text from 'react-texty'
 
 moment.locale('vi')
 
@@ -90,7 +92,8 @@ function FrequencyUseCustomer(props) {
     FrequencyDay: '', // Tuần suất theo ngày
     StatusServices: '',
     FrequencyDateStart: defaultStart,
-    FrequencyDateEnd: moment().toDate()
+    FrequencyDateEnd: moment().toDate(),
+    View: 0
   })
   const [StockName, setStockName] = useState('')
   const [ListData, setListData] = useState([])
@@ -102,7 +105,7 @@ function FrequencyUseCustomer(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
-  const [View, setView] = useState(1)
+  const [View, setView] = useState(0)
 
   const [filters2, setFilters2] = useState({
     StockID: CrStockID || '',
@@ -112,7 +115,8 @@ function FrequencyUseCustomer(props) {
     DateEnd: moment().endOf('month').toDate(),
     DvGoc: '',
     DvThe: '',
-    MemberIDs: ''
+    MemberIDs: '',
+    View: 1
   })
 
   useEffect(() => {
@@ -377,8 +381,8 @@ function FrequencyUseCustomer(props) {
     [filters]
   )
 
-  const columns2 = useMemo(
-    () => [
+  const columns2 = useMemo(() => {
+    let clms = [
       {
         key: 'index',
         title: 'STT',
@@ -421,10 +425,129 @@ function FrequencyUseCustomer(props) {
         mobileOptions: {
           visible: true
         }
+      },
+      {
+        key: 'Member.ByStockID',
+        title: 'Cơ sở',
+        dataKey: 'Member.ByStockID',
+        width: 250,
+        cellRenderer: ({ rowData }) => {
+          return (
+            <Text tooltipMaxWidth={300}>
+              {Stocks?.find(
+                item => Number(item.ID) === Number(rowData?.Member?.ByStockID)
+              )?.Title || ''}
+            </Text>
+          )
+        },
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Present_vi',
+        title: 'Ví',
+        dataKey: 'Present_vi',
+        cellRenderer: ({ rowData }) => {
+          let Present = rowData?.Member?.Present
+            ? JSON.parse(rowData?.Member?.Present)
+            : null
+
+          return PriceHelper.formatVND(Present?.nap_vi || 0)
+        },
+        width: 160,
+        sortable: false
+      },
+      {
+        key: 'Present_tt',
+        title: 'Thẻ tiền',
+        dataKey: 'Present_tt',
+        cellRenderer: ({ rowData }) => {
+          let Present = rowData?.Member?.Present
+            ? JSON.parse(rowData?.Member?.Present)
+            : null
+
+          return PriceHelper.formatVND(Present?.the_tien_kha_dung || 0)
+        },
+        width: 160,
+        sortable: false
+      },
+      {
+        key: 'Present_cn',
+        title: 'Công nợ',
+        dataKey: 'Present_cn',
+        cellRenderer: ({ rowData }) => {
+          let Present = rowData?.Member?.Present
+            ? JSON.parse(rowData?.Member?.Present)
+            : null
+
+          return PriceHelper.formatVND(Present?.no || 0)
+        },
+        width: 160,
+        sortable: false
+      },
+      {
+        key: 'Present_da_chi_tieu',
+        title: 'Đã chi tiêu',
+        dataKey: 'Present_da_chi_tieu',
+        cellRenderer: ({ rowData }) => {
+          let Present = rowData?.Member?.Present
+            ? JSON.parse(rowData?.Member?.Present)
+            : null
+
+          return PriceHelper.formatVND(Present?.da_chi_tieu || 0)
+        },
+        width: 160,
+        sortable: false
+      },
+      {
+        key: 'Present_points',
+        title: 'Tích điểm',
+        dataKey: 'Present_points',
+        cellRenderer: ({ rowData }) => {
+          let Present = rowData?.Member?.Present
+            ? JSON.parse(rowData?.Member?.Present)
+            : null
+
+          return PriceHelper.formatVND(Present?.points || 0)
+        },
+        width: 160,
+        sortable: false
+      },
+      {
+        key: 'Service',
+        title: 'Dịch vụ còn',
+        dataKey: 'Service',
+        cellRenderer: ({ rowData }) => {
+          return rowData?.Service && rowData?.Service.length > 0 ? (
+            <Text tooltipMaxWidth={300}>
+              {rowData?.Service.map(x => `${x.DichVuThe} (${x.Sobuoi})`).join(
+                ', '
+              )}
+            </Text>
+          ) : (
+            <></>
+          )
+        },
+        width: 300,
+        sortable: false
       }
-    ],
-    [filters2]
-  )
+    ]
+    if (data?.Mons) {
+      for (let [i, mon] of data?.Mons.entries()) {
+        clms.push({
+          key: mon,
+          title: mon,
+          dataKey: mon,
+          width: 130,
+          sortable: false,
+          cellRenderer: ({ rowData }) => rowData?.Mons?.[i]?.Qty || ''
+        })
+      }
+    }
+    return clms
+  }, [filters2, data, Stocks])
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
     // if (isScrolling)
