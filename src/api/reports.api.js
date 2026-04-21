@@ -42,6 +42,12 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getListCustomerFrequencyUse2: data => {
+    return http.post(
+      `${SubApi}/khach-hang/tan-suat-thang`,
+      JSON.stringify(data)
+    )
+  },
   getListOddService: data => {
     return http.post(`${SubApi}/khach-hang/chinh-sua-the`, JSON.stringify(data))
   },

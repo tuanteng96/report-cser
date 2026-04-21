@@ -18,6 +18,8 @@ import AsyncSelectCategoriesSV from '../Selects/AsyncSelectCategoriesSV'
 import { useLocation } from 'react-router-dom'
 import { useApp } from 'src/app/App'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import AsyncSelectSVOriginal from '../Selects/AsyncSelectSVOriginal'
+import AsyncSelectSVCardOnly from '../Selects/AsyncSelectSVCardOnly'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -363,6 +365,54 @@ function FilterToggle({
                           onChange={otp => {
                             setFieldValue('MemberID', otp, false)
                           }}
+                        />
+                      </div>
+                    )}
+                    {'MemberIDs' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Khách hàng</label>
+                        <AsyncSelectMembers
+                          isMulti
+                          isClearable={true}
+                          menuPosition="fixed"
+                          name="MemberIDs"
+                          value={values.MemberIDs}
+                          onChange={otp => {
+                            setFieldValue('MemberIDs', otp, false)
+                          }}
+                        />
+                      </div>
+                    )}
+                    {'DvGoc' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Dịch vụ gốc</label>
+                        <AsyncSelectSVOriginal
+                          isClearable={true}
+                          menuPosition="fixed"
+                          name="DvGoc"
+                          onChange={otp => {
+                            setFieldValue('DvGoc', otp, false)
+                          }}
+                          value={values.DvGoc}
+                          isMulti
+                        />
+                      </div>
+                    )}
+
+                    {'DvThe' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Dịch vụ thẻ</label>
+                        <AsyncSelectSVCardOnly
+                          isMulti
+                          closeMenuOnScroll={true}
+                          menuPlacement="top"
+                          isClearable={true}
+                          menuPosition="fixed"
+                          name="DvThe"
+                          onChange={otp => {
+                            setFieldValue('DvThe', otp, false)
+                          }}
+                          value={values.DvThe}
                         />
                       </div>
                     )}

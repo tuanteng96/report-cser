@@ -467,6 +467,21 @@ export const BrowserHelpers = {
         ? filters.TypeOrder.map(item => item.value).join(',')
         : ''
     }
+    if ('MemberIDs' in filters) {
+      params.MemberIDs = filters.MemberIDs
+        ? filters.MemberIDs.map(item => item.value).join(',')
+        : ''
+    }
+    if ('DvGoc' in filters) {
+      params.DvGoc = filters.DvGoc
+        ? filters.DvGoc.map(item => item.value).join(',')
+        : ''
+    }
+    if ('DvThe' in filters) {
+      params.DvThe = filters.DvThe
+        ? filters.DvThe.map(item => item.value).join(',')
+        : ''
+    }
     if ('ProvincesID' in filters) {
       params.ProvincesID = filters.ProvincesID ? filters.ProvincesID.value : ''
     }

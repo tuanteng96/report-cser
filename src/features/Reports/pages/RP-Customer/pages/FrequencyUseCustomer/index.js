@@ -13,6 +13,9 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import moment from 'moment'
 import 'moment/locale/vi'
 import { JsonFilter } from 'src/Json/JsonFilter'
+import { Dropdown } from 'react-bootstrap'
+import clsx from 'clsx'
+import { useQuery } from '@tanstack/react-query'
 
 moment.locale('vi')
 
@@ -51,6 +54,19 @@ const convertArray = arrays => {
   return newArray
 }
 
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+  <span
+    ref={ref}
+    onClick={e => {
+      e.preventDefault()
+      onClick(e)
+    }}
+    className="flex items-center cursor-pointer text-uppercase font-size-xl fw-600"
+  >
+    {children}
+  </span>
+))
+
 function FrequencyUseCustomer(props) {
   const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
@@ -86,23 +102,56 @@ function FrequencyUseCustomer(props) {
   const [isFilter, setIsFilter] = useState(false)
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
+  const [View, setView] = useState(1)
+
+  const [filters2, setFilters2] = useState({
+    StockID: CrStockID || '',
+    Pi: 1,
+    Ps: 15,
+    DateStart: moment().startOf('month').toDate(), //01/1/2026
+    DateEnd: moment().endOf('month').toDate(),
+    DvGoc: '',
+    DvThe: '',
+    MemberIDs: ''
+  })
 
   useEffect(() => {
-    const index = Stocks.findIndex(
-      item => Number(item.ID) === Number(filters.StockID)
-    )
+    let StockID = View === 0 ? filters.StockID : filters2.StockID
+    const index = Stocks.findIndex(item => Number(item.ID) === Number(StockID))
     if (index > -1) {
       setStockName(Stocks[index].Title)
     } else {
       setStockName('Tất cả cơ sở')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
+  }, [filters, filters2])
 
   useEffect(() => {
-    getListFrequencyUseCustomer()
+    if (View === 0) {
+      getListFrequencyUseCustomer()
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
+  }, [filters, View])
+
+  const { isLoading, data, refetch, dataUpdatedAt } = useQuery({
+    queryKey: ['FrequencyUseCustomer', filters2],
+    queryFn: async () => {
+      let rs = await reportsApi.getListCustomerFrequencyUse2(
+        BrowserHelpers.getRequestParamsToggle(filters2)
+      )
+      return rs?.data?.result || null
+    },
+    keepPreviousData: true,
+    enabled: View === 1
+  })
+
+  useEffect(() => {
+    if (dataUpdatedAt && isFilter) {
+      setIsFilter(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataUpdatedAt])
 
   const getListFrequencyUseCustomer = (isLoading = true, callback) => {
     isLoading && setLoading(true)
@@ -142,15 +191,30 @@ function FrequencyUseCustomer(props) {
   }
 
   const onFilter = values => {
-    if (_.isEqual(values, filters)) {
-      getListFrequencyUseCustomer()
-    } else {
-      setFilters({ ...values, Pi: 1 })
+    if (View === 0) {
+      if (_.isEqual(values, filters)) {
+        getListFrequencyUseCustomer()
+      } else {
+        setFilters({ ...values, Pi: 1 })
+      }
+    }
+    if (View === 1) {
+      if (_.isEqual(values, filters2)) {
+        refetch()
+      } else {
+        setFilters2({ ...values, Pi: 1 })
+      }
     }
   }
 
   const onRefresh = () => {
-    getListFrequencyUseCustomer()
+    if (View === 0) {
+      getListFrequencyUseCustomer()
+    }
+
+    if (View === 1) {
+      refetch()
+    }
   }
 
   const OpenModalMobile = value => {
@@ -168,12 +232,21 @@ function FrequencyUseCustomer(props) {
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
-        reportsApi.getListCustomerFrequencyUse(
-          BrowserHelpers.getRequestParamsToggle(filters, {
-            Total: PageTotal
-          })
-        ),
-      UrlName: '/khach-hang/tan-suat-su-dung'
+        View === 0
+          ? reportsApi.getListCustomerFrequencyUse(
+              BrowserHelpers.getRequestParamsToggle(filters, {
+                Total: PageTotal
+              })
+            )
+          : reportsApi.getListCustomerFrequencyUse2(
+              BrowserHelpers.getRequestParamsToggle(filters2, {
+                Total: data?.Total
+              })
+            ),
+      UrlName:
+        View === 0
+          ? '/khach-hang/tan-suat-su-dung'
+          : '/khach-hang/tan-suat-thang'
     })
   }
 
@@ -304,6 +377,55 @@ function FrequencyUseCustomer(props) {
     [filters]
   )
 
+  const columns2 = useMemo(
+    () => [
+      {
+        key: 'index',
+        title: 'STT',
+        dataKey: 'index',
+        cellRenderer: ({ rowData, rowIndex }) =>
+          filters2.Ps * (filters2.Pi - 1) + (rowIndex + 1),
+        width: 60,
+        sortable: false,
+        align: 'center',
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Member.ID',
+        title: 'ID khách hàng',
+        dataKey: 'Member.ID',
+        width: 150,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Member.FullName',
+        title: 'Tên khách hàng',
+        dataKey: 'Member.FullName',
+        width: 220,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
+        key: 'Member.MobilePhone',
+        title: 'Số điện thoại',
+        dataKey: 'Member.MobilePhone',
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      }
+    ],
+    [filters2]
+  )
+
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
     // if (isScrolling)
     //   return (
@@ -346,13 +468,57 @@ function FrequencyUseCustomer(props) {
     setFilters({ ...filters, Pi, Ps })
   }
 
+  const onPagesChange2 = ({ Pi, Ps }) => {
+    setFilters2({ ...filters, Pi, Ps })
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
-        <div className="flex-1">
-          <span className="text-uppercase font-size-xl fw-600">
-            Tần suất sử dụng
-          </span>
+        <div className="flex items-center flex-1">
+          <Dropdown>
+            <Dropdown.Toggle as={CustomToggle} id="dropdown-customers">
+              <span className="flex gap-1 cursor-pointer text-uppercase font-size-xl fw-600">
+                Tần suất sử dụng
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                  />
+                </svg>
+              </span>
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="a" align="end">
+              <Dropdown.Item
+                className={clsx(
+                  'dropdown-item-active',
+                  View === 0 && 'text-primary'
+                )}
+                onClick={() => setView(0)}
+              >
+                Xem theo kiểu 1
+              </Dropdown.Item>
+              <Dropdown.Item
+                className={clsx(
+                  'dropdown-item-active',
+                  View === 1 && 'text-primary'
+                )}
+                onClick={() => setView(1)}
+              >
+                Xem theo kiểu 2
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+
           <span className="ps-0 ps-lg-3 text-muted d-block d-lg-inline-block">
             {StockName}
           </span>
@@ -370,11 +536,11 @@ function FrequencyUseCustomer(props) {
       </div>
       <FilterToggle
         show={isFilter}
-        filters={filters}
+        filters={View === 0 ? filters : filters2}
         onHide={onHideFilter}
         onSubmit={onFilter}
         onRefresh={onRefresh}
-        loading={loading}
+        loading={View === 0 ? loading : isLoading}
         loadingExport={loadingExport}
         onExport={onExport}
       />
@@ -383,22 +549,39 @@ function FrequencyUseCustomer(props) {
           <div className="fw-500 font-size-lg">Danh sách khách hàng</div>
         </div>
         <div className="p-20px">
-          <ReactTableV7
-            rowKey="Ids"
-            useIsScrolling
-            overscanRowCount={50}
-            filters={filters}
-            columns={columns}
-            data={ListData}
-            dataMobile={ListDataMobile}
-            loading={loading}
-            pageCount={pageCount}
-            onPagesChange={onPagesChange}
-            optionMobile={{
-              CellModal: cell => OpenModalMobile(cell)
-            }}
-            rowRenderer={rowRenderer}
-          />
+          {View === 0 && (
+            <ReactTableV7
+              rowKey="Ids"
+              useIsScrolling
+              overscanRowCount={50}
+              filters={filters}
+              columns={columns}
+              data={ListData}
+              dataMobile={ListDataMobile}
+              loading={loading}
+              pageCount={pageCount}
+              onPagesChange={onPagesChange}
+              optionMobile={{
+                CellModal: cell => OpenModalMobile(cell)
+              }}
+              rowRenderer={rowRenderer}
+            />
+          )}
+          {View === 1 && (
+            <ReactTableV7
+              rowKey="Member.ID"
+              filters={filters2}
+              columns={columns2}
+              data={data?.List || []}
+              dataMobile={data?.List || []}
+              loading={isLoading}
+              pageCount={data?.PCount}
+              onPagesChange={onPagesChange2}
+              optionMobile={{
+                CellModal: cell => OpenModalMobile(cell)
+              }}
+            />
+          )}
         </div>
         <ModalViewMobile
           show={isModalMobile}

@@ -1122,6 +1122,32 @@ function SaleDetails(props) {
         sortable: false
       },
       {
+        key: 'Cpayed-cpayedreal',
+        title: 'Trả hàng / KTT',
+        dataKey: 'Cpayed-cpayedreal',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(
+            Math.abs((rowData.Cpayed || 0) - (rowData.CPayedReal || 0))
+          ),
+        width: 150,
+        sortable: false
+      },
+      {
+        key: 'Topay-Cpayed-Mpayed',
+        title: 'Còn nợ',
+        dataKey: 'Topay-Cpayed-Mpayed',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(
+            Math.abs(
+              (rowData.Topay || 0) -
+                Math.abs(rowData.CPayed || 0) -
+                Math.abs(rowData.MPayed || 0)
+            )
+          ),
+        width: 150,
+        sortable: false
+      },
+      {
         key: 'IsNewMember',
         title: 'Loại',
         dataKey: 'IsNewMember',
