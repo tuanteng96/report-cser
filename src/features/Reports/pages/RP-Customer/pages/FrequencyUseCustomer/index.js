@@ -592,7 +592,7 @@ function FrequencyUseCustomer(props) {
   }
 
   const onPagesChange2 = ({ Pi, Ps }) => {
-    setFilters2({ ...filters, Pi, Ps })
+    setFilters2({ ...filters2, Pi, Ps })
   }
 
   return (
