@@ -111,7 +111,7 @@ function PriceList(props) {
     const newFilters = GeneralNewFilter(filters)
     reportsApi
       .getListPriceSell(BrowserHelpers.getRequestParams(newFilters))
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
           setLoading(false)
@@ -265,6 +265,27 @@ function PriceList(props) {
           sortable: false
         },
         {
+          key: 'combo',
+          title: 'Combos',
+          dataKey: 'combo',
+          width: 300,
+          sortable: false,
+          cellRenderer: ({ rowData }) => {
+            let Combos = rowData?.Combo ? JSON.parse(rowData?.Combo) : null
+
+            if (Combos && Combos.length > 1) {
+              return (
+                <Text tooltipMaxWidth={300}>
+                  {Combos.map(
+                    x => `${x.Title || 'Không xác định'} (x${x.qty})`
+                  ).join(', ')}
+                </Text>
+              )
+            }
+            return <></>
+          }
+        },
+        {
           key: 'hoa_hong_sale',
           title: GlobalConfig?.Admin?.hoa_hong_tu_van || 'Hoa hồng tư vấn',
           dataKey: 'hoa_hong_sale',
@@ -288,7 +309,7 @@ function PriceList(props) {
             ) : (
               PriceHelper.formatVND(rowData?.hoa_hong_sale)
             ),
-          width: 250,
+          width: 200,
           sortable: false
         },
         {
