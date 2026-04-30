@@ -470,6 +470,10 @@ export const JsonFilter = {
     {
       value: 'Thay đổi cơ sở',
       label: 'Thay đổi cơ sở'
+    },
+    {
+      value: 'Chỉnh sửa thẻ tiền',
+      label: 'Chỉnh sửa thẻ tiền'
     }
   ],
   TypeNVList2: [
