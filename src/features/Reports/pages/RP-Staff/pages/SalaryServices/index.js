@@ -53,6 +53,16 @@ const RenderSum = ({ Items, loading }) => {
         }
       },
       {
+        key: 'TourSalaryRatio',
+        title: 'Hệ số dịch vụ',
+        dataKey: 'TourSalaryRatio',
+        width: 180,
+        sortable: false,
+        mobileOptions: {
+          visible: true
+        }
+      },
+      {
         key: 'Value',
         title: 'Tổng lương',
         dataKey: 'Value',
@@ -650,6 +660,13 @@ function SalaryServices(props) {
           title: 'Thẻ dịch vụ',
           dataKey: 'Prod.Title',
           width: 250,
+          sortable: false
+        },
+        {
+          key: 'TourSalaryRatio',
+          title: 'Hệ số dịch vụ',
+          dataKey: 'TourSalaryRatio',
+          width: 180,
           sortable: false
         },
         {
