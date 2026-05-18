@@ -12,6 +12,7 @@ import vi from 'date-fns/locale/vi' // the locale you want
 import { useLocation } from 'react-router-dom'
 import { useApp } from 'src/app/App'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import AsyncSelectSVCardOnly from '../Selects/AsyncSelectSVCardOnly'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -390,7 +391,8 @@ function FilterListLUONG({
                       {'ServiceCardID' in values && (
                         <div className="form-group mb-20px">
                           <label>Thẻ dịch vụ & Phụ phí</label>
-                          <AsyncSelectSVPP
+                          <AsyncSelectSVCardOnly
+                            cate_name="dich_vu,phu_phi"
                             isClearable={true}
                             menuPosition="fixed"
                             name="ServiceCardID"

@@ -7,9 +7,14 @@ AsyncSelectSVCardOnly.propTypes = {
   onChange: PropTypes.func
 }
 
-function AsyncSelectSVCardOnly({ onChange, value, ...props }) {
+function AsyncSelectSVCardOnly({
+  onChange,
+  value,
+  cate_name = 'dich_vu',
+  ...props
+}) {
   const getAllServiceCard = async (search, loadedOptions, { page }) => {
-    const { data } = await moreApi.getAllServiceCardOnly(search)
+    const { data } = await moreApi.getAllServiceCardOnly(search, cate_name)
     const newData =
       data.data && data.data.length > 0
         ? data.data.map(item => ({
