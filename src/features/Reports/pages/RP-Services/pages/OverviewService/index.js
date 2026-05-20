@@ -469,7 +469,21 @@ function OverviewService(props) {
           title: 'ID đơn hàng',
           dataKey: 'OrderID',
           cellRenderer: ({ rowData }) => <div>#{rowData.OrderID}</div>,
-          width: 100,
+          width: 120,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'CreateDate',
+          title: 'Ngày bán',
+          dataKey: 'CreateDate',
+          cellRenderer: ({ rowData }) =>
+            rowData.CreateDate
+              ? moment(rowData.CreateDate).format('HH:mm DD/MM/YYYY')
+              : 'Chưa xác định',
+          width: 150,
           sortable: false,
           mobileOptions: {
             visible: true
