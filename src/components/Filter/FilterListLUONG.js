@@ -390,9 +390,9 @@ function FilterListLUONG({
                     <>
                       {'ServiceCardID' in values && (
                         <div className="form-group mb-20px">
-                          <label>Thẻ dịch vụ & Phụ phí</label>
+                          <label>Thẻ dịch vụ</label>
                           <AsyncSelectSVCardOnly
-                            cate_name="dich_vu,phu_phi"
+                            cate_name="dich_vu" //dich_vu,phu_phi
                             isClearable={true}
                             menuPosition="fixed"
                             name="ServiceCardID"
@@ -400,6 +400,55 @@ function FilterListLUONG({
                               setFieldValue('ServiceCardID', otp, false)
                             }}
                             value={values.ServiceCardID}
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {values.ShowsX === '3' && (
+                    <>
+                      {'Type' in values && (
+                        <div className="form-group mb-20px">
+                          <label>Loại</label>
+                          <Select
+                            isClearable
+                            name="Type"
+                            placeholder="Chọn loại"
+                            classNamePrefix="select"
+                            options={[
+                              {
+                                label: 'Dịch vụ',
+                                value: 'service'
+                              },
+                              {
+                                label: 'Phụ phí',
+                                value: 'fee'
+                              }
+                            ]}
+                            className="select-control"
+                            value={[
+                              {
+                                label: 'Dịch vụ',
+                                value: 'service'
+                              },
+                              {
+                                label: 'Phụ phí',
+                                value: 'fee'
+                              }
+                            ].filter(item => item.value === values?.Type)}
+                            onChange={otp => {
+                              setFieldValue('Type', otp ? otp.value : '')
+                            }}
+                            noOptionsMessage={() => 'Không có loại'}
+                            menuPortalTarget={document.body}
+                            menuPosition="fixed"
+                            styles={{
+                              menuPortal: base => ({
+                                ...base,
+                                zIndex: 9999
+                              })
+                            }}
                           />
                         </div>
                       )}

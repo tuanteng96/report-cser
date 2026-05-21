@@ -108,7 +108,8 @@ function SalaryServices(props) {
     MemberID: '', // ID khách hàng
     StaffID: '', // ID nhân viên
     ServiceCardID: '',
-    ShowsX: '1'
+    ShowsX: '1',
+    Type: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -146,8 +147,14 @@ function SalaryServices(props) {
   const getListSalarys = (isLoading = true, callback) => {
     isLoading && setLoading(true)
     if (filters.ShowsX === '1' || filters.ShowsX === '3') {
+      let newFilters = { ...filters }
+
+      if (filters.ShowsX !== '3') {
+        delete newFilters.Type
+      }
+
       reportsApi
-        .getListStaffSalarySV(BrowserHelpers.getRequestParamsList(filters))
+        .getListStaffSalarySV(BrowserHelpers.getRequestParamsList(newFilters))
         .then(({ data }) => {
           if (data.isRight) {
             PermissionHelpers.ErrorAccess(data.error)
@@ -261,12 +268,17 @@ function SalaryServices(props) {
 
   const onExport = () => {
     if (filters.ShowsX === '1' || filters.ShowsX === '3') {
+      let newFilters = { ...filters }
+      if (filters.ShowsX !== '3') {
+        delete newFilters.Type
+      }
+
       PermissionHelpers.ExportExcel({
         FuncStart: () => setLoadingExport(true),
         FuncEnd: () => setLoadingExport(false),
         FuncApi: () =>
           reportsApi.getListStaffSalarySV(
-            BrowserHelpers.getRequestParamsList(filters, { Total: PageTotal })
+            BrowserHelpers.getRequestParamsList(newFilters, { Total: PageTotal })
           ),
         UrlName: '/nhan-vien/luong-ca-dich-vu'
       })
