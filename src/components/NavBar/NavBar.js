@@ -386,14 +386,19 @@ function NavBar(props) {
   }
 
   const isActive = path => {
-    if (
-      !path ||
-      !process.env.NODE_ENV ||
-      process.env.NODE_ENV === 'development'
+    if (!path) return false
+
+    const pathRc =
+      !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+        ? path
+        : path.split('#rp:')[1]
+
+    if (!pathRc) return false
+
+    return (
+      location.pathname === pathRc ||
+      location.pathname.startsWith(`${pathRc}/`)
     )
-      return
-    let pathRc = path && path.split('#rp:')[1]
-    return location.pathname.search(pathRc) > -1
   }
 
   if (width < 1200) {
