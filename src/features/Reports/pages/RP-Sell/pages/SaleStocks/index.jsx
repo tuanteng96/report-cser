@@ -258,8 +258,7 @@ function SalesStocks(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        },
-        hidden: !GlobalConfig?.Admin?.bc_queenpearl
+        }
       },
       {
         key: 'Phi_dieu_hanh',
@@ -309,8 +308,7 @@ function SalesStocks(props) {
         sortable: false,
         mobileOptions: {
           visible: true
-        },
-        hidden: !GlobalConfig?.Admin?.bc_queenpearl
+        }
       }
     ], // eslint-disable-next-line react-hooks/exhaustive-deps
     [filters]

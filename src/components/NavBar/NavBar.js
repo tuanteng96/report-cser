@@ -121,7 +121,8 @@ function NavBar(props) {
         },
         {
           Title: 'Doanh số cơ sở',
-          Href: hasRouter() + '/ban-hang/doanh-so-co-so'
+          Href: hasRouter() + '/ban-hang/doanh-so-co-so',
+          hidden: !GlobalConfig?.Admin?.chuyennhuong_khacdiem
         },
         {
           Title: 'Doanh số mới',
