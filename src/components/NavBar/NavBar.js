@@ -120,6 +120,10 @@ function NavBar(props) {
           Href: hasRouter() + '/ban-hang/doanh-so'
         },
         {
+          Title: 'Doanh số cơ sở',
+          Href: hasRouter() + '/ban-hang/doanh-so-co-so'
+        },
+        {
           Title: 'Doanh số mới',
           Href: hasRouter() + '/ban-hang/ds-bc-2',
           hidden: !GlobalConfig?.Admin?.bao_cao_mely

@@ -188,6 +188,11 @@ export const BrowserHelpers = {
         ? filters.MemberIDs.map(item => item.value).join(',')
         : ''
     }
+    if ('Thu_khac' in filters) {
+      params.Thu_khac = filters.Thu_khac
+        ? filters.Thu_khac.map(item => item.value).join(',')
+        : ''
+    }
     if ('ProdIDs' in filters) {
       params.ProdIDs = filters.ProdIDs
         ? filters.ProdIDs.map(item => item.value).join(',')

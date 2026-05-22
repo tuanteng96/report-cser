@@ -278,7 +278,9 @@ function SalaryServices(props) {
         FuncEnd: () => setLoadingExport(false),
         FuncApi: () =>
           reportsApi.getListStaffSalarySV(
-            BrowserHelpers.getRequestParamsList(newFilters, { Total: PageTotal })
+            BrowserHelpers.getRequestParamsList(newFilters, {
+              Total: PageTotal
+            })
           ),
         UrlName: '/nhan-vien/luong-ca-dich-vu'
       })

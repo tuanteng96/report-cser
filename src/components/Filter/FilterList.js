@@ -318,6 +318,8 @@ function FilterList({
     if (StocksList && StocksList.length > 0) {
       updateStocksRole && updateStocksRole(StocksList)
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [StocksList])
 
   const filterTypeTC = (inputValue, optionFilter) => {
@@ -938,6 +940,30 @@ function FilterList({
                         value={values.CustomType}
                         onChange={otp => {
                           setFieldValue('CustomType', otp)
+                        }}
+                      />
+                    </div>
+                  )}
+                  {'Thu_khac' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Phân loại Thu</label>
+                      <SelectCustomType
+                        type="CashCustomType:THU_PHAT"
+                        isMulti
+                        isClearable={true}
+                        name="Thu_khac"
+                        placeholder="Chọn loại thu"
+                        value={values.Thu_khac}
+                        onChange={otp => {
+                          setFieldValue('Thu_khac', otp)
+                        }}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
                         }}
                       />
                     </div>

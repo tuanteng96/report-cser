@@ -60,6 +60,12 @@ const reportsApi = {
   getListSale2: data => {
     return http.post(`/api/v3/MemberGroup27@Get`, JSON.stringify(data))
   },
+  getListSaleStocks: data => {
+    return http.post(
+      `/api/v3/r23/ban-hang/doanh-so-co-so`,
+      JSON.stringify(data)
+    )
+  },
   getOverviewServices: data => {
     return http.post(`${SubApi}/dich-vu/tong-quan`, JSON.stringify(data))
   },
