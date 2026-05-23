@@ -165,7 +165,7 @@ function SalesStocks(props) {
         dataKey: 'Tong_thu_thu',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(
-            (rowData?.Doanh_so_moi || 0) + (rowData?.Thu_no_cu || 0)
+            (rowData?.Thuc_thu_moi || 0) + (rowData?.Thu_no_cu || 0)
           ),
         width: 250,
         sortable: false,
@@ -202,7 +202,9 @@ function SalesStocks(props) {
         title: 'Thực thu SP',
         dataKey: 'Thuc_thu_cong_ty',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData?.Thuc_thu_cong_ty),
+          PriceHelper.formatVND(
+            (rowData?.Thuc_thu_san_pham || 0) - (rowData?.Thuc_thu_doi_tac || 0)
+          ),
         width: 180,
         sortable: false,
         mobileOptions: {
@@ -252,7 +254,8 @@ function SalesStocks(props) {
           PriceHelper.formatVND(
             (rowData?.Thuc_thu_dich_vu || 0) +
               (rowData?.Thuc_thu_the_tien || 0) +
-              (rowData?.Thuc_thu_cong_ty || 0)
+              ((rowData?.Thuc_thu_san_pham || 0) -
+                (rowData?.Thuc_thu_doi_tac || 0))
           ),
         width: 180,
         sortable: false,
@@ -268,7 +271,8 @@ function SalesStocks(props) {
           let K2 =
             (rowData?.Thuc_thu_dich_vu || 0) +
             (rowData?.Thuc_thu_the_tien || 0) +
-            (rowData?.Thuc_thu_cong_ty || 0)
+            (rowData?.Thuc_thu_san_pham || 0) -
+            (rowData?.Thuc_thu_doi_tac || 0)
 
           if (K2 < 200000000) {
             return PriceHelper.formatVND(35000000)
@@ -319,7 +323,9 @@ function SalesStocks(props) {
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
-        reportsApi.getListSaleStocks(BrowserHelpers.getRequestParamsList(filters)),
+        reportsApi.getListSaleStocks(
+          BrowserHelpers.getRequestParamsList(filters)
+        ),
       UrlName: '/ban-hang/doanh-so-co-so'
     })
   }
