@@ -250,13 +250,14 @@ function SalesStocks(props) {
         key: 'Thuc_thu_tinh',
         title: 'Thực thu tính %',
         dataKey: 'Thuc_thu_tinh',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(
+        cellRenderer: ({ rowData }) => {
+          return PriceHelper.formatVND(
             (rowData?.Thuc_thu_dich_vu || 0) +
               (rowData?.Thuc_thu_the_tien || 0) +
               ((rowData?.Thuc_thu_san_pham || 0) -
                 (rowData?.Thuc_thu_doi_tac || 0))
-          ),
+          )
+        },
         width: 180,
         sortable: false,
         mobileOptions: {
@@ -272,7 +273,7 @@ function SalesStocks(props) {
             (rowData?.Thuc_thu_dich_vu || 0) +
             (rowData?.Thuc_thu_the_tien || 0) +
             (rowData?.Thuc_thu_san_pham || 0) -
-            (rowData?.Thuc_thu_doi_tac || 0)
+            (rowData?.Thuc_thu_doi_tac || 0);
 
           if (K2 < 200000000) {
             return PriceHelper.formatVND(35000000)
