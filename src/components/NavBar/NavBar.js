@@ -125,6 +125,11 @@ function NavBar(props) {
           hidden: !GlobalConfig?.Admin?.chuyennhuong_khacdiem
         },
         {
+          Title: 'Tiền hàng',
+          Href: hasRouter() + '/ban-hang/tien-hang',
+          hidden: !GlobalConfig?.Admin?.chuyennhuong_khacdiem
+        },
+        {
           Title: 'Doanh số mới',
           Href: hasRouter() + '/ban-hang/ds-bc-2',
           hidden: !GlobalConfig?.Admin?.bao_cao_mely

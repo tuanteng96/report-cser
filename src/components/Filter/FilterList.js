@@ -241,6 +241,7 @@ function FilterList({
       }
     } else {
       newStocks = [...Stocks]
+
       if (PermissionReport?.hasRight) {
         if (!PermissionReport?.jdata) {
           if (isWarehouse) {
@@ -276,6 +277,14 @@ function FilterList({
               o =>
                 o.url === '/nhan-vien/bang-luong' ||
                 o.paths.includes('/nhan-vien/bang-luong')
+            )
+          }
+
+          if (pathname === '/ban-hang/tien-hang') {
+            index = newListItems.findIndex(
+              o =>
+                o.url === '/ban-hang/doanh-so' ||
+                o.paths.includes('/ban-hang/doanh-so')
             )
           }
 
@@ -612,6 +621,14 @@ function FilterList({
                           setFieldValue('StockID', otp ? otp.value : '')
                         }}
                         noOptionsMessage={() => 'Không có cơ sở'}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
                       />
                     </div>
                   )}

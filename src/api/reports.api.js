@@ -66,6 +66,9 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getListTransactionInfo: data => {
+    return http.post(`/api/v3/r23/ban-hang/tien-hang`, JSON.stringify(data))
+  },
   getOverviewServices: data => {
     return http.post(`${SubApi}/dich-vu/tong-quan`, JSON.stringify(data))
   },
@@ -141,6 +144,12 @@ const reportsApi = {
   getListPriceSell: data => {
     return http.post(
       `${SubApi}/ban-hang/gia-ban-san-pham-dich-vu`,
+      JSON.stringify(data)
+    )
+  },
+  getGiaNVLTb: data => {
+    return http.post(
+      `/api/v3/r23/ban-hang/gia-nvl-trung-binh`,
       JSON.stringify(data)
     )
   },

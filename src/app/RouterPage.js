@@ -15,6 +15,9 @@ const Sales = lazy(() =>
 const SalesStocks = lazy(() =>
   import('src/features/Reports/pages/RP-Sell/pages/SaleStocks')
 )
+const TransactionInfo = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/TransactionInfo')
+)
 const Sales2 = lazy(() =>
   import('src/features/Reports/pages/RP-Sell/pages/Sales2')
 )
@@ -260,6 +263,7 @@ function RouterPage(props) {
         <Route index element={<Navigate to="doanh-so" replace />} />
         <Route path="doanh-so" element={<Sales />} />
         <Route path="doanh-so-co-so" element={<SalesStocks />} />
+        <Route path="tien-hang" element={<TransactionInfo />} />
         <Route path="ds-bc-2" element={<Sales2 />} />
         <Route path="sp-dv-ban-ra" element={<SaleDetails />} />
         <Route path="thanh-toan-tra-no" element={<DebtPayment />} />

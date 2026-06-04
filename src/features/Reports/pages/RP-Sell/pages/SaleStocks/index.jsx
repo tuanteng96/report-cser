@@ -14,7 +14,7 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 moment.locale('vi')
 
 function SalesStocks(props) {
-  const { Stocks, GlobalConfig } = useSelector(({ auth }) => ({
+  const { Stocks } = useSelector(({ auth }) => ({
     GlobalConfig: auth?.GlobalConfig,
     Stocks: auth?.Info?.Stocks || []
   }))
@@ -273,7 +273,7 @@ function SalesStocks(props) {
             (rowData?.Thuc_thu_dich_vu || 0) +
             (rowData?.Thuc_thu_the_tien || 0) +
             (rowData?.Thuc_thu_san_pham || 0) -
-            (rowData?.Thuc_thu_doi_tac || 0);
+            (rowData?.Thuc_thu_doi_tac || 0)
 
           if (K2 < 200000000) {
             return PriceHelper.formatVND(35000000)
