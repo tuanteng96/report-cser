@@ -220,9 +220,9 @@ function PayrollStaff2(props) {
           //   ? JSON.parse(item?.User?.WorkTimeSetting)
           //   : null
 
-          newObj['NGAY_CONG_THUC_TE'] = item?.TrackValue?.WorkQty || 0
+          newObj['NGAY_CONG_THUC_TE'] = item?.TrackValue?.WorkQtyRatio || 0
 
-          newObj['CONG_THUC_TE'] = item?.TrackValue?.WorkQtyRatio || 0
+          newObj['CONG_THUC_TE'] = item?.TrackValue?.WorkQty || 0
 
           newObj['CONG_NGAY_NGHI'] = newObj['CONG_THUC_TE']
             ? newObj['NGAY_CONG_THUC_TE'] - newObj['CONG_THUC_TE']
