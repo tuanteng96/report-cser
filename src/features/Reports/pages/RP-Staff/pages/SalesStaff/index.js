@@ -372,10 +372,8 @@ function SalesStaff(props) {
         resultConfig = JSON.parse(rsConfigs.data.data[0].Value)
       }
 
-      let list = [filters.StockID]
-      if (filters.StockID === '') {
-        list = filters.StocksRoles.split(',')
-      }
+      let list = filters.StocksRoles.split(',')
+      
       let rs = []
       let index = 0
 
@@ -425,10 +423,23 @@ function SalesStaff(props) {
         if (!data.isRight) {
           rs = [
             ...rs,
-            ...(data.result?.sum.map(x => ({
-              ...x,
-              StockID: Number(stock)
-            })) || [])
+            ...(
+              data.result?.sumUsers?.map(x => ({
+                ...x,
+                Stocks: x?.Stocks
+                  ? x?.Stocks.map(k => {
+                      let obj = {
+                        ...k?.sum,
+                        ...k,
+                        nhan_vien: x.nhan_vien,
+                        nv_id: x.nv_id
+                      }
+                      delete obj.sum
+                      return obj
+                    })
+                  : []
+              })) || []
+            ).flatMap(x => x.Stocks)
           ]
         }
         const duration = Date.now() - start
@@ -477,19 +488,16 @@ function SalesStaff(props) {
       })
 
       rs = rs.map(item => {
-        let obj = { ...item }
-        obj.con_lai = item.gia_tri - item?.khau_tru
+        let obj = { ...item, Ids: uuidv4() }
+        obj.gia_tri_hoa_hong = item.gia_tri - item?.khau_tru
 
         let ValueRange = rs2Items?.find(x => x.StockID === item.StockID)
-
+        obj.ValueRange = ValueRange?.ValueRange?.Value || ''
         if (ValueRange?.ValueRange?.Value) {
-          if (ValueRange?.Value > 100) {
-            obj.con_lai =
-              obj.con_lai * (1 + Number(ValueRange?.ValueRange?.Value) / 100)
-          } else {
-            obj.con_lai =
-              obj.con_lai * (1 - Number(ValueRange?.ValueRange?.Value) / 100)
-          }
+          obj.con_lai =
+            (obj.gia_tri_hoa_hong *
+              (Number(ValueRange?.ValueRange?.Value) - 100)) /
+            100
         }
 
         return obj
@@ -704,7 +712,7 @@ function SalesStaff(props) {
             key: 'nhan_vien',
             title: 'Nhân viên',
             dataKey: 'nhan_vien',
-            width: 350,
+            width: 250,
             sortable: false,
             mobileOptions: {
               visible: true
@@ -712,22 +720,45 @@ function SalesStaff(props) {
           },
           {
             key: 'Staff.StockTitle',
-            title: 'Cơ sở',
+            title: 'Cơ sở nhân viên',
             dataKey: 'Staff.StockTitle',
             cellRenderer: ({ rowData }) => {
-              let TitleStocks = Stocks?.find(x => x.ID === rowData.StockID)
+              let TitleStocks = Stocks?.find(x => x.ID === rowData.nv_stockID)
               return TitleStocks?.Title
             },
-            width: 350,
+            width: 250,
+            sortable: false
+          },
+          {
+            key: 'StockTitle',
+            title: 'Cơ sở hoa hồng',
+            dataKey: 'StockTitle',
+            width: 250,
+            sortable: false
+          },
+          {
+            key: 'gia_tri_hoa_hong',
+            title: 'Giá trị hoa hồng',
+            dataKey: 'gia_tri_hoa_hong',
+            cellRenderer: ({ rowData }) =>
+              PriceHelper.formatVND(rowData.gia_tri_hoa_hong),
+            width: 150,
+            sortable: false
+          },
+          {
+            key: 'ValueRange',
+            title: 'KPI của cơ sở',
+            dataKey: 'ValueRange',
+            width: 120,
             sortable: false
           },
           {
             key: 'ThresholdRewards',
-            title: 'Thưởng',
+            title: 'Giá trị (Thưởng / Phạt)',
             dataKey: 'ThresholdRewards',
             cellRenderer: ({ rowData }) =>
               PriceHelper.formatVND(rowData.con_lai),
-            width: 150,
+            width: 200,
             sortable: false
           }
         ]
