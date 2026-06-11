@@ -24,24 +24,16 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 11620,
+        ID: 12702,
         Title: 'Cser Hà Nội'
       },
       {
-        ID: 11621,
+        ID: 12703,
         Title: 'Cser HCM'
       },
       {
-        ID: 11623,
-        Title: 'Cser Đà nẵng'
-      },
-      {
-        ID: 11625,
-        Title: 'Cser CS A'
-      },
-      {
         ID: 12705,
-        Title: 'Cser CS B'
+        Title: 'Queen'
       }
     ],
     CrStockID: 12705,
@@ -474,20 +466,16 @@ if (DevHelpers.isDevelopment()) {
               text: 'Báo cáo',
               stocksList: [
                 {
+                  ID: 12702,
+                  Title: 'Cser Hà Nội'
+                },
+                {
+                  ID: 12703,
+                  Title: 'Cser HCM'
+                },
+                {
                   ID: 12705,
-                  Title: 'Cser Beauty Hà Nội'
-                },
-                {
-                  ID: 11542,
-                  Title: 'Cser beauty Hồ chí Minh'
-                },
-                {
-                  ID: 11543,
-                  Title: 'Cser Hue'
-                },
-                {
-                  ID: 11544,
-                  Title: 'RAZER CSER'
+                  Title: 'Queen'
                 }
               ],
               reports: {

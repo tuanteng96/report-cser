@@ -361,6 +361,144 @@ function SalesStaff(props) {
       setLoading(false)
       isFilter && setIsFilter(false)
       callback && callback()
+    } else if (filters.ShowsType === '3') {
+      let rsConfigs = await moreApi.getNameConfig('kpi_doanhso_hoahong')
+      let resultConfig = null
+      if (
+        rsConfigs.data.data &&
+        rsConfigs.data.data.length > 0 &&
+        rsConfigs.data.data[0].Value
+      ) {
+        resultConfig = JSON.parse(rsConfigs.data.data[0].Value)
+      }
+
+      let list = [filters.StockID]
+      if (filters.StockID === '') {
+        list = filters.StocksRoles.split(',')
+      }
+      let rs = []
+      let index = 0
+
+      Swal.fire({
+        title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`,
+        text: 'Vui lòng đợi ...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        },
+        showConfirmButton: false,
+        customClass: {
+          container: '!z-[99999]'
+        }
+      })
+
+      for (let stock of list) {
+        const start = Date.now()
+
+        index++
+
+        Swal.update({
+          title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`
+        })
+
+        Swal.showLoading()
+
+        let newFilters = {
+          StockID: stock,
+          DateStart: moment(filters.DateStart).format('DD/MM/YYYY'),
+          DateEnd: moment(filters.DateEnd).format('DD/MM/YYYY'),
+          Pi: 1,
+          Ps: 1500,
+          MemberID: '',
+          StaffID: '',
+          OrderID: '',
+          CategoriesId: '',
+          BrandId: '',
+          ProductId: '',
+          ProdOrService: '',
+          ShowsX: '3',
+          StocksRoles: list,
+          StocksRolesAll: filters.StocksRoles
+        }
+
+        let { data } = await reportsApi.getListStaffRose(newFilters)
+        if (!data.isRight) {
+          rs = [
+            ...rs,
+            ...(data.result?.sum.map(x => ({
+              ...x,
+              StockID: Number(stock)
+            })) || [])
+          ]
+        }
+        const duration = Date.now() - start
+        if (duration < 2000) {
+          await new Promise(r => setTimeout(r, 2000 - duration))
+        }
+
+        if (index === list.length) {
+          Swal.close()
+        }
+      }
+
+      let rs2 = await reportsApi.getListStaffSales({
+        DateStart: moment(filters.DateStart).format('DD/MM/YYYY'),
+        DateEnd: moment(filters.DateEnd).format('DD/MM/YYYY'),
+        Pi: 1,
+        Ps: 1500,
+        ShowsType: 3,
+        StocksRoles: list,
+        StocksRolesAll: filters.StocksRoles
+      })
+
+      let rs2Items = rs2?.data?.result?.stocks || []
+      rs2Items = rs2Items.map(x => {
+        let obj = { ...x }
+        let StockConfigs = resultConfig.find(k => x.StockID === k.ID)
+        if (StockConfigs && StockConfigs.Children.length > 0) {
+          let ValueRange = StockConfigs.Children.find(
+            o => x.Value >= o.FromValue && x.Value < o.ToValue
+          )
+          obj.ValueRange = ValueRange || {
+            Value: 100
+          }
+        } else {
+          StockConfigs = resultConfig.find(k => k.ID === '-1')
+          if (StockConfigs) {
+            let ValueRange = StockConfigs?.Children?.find(
+              o => x.Value >= o.FromValue && x.Value < o.ToValue
+            )
+            obj.ValueRange = ValueRange || {
+              Value: 100
+            }
+          }
+        }
+        return obj
+      })
+
+      rs = rs.map(item => {
+        let obj = { ...item }
+        obj.con_lai = item.gia_tri - item?.khau_tru
+
+        let ValueRange = rs2Items?.find(x => x.StockID === item.StockID)
+
+        if (ValueRange?.ValueRange?.Value) {
+          if (ValueRange?.Value > 100) {
+            obj.con_lai =
+              obj.con_lai * (1 + Number(ValueRange?.ValueRange?.Value) / 100)
+          } else {
+            obj.con_lai =
+              obj.con_lai * (1 - Number(ValueRange?.ValueRange?.Value) / 100)
+          }
+        }
+
+        return obj
+      })
+      setListData(rs)
+      setListDataMobile(rs)
+      setLoading(false)
+      isFilter && setIsFilter(false)
+      callback && callback()
     } else {
       let newFilters = BrowserHelpers.getRequestParamsList(filters)
 
@@ -434,6 +572,22 @@ function SalesStaff(props) {
         )} - ${moment(filters.DateEnd).format('DD/MM/YYYY')}`,
         filters,
         Url: '/nhan-vien/doanh-so-kpi-ngay',
+        Data: ListData || [],
+        hideLoading: () => {
+          setLoadingExport(false)
+        }
+      })
+    } else if (filters.ShowsType === '3') {
+      setLoadingExport(true)
+
+      await new Promise(resolve => setTimeout(resolve, 50))
+
+      window?.EzsExportNoFechExcel({
+        Title: `Thưởng doanh số nhân viên ${moment(filters.DateStart).format(
+          'DD/MM/YYYY'
+        )} - ${moment(filters.DateEnd).format('DD/MM/YYYY')}`,
+        filters,
+        Url: '/nhan-vien/doanh-so-kpi-thang-hoa-hong',
         Data: ListData || [],
         hideLoading: () => {
           setLoadingExport(false)
@@ -531,6 +685,50 @@ function SalesStaff(props) {
             width: 150,
             sortable: false,
             hidden: !GlobalConfig?.Admin?.kpi_ngay
+          }
+        ]
+      }
+      if (filters.ShowsType === '3') {
+        return [
+          {
+            key: 'nv_id',
+            title: 'ID nhân viên',
+            dataKey: 'nv_id',
+            width: 120,
+            sortable: false,
+            mobileOptions: {
+              visible: true
+            }
+          },
+          {
+            key: 'nhan_vien',
+            title: 'Nhân viên',
+            dataKey: 'nhan_vien',
+            width: 350,
+            sortable: false,
+            mobileOptions: {
+              visible: true
+            }
+          },
+          {
+            key: 'Staff.StockTitle',
+            title: 'Cơ sở',
+            dataKey: 'Staff.StockTitle',
+            cellRenderer: ({ rowData }) => {
+              let TitleStocks = Stocks?.find(x => x.ID === rowData.StockID)
+              return TitleStocks?.Title
+            },
+            width: 350,
+            sortable: false
+          },
+          {
+            key: 'ThresholdRewards',
+            title: 'Thưởng',
+            dataKey: 'ThresholdRewards',
+            cellRenderer: ({ rowData }) =>
+              PriceHelper.formatVND(rowData.con_lai),
+            width: 150,
+            sortable: false
           }
         ]
       }
@@ -691,7 +889,7 @@ function SalesStaff(props) {
   }
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    if (filters.ShowsType === '2') {
+    if (filters.ShowsType === '2' || filters.ShowsType === '3') {
       return cells
     }
     // if (isScrolling)
@@ -765,62 +963,74 @@ function SalesStaff(props) {
         loading={loading}
         loadingExport={loadingExport}
         onExport={onExport}
+        textAdvanced="KPI doanh số ngày"
+        optionsAdd={[
+          {
+            label: 'Kpi DS tháng / hoa hồng',
+            value: '3'
+          }
+        ]}
+        onlyDate="3"
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">
             Danh sách doanh số nhân viên
           </div>
-          <div className="fw-500 d-flex align-items-center ml-25px">
-            {filters.ShowsType === '2' ? 'Tổng thưởng' : 'Tổng doanh số'}
-            {filters.ShowsType === '2' ? (
-              <div className="d-flex justify-content-between align-items-center">
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PriceHelper.formatVNDPositive(TotalSales.TongThuong)}
-                </span>
-              </div>
-            ) : (
-              <OverlayTrigger
-                rootClose
-                trigger="click"
-                key="top"
-                placement="top"
-                overlay={
-                  <Popover id={`popover-positioned-top`}>
-                    <Popover.Header
-                      className="py-10px text-uppercase fw-600"
-                      as="h3"
-                    >
-                      Chi tiết doanh số
-                    </Popover.Header>
-                    <Popover.Body className="p-0">
-                      <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                        <span>Tổng</span>
-                        <span>
-                          {PriceHelper.formatVNDPositive(
-                            TotalSales.TongDoanhSo
-                          )}
-                        </span>
-                      </div>
-                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                        <span>Khấu trừ</span>
-                        <span className="text-danger">
-                          {PriceHelper.formatVNDPositive(TotalSales.KhauTru)}
-                        </span>
-                      </div>
-                    </Popover.Body>
-                  </Popover>
-                }
-              >
+          {filters.ShowsType !== '3' && (
+            <div className="fw-500 d-flex align-items-center ml-25px">
+              {filters.ShowsType === '2' ? 'Tổng thưởng' : 'Tổng doanh số'}
+              {filters.ShowsType === '2' ? (
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVNDPositive(TotalSales.TongThucDoanhSo)}
+                    {PriceHelper.formatVNDPositive(TotalSales.TongThuong)}
                   </span>
-                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
                 </div>
-              </OverlayTrigger>
-            )}
-          </div>
+              ) : (
+                <OverlayTrigger
+                  rootClose
+                  trigger="click"
+                  key="top"
+                  placement="top"
+                  overlay={
+                    <Popover id={`popover-positioned-top`}>
+                      <Popover.Header
+                        className="py-10px text-uppercase fw-600"
+                        as="h3"
+                      >
+                        Chi tiết doanh số
+                      </Popover.Header>
+                      <Popover.Body className="p-0">
+                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                          <span>Tổng</span>
+                          <span>
+                            {PriceHelper.formatVNDPositive(
+                              TotalSales.TongDoanhSo
+                            )}
+                          </span>
+                        </div>
+                        <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                          <span>Khấu trừ</span>
+                          <span className="text-danger">
+                            {PriceHelper.formatVNDPositive(TotalSales.KhauTru)}
+                          </span>
+                        </div>
+                      </Popover.Body>
+                    </Popover>
+                  }
+                >
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                      {PriceHelper.formatVNDPositive(
+                        TotalSales.TongThucDoanhSo
+                      )}
+                    </span>
+                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-success ml-5px"></i>
+                  </div>
+                </OverlayTrigger>
+              )}
+            </div>
+          )}
         </div>
         <div className="p-20px">
           <ReactTableV7
