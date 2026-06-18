@@ -1127,7 +1127,7 @@ function SaleDetails(props) {
         dataKey: 'Cpayed-cpayedreal',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(
-            Math.abs((rowData.Cpayed || 0) - (rowData.CPayedReal || 0))
+            Math.abs((rowData.CPayed || 0) - (rowData.CPayedReal || 0))
           ),
         width: 150,
         sortable: false
