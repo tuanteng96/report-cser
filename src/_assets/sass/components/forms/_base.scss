@@ -272,6 +272,9 @@
 .select-control {
   &.is-invalid {
     @include border-radius($input-border-radius);
+    .select__control {
+      border-color: $danger;
+    }
   }
   .select__control {
     border-color: #e4e6ef;

@@ -32,6 +32,9 @@ import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { SelectJobs } from '../Selects/SelectJobs'
 import { SelectTagsOrder } from '../Selects/SelectTagsOrder'
+import AsyncSelectConfigureKPIs from '../Selects/AsyncSelectConfigureKPIs'
+import Swal from 'sweetalert2'
+import moment from 'moment'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -362,6 +365,11 @@ function FilterList({
       <Formik
         initialValues={filters}
         onSubmit={(values, formik) => {
+          if (values.ShowsType === '4' && !values.OptionKPI) {
+            formik.setFieldTouched('OptionKPI', true, false)
+            formik.setFieldError('OptionKPI', 'Vui lòng chọn cấu hình KPI')
+            return
+          }
           onSubmit(
             {
               ...values,
@@ -377,12 +385,22 @@ function FilterList({
       >
         {formikProps => {
           // errors, touched, handleChange, handleBlur
-          const { values, setFieldValue, handleChange, handleBlur } =
-            formikProps
+          const {
+            values,
+            setFieldValue,
+            handleChange,
+            handleBlur,
+            errors,
+            touched,
+            setFieldError
+          } = formikProps
 
           let showOnlyDate = false
+          let advKPI = values.ShowsType === '4'
           if (onlyDate) {
-            showOnlyDate = onlyDate === values.ShowsType
+            showOnlyDate = onlyDate
+              .split(',')
+              .includes(values.ShowsType.toString())
           }
           return (
             <Form>
@@ -524,6 +542,60 @@ function FilterList({
                       )}
                     </>
                   )}
+
+                  {advKPI && 'OptionKPI' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Cấu hình KPI</label>
+                      <AsyncSelectConfigureKPIs
+                        isClearable
+                        placeholder="Chọn cấu hình"
+                        classNamePrefix="select"
+                        className={clsx(
+                          'select-control',
+                          errors.OptionKPI && touched.OptionKPI && 'is-invalid'
+                        )}
+                        value={values.OptionKPI}
+                        onChange={otp => {
+                          setFieldValue('OptionKPI', otp, false)
+                          if (otp) {
+                            setFieldError('OptionKPI', '')
+
+                            setFieldValue(
+                              'DateStart',
+                              moment(
+                                otp?.DataJSON?.FromDate,
+                                'DD/MM/YYYY'
+                              ).toDate(),
+                              false
+                            )
+                            setFieldValue(
+                              'DateEnd',
+                              moment(
+                                otp?.DataJSON?.ToDate,
+                                'DD/MM/YYYY'
+                              ).toDate(),
+                              false
+                            )
+                          }
+                        }}
+                        noOptionsMessage={() => 'Không có cấu hình'}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
+                      />
+                      {errors.OptionKPI && touched.OptionKPI && (
+                        <div className="invalid-feedback d-block">
+                          {errors.OptionKPI}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {'DateStart' in values && (
                     <div className="mb-20px form-group">
                       <label>Ngày bắt đầu</label>
@@ -549,6 +621,7 @@ function FilterList({
                           noMaximum,
                           limitEndMonth
                         })}
+                        disabled={advKPI}
                       />
                     </div>
                   )}
@@ -584,6 +657,7 @@ function FilterList({
                           noMaximum,
                           limitEndMonth
                         })}
+                        disabled={advKPI}
                       />
                     </div>
                   )}

@@ -93,6 +93,7 @@ const moreApi = {
     return http.post(`${SubApi}/more/danh-sach-sp-nvl`, JSON.stringify(data))
   },
   getNameConfig: name =>
-    http.get(`/api/v3/config?cmd=getnames&names=${name}&ignore_root=1`)
+    http.get(`/api/v3/config?cmd=getnames&names=${name}&ignore_root=1`),
+  getKPIConfigure: data => http.post(`/api/v5/kpi27@get`, JSON.stringify(data))
 }
 export default moreApi

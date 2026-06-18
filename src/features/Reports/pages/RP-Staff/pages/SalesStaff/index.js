@@ -243,7 +243,8 @@ function SalesStaff(props) {
     ProductId: '', // ID 1 SP, DV, NVL, ...
     KpiType: '',
     ProdOrService: '',
-    ShowsType: '1'
+    ShowsType: '1',
+    OptionKPI: null
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
@@ -373,7 +374,7 @@ function SalesStaff(props) {
       }
 
       let list = filters.StocksRoles.split(',')
-      
+
       let rs = []
       let index = 0
 
@@ -507,6 +508,158 @@ function SalesStaff(props) {
       setLoading(false)
       isFilter && setIsFilter(false)
       callback && callback()
+    } else if (filters.ShowsType === '4') {
+      let resultConfig = filters?.OptionKPI?.DataJSON?.Stocks?.map(item => {
+        let obj = {
+          ID: item.ID,
+          Title: item.Title,
+          Children: filters?.OptionKPI?.DataJSON?.Ratios.map(ratio => {
+            let newRatio = {
+              FromValue: (ratio.From * item.Value) / 100,
+              ToValue: (ratio.To * item.Value) / 100,
+              Value: ratio.Value
+            }
+            return newRatio
+          })
+        }
+        return obj
+      })
+
+      let list = filters.StocksRoles.split(',')
+
+      let rs = []
+      let index = 0
+
+      Swal.fire({
+        title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`,
+        text: 'Vui lòng đợi ...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        },
+        showConfirmButton: false,
+        customClass: {
+          container: '!z-[99999]'
+        }
+      })
+
+      for (let stock of list) {
+        const start = Date.now()
+
+        index++
+
+        Swal.update({
+          title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`
+        })
+
+        Swal.showLoading()
+
+        let newFilters = {
+          StockID: stock,
+          DateStart: moment(filters.DateStart).format('DD/MM/YYYY'),
+          DateEnd: moment(filters.DateEnd).format('DD/MM/YYYY'),
+          Pi: 1,
+          Ps: 1500,
+          MemberID: '',
+          StaffID: '',
+          OrderID: '',
+          CategoriesId: '',
+          BrandId: '',
+          ProductId: '',
+          ProdOrService: '',
+          ShowsX: '3',
+          StocksRoles: list,
+          StocksRolesAll: filters.StocksRoles
+        }
+
+        let { data } = await reportsApi.getListStaffRose(newFilters)
+        if (!data.isRight) {
+          rs = [
+            ...rs,
+            ...(
+              data.result?.sumUsers?.map(x => ({
+                ...x,
+                Stocks: x?.Stocks
+                  ? x?.Stocks.map(k => {
+                      let obj = {
+                        ...k?.sum,
+                        ...k,
+                        nhan_vien: x.nhan_vien,
+                        nv_id: x.nv_id
+                      }
+                      delete obj.sum
+                      return obj
+                    })
+                  : []
+              })) || []
+            ).flatMap(x => x.Stocks)
+          ]
+        }
+        const duration = Date.now() - start
+        if (duration < 2000) {
+          await new Promise(r => setTimeout(r, 2000 - duration))
+        }
+
+        if (index === list.length) {
+          Swal.close()
+        }
+      }
+
+      let rs2 = await reportsApi.getListStaffSales({
+        DateStart: moment(filters.DateStart).format('DD/MM/YYYY'),
+        DateEnd: moment(filters.DateEnd).format('DD/MM/YYYY'),
+        Pi: 1,
+        Ps: 1500,
+        ShowsType: 3,
+        StocksRoles: list,
+        StocksRolesAll: filters.StocksRoles
+      })
+
+      let rs2Items = rs2?.data?.result?.stocks || []
+      rs2Items = rs2Items.map(x => {
+        let obj = { ...x }
+        let StockConfigs = resultConfig.find(k => x.StockID === k.ID)
+        if (StockConfigs && StockConfigs.Children.length > 0) {
+          let ValueRange = StockConfigs.Children.find(
+            o => x.Value >= o.FromValue && x.Value < o.ToValue
+          )
+          obj.ValueRange = ValueRange || {
+            Value: 100
+          }
+        } else {
+          // StockConfigs = resultConfig.find(k => k.ID === '-1')
+          // if (StockConfigs) {
+          //   let ValueRange = StockConfigs?.Children?.find(
+          //     o => x.Value >= o.FromValue && x.Value < o.ToValue
+          //   )
+          //   obj.ValueRange = ValueRange || {
+          //     Value: 100
+          //   }
+          // }
+        }
+        return obj
+      })
+
+      rs = rs.map(item => {
+        let obj = { ...item, Ids: uuidv4() }
+        obj.gia_tri_hoa_hong = item.gia_tri - item?.khau_tru
+
+        let ValueRange = rs2Items?.find(x => x.StockID === item.StockID)
+        obj.ValueRange = ValueRange?.ValueRange?.Value || ''
+        if (ValueRange?.ValueRange?.Value) {
+          obj.con_lai =
+            (obj.gia_tri_hoa_hong *
+              (Number(ValueRange?.ValueRange?.Value) - 100)) /
+            100
+        }
+
+        return obj
+      })
+      setListData(rs)
+      setListDataMobile(rs)
+      setLoading(false)
+      isFilter && setIsFilter(false)
+      callback && callback()
     } else {
       let newFilters = BrowserHelpers.getRequestParamsList(filters)
 
@@ -585,7 +738,7 @@ function SalesStaff(props) {
           setLoadingExport(false)
         }
       })
-    } else if (filters.ShowsType === '3') {
+    } else if (filters.ShowsType === '3' || filters.ShowsType === '4') {
       setLoadingExport(true)
 
       await new Promise(resolve => setTimeout(resolve, 50))
@@ -999,9 +1152,13 @@ function SalesStaff(props) {
           {
             label: 'Kpi DS tháng / hoa hồng',
             value: '3'
+          },
+          {
+            label: 'Kpi doanh số nâng cao',
+            value: '4'
           }
         ]}
-        onlyDate="3"
+        onlyDate="3,4"
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
