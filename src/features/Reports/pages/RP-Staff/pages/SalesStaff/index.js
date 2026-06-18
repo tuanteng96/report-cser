@@ -849,7 +849,7 @@ function SalesStaff(props) {
           }
         ]
       }
-      if (filters.ShowsType === '3') {
+      if (filters.ShowsType === '3' || filters.ShowsType === '4') {
         return [
           {
             key: 'nv_id',
@@ -1073,7 +1073,7 @@ function SalesStaff(props) {
   }
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    if (filters.ShowsType === '2' || filters.ShowsType === '3') {
+    if (filters.ShowsType === '2' || filters.ShowsType === '3' || filters.ShowsType === '4') {
       return cells
     }
     // if (isScrolling)
