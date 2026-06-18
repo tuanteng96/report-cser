@@ -1136,14 +1136,15 @@ function SaleDetails(props) {
         key: 'Topay-Cpayed-Mpayed',
         title: 'Còn nợ',
         dataKey: 'Topay-Cpayed-Mpayed',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(
+        cellRenderer: ({ rowData }) => {
+          return PriceHelper.formatVND(
             Math.abs(
-              (rowData.Topay || 0) -
+              (rowData.ToPay || 0) -
                 Math.abs(rowData.CPayed || 0) -
                 Math.abs(rowData.MPayed || 0)
             )
-          ),
+          )
+        },
         width: 150,
         sortable: false
       },

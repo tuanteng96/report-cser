@@ -9,7 +9,7 @@ if (DevHelpers.isDevelopment()) {
     },
     Groups: [
       {
-        Title: '12705.order'
+        Title: '12702.order'
       },
       {
         Title: 'Administrator'
@@ -32,11 +32,11 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser HCM'
       },
       {
-        ID: 12705,
+        ID: 12702,
         Title: 'Queen'
       }
     ],
-    CrStockID: 12705,
+    CrStockID: 12702,
     rightsSum: {
       report: {
         IsAllStock: true,
@@ -59,7 +59,7 @@ if (DevHelpers.isDevelopment()) {
             Title: 'Cser CS A'
           },
           {
-            ID: 12705,
+            ID: 12702,
             Title: 'Cser CS B'
           }
         ],
@@ -474,7 +474,7 @@ if (DevHelpers.isDevelopment()) {
                   Title: 'Cser HCM'
                 },
                 {
-                  ID: 12705,
+                  ID: 12702,
                   Title: 'Queen'
                 }
               ],
@@ -485,7 +485,7 @@ if (DevHelpers.isDevelopment()) {
                     items: [
                       {
                         text: 'Tổng quan',
-                        stocks: '12705',
+                        stocks: '12702',
                         jdata: {
                           paths: ['/bao-cao-ngay/danh-sach'],
                           url: '/bao-cao-ngay/tong-quan'
@@ -493,7 +493,7 @@ if (DevHelpers.isDevelopment()) {
                       },
                       {
                         text: 'Khách hàng',
-                        stocks: '12705',
+                        stocks: '12702',
                         jdata: {
                           paths: ['/khach-hang/chi-tiet-ngay'],
                           url: '/bao-cao-ngay/khach-hang'
@@ -513,7 +513,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/doanh-so'
                         },
-                        stocks: '12705'
+                        stocks: '12702'
                       },
                       {
                         text: 'Sản phẩm - dịch vụ bán ra',
@@ -524,7 +524,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/sp-dv-ban-ra'
                         },
-                        stocks: '12705'
+                        stocks: '12702'
                       }
                     ]
                   }
@@ -543,7 +543,7 @@ if (DevHelpers.isDevelopment()) {
                   name: 'adminTools_byStock',
                   IsAllStock: false,
                   hasRight: true,
-                  stocksList: [{ ID: 12705 }]
+                  stocksList: [{ ID: 12702 }]
                 }
               ]
             }
