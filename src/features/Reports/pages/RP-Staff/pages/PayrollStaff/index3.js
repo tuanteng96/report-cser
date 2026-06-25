@@ -106,7 +106,7 @@ function PayrollStaff3(props) {
           let newObj = { ...item }
           let LUONG_BHXH = getValueByName({
             Items: item?.SETTINGS?.Settings,
-            Name: 'LUONG_NOP_BHXH'
+            Name: 'LUONG_DONG_BH'
           })
 
           newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
@@ -146,26 +146,26 @@ function PayrollStaff3(props) {
           }
 
           let TY_LE_KPI =
-            (newObj['LUONG_THEO_NANG_LUC'] /
-              item?.BANGLUONGBC?.DOANH_SO_THANG) *
-            100
+            (item?.BANGLUONGBC?.DOANH_SO_THANG / newObj['CHI_TIEU_THANG']) * 100
 
           if (TY_LE_KPI >= 50) {
-            newObj['LUONG_THEO_NANG_LUC_KPI'] =
-              item?.BANGLUONGBC?.DOANH_SO_THANG
+            newObj['LUONG_THEO_NANG_LUC_KPI'] = newObj['LUONG_THEO_NANG_LUC']
           } else {
-            newObj['LUONG_THEO_NANG_LUC_KPI'] =
-              item?.BANGLUONGBC?.DOANH_SO_THANG * TY_LE_KPI
+            newObj['LUONG_THEO_NANG_LUC_KPI'] = Math.floor(
+              (newObj['LUONG_THEO_NANG_LUC'] * TY_LE_KPI) / 100
+            )
           }
 
           newObj['TONG_LUONG_CHAM_CONG'] =
             Math.floor(
-              ((newObj['LUONG_CB'] + newObj['LUONG_THEO_NANG_LUC_KPI']) / 27) *
+              ((newObj['LUONG_DONG_BH'] + newObj['LUONG_THEO_NANG_LUC_KPI']) /
+                27) *
                 item?.TrackValue?.WorkQty
             ) || 0
 
-          newObj['TONG_TANG_CA_THEM_GIO'] =
+          newObj['TONG_TANG_CA_THEM_GIO'] = Math.floor(
             item?.TrackValue?.DI_SOM + item?.TrackValue?.VE_MUON
+          )
 
           newObj['THUONG_PHU_CAP'] =
             item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng phụ cấp'] || 0
@@ -179,11 +179,11 @@ function PayrollStaff3(props) {
             (newObj?.THUONG_PHU_CAP || 0) +
             (newObj?.BANGLUONGBC?.LUONG_CA || 0) +
             (newObj?.BANGLUONGBC?.KPI_Hoa_hong || 0) +
-            (newObj?.BANGLUONGBC?.KPI_Hoa_hong || 0) +
             (newObj?.KPI_1 || 0)
 
-          newObj['PHAT_DI_TRE_VE_SOM'] =
+          newObj['PHAT_DI_TRE_VE_SOM'] = Math.round(
             item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
+          )
 
           newObj['DONG_PHUC'] =
             item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Đồng phục'] || 0
@@ -204,7 +204,7 @@ function PayrollStaff3(props) {
             Name: 'GIU_LUONG'
           })
 
-          newObj['TAM_UONG'] = item?.BANGLUONGBC?.TAM_UNG || 0
+          newObj['TAM_UNG'] = item?.BANGLUONGBC?.TAM_UNG || 0
 
           newObj['TIEN_BANG'] =
             item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Tiền bằng'] || 0
@@ -214,7 +214,7 @@ function PayrollStaff3(props) {
             newObj['PHAT_VI_PHAM_QUY_CHE'] -
             newObj['PHAT_HINH_TUONG'] -
             newObj['GIU_LUONG'] -
-            newObj['TAM_UONG'] -
+            newObj['TAM_UNG'] -
             newObj['TIEN_BANG']
 
           newObj['BHXH_10_5'] = Math.floor(((LUONG_BHXH || 0) * 10.5) / 100)
