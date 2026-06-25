@@ -1073,7 +1073,11 @@ function SalesStaff(props) {
   }
 
   const rowRenderer = ({ rowData, rowIndex, cells, columns, isScrolling }) => {
-    if (filters.ShowsType === '2' || filters.ShowsType === '3' || filters.ShowsType === '4') {
+    if (
+      filters.ShowsType === '2' ||
+      filters.ShowsType === '3' ||
+      filters.ShowsType === '4'
+    ) {
       return cells
     }
     // if (isScrolling)
@@ -1159,6 +1163,7 @@ function SalesStaff(props) {
           }
         ]}
         onlyDate="3,4"
+        disabledOtp="4"
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">

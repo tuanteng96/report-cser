@@ -225,12 +225,19 @@ function NavBar(props) {
         {
           Title: 'Bảng lương',
           Href: hasRouter() + '/nhan-vien/bang-luong',
-          hidden: GlobalConfig?.Admin?.chinhsachluongchitiet
+          hidden:
+            GlobalConfig?.Admin?.chinhsachluongchitiet ||
+            GlobalConfig?.Admin?.queen_chinhsachluongchitiet
         },
         {
           Title: 'Bảng lương 2',
           Href: hasRouter() + '/nhan-vien/bang-luong-2',
           hidden: !GlobalConfig?.Admin?.chinhsachluongchitiet
+        },
+        {
+          Title: 'Bảng lương Queen',
+          Href: hasRouter() + '/nhan-vien/bang-luong-3',
+          hidden: !GlobalConfig?.Admin?.queen_chinhsachluongchitiet
         }
       ]
     },
@@ -401,8 +408,7 @@ function NavBar(props) {
     if (!pathRc) return false
 
     return (
-      location.pathname === pathRc ||
-      location.pathname.startsWith(`${pathRc}/`)
+      location.pathname === pathRc || location.pathname.startsWith(`${pathRc}/`)
     )
   }
 

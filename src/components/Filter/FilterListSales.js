@@ -191,6 +191,11 @@ function FilterListSales({
                                 (i.jdata.url === '/nhan-vien/bang-luong' ||
                                   i.jdata.paths.includes(
                                     '/nhan-vien/bang-luong'
+                                  ))) ||
+                              (pathname === '/nhan-vien/bang-luong-3' &&
+                                (i.jdata.url === '/nhan-vien/bang-luong' ||
+                                  i.jdata.paths.includes(
+                                    '/nhan-vien/bang-luong'
                                   )))
                             ) {
                               if (i.stocks) {
@@ -271,7 +276,10 @@ function FilterListSales({
             o => o.url === pathname || o.paths.includes(pathname)
           )
 
-          if (pathname === '/nhan-vien/bang-luong-2') {
+          if (
+            pathname === '/nhan-vien/bang-luong-2' ||
+            pathname === '/nhan-vien/bang-luong-3'
+          ) {
             index = newListItems.findIndex(
               o =>
                 o.url === '/nhan-vien/bang-luong' ||

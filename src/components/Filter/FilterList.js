@@ -116,7 +116,8 @@ function FilterList({
     }
   ],
   textAdvanced,
-  onlyDate
+  onlyDate,
+  disabledOtp = null
 }) {
   const {
     Stocks,
@@ -193,6 +194,11 @@ function FilterList({
                                 (i.jdata.url === pathname ||
                                   i.jdata.paths.includes(pathname))) ||
                               (pathname === '/nhan-vien/bang-luong-2' &&
+                                (i.jdata.url === '/nhan-vien/bang-luong' ||
+                                  i.jdata.paths.includes(
+                                    '/nhan-vien/bang-luong'
+                                  ))) ||
+                              (pathname === '/nhan-vien/bang-luong-3' &&
                                 (i.jdata.url === '/nhan-vien/bang-luong' ||
                                   i.jdata.paths.includes(
                                     '/nhan-vien/bang-luong'
@@ -277,7 +283,10 @@ function FilterList({
             o => o.url === pathname || o.paths.includes(pathname)
           )
 
-          if (pathname === '/nhan-vien/bang-luong-2') {
+          if (
+            pathname === '/nhan-vien/bang-luong-2' ||
+            pathname === '/nhan-vien/bang-luong-3'
+          ) {
             index = newListItems.findIndex(
               o =>
                 o.url === '/nhan-vien/bang-luong' ||
@@ -365,7 +374,11 @@ function FilterList({
       <Formik
         initialValues={filters}
         onSubmit={(values, formik) => {
-          if (values.ShowsType === '4' && !values.OptionKPI) {
+          if (
+            disabledOtp === '4' &&
+            values.ShowsType === '4' &&
+            !values.OptionKPI
+          ) {
             formik.setFieldTouched('OptionKPI', true, false)
             formik.setFieldError('OptionKPI', 'Vui lòng chọn cấu hình KPI')
             return
@@ -396,7 +409,7 @@ function FilterList({
           } = formikProps
 
           let showOnlyDate = false
-          let advKPI = values.ShowsType === '4'
+          let advKPI = values.ShowsType === '4' && disabledOtp === '4'
           if (onlyDate) {
             showOnlyDate = onlyDate
               .split(',')
