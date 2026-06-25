@@ -178,6 +178,7 @@ function PayrollStaff3(props) {
             (newObj?.TONG_TANG_CA_THEM_GIO || 0) +
             (newObj?.THUONG_PHU_CAP || 0) +
             (newObj?.BANGLUONGBC?.LUONG_CA || 0) +
+            (newObj?.BANGLUONGBC?.HOA_HONG || 0) +
             (newObj?.BANGLUONGBC?.KPI_Hoa_hong || 0) +
             (newObj?.KPI_1 || 0)
 
