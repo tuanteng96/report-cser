@@ -599,7 +599,10 @@ function SaleDetails(props) {
     queryFn: async () => {
       let rs = await reportsApi.getListSalesDetail2({
         StockID: filters.StockID,
-        ProdOrService: filters.ProdOrService?.value || '',
+        ProdOrService:
+          filters.ProdOrService?.value === ''
+            ? ''
+            : filters.ProdOrService?.value,
         ProdIDs: filters.ProductIds
           ? filters.ProductIds.map(x => x.value).toString()
           : '',
@@ -762,7 +765,10 @@ function SaleDetails(props) {
         reportsApi
           .getListSalesDetail2({
             StockID: filters.StockID,
-            ProdOrService: filters.ProdOrService?.value || '',
+            ProdOrService:
+              filters.ProdOrService?.value === ''
+                ? ''
+                : filters.ProdOrService?.value,
             ProdIDs: filters.ProductId?.value || '',
             BlockTime: [
               moment(filters.DateStart).format('YYYY-MM-DD'),
