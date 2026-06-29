@@ -9,7 +9,7 @@ if (DevHelpers.isDevelopment()) {
     },
     Groups: [
       {
-        Title: '11337.order'
+        Title: '12702.order'
       },
       {
         Title: 'Administrator'
@@ -24,7 +24,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 11337,
+        ID: 12702,
         Title: 'Cser Hà Nội'
       },
       {
@@ -32,11 +32,11 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser HCM'
       },
       {
-        ID: 11337,
+        ID: 12702,
         Title: 'Queen'
       }
     ],
-    CrStockID: 11337,
+    CrStockID: 12702,
     rightsSum: {
       report: {
         IsAllStock: true,
@@ -59,7 +59,7 @@ if (DevHelpers.isDevelopment()) {
             Title: 'Cser CS A'
           },
           {
-            ID: 11337,
+            ID: 12702,
             Title: 'Cser CS B'
           }
         ],
@@ -466,7 +466,7 @@ if (DevHelpers.isDevelopment()) {
               text: 'Báo cáo',
               stocksList: [
                 {
-                  ID: 11337,
+                  ID: 12702,
                   Title: 'Cser Hà Nội'
                 },
                 {
@@ -474,7 +474,7 @@ if (DevHelpers.isDevelopment()) {
                   Title: 'Cser HCM'
                 },
                 {
-                  ID: 11337,
+                  ID: 12702,
                   Title: 'Queen'
                 }
               ],
@@ -485,7 +485,7 @@ if (DevHelpers.isDevelopment()) {
                     items: [
                       {
                         text: 'Tổng quan',
-                        stocks: '11337',
+                        stocks: '12702',
                         jdata: {
                           paths: ['/bao-cao-ngay/danh-sach'],
                           url: '/bao-cao-ngay/tong-quan'
@@ -493,7 +493,7 @@ if (DevHelpers.isDevelopment()) {
                       },
                       {
                         text: 'Khách hàng',
-                        stocks: '11337',
+                        stocks: '12702',
                         jdata: {
                           paths: ['/khach-hang/chi-tiet-ngay'],
                           url: '/bao-cao-ngay/khach-hang'
@@ -513,7 +513,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/doanh-so'
                         },
-                        stocks: '11337'
+                        stocks: '12702'
                       },
                       {
                         text: 'Sản phẩm - dịch vụ bán ra',
@@ -524,7 +524,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/sp-dv-ban-ra'
                         },
-                        stocks: '11337'
+                        stocks: '12702'
                       }
                     ]
                   }
@@ -543,7 +543,7 @@ if (DevHelpers.isDevelopment()) {
                   name: 'adminTools_byStock',
                   IsAllStock: false,
                   hasRight: true,
-                  stocksList: [{ ID: 11337 }]
+                  stocksList: [{ ID: 12702 }]
                 }
               ]
             }
@@ -553,7 +553,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjM5NDUzOTUwMzk0NTQzMjgiLCJuYmYiOjE3NTE1NTM5NDcsImV4cCI6MTgzNzk1Mzk0NywiaWF0IjoxNzUxNTUzOTQ3fQ.uFTuNhCoE4X_ohR8CecTF0I-6m9QPdRyrQ7nsPdcgbA'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjExMjQ2MTAxMDE5MDAwMDEiLCJuYmYiOjE3ODIyMDkwOTMsImV4cCI6MTg2ODYwOTA5MywiaWF0IjoxNzgyMjA5MDkzfQ.1EMeJEaBqlQxs5F54a6EMXGVTAy25DT7PBWetUqzHcI'
 }
 const Auth = createSlice({
   name: 'auth',

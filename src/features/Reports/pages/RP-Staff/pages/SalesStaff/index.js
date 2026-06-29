@@ -335,6 +335,7 @@ function SalesStaff(props) {
             })) || [])
           ]
         }
+
         const duration = Date.now() - start
         if (duration < 2000) {
           await new Promise(r => setTimeout(r, 2000 - duration))
@@ -346,7 +347,13 @@ function SalesStaff(props) {
       }
 
       let newRs = convertArray3(rs, configs)
-        .flatMap(x => x.StaffsList)
+        .flatMap(x =>
+          x.StaffsList.map(staff => ({
+            ...staff,
+            StockID: x.StockID,
+            StockTitle: Stocks?.find(k => k.ID === x.StockID)?.Title
+          }))
+        )
         .map(x => ({
           ...x,
           Ids: uuidv4()
@@ -843,7 +850,15 @@ function SalesStaff(props) {
             dataKey: 'ThresholdRewards',
             cellRenderer: ({ rowData }) =>
               PriceHelper.formatVND(rowData.ThresholdRewards),
-            width: 150,
+            width: 180,
+            sortable: false,
+            hidden: !GlobalConfig?.Admin?.kpi_ngay
+          },
+          {
+            key: 'StockTitle',
+            title: 'Cơ sở',
+            dataKey: 'StockTitle',
+            width: 280,
             sortable: false,
             hidden: !GlobalConfig?.Admin?.kpi_ngay
           }
