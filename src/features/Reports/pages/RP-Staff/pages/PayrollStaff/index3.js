@@ -11,7 +11,33 @@ import 'moment/locale/vi'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
+
 moment.locale('vi')
+
+function getPercentValue(ranges, value) {
+  const item = ranges.find(([from, to]) => {
+    if (from === null) return value >= to
+    if (to === null) return value >= from
+
+    return value >= from && value < to
+  })
+  if (!item)
+    return {
+      from: 0,
+      to: 0,
+      percent: 0,
+      amount: 0
+    }
+
+  const [from, to, percent] = item
+
+  return {
+    from,
+    to,
+    percent,
+    amount: Math.floor((value * percent) / 100)
+  }
+}
 
 function PayrollStaff3(props) {
   const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
@@ -70,7 +96,8 @@ function PayrollStaff3(props) {
         rs = rs.map(item => {
           let newObj = {
             ...item,
-            BANGLUONGBC: null
+            BANGLUONGBC: null,
+            DOANH_SO_THANG_CO_SO: payrolls?.result?.Sum?.DOANH_SO_THANG
           }
           let index = payrolls?.result?.Items.findIndex(
             x => item?.User?.ID === x?.Staff?.ID
@@ -139,6 +166,11 @@ function PayrollStaff3(props) {
             Name: 'LUONG_DONG_BH'
           })
 
+          newObj['TI_LE_DONG_BH'] = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'TI_LE_DONG_BH'
+          })
+
           newObj['LUONG_THEO_NANG_LUC'] =
             newObj['LUONG_CB'] - newObj['LUONG_DONG_BH']
           if (newObj['LUONG_THEO_NANG_LUC'] < 0) {
@@ -156,6 +188,72 @@ function PayrollStaff3(props) {
             )
           }
 
+          newObj['KPI_1'] = 0
+          newObj['KPI_2'] = 0
+          newObj['KPI_3'] = 0
+          newObj['PHAN_TRAM_DOANH_SO'] = 0
+
+          if (newObj?.User?.Address === 'Kỹ thuật viên') {
+            if (
+              newObj?.BANGLUONGBC?.TourSalaryRatio >= newObj?.CHI_TIEU_THAO_TAC
+            ) {
+              let TI_LE_KTV =
+                newObj?.BANGLUONGBC?.DOANH_SO_THANG / newObj?.CHI_TIEU_THANG
+              if (TI_LE_KTV >= 1 && TI_LE_KTV < 1.2) {
+                newObj['KPI_1'] = 500000
+              }
+              if (TI_LE_KTV >= 1.2 && TI_LE_KTV < 1.5) {
+                newObj['KPI_2'] = 1000000
+              }
+              if (TI_LE_KTV >= 1.5) {
+                newObj['KPI_3'] = 2000000
+              }
+            }
+
+            newObj['PHAN_TRAM_DOANH_SO'] = getPercentValue(
+              [
+                [30000000, 35000000, 3],
+                [35000000, 40000000, 3.3],
+                [40000000, 45000000, 3.5],
+                [45000000, 50000000, 3.8],
+                [50000000, 55000000, 4.0],
+                [55000000, 60000000, 4.4],
+                [null, 60000000, 5]
+              ],
+              newObj?.BANGLUONGBC?.DOANH_SO_THANG
+            ).amount
+          }
+
+          if (newObj?.User?.Address === 'Chủ quán') {
+            newObj['PHAN_TRAM_DOANH_SO'] = getPercentValue(
+              [
+                [150000000, 180000000, 1],
+                [180000000, 210000000, 1.5],
+                [210000000, 240000000, 2],
+                [240000000, 270000000, 2.5],
+                [270000000, 300000000, 2.8],
+                [300000000, 400000000, 3],
+                [null, 400000000, 3.5]
+              ],
+              newObj?.DOANH_SO_THANG_CO_SO
+            ).amount
+          }
+
+          if (newObj?.User?.Address === 'Cửa hàng trưởng') {
+            newObj['PHAN_TRAM_DOANH_SO'] = getPercentValue(
+              [
+                [150000000, 200000000, 1],
+                [200000000, 250000000, 1.5],
+                [250000000, 300000000, 2],
+                [300000000, 400000000, 3],
+                [400000000, 500000000, 4],
+                [500000000, 600000000, 5],
+                [null, 600000000, 6]
+              ],
+              newObj?.DOANH_SO_THANG_CO_SO
+            ).amount
+          }
+
           newObj['TONG_LUONG_CHAM_CONG'] =
             Math.floor(
               ((newObj['LUONG_DONG_BH'] + newObj['LUONG_THEO_NANG_LUC_KPI']) /
@@ -170,8 +268,14 @@ function PayrollStaff3(props) {
           newObj['THUONG_PHU_CAP'] =
             item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng phụ cấp'] || 0
 
-          newObj['KPI_1'] =
-            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng kpi1'] || 0
+          newObj['KPI_4'] =
+            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng kpi4'] || 0
+
+          newObj['KPI_5'] =
+            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng kpi5'] || 0
+
+          newObj['KPI_6'] =
+            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng kpi6'] || 0
 
           newObj['TONG_THU_NHAP'] =
             (newObj?.TONG_LUONG_CHAM_CONG || 0) +
@@ -179,8 +283,13 @@ function PayrollStaff3(props) {
             (newObj?.THUONG_PHU_CAP || 0) +
             (newObj?.BANGLUONGBC?.LUONG_CA || 0) +
             (newObj?.BANGLUONGBC?.HOA_HONG || 0) +
-            (newObj?.BANGLUONGBC?.KPI_Hoa_hong || 0) +
-            (newObj?.KPI_1 || 0)
+            (newObj?.PHAN_TRAM_DOANH_SO || 0) +
+            (newObj?.KPI_1 || 0) +
+            (newObj?.KPI_2 || 0) +
+            (newObj?.KPI_3 || 0) +
+            (newObj?.KPI_4 || 0) +
+            (newObj?.KPI_5 || 0) +
+            (newObj?.KPI_6 || 0)
 
           newObj['PHAT_DI_TRE_VE_SOM'] = Math.round(
             item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
@@ -218,7 +327,9 @@ function PayrollStaff3(props) {
             newObj['TAM_UNG'] -
             newObj['TIEN_BANG']
 
-          newObj['BHXH_10_5'] = Math.floor(((LUONG_BHXH || 0) * 10.5) / 100)
+          newObj['TIEN_TRA_BHXH'] = Math.floor(
+            ((LUONG_BHXH || 0) * (newObj['TI_LE_DONG_BH'] || 0)) / 100
+          )
 
           newObj['THUE_TNCN'] =
             item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Thuế thu nhập cá nhân'] ||
@@ -228,7 +339,7 @@ function PayrollStaff3(props) {
 
           newObj['PHAI_TRA_NHAN_VIEN'] =
             newObj['TONG_LUONG_SAU_PHAT'] -
-            newObj['BHXH_10_5'] -
+            newObj['TIEN_TRA_BHXH'] -
             newObj['THUE_TNCN'] -
             newObj['KHAC']
 
@@ -403,9 +514,23 @@ function PayrollStaff3(props) {
                       % doanh số
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      KPIs 1
+                      KPI 1
                     </th>
-
+                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                      KPI 2
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                      KPI 3
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                      KPI 4
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                      KPI 5
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                      KPI 6
+                    </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
                       Tổng thu nhập
                     </th>
@@ -537,12 +662,25 @@ function PayrollStaff3(props) {
                           )}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
-                            rowData?.BANGLUONGBC?.KPI_Hoa_hong
-                          )}
+                          {PriceHelper.formatVND(rowData?.PHAN_TRAM_DOANH_SO)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.KPI_1)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.KPI_2)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.KPI_3)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.KPI_4)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.KPI_5)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.KPI_6)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.TONG_THU_NHAP)}
@@ -577,7 +715,7 @@ function PayrollStaff3(props) {
                           {PriceHelper.formatVND(rowData?.TONG_LUONG_SAU_PHAT)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.BHXH_10_5)}
+                          {PriceHelper.formatVND(rowData?.TIEN_TRA_BHXH)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.THUE_TNCN)}
