@@ -31,10 +31,6 @@ if (DevHelpers.isDevelopment()) {
         ID: 12703,
         Title: 'Cser HCM'
       },
-      {
-        ID: 12702,
-        Title: 'Queen'
-      }
     ],
     CrStockID: 12702,
     rightsSum: {
@@ -43,24 +39,12 @@ if (DevHelpers.isDevelopment()) {
         hasRight: true,
         stocks: [
           {
-            ID: 11620,
+            ID: 12702,
             Title: 'Cser Hà Nội'
           },
           {
-            ID: 11621,
+            ID: 12703,
             Title: 'Cser HCM'
-          },
-          {
-            ID: 11623,
-            Title: 'Cser Đà nẵng'
-          },
-          {
-            ID: 11625,
-            Title: 'Cser CS A'
-          },
-          {
-            ID: 12702,
-            Title: 'Cser CS B'
           }
         ],
         jdata: {

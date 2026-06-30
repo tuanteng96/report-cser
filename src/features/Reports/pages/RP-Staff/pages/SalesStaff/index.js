@@ -224,11 +224,14 @@ const convertArray3 = (arrays, configs) => {
 }
 
 function SalesStaff(props) {
-  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
-    CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || [],
-    GlobalConfig: auth?.GlobalConfig
-  }))
+  const { CrStockID, Stocks, GlobalConfig, AuthID } = useSelector(
+    ({ auth }) => ({
+      CrStockID: auth?.Info?.CrStockID || '',
+      Stocks: auth?.Info?.Stocks || [],
+      GlobalConfig: auth?.GlobalConfig,
+      AuthID: auth?.Info?.User?.ID
+    })
+  )
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     DateStart: new Date(), // Ngày bắt đầu
@@ -296,6 +299,7 @@ function SalesStaff(props) {
       }
       let rs = []
       let index = 0
+      const ps = 500
 
       Swal.fire({
         title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`,
@@ -310,36 +314,39 @@ function SalesStaff(props) {
         }
       })
 
-      for (let stock of list) {
-        const start = Date.now()
-
+      for (const stock of list) {
         index++
 
         Swal.update({
           title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`
         })
 
-        Swal.showLoading()
+        let total = 0
+        let pi = 1
 
-        let newFilters = BrowserHelpers.getRequestParamsList(filters)
-        newFilters.StockID = stock
-        newFilters.Ps = 500
+        do {
+          let newFilters = BrowserHelpers.getRequestParamsList(filters)
+          newFilters.StockID = stock
+          newFilters.Ps = ps
+          newFilters.Pi = pi
 
-        let { data } = await reportsApi.getListStaffSales(newFilters)
-        if (!data.isRight) {
-          rs = [
-            ...rs,
-            ...(data.result?.Items.map(x => ({
-              ...x,
-              StockID: Number(stock)
-            })) || [])
-          ]
-        }
+          const { data } = await reportsApi.getListStaffSales(newFilters)
 
-        const duration = Date.now() - start
-        if (duration < 2000) {
-          await new Promise(r => setTimeout(r, 2000 - duration))
-        }
+          if (!data.isRight) {
+            total = data.result.Total || 0
+
+            rs.push(
+              ...(data.result.Items || []).map(x => ({
+                ...x,
+                StockID: Number(stock)
+              }))
+            )
+
+            pi++
+          } else {
+            break
+          }
+        } while (rs.filter(x => x.StockID === Number(stock)).length < total)
 
         if (index === list.length) {
           Swal.close()
@@ -536,6 +543,7 @@ function SalesStaff(props) {
 
       let rs = []
       let index = 0
+      const ps = 1500
 
       Swal.fire({
         title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`,
@@ -580,29 +588,27 @@ function SalesStaff(props) {
         }
 
         let { data } = await reportsApi.getListStaffRose(newFilters)
-        if (!data.isRight) {
-          rs = [
-            ...rs,
-            ...(
-              data.result?.sumUsers?.map(x => ({
-                ...x,
-                Stocks: x?.Stocks
-                  ? x?.Stocks.map(k => {
-                      let obj = {
-                        ...k?.sum,
-                        ...k,
-                        nhan_vien: x.nhan_vien,
-                        nv_id: x.nv_id
-                      }
-                      delete obj.sum
-                      return obj
-                    })
-                  : []
-              })) || []
-            ).flatMap(x => x.Stocks)
-          ]
-        }
+
+        const items = data?.result?.sumUsers?.flatMap(x =>
+          x?.Stocks
+            ? x.Stocks.map(k => {
+                let obj = {
+                  ...k?.sum,
+                  ...k,
+                  nhan_vien: x.nhan_vien,
+                  nv_id: x.nv_id,
+                  StockID: Number(stock)
+                }
+
+                delete obj.sum
+                return obj
+              })
+            : []
+        )
+        rs.push(...items)
+
         const duration = Date.now() - start
+
         if (duration < 2000) {
           await new Promise(r => setTimeout(r, 2000 - duration))
         }
@@ -623,6 +629,7 @@ function SalesStaff(props) {
       })
 
       let rs2Items = rs2?.data?.result?.stocks || []
+
       rs2Items = rs2Items.map(x => {
         let obj = { ...x }
         let StockConfigs = resultConfig.find(k => x.StockID === k.ID)
@@ -1135,6 +1142,155 @@ function SalesStaff(props) {
     return cells
   }
 
+  const onImport = async () => {
+    if (filters.ShowsType === '2') {
+      let ItemsPost = ListData
+        ? ListData.map(x => ({
+            UserID: AuthID,
+            Value: x.ThresholdRewards,
+            StockID: x.StockID,
+            CreateDate: moment().format('YYYY-MM-DD'), //yyyy-MM-dd
+            ReceiverUserID: x?.Staff?.ID,
+            Desc: `Thưởng KPI doanh số ngày ${moment(x.CreateDate).format(
+              'DD/MM/YYYY'
+            )}`,
+            SysTagID: 2039,
+            Source: 'bonus'
+          }))
+        : []
+
+      Swal.fire({
+        title: `Tạo thưởng KPI doanh số ngày`,
+        text: `Xác nhận tạo ${ItemsPost.length} bản ghi thưởng KPI doanh số ngày ?`,
+        showCancelButton: true,
+        confirmButtonText: 'Xác nhận',
+        cancelButtonText: 'Đóng',
+        customClass: {
+          container: '!z-[99999]',
+          confirmButton: '!bg-primary !text-white'
+        }
+      }).then(async result => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: `Đang tạo ${ItemsPost.length}  bản ghi dữ liệu ...`,
+            text: 'Vui lòng đợi ...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading()
+            },
+            showConfirmButton: false,
+            customClass: {
+              container: '!z-[99999]',
+              confirmButton: '!bg-primary !text-white'
+            }
+          })
+
+          let rs = await reportsApi.cashAdds({
+            Cash: ItemsPost
+          })
+          Swal.close()
+          if (rs?.data?.cash && rs?.data?.cash.length > 0) {
+            setIsFilter(false)
+            Swal.fire({
+              title: 'Thực hiện thành công.',
+              text: `Tạo thành công ${
+                rs?.data?.cash?.length || 0
+              } bản ghi thưởng KPI ngày.`,
+              icon: 'success',
+              customClass: {
+                container: '!z-[99999]',
+                confirmButton: '!bg-primary !text-white'
+              }
+            })
+          } else {
+            Swal.fire({
+              title: 'Thực hiện không thành công.',
+              text: rs?.error || 'Lỗi không xác định',
+              icon: 'error',
+              customClass: {
+                container: '!z-[99999]',
+                confirmButton: '!bg-primary !text-white'
+              }
+            })
+          }
+        }
+      })
+    }
+    if (filters.ShowsType === '4') {
+      let ItemsPost = ListData
+        ? ListData.map(x => ({
+            UserID: AuthID,
+            Value: x.con_lai,
+            StockID: x.StockID,
+            CreateDate: moment().format('YYYY-MM-DD'), //yyyy-MM-dd
+            ReceiverUserID: x?.nv_id,
+            Desc: `${filters?.OptionKPI?.Title} (${filters?.OptionKPI?.DataJSON?.FromDate} - ${filters?.OptionKPI?.DataJSON?.ToDate})`,
+            SysTagID: 2039,
+            Source: 'bonus'
+          }))
+        : []
+
+      Swal.fire({
+        title: `Tạo thưởng KPI ${filters?.OptionKPI?.Title}`,
+        text: `Xác nhận tạo ${ItemsPost.length} bản ghi thưởng KPI ${filters?.OptionKPI?.Title} (${filters?.OptionKPI?.DataJSON?.FromDate} - ${filters?.OptionKPI?.DataJSON?.ToDate}) ?`,
+        showCancelButton: true,
+        confirmButtonText: 'Xác nhận',
+        cancelButtonText: 'Đóng',
+        customClass: {
+          container: '!z-[99999]',
+          confirmButton: '!bg-primary !text-white'
+        }
+      }).then(async result => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: `Đang tạo ${ItemsPost.length}  bản ghi dữ liệu ...`,
+            text: 'Vui lòng đợi ...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading()
+            },
+            showConfirmButton: false,
+            customClass: {
+              container: '!z-[99999]',
+              confirmButton: '!bg-primary !text-white'
+            }
+          })
+
+          let rs = await reportsApi.cashAdds({
+            Cash: ItemsPost
+          })
+          Swal.close()
+          if (rs?.data?.cash && rs?.data?.cash.length > 0) {
+            setIsFilter(false)
+            Swal.fire({
+              title: 'Thực hiện thành công.',
+              text: `Tạo thành công ${
+                rs?.data?.cash?.length || 0
+              } bản ghi thưởng KPI ${filters?.OptionKPI?.Title} (${
+                filters?.OptionKPI?.DataJSON?.FromDate
+              } - ${filters?.OptionKPI?.DataJSON?.ToDate}).`,
+              icon: 'success',
+              customClass: {
+                container: '!z-[99999]',
+                confirmButton: '!bg-primary !text-white'
+              }
+            })
+          } else {
+            Swal.fire({
+              title: 'Thực hiện không thành công.',
+              text: rs?.error || 'Lỗi không xác định',
+              icon: 'error',
+              customClass: {
+                container: '!z-[99999]',
+                confirmButton: '!bg-primary !text-white'
+              }
+            })
+          }
+        }
+      })
+    }
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -1157,7 +1313,9 @@ function SalesStaff(props) {
           <IconMenuMobile />
         </div>
       </div>
+
       <FilterList
+        onImport={GlobalConfig?.Admin?.chinhsachluongchitiet && onImport}
         show={isFilter}
         filters={filters}
         onHide={onHideFilter}

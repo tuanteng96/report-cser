@@ -84,6 +84,7 @@ const CustomOption = ({ children, data, ...props }) => {
 }
 
 function FilterList({
+  onImport,
   show,
   ShowsKey = null,
   onHide,
@@ -1918,6 +1919,25 @@ function FilterList({
                   )}
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
+                  {(values.ShowsType === '2' || values.ShowsType === '4') &&
+                    onImport && (
+                      <button
+                        type="button"
+                        className={clsx(
+                          'btn btn-primary me-2 max-w-135px text-truncate',
+                          (loadingExport || loading || GGLoading) &&
+                            'spinner spinner-white spinner-right'
+                        )}
+                        disabled={loadingExport || GGLoading}
+                        onClick={onImport}
+                        style={{
+                          minWidth: '40px'
+                        }}
+                      >
+                        <i className="far fa-file-import"></i>
+                      </button>
+                    )}
+
                   {(GlobalConfig?.Admin?.byAdminExcel
                     ? AuthID === 1
                     : !GlobalConfig?.Admin?.byAdminExcel) && (
