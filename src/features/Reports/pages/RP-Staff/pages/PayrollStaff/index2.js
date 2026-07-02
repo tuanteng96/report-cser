@@ -669,14 +669,14 @@ function PayrollStaff2(props) {
                     >
                       HH bán thẻ
                     </th>
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
+                      HH thưởng
+                    </th>
                     {!GlobalConfig?.Admin?.bc_an_hhpp_hhnvl && (
                       <>
-                        <th
-                          rowSpan={2}
-                          className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
-                        >
-                          HH phụ phí
-                        </th>
                         <th
                           rowSpan={2}
                           className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
@@ -946,13 +946,13 @@ function PayrollStaff2(props) {
                             rowData?.BANGLUONGBC?.HOA_HONG_Thetien
                           )}
                         </td>
+                        <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(
+                            rowData?.BANGLUONGBC?.HOA_HONG_Phuphi
+                          )}
+                        </td>
                         {!GlobalConfig?.Admin?.bc_an_hhpp_hhnvl && (
                           <>
-                            <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                              {PriceHelper.formatVND(
-                                rowData?.BANGLUONGBC?.HOA_HONG_Phuphi
-                              )}
-                            </td>
                             <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                               {PriceHelper.formatVND(
                                 rowData?.BANGLUONGBC?.HOA_HONG_NVL

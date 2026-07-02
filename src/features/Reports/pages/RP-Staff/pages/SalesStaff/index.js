@@ -1155,7 +1155,8 @@ function SalesStaff(props) {
               'DD/MM/YYYY'
             )}`,
             SysTagID: 2039,
-            Source: 'bonus'
+            Source: 'bonus',
+            ProdOrService: 2,
           }))
         : []
 
@@ -1226,7 +1227,8 @@ function SalesStaff(props) {
             ReceiverUserID: x?.nv_id,
             Desc: `${filters?.OptionKPI?.Title} (${filters?.OptionKPI?.DataJSON?.FromDate} - ${filters?.OptionKPI?.DataJSON?.ToDate})`,
             SysTagID: 2039,
-            Source: 'bonus'
+            Source: 'bonus',
+            ProdOrService: 2
           }))
         : []
 
