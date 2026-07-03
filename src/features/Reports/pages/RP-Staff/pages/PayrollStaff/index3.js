@@ -5,7 +5,7 @@ import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import _ from 'lodash'
 import { PriceHelper } from 'src/helpers/PriceHelper'
 import reportsApi from 'src/api/reports.api'
-
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 import moment from 'moment'
 import 'moment/locale/vi'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
@@ -13,6 +13,240 @@ import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
 
 moment.locale('vi')
+
+const OverlayHH = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.User.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'HOA_HONG'
+      )
+      .then(({ data }) => {
+        setValues(data ? data.filter(x => x.Value > 0) : null)
+        setLoading(false)
+      })
+  }
+
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.User.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            Hoa hồng - {rowData?.User.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+        <div>{PriceHelper.formatVND(rowData?.BANGLUONGBC?.HOA_HONG)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
+
+const OverlayLT = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.User.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'LUONG_TOUR'
+      )
+      .then(({ data }) => {
+        setValues(data ? data.filter(x => x.Value > 0) : null)
+        setLoading(false)
+      })
+  }
+
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.User.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            Lương Tour - {rowData?.User.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+        <div>{PriceHelper.formatVND(rowData?.BANGLUONGBC?.LUONG_CA)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
+
+const OverlayDS = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.User.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'DOANH_SO'
+      )
+      .then(({ data }) => {
+        setValues(data ? data.filter(x => x.Value > 0) : null)
+        setLoading(false)
+      })
+  }
+
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.User.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            Doanh số - {rowData?.User.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+        <div>{PriceHelper.formatVND(rowData?.BANGLUONGBC?.DOANH_SO_THANG)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
 
 function getPercentValue(ranges, value) {
   const item = ranges.find(([from, to]) => {
@@ -623,9 +857,10 @@ function PayrollStaff3(props) {
                           {PriceHelper.formatVND(rowData?.LUONG_THEO_NANG_LUC)}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
+                          <OverlayDS rowData={rowData} filters={filters} />
+                          {/* {PriceHelper.formatVND(
                             rowData?.BANGLUONGBC?.DOANH_SO_THANG
-                          )}
+                          )} */}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.TrackValue?.WorkQty}
@@ -652,14 +887,16 @@ function PayrollStaff3(props) {
                           {PriceHelper.formatVND(rowData?.PHU_CAP_AN_TRUA)}
                         </td> */}
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
+                          <OverlayLT rowData={rowData} filters={filters} />
+                          {/* {PriceHelper.formatVND(
                             rowData?.BANGLUONGBC?.LUONG_CA
-                          )}
+                          )} */}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
+                          <OverlayHH rowData={rowData} filters={filters} />
+                          {/* {PriceHelper.formatVND(
                             rowData?.BANGLUONGBC?.HOA_HONG
-                          )}
+                          )} */}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHAN_TRAM_DOANH_SO)}
