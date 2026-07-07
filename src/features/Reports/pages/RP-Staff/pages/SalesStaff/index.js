@@ -1149,14 +1149,16 @@ function SalesStaff(props) {
             UserID: AuthID,
             Value: x.ThresholdRewards,
             StockID: x.StockID,
-            CreateDate: moment().format('YYYY-MM-DD'), //yyyy-MM-dd
+            CreateDate: moment(filters.DateEnd)
+              .endOf('month')
+              .format('YYYY-MM-DD'), //yyyy-MM-dd
             ReceiverUserID: x?.Staff?.ID,
             Desc: `Thưởng KPI doanh số ngày ${moment(x.CreateDate).format(
               'DD/MM/YYYY'
             )}`,
             SysTagID: 2039,
             Source: 'bonus',
-            ProdOrService: 2,
+            ProdOrService: 2
           }))
         : []
 
@@ -1223,7 +1225,9 @@ function SalesStaff(props) {
             UserID: AuthID,
             Value: x.con_lai,
             StockID: x.StockID,
-            CreateDate: moment().format('YYYY-MM-DD'), //yyyy-MM-dd
+            CreateDate: moment(filters?.OptionKPI?.DataJSON?.ToDate)
+              .endOf('month')
+              .format('YYYY-MM-DD'), //yyyy-MM-dd
             ReceiverUserID: x?.nv_id,
             Desc: `${filters?.OptionKPI?.Title} (${filters?.OptionKPI?.DataJSON?.FromDate} - ${filters?.OptionKPI?.DataJSON?.ToDate})`,
             SysTagID: 2039,
