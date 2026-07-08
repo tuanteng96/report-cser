@@ -330,10 +330,7 @@ function PayrollStaff3(props) {
         rs = rs.map(item => {
           let newObj = {
             ...item,
-            BANGLUONGBC: null,
-            DOANH_SO_THANG_CO_SO:
-              timekeepings?.sum?.find(x => x.StockID === item?.User?.StockID)
-                ?.Total || 0
+            BANGLUONGBC: null
           }
           let index = payrolls?.result?.Items.findIndex(
             x => item?.User?.ID === x?.Staff?.ID
@@ -344,6 +341,13 @@ function PayrollStaff3(props) {
           return newObj
         })
       }
+
+      rs = rs.map(item => ({
+        ...item,
+        DOANH_SO_THANG_CO_SO:
+          timekeepings?.sum?.find(x => x.StockID === item?.User?.StockID)
+            ?.Total || 0
+      }))
 
       if (configs?.lst && configs?.lst.length > 0) {
         rs = rs.map(item => {
