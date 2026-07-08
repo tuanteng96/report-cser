@@ -1225,7 +1225,10 @@ function SalesStaff(props) {
             UserID: AuthID,
             Value: x.con_lai,
             StockID: x.StockID,
-            CreateDate: moment(filters?.OptionKPI?.DataJSON?.ToDate)
+            CreateDate: moment(
+              filters?.OptionKPI?.DataJSON?.ToDate,
+              'DD/MM/YYYY'
+            )
               .endOf('month')
               .format('YYYY-MM-DD'), //yyyy-MM-dd
             ReceiverUserID: x?.nv_id,
@@ -1235,7 +1238,6 @@ function SalesStaff(props) {
             ProdOrService: 2
           }))
         : []
-
       Swal.fire({
         title: `Tạo thưởng KPI ${filters?.OptionKPI?.Title}`,
         text: `Xác nhận tạo ${ItemsPost.length} bản ghi thưởng KPI ${filters?.OptionKPI?.Title} (${filters?.OptionKPI?.DataJSON?.FromDate} - ${filters?.OptionKPI?.DataJSON?.ToDate}) ?`,
