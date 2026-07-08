@@ -331,7 +331,9 @@ function PayrollStaff3(props) {
           let newObj = {
             ...item,
             BANGLUONGBC: null,
-            DOANH_SO_THANG_CO_SO: payrolls?.result?.Sum?.DOANH_SO_THANG
+            DOANH_SO_THANG_CO_SO:
+              timekeepings?.sum?.find(x => x.StockID === item?.User?.StockID)
+                ?.Total || 0
           }
           let index = payrolls?.result?.Items.findIndex(
             x => item?.User?.ID === x?.Staff?.ID
