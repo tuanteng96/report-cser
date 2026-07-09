@@ -553,8 +553,8 @@ function SalesStaff(props) {
       })
 
       let { data: rsTotalSales } = await reportsApi.getBaselineSales({
-        DateEnd: moment(filters.DateStart).format('YYYY/MM/DD'),
-        DateStart: moment(filters.DateEnd).format('YYYY/MM/DD'),
+        DateEnd: moment(filters.DateEnd).format('YYYY/MM/DD'),
+        DateStart: moment(filters.DateStart).format('YYYY/MM/DD'),
         Pi: 1,
         Ps: 100,
         StockID: filters.StocksRoles?.split(',')
