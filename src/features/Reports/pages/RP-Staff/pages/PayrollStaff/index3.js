@@ -325,16 +325,6 @@ function PayrollStaff3(props) {
         StocksRoles: filters.StocksRoles
       })
 
-      let { data: rsTotalSales } = await reportsApi.getBaselineSales({
-        DateEnd: moment(filters.Mon).startOf('months').format('YYYY/MM/DD'),
-        DateStart: moment(filters.Mon).endOf('months').format('YYYY/MM/DD'),
-        Pi: 1,
-        Ps: 100,
-        StockID: filters.StocksRoles?.split(',')
-          .filter(x => x)
-          .map(x => Number(x))
-      })
-
       let rs = [...timekeepings?.list]
 
       if (payrolls?.result?.Items && payrolls?.result?.Items.length > 0) {
@@ -356,9 +346,8 @@ function PayrollStaff3(props) {
       rs = rs.map(item => ({
         ...item,
         DOANH_SO_THANG_CO_SO:
-          rsTotalSales?.result?.Items?.find(
-            x => x.StockID === item?.User?.StockID
-          )?.Cash || 0
+          timekeepings?.sum?.find(x => x.StockID === item?.User?.StockID)
+            ?.Total || 0
       }))
 
       if (configs?.lst && configs?.lst.length > 0) {

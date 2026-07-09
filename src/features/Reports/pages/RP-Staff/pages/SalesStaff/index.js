@@ -523,6 +523,19 @@ function SalesStaff(props) {
       isFilter && setIsFilter(false)
       callback && callback()
     } else if (filters.ShowsType === '4') {
+      Swal.fire({
+        title: `Đang thực hiện ...`,
+        text: 'Vui lòng đợi ...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        },
+        showConfirmButton: false,
+        customClass: {
+          container: '!z-[99999]'
+        }
+      })
+
       let resultConfig = filters?.OptionKPI?.DataJSON?.Stocks?.map(item => {
         let obj = {
           ID: item.ID,
@@ -539,23 +552,25 @@ function SalesStaff(props) {
         return obj
       })
 
+      let { data: rsTotalSales } = await reportsApi.getBaselineSales({
+        DateEnd: moment(filters.DateStart).format('YYYY/MM/DD'),
+        DateStart: moment(filters.DateEnd).format('YYYY/MM/DD'),
+        Pi: 1,
+        Ps: 100,
+        StockID: filters.StocksRoles?.split(',')
+          .filter(x => x)
+          .map(x => Number(x))
+      })
+
       let list = filters.StocksRoles.split(',')
 
       let rs = []
       let index = 0
       const ps = 1500
 
-      Swal.fire({
+      Swal.update({
         title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`,
-        text: 'Vui lòng đợi ...',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading()
-        },
-        showConfirmButton: false,
-        customClass: {
-          container: '!z-[99999]'
-        }
+        text: 'Vui lòng đợi ...'
       })
 
       for (let stock of list) {
@@ -618,17 +633,22 @@ function SalesStaff(props) {
         }
       }
 
-      let rs2 = await reportsApi.getListStaffSales({
-        DateStart: moment(filters.DateStart).format('DD/MM/YYYY'),
-        DateEnd: moment(filters.DateEnd).format('DD/MM/YYYY'),
-        Pi: 1,
-        Ps: 1500,
-        ShowsType: 3,
-        StocksRoles: list,
-        StocksRolesAll: filters.StocksRoles
-      })
+      // let rs2 = await reportsApi.getListStaffSales({
+      //   DateStart: moment(filters.DateStart).format('DD/MM/YYYY'),
+      //   DateEnd: moment(filters.DateEnd).format('DD/MM/YYYY'),
+      //   Pi: 1,
+      //   Ps: 1500,
+      //   ShowsType: 3,
+      //   StocksRoles: list,
+      //   StocksRolesAll: filters.StocksRoles
+      // })
 
-      let rs2Items = rs2?.data?.result?.stocks || []
+      let rs2Items = rsTotalSales?.result?.Items
+        ? rsTotalSales?.result?.Items.map(x => ({
+            Value: x.Cash,
+            StockID: x.StockID
+          }))
+        : []
 
       rs2Items = rs2Items.map(x => {
         let obj = { ...x }
