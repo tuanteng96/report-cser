@@ -797,7 +797,8 @@ function SalaryServices(props) {
             ReceiverUserID: x?.UserID,
             Desc: `Tạm ứng lương Tour`,
             SysTagID: 2052,
-            MethodID: 1
+            MethodID: 1,
+            Source: ''
           }))
         : []
       Swal.fire({
