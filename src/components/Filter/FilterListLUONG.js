@@ -23,12 +23,11 @@ function FilterListLUONG({
   onSubmit,
   loading,
   loadingExport,
-  ten_nghiep_vu2,
   onRefresh,
   onExport,
   isWarehouse = false,
   isAllStock = true,
-  optionsAdd = []
+  onImport
 }) {
   const { Stocks, PermissionReport, GlobalConfig, AuthID, rightTree, Auth } =
     useSelector(({ auth }) => ({
@@ -456,6 +455,23 @@ function FilterListLUONG({
                   )}
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
+                  {values.ShowsX === '3' && onImport && (
+                    <button
+                      type="button"
+                      className={clsx(
+                        'btn btn-primary me-2 max-w-135px text-truncate',
+                        (loadingExport || loading || GGLoading) &&
+                          'spinner spinner-white spinner-right'
+                      )}
+                      disabled={loadingExport || GGLoading}
+                      onClick={onImport}
+                      style={{
+                        minWidth: '40px'
+                      }}
+                    >
+                      <i className="far fa-file-import"></i>
+                    </button>
+                  )}
                   {(GlobalConfig?.Admin?.byAdminExcel
                     ? AuthID === 1
                     : !GlobalConfig?.Admin?.byAdminExcel) && (
