@@ -792,7 +792,7 @@ function SalaryServices(props) {
         ? Total?.sum.map(x => ({
             UserID: Auth?.ID,
             Value: x.Value > 0 ? x.Value * -1 : x.Value,
-            StockID: Auth?.StockID || 0,
+            StockID: CrStockID || 0,
             CreateDate: moment().format('YYYY-MM-DD'), //yyyy-MM-dd
             ReceiverUserID: x?.UserID,
             Desc: `Tạm ứng lương Tour`,
