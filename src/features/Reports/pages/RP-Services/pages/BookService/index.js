@@ -244,7 +244,8 @@ const convertArray = arrays => {
 }
 
 function BookService(props) {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
+    GlobalConfig: auth?.GlobalConfig,
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
   }))
@@ -840,6 +841,15 @@ function BookService(props) {
           if (rowData.Desc) {
             const parsed = parseKvString(rowData.Desc)
             SL = parsed['Số lượng khách'] || ''
+          }
+          if (
+            GlobalConfig?.Admin?.isMultipleMembersBook &&
+            rowData?.InfoMore?.Clients &&
+            rowData?.InfoMore?.Clients.length > 0
+          ) {
+            const count = new Set(rowData?.InfoMore?.Clients.map(x => x.Index))
+              .size
+            SL = count || 1
           }
           return <div>{SL}</div>
         },
