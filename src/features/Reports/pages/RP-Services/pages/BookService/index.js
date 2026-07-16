@@ -264,7 +264,8 @@ function BookService(props) {
     UserID: '', //nv dat
     UserServiceIDs: '',
     include: 'IsNewMember,OrderInDate',
-    ShowsType: '1'
+    ShowsType: '1',
+    isMultipleMembersBook: 0
   })
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
