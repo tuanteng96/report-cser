@@ -744,7 +744,7 @@ function RoseStaff(props) {
             StockID: CrStockID || 0,
             CreateDate: moment().format('YYYY-MM-DD'), //yyyy-MM-dd
             ReceiverUserID: x?.nv_id,
-            Desc: `Tạm ứng hoa hồng`,
+            Desc: `Tạm ứng hoa hồng (NV: ${x?.nhan_vien})`,
             SysTagID: 2052,
             MethodID: 1,
             Source: ''

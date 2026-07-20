@@ -795,7 +795,7 @@ function SalaryServices(props) {
             StockID: CrStockID || 0,
             CreateDate: moment().format('YYYY-MM-DD'), //yyyy-MM-dd
             ReceiverUserID: x?.UserID,
-            Desc: `Tạm ứng lương Tour`,
+            Desc: `Tạm ứng lương Tour (VD: ${x?.UserFullName})`,
             SysTagID: 2052,
             MethodID: 1,
             Source: ''
