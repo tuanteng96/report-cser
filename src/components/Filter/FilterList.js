@@ -84,6 +84,7 @@ const CustomOption = ({ children, data, ...props }) => {
 }
 
 function FilterList({
+  ImportType,
   onImport,
   show,
   ShowsKey = null,
@@ -1919,7 +1920,9 @@ function FilterList({
                   )}
                 </div>
                 <div className="filter-box__footer p-20px d-flex justify-content-end">
-                  {(values.ShowsType === '2' || values.ShowsType === '4') &&
+                  {(values.ShowsType === '2' ||
+                    values.ShowsType === '4' ||
+                    (ImportType && ImportType.includes(values.ShowsX))) &&
                     onImport && (
                       <button
                         type="button"

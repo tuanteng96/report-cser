@@ -15,6 +15,7 @@ import Text from 'react-texty'
 import moment from 'moment'
 import 'moment/locale/vi'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
+import Swal from 'sweetalert2'
 
 moment.locale('vi')
 
@@ -203,9 +204,11 @@ const convertArray = arrays => {
 }
 
 function RoseStaff(props) {
-  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks, GlobalConfig, Auth } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || []
+    Stocks: auth?.Info?.Stocks || [],
+    GlobalConfig: auth?.GlobalConfig,
+    Auth: auth?.Info?.User
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -732,6 +735,81 @@ function RoseStaff(props) {
     return cells
   }
 
+  const onImport = () => {
+    if (filters.ShowsX === '3') {
+      let ItemsPost = TotalHoaHong?.sum
+        ? TotalHoaHong?.sum.map(x => ({
+            UserID: Auth?.ID,
+            Value: x.gia_tri > 0 ? x.gia_tri * -1 : x.gia_tri,
+            StockID: CrStockID || 0,
+            CreateDate: moment().format('YYYY-MM-DD'), //yyyy-MM-dd
+            ReceiverUserID: x?.nv_id,
+            Desc: `Tạm ứng hoa hồng`,
+            SysTagID: 2052,
+            MethodID: 1,
+            Source: ''
+          }))
+        : []
+
+      Swal.fire({
+        title: `Tạo tạm ứng lương hoa hồng`,
+        text: `Xác nhận tạo ${ItemsPost.length} bản ghi tạm ứng lương hoa hồng ?`,
+        showCancelButton: true,
+        confirmButtonText: 'Xác nhận',
+        cancelButtonText: 'Đóng',
+        customClass: {
+          container: '!z-[99999]',
+          confirmButton: '!bg-primary !text-white'
+        }
+      }).then(async result => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: `Đang tạo ${ItemsPost.length}  bản ghi dữ liệu ...`,
+            text: 'Vui lòng đợi ...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading()
+            },
+            showConfirmButton: false,
+            customClass: {
+              container: '!z-[99999]',
+              confirmButton: '!bg-primary !text-white'
+            }
+          })
+
+          let rs = await reportsApi.cashAdds({
+            Cash: ItemsPost
+          })
+          Swal.close()
+          if (rs?.data?.cash && rs?.data?.cash.length > 0) {
+            setIsFilter(false)
+            Swal.fire({
+              title: 'Thực hiện thành công.',
+              text: `Tạo thành công ${
+                rs?.data?.cash?.length || 0
+              } bản ghi tạm ứng lương hoa hồng.`,
+              icon: 'success',
+              customClass: {
+                container: '!z-[99999]',
+                confirmButton: '!bg-primary !text-white'
+              }
+            })
+          } else {
+            Swal.fire({
+              title: 'Thực hiện không thành công.',
+              text: rs?.error || 'Lỗi không xác định',
+              icon: 'error',
+              customClass: {
+                container: '!z-[99999]',
+                confirmButton: '!bg-primary !text-white'
+              }
+            })
+          }
+        }
+      })
+    }
+  }
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -773,6 +851,8 @@ function RoseStaff(props) {
             value: '3'
           }
         ]}
+        onImport={GlobalConfig?.Admin?.Baocao_haoman && onImport}
+        ImportType={['3']}
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-md-center justify-content-between flex-column flex-md-row">
