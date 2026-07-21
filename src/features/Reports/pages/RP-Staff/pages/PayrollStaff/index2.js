@@ -175,6 +175,10 @@ function PayrollStaff2(props) {
             Items: item?.SETTINGS?.Settings,
             Name: 'DK_PHU_CAP_CHUYEN_CAN'
           })
+          let WORKING_STATUS = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'WORKING_STATUS'
+          })
           // let NGAY_CONG_SETUP = getValueByName({
           //   Items: item?.SETTINGS?.Settings,
           //   Name: 'NGAY_CONG'
@@ -390,12 +394,13 @@ function PayrollStaff2(props) {
           }
 
           if (
-            item?.User?.Address &&
-            (item?.User?.Address.toUpperCase() === 'PART TIME' ||
-              item?.User?.Address.toUpperCase() === 'THỬ VIỆC')
+            (item?.User?.Address &&
+              (item?.User?.Address.toUpperCase() === 'PART TIME' ||
+                item?.User?.Address.toUpperCase() === 'THỬ VIỆC')) ||
+            WORKING_STATUS === '0'
           ) {
             THUE_TNCN =
-              newObj['TONG_LUONG_THANG'] >= 2000000
+              newObj['TONG_LUONG_THANG'] >= 5000000
                 ? newObj['TONG_LUONG_THANG'] * 0.1
                 : 0
             THU_NHAP_TINH_THUE = 0
