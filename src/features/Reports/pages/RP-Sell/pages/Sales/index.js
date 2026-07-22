@@ -687,7 +687,10 @@ function Sales(props) {
                   </span> */}
                 </div>
                 <div className="py-3 text-center font-number py-md-5 fw-600 total">
-                  +{PriceHelper.formatVND(dataSell.DSo_Ngay)}
+                  +
+                  {GlobalConfig?.Admin?.chinhsachluongchitiet
+                    ? PriceHelper.formatVND(dataSell.DSo_TToan)
+                    : PriceHelper.formatVND(dataSell.DSo_Ngay)}
                 </div>
               </div>
               <div className="p-25px" style={{ marginTop: '-60px' }}>
@@ -854,10 +857,13 @@ function Sales(props) {
                   overlay={
                     <Popover id={`popover-positioned-top`}>
                       <Popover.Body className="p-0">
-                        <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between d-md-none">
-                          <span>Cần thanh toán</span>
-                          <span>{PriceHelper.formatVND(Total.ToPay)}</span>
-                        </div>
+                        {!GlobalConfig?.Admin?.chinhsachluongchitiet && (
+                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between d-md-none">
+                            <span>Cần thanh toán</span>
+                            <span>{PriceHelper.formatVND(Total.ToPay)}</span>
+                          </div>
+                        )}
+
                         <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                           <span>TM+CK+QT</span>
                           <span>{PriceHelper.formatVND(Total.DaThToan)}</span>
@@ -910,18 +916,23 @@ function Sales(props) {
             </div>
             {width >= 1200 && (
               <Fragment>
-                <div className="fw-500 pr-15px">
-                  Tổng tiền{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVND(Total.TotalValue)}
-                  </span>
-                </div>
-                <div className="fw-500 pr-15px">
-                  Cần T.Toán{' '}
-                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                    {PriceHelper.formatVND(Total.ToPay)}
-                  </span>
-                </div>
+                {!GlobalConfig?.Admin?.chinhsachluongchitiet && (
+                  <>
+                    <div className="fw-500 pr-15px">
+                      Tổng tiền{' '}
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {PriceHelper.formatVND(Total.TotalValue)}
+                      </span>
+                    </div>
+                    <div className="fw-500 pr-15px">
+                      Cần T.Toán{' '}
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {PriceHelper.formatVND(Total.ToPay)}
+                      </span>
+                    </div>
+                  </>
+                )}
+
                 <div className="fw-500 pr-15px">
                   TM+CK+QT{' '}
                   <span className="font-size-xl fw-600 text-success pl-5px font-number">
