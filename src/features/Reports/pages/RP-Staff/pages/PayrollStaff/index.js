@@ -613,7 +613,10 @@ function PayrollStaff(props) {
         dataKey: 'LUONG_CHAM_CONG',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(
-            rowData?.TrackValue?.WorkQty * rowData?.NGAY_LUONG_CO_BAN
+            rowData?.TrackValue?.WorkQty ===
+              rowData?.TrackValue?.Config?.Values?.NGAY_CONG
+              ? rowData?.TrackValue?.Config?.Values?.LUONG
+              : rowData?.TrackValue?.WorkQty * rowData?.NGAY_LUONG_CO_BAN
           ),
         width: 180,
         sortable: false
