@@ -30,6 +30,7 @@ import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
+import AsyncSelectBanksConfig from '../Selects/AsyncSelectBrands'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -688,6 +689,24 @@ function FilterListAdvancedTC({
                       />
                     </div>
                   )}
+
+                  {'Banknumber' in values &&
+                    values.PaymentMethods &&
+                    values.PaymentMethods.some(x => x.value === 'CK') && (
+                      <div className="form-group mb-20px">
+                        <label>Ngân hàng</label>
+                        <AsyncSelectBanksConfig
+                          isMulti
+                          isClearable={true}
+                          menuPosition="fixed"
+                          name="Banknumber"
+                          value={values.Banknumber}
+                          onChange={otp => {
+                            setFieldValue('Banknumber', otp, false)
+                          }}
+                        />
+                      </div>
+                    )}
                   {'TypeTC' in values && (
                     <div className="form-group mb-20px">
                       <label>Loại</label>

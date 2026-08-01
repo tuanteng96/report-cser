@@ -652,10 +652,19 @@ function PayrollStaff(props) {
         key: 'PHU_CAP_NGAY',
         title: 'Phụ cấp ngày',
         dataKey: 'PHU_CAP_NGAY',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(
+        cellRenderer: ({ rowData }) => {
+          if (GlobalConfig?.Admin?.phu_cap_ngay_cong2) {
+            return PriceHelper.formatVND(
+              (rowData?.TrackValue?.WorkQtyAllowance || 0) *
+                (rowData?.TRO_CAP_NGAY || 0) +
+                (rowData?.TrackValue?.WorkQtyAllowance2 || 0) *
+                  ((rowData?.TRO_CAP_NGAY || 0) / 2)
+            )
+          }
+          return PriceHelper.formatVND(
             (rowData?.TrackValue?.WorkQtyAllowance || 0) * rowData?.TRO_CAP_NGAY
-          ),
+          )
+        },
         width: 180,
         sortable: false
       },

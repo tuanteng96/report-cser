@@ -54,6 +54,11 @@ export const BrowserHelpers = {
         ? moment(filters.DateStart).format('DD/MM/yyyy')
         : null
     }
+    if ('Banknumber' in filters) {
+      params.Banknumber = filters.Banknumber
+        ? filters.Banknumber.map(x => x.value).toString()
+        : ''
+    }
     if ('DateEnd' in filters) {
       params.DateEnd = filters.DateEnd
         ? moment(filters.DateEnd).format('DD/MM/yyyy')

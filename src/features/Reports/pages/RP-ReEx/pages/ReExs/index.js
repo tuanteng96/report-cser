@@ -66,7 +66,8 @@ function ReExs(props) {
     TypeTC: '', // Thu hay chi
     TagsTC: '', // ID nhân viên
     CustomType: '',
-    ShowsX: '2'
+    ShowsX: '2',
+    Banknumber: ''
   })
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
