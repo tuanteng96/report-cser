@@ -669,9 +669,9 @@ function PayrollStaff(props) {
         sortable: false
       },
       {
-        key: 'LUONG_CHAM_CONG',
+        key: 'LUONG_CHINH_SACH',
         title: 'Lương chính sách',
-        dataKey: 'LUONG_CHAM_CONG',
+        dataKey: 'LUONG_CHINH_SACH',
         cellRenderer: ({ rowData }) => (
           <OverlayLCS rowData={rowData} filters={filters} />
         ),

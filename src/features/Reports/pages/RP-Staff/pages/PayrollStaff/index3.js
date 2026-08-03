@@ -248,6 +248,89 @@ const OverlayDS = ({ rowData, filters }) => {
   )
 }
 
+const OverlayLCS = ({ rowData, filters }) => {
+  const [show, setShow] = useState(false)
+  const [values, setValues] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    show && getDetail()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show])
+
+  const getDetail = () => {
+    setLoading(true)
+    reportsApi
+      .getDetailPayroll(
+        {
+          UserID: rowData.User.ID,
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
+        },
+        'LUONG_CHINH_SACH'
+      )
+      .then(({ data }) => {
+        setValues(data ? data.filter(x => x.Value > 0) : null)
+        setLoading(false)
+      })
+  }
+
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.User?.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            Tổng lương chấm công - {rowData?.User.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {loading && (
+              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                <span>Đang tải ...</span>
+              </div>
+            )}
+            {!loading && (
+              <>
+                {values &&
+                  values.map((item, index) => (
+                    <div
+                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                      key={index}
+                    >
+                      <span>{item.StockTitle}</span>
+                      <span>
+                        {PriceHelper.formatVNDPositive(
+                          (item?.Qty / (item?.Qty + 1)) *
+                            rowData?.TONG_LUONG_CHAM_CONG
+                        )}
+                      </span>
+                    </div>
+                  ))}
+              </>
+            )}
+          </Popover.Body>
+        </Popover>
+      }
+      onEntered={() => setShow(true)}
+      onExited={() => setShow(false)}
+    >
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+        <div>{PriceHelper.formatVND(rowData?.TONG_LUONG_CHAM_CONG)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
+
 function getPercentValue(ranges, value) {
   const item = ranges.find(([from, to]) => {
     if (from === null) return value >= to
@@ -419,13 +502,15 @@ function PayrollStaff3(props) {
           }
 
           let TY_LE_KPI =
-            (item?.BANGLUONGBC?.DOANH_SO_THANG / newObj['CHI_TIEU_THANG']) * 100
+            (item?.BANGLUONGBC?.DOANH_SO_THANG / newObj['CHI_TIEU_THANG']) *
+              100 || 0
 
           if (TY_LE_KPI >= 50) {
-            newObj['LUONG_THEO_NANG_LUC_KPI'] = newObj['LUONG_THEO_NANG_LUC']
+            newObj['LUONG_THEO_NANG_LUC_KPI'] =
+              newObj['LUONG_THEO_NANG_LUC'] || 0
           } else {
             newObj['LUONG_THEO_NANG_LUC_KPI'] = Math.floor(
-              (newObj['LUONG_THEO_NANG_LUC'] * TY_LE_KPI) / 100
+              ((newObj['LUONG_THEO_NANG_LUC'] || 0) * TY_LE_KPI) / 100
             )
           }
 
@@ -878,7 +963,8 @@ function PayrollStaff3(props) {
                           )}
                         </td>
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.TONG_LUONG_CHAM_CONG)}
+                          {/* {PriceHelper.formatVND(rowData?.TONG_LUONG_CHAM_CONG)} */}
+                          <OverlayLCS rowData={rowData} filters={filters} />
                         </td>
 
                         <td className="p-3 bg-white max-w-[150px] min-w-[150px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
