@@ -680,6 +680,13 @@ function SalaryServices(props) {
           sortable: false
         },
         {
+          key: 'Desc',
+          title: 'Mô tả',
+          dataKey: 'Desc',
+          width: 250,
+          sortable: false
+        },
+        {
           key: 'TourSalaryRatio',
           title: 'Hệ số dịch vụ',
           dataKey: 'TourSalaryRatio',
