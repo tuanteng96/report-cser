@@ -980,6 +980,7 @@ function SalaryServices(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          ShowsX={filters.ShowsX}
         />
       </div>
       {filters.ShowsX === '3' && (
