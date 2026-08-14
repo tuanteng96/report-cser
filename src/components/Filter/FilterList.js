@@ -204,6 +204,11 @@ function FilterList({
                                 (i.jdata.url === '/nhan-vien/bang-luong' ||
                                   i.jdata.paths.includes(
                                     '/nhan-vien/bang-luong'
+                                  ))) ||
+                              (pathname === '/nhan-vien/bang-luong-4' &&
+                                (i.jdata.url === '/nhan-vien/bang-luong' ||
+                                  i.jdata.paths.includes(
+                                    '/nhan-vien/bang-luong'
                                   )))
                             ) {
                               if (i.stocks) {
@@ -287,7 +292,8 @@ function FilterList({
 
           if (
             pathname === '/nhan-vien/bang-luong-2' ||
-            pathname === '/nhan-vien/bang-luong-3'
+            pathname === '/nhan-vien/bang-luong-3' ||
+            pathname === '/nhan-vien/bang-luong-4'
           ) {
             index = newListItems.findIndex(
               o =>

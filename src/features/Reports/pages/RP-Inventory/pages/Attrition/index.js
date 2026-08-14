@@ -13,6 +13,7 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 import moment from 'moment'
 import 'moment/locale/vi'
 import { PriceHelper } from 'src/helpers/PriceHelper'
+import { useRoles } from 'src/hooks/useRoles'
 
 moment.locale('vi')
 
@@ -43,6 +44,8 @@ function Attrition(props) {
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
+  let { xuat_nhap_diem } = useRoles(['xuat_nhap_diem'], { ID: CrStockID })
+  
   useEffect(() => {
     const index = Stocks.findIndex(
       item => Number(item.ID) === Number(filters.StockID)
@@ -113,7 +116,8 @@ function Attrition(props) {
                 ProdTitle: '',
                 Unit: '',
                 SUnit: '',
-                Qty: 0
+                Qty: 0,
+                PriceBase: ''
               }
 
               let indexProduct = Prods.findIndex(
@@ -122,6 +126,8 @@ function Attrition(props) {
               if (indexProduct > -1) {
                 Product.SProdTitle = Prods[indexProduct].Title || ''
                 Product.SUnit = Prods[indexProduct].StockUnit || ''
+                Product.PriceBase = Prods[indexProduct].PriceBase || ''
+
                 let Meta = Prods[indexProduct].Meta
                   ? JSON.parse(Prods[indexProduct].Meta)
                   : null
@@ -295,9 +301,9 @@ function Attrition(props) {
           }
         },
         {
-          key: 'Product.Qty',
+          key: 'Product.Qtys',
           title: 'Số lượng (*)',
-          dataKey: 'Product.Qty',
+          dataKey: 'Product.Qtys',
           cellRenderer: ({ rowData }) =>
             Number.isFinite(rowData.Qty / rowData?.Product?.Qty)
               ? rowData.Qty / rowData?.Product?.Qty
@@ -325,6 +331,54 @@ function Attrition(props) {
           dataKey: 'Product.Qty',
           width: 180,
           sortable: false
+        },
+        {
+          key: 'Product.PriceBase',
+          title: 'Giá Cost',
+          dataKey: 'Product.PriceBase',
+          cellRenderer: ({ rowData }) => {
+            if (!xuat_nhap_diem?.IsStocks) {
+              if (
+                !xuat_nhap_diem?.StockRoles?.some(
+                  x => x.ID === rowData?.StockID
+                )
+              ) {
+                return '******'
+              }
+            }
+
+            return <>{PriceHelper.formatVND(rowData?.Product?.PriceBase)}</>
+          },
+          width: 180,
+          sortable: false,
+          hidden: !xuat_nhap_diem?.hasRight
+        },
+        {
+          key: 'Product.PriceBaseQty',
+          title: 'Tỉ lệ chuyển đổi',
+          dataKey: 'Product.PriceBaseQty',
+          cellRenderer: ({ rowData }) => {
+            if (!xuat_nhap_diem?.IsStocks) {
+              if (
+                !xuat_nhap_diem?.StockRoles?.some(
+                  x => x.ID === rowData?.StockID
+                )
+              ) {
+                return '******'
+              }
+            }
+
+            return (
+              <>
+                {PriceHelper.formatVND(
+                  (rowData?.Product?.PriceBase || 0) * (rowData?.Qty || 0)
+                )}
+              </>
+            )
+          },
+          width: 180,
+          sortable: false,
+          hidden: !xuat_nhap_diem?.hasRight
         }
       ]
     } else {
@@ -472,7 +526,7 @@ function Attrition(props) {
       ]
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
+  }, [filters, xuat_nhap_diem?.hasRight])
 
   const OpenModalMobile = value => {
     setInitialValuesMobile(value)

@@ -532,6 +532,22 @@ if (DevHelpers.isDevelopment()) {
               ]
             }
           ]
+        },
+        {
+          group: 'Phần mềm',
+          rights: [
+            {
+              name: 'xuat_nhap',
+              subs: [
+                {
+                  name: 'xuat_nhap_diem',
+                  IsAllStock: true,
+                  hasRight: true,
+                  stocksList: [{ ID: 12708 }, { ID: 12709 }]
+                }
+              ]
+            }
+          ]
         }
       ]
     }

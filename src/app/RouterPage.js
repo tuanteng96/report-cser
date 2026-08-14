@@ -61,6 +61,9 @@ const PayrollStaff2 = lazy(() =>
 const PayrollStaff3 = lazy(() =>
   import('src/features/Reports/pages/RP-Staff/pages/PayrollStaff/index3')
 )
+const PayrollStaff4 = lazy(() =>
+  import('src/features/Reports/pages/RP-Staff/pages/PayrollStaff/index4')
+)
 const RPInventory = lazy(() =>
   import('src/features/Reports/pages/RP-Inventory')
 )
@@ -323,6 +326,7 @@ function RouterPage(props) {
         <Route path="bang-luong" element={<PayrollStaff />} />
         <Route path="bang-luong-2" element={<PayrollStaff2 />} />
         <Route path="bang-luong-3" element={<PayrollStaff3 />} />
+        <Route path="bang-luong-4" element={<PayrollStaff4 />} />
       </Route>
       <Route
         path="/ton-kho"
