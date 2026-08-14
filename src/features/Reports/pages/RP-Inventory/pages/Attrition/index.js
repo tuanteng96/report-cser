@@ -187,7 +187,8 @@ function Attrition(props) {
             Total: PageTotal
           }),
           ShowDetail: filters.ShowDetail,
-          ShowDetailX: filters.ShowDetail
+          ShowDetailX: filters.ShowDetail,
+          xuat_nhap_diem : xuat_nhap_diem
         }),
       UrlName: '/ton-kho/tieu-hao'
     })
