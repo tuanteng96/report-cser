@@ -45,7 +45,7 @@ function Attrition(props) {
   const [isModalMobile, setIsModalMobile] = useState(false)
 
   let { xuat_nhap_diem } = useRoles(['xuat_nhap_diem'], { ID: CrStockID })
-  
+
   useEffect(() => {
     const index = Stocks.findIndex(
       item => Number(item.ID) === Number(filters.StockID)
@@ -355,7 +355,7 @@ function Attrition(props) {
         },
         {
           key: 'Product.PriceBaseQty',
-          title: 'Tỉ lệ chuyển đổi',
+          title: 'Giá trị tiêu hao',
           dataKey: 'Product.PriceBaseQty',
           cellRenderer: ({ rowData }) => {
             if (!xuat_nhap_diem?.IsStocks) {
