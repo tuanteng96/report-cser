@@ -11,8 +11,41 @@ import 'moment/locale/vi'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
+import { DatetimeHelpers } from 'src/helpers/DatetimeHelpers'
 
 moment.locale('vi')
+
+let NGUONG_TNCN = [
+  {
+    Min: 0,
+    Max: 10000000,
+    Value: 0,
+    PercentDifference: 5
+  },
+  {
+    Min: 10000000,
+    Max: 30000000,
+    Value: 500000,
+    PercentDifference: 10
+  },
+  {
+    Min: 30000000,
+    Max: 60000000,
+    Value: 2500000,
+    PercentDifference: 20
+  },
+  {
+    Min: 60000000,
+    Max: 100000000,
+    Value: 8500000,
+    PercentDifference: 30
+  },
+  {
+    Min: 100000000,
+    Value: 20500000,
+    PercentDifference: 35
+  }
+]
 
 const OverlayHH = ({ rowData, filters }) => {
   const [show, setShow] = useState(false)
@@ -161,7 +194,7 @@ const OverlayLT = ({ rowData, filters }) => {
       onExited={() => setShow(false)}
     >
       <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
-        <div>{PriceHelper.formatVND(rowData?.BANGLUONGBC?.LUONG_CA)}</div>
+        <div>{PriceHelper.formatVND(rowData?.LUONG_TOUR)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
         </div>
@@ -331,6 +364,58 @@ const OverlayLCS = ({ rowData, filters }) => {
   )
 }
 
+const OverlayTHUONGPHAT = ({ rowData, Key, Title = '', Value }) => {
+  return (
+    <OverlayTrigger
+      rootClose
+      trigger="click"
+      key="bottom"
+      placement="bottom"
+      overlay={
+        <Popover id={`popover-positioned-top` + rowData?.User?.ID}>
+          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
+            {Title} - {rowData?.User?.FullName}
+          </Popover.Header>
+          <Popover.Body
+            className="p-0"
+            style={{
+              maxHeight: '250px',
+              overflow: 'auto'
+            }}
+          >
+            {rowData[Key] &&
+              rowData[Key].map((item, index) => (
+                <div
+                  className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
+                  key={index}
+                >
+                  <div className="flex-1">
+                    <div>{moment(item.CreateDate).format('DD/MM/YYYY')}</div>
+                    {item.Desc && (
+                      <div className="italic font-normal text-gray-600">
+                        {item.Desc}
+                      </div>
+                    )}
+                  </div>
+                  <div className="w-[100px] text-right">
+                    {PriceHelper.formatVNDPositive(item?.Value)}
+                  </div>
+                </div>
+              ))}
+          </Popover.Body>
+        </Popover>
+      }
+    >
+      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+        <div>{PriceHelper.formatVND(Value)}</div>
+        <div>
+          <i className="fa-solid fa-circle-info text-warning"></i>
+        </div>
+      </div>
+    </OverlayTrigger>
+  )
+}
+
 function getPercentValue(ranges, value) {
   const item = ranges.find(([from, to]) => {
     if (from === null) return value >= to
@@ -386,7 +471,7 @@ function PayrollStaff4(props) {
   }, [filters])
 
   const { isLoading, data, refetch } = useQuery({
-    queryKey: ['ListPayroll3', filters],
+    queryKey: ['ListPayroll4', filters],
     queryFn: async () => {
       let { data: configs } = await reportsApi.getConfigSalary({
         Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
@@ -456,39 +541,20 @@ function PayrollStaff4(props) {
         .map(item => {
           let newObj = { ...item }
 
-          let LUONG_BHXH = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'LUONG_DONG_BH'
-          })
-
-          newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'GIAM_TRU_GIA_CANH'
-          })
-
-          newObj['BAC'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'BAC'
-          })
-
-          newObj['CHI_TIEU_THAO_TAC'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'CHI_TIEU_THAO_TAC'
-          })
-
-          newObj['CHI_TIEU_THANG'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'CHI_TIEU_THANG'
-          })
-
           newObj['LUONG_CB'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
             Name: 'LUONG'
           })
 
-          newObj['LUONG_DONG_BH'] = getValueByName({
+          newObj['PHU_CAP_THANG'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
-            Name: 'LUONG_DONG_BH'
+            Name: 'PHU_CAP'
+          })
+
+          newObj['NGAY_NGHI_CO_DINH'] = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'NGAY_NGHI_CO_DINH',
+            Key: 'ValueText'
           })
 
           newObj['TI_LE_DONG_BH'] = getValueByName({
@@ -496,179 +562,94 @@ function PayrollStaff4(props) {
             Name: 'TI_LE_DONG_BH'
           })
 
-          newObj['LUONG_THEO_NANG_LUC'] =
-            newObj['LUONG_CB'] - newObj['LUONG_DONG_BH']
-          if (newObj['LUONG_THEO_NANG_LUC'] < 0) {
-            newObj['LUONG_THEO_NANG_LUC'] = 0
-          }
-
-          let TY_LE_KPI =
-            (item?.BANGLUONGBC?.DOANH_SO_THANG / newObj['CHI_TIEU_THANG']) *
-              100 || 0
-
-          if (TY_LE_KPI >= 50) {
-            newObj['LUONG_THEO_NANG_LUC_KPI'] =
-              newObj['LUONG_THEO_NANG_LUC'] || 0
-          } else {
-            newObj['LUONG_THEO_NANG_LUC_KPI'] = Math.floor(
-              ((newObj['LUONG_THEO_NANG_LUC'] || 0) * TY_LE_KPI) / 100
-            )
-          }
-
-          newObj['CONG_THUC_TE'] = item?.TrackValue?.WorkQty || 0
-          newObj['PHAT_DI_TRE_VE_SOM'] = Math.round(
-            item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
-          )
-          newObj['TONG_TANG_CA_THEM_GIO'] = Math.floor(
-            item?.TrackValue?.DI_SOM + item?.TrackValue?.VE_MUON
+          newObj['LICH_NGHI_CO_DINH'] = DatetimeHelpers.countWeekdaysInMonth(
+            moment(newObj.From, 'YYYY-MM-DD').format('MM/YYYY'),
+            newObj['NGAY_NGHI_CO_DINH']
           )
 
-          newObj['KPI_1'] = 0
-          newObj['KPI_2'] = 0
-          newObj['KPI_3'] = 0
-          newObj['PHAN_TRAM_DOANH_SO'] = 0
+          newObj['NGAY_CONG_THANG'] =
+            moment(newObj.From, 'YYYY-MM-DD').daysInMonth() -
+            newObj['LICH_NGHI_CO_DINH']
 
-          if (newObj?.User?.Address === 'Kỹ thuật viên') {
-            if (
-              newObj?.BANGLUONGBC?.TourSalaryRatio >= newObj?.CHI_TIEU_THAO_TAC
-            ) {
-              let TI_LE_KTV =
-                newObj?.BANGLUONGBC?.DOANH_SO_THANG / newObj?.CHI_TIEU_THANG
-              if (TI_LE_KTV >= 1 && TI_LE_KTV < 1.2) {
-                newObj['KPI_1'] = 500000
-              }
-              if (TI_LE_KTV >= 1.2 && TI_LE_KTV < 1.5) {
-                newObj['KPI_2'] = 1000000
-              }
-              if (TI_LE_KTV >= 1.5) {
-                newObj['KPI_3'] = 2000000
-              }
-            }
+          newObj['LUONG_NGAY_CONG'] = RoundAmount(
+            newObj['LUONG_CB'] / newObj['NGAY_CONG_THANG']
+          )
 
-            newObj['PHAN_TRAM_DOANH_SO'] = getPercentValue(
-              [
-                [30000000, 35000000, 3],
-                [35000000, 40000000, 3.3],
-                [40000000, 45000000, 3.5],
-                [45000000, 50000000, 3.8],
-                [50000000, 55000000, 4.0],
-                [55000000, 60000000, 4.4],
-                [null, 60000000, 5]
-              ],
-              newObj?.BANGLUONGBC?.DOANH_SO_THANG
-            ).amount
-          }
+          newObj['LUONG_TOUR'] = newObj?.BANGLUONGBC?.LUONG_CA || 0
 
-          if (newObj?.User?.Address === 'Chủ quán') {
-            newObj['PHAN_TRAM_DOANH_SO'] = getPercentValue(
-              [
-                [150000000, 180000000, 1],
-                [180000000, 210000000, 1.5],
-                [210000000, 240000000, 2],
-                [240000000, 270000000, 2.5],
-                [270000000, 300000000, 2.8],
-                [300000000, 400000000, 3],
-                [null, 400000000, 3.5]
-              ],
-              newObj?.DOANH_SO_THANG_CO_SO
-            ).amount
-          }
+          newObj['THUONG_DOANH_SO'] =
+            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng doanh số'] || 0
 
-          if (newObj?.User?.Address === 'Cửa hàng trưởng') {
-            newObj['PHAN_TRAM_DOANH_SO'] = getPercentValue(
-              [
-                [150000000, 200000000, 1],
-                [200000000, 250000000, 1.5],
-                [250000000, 300000000, 2],
-                [300000000, 400000000, 3],
-                [400000000, 500000000, 4],
-                [500000000, 600000000, 5],
-                [null, 600000000, 6]
-              ],
-              newObj?.DOANH_SO_THANG_CO_SO
-            ).amount
-          }
+          newObj['THUONG_DOANH_SO_DS'] = item?.Bonus
+            ? item?.Bonus.filter(x => x?.CustomType === 'Thưởng doanh số')
+            : []
 
-          newObj['TONG_LUONG_CHAM_CONG'] =
-            Math.floor(
-              ((newObj['LUONG_DONG_BH'] + newObj['LUONG_THEO_NANG_LUC_KPI']) /
-                27) *
-                item?.TrackValue?.WorkQty
-            ) || 0
+          newObj['THUONG_KHAC'] =
+            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng khác'] || 0
 
-          newObj['THUONG_PHU_CAP'] =
-            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng phụ cấp'] || 0
+          newObj['THUONG_KHAC_DS'] = item?.Bonus
+            ? item?.Bonus.filter(x => x?.CustomType === 'Thưởng khác')
+            : []
 
-          newObj['KPI_4'] =
-            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng kpi4'] || 0
+          newObj['PHAT_KHAC'] =
+            item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Phạt khác'] || 0
 
-          newObj['KPI_5'] =
-            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng kpi5'] || 0
+          newObj['PHAT_KHAC_DS'] = item?.Bonus
+            ? item?.Bonus.filter(x => x?.CustomType === 'Phạt khác')
+            : []
 
-          newObj['KPI_6'] =
-            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng kpi6'] || 0
-
-          newObj['TONG_THU_NHAP'] =
-            (newObj?.TONG_LUONG_CHAM_CONG || 0) +
-            (newObj?.TONG_TANG_CA_THEM_GIO || 0) +
-            (newObj?.THUONG_PHU_CAP || 0) +
-            (newObj?.BANGLUONGBC?.LUONG_CA || 0) +
-            (newObj?.BANGLUONGBC?.HOA_HONG || 0) +
-            (newObj?.PHAN_TRAM_DOANH_SO || 0) +
-            (newObj?.KPI_1 || 0) +
-            (newObj?.KPI_2 || 0) +
-            (newObj?.KPI_3 || 0) +
-            (newObj?.KPI_4 || 0) +
-            (newObj?.KPI_5 || 0) +
-            (newObj?.KPI_6 || 0)
-
-          newObj['DONG_PHUC'] =
-            item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Đồng phục'] || 0
-
-          newObj['TONG_LUONG_CO_SO_PHAI_CHI'] =
-            (newObj?.TONG_THU_NHAP || 0) -
-            (newObj?.PHAT_DI_TRE_VE_SOM || 0) -
-            (newObj?.DONG_PHUC || 0)
-
-          newObj['PHAT_VI_PHAM_QUY_CHE'] =
-            item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Phạt vi phạm'] || 0
-
-          newObj['PHAT_HINH_TUONG'] =
-            item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Phạt hình tượng'] || 0
-
-          newObj['GIU_LUONG'] = getValueByName({
+          newObj['LUONG_BHXH'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
-            Name: 'GIU_LUONG'
+            Name: 'LUONG_DONG_BH'
           })
 
-          newObj['TAM_UNG'] = item?.BANGLUONGBC?.TAM_UNG || 0
-
-          newObj['TIEN_BANG'] =
-            item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Tiền bằng'] || 0
-
-          newObj['TONG_LUONG_SAU_PHAT'] =
-            (newObj['TONG_LUONG_CO_SO_PHAI_CHI'] || 0) -
-            newObj['PHAT_VI_PHAM_QUY_CHE'] -
-            newObj['PHAT_HINH_TUONG'] -
-            newObj['GIU_LUONG'] -
-            newObj['TAM_UNG'] -
-            newObj['TIEN_BANG']
-
           newObj['TIEN_TRA_BHXH'] = Math.floor(
-            ((LUONG_BHXH || 0) * (newObj['TI_LE_DONG_BH'] || 0)) / 100
+            (Number(newObj['LUONG_BHXH'] || 0) * 10.5) / 100
           )
 
-          newObj['THUE_TNCN'] =
-            item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Thuế thu nhập cá nhân'] ||
-            0
+          newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'GIAM_TRU_GIA_CANH'
+          })
 
-          newObj['KHAC'] = item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Khác'] || 0
+          newObj['X2'] = 6000000
 
-          newObj['PHAI_TRA_NHAN_VIEN'] =
-            newObj['TONG_LUONG_SAU_PHAT'] -
+          newObj['TONG_THU_NHAP'] = newObj['X2']
+
+          newObj['THUC_NHAN'] = newObj['X2'] - newObj['LUONG_BHXH']
+
+          newObj['LUONG_CHIU_THUE_TNCN'] =
+            newObj['TONG_THU_NHAP'] -
             newObj['TIEN_TRA_BHXH'] -
-            newObj['THUE_TNCN'] -
-            newObj['KHAC']
+            newObj['GIAM_TRU_GIA_CANH']
+
+          newObj['LUONG_CHIU_THUE_TNCN'] =
+            newObj['LUONG_CHIU_THUE_TNCN'] > 0
+              ? newObj['LUONG_CHIU_THUE_TNCN']
+              : 0
+
+          let THUE_TNCN = 0
+
+          const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
+            item =>
+              newObj['LUONG_CHIU_THUE_TNCN'] > item.Min &&
+              (item.Max ? newObj['LUONG_CHIU_THUE_TNCN'] <= item.Max : true)
+          )
+          if (NGUONG_TNCN_CURRENT) {
+            THUE_TNCN =
+              NGUONG_TNCN_CURRENT.Value +
+              (newObj['LUONG_CHIU_THUE_TNCN'] - NGUONG_TNCN_CURRENT.Min) *
+                (NGUONG_TNCN_CURRENT.PercentDifference / 100)
+          }
+
+          newObj['THUE_TNCN'] = THUE_TNCN
+
+          newObj['TONG_LUONG_THUC_NHAN'] =
+            newObj['THUC_NHAN'] - newObj['TIEN_TRA_BHXH'] - newObj['THUE_TNCN']
+
+          newObj['TAM_UNG'] = item?.BANGLUONGBC?.DA_TRA || 0
+
+          newObj['CON_LAI'] = newObj['TONG_LUONG_THUC_NHAN'] - newObj['TAM_UNG']
 
           return {
             ...newObj
@@ -682,13 +663,13 @@ function PayrollStaff4(props) {
   })
 
   const RoundAmount = price => {
-    return Math.round(price / 1000) * 1000
+    return Math.floor(price / 10) * 10
   }
 
-  const getValueByName = ({ Items, Name }) => {
+  const getValueByName = ({ Items, Name, Key = 'Value' }) => {
     if (!Items || Items.length === 0 || !Name) return 0
     let index = Items.findIndex(x => x.Name === Name)
-    return index > -1 ? Items[index].Value : 0
+    return index > -1 ? Items[index][Key] : 0
   }
 
   const onOpenFilter = () => {
@@ -791,99 +772,66 @@ function PayrollStaff4(props) {
                       Mã địa điểm hệ thống
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Ngày công HT
+                      Lịch nghỉ cố định
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Đi muộn / Về sớm
+                      Ngày công tháng
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Tăng ca OFF
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Tăng ca lễ
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Nghỉ phép 1
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Nghỉ không phép
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Lương theo năng lực
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Tăng ca thường
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Lương CB hệ thống
+                      Lương ngày công
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
                       Lương cơ bản
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Lương ngày lễ
-                    </th>
-
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Hoa hồng
-                    </th>
-
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Ngày OFF đi làm
+                      Phụ cấp
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Tăng ca ngày lễ
+                      Chi tiết chấm công
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Hỗ trợ khác
+                      Lương Tour
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Tăng ca
+                      Thưởng doanh số
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Nghỉ trừ lương
+                      Thưởng khác
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Thưởng chuyên cần
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Đi trễ / Về sớm
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Phạt / Cọc
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Ứng lương cố định
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Ứng lương phát sinh
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Thuế TNCN
-                    </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Đóng bảo hiểm
+                      Phạt khác
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
                       Tổng thu nhập
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Công chuẩn
+                      Lương BHXH
+                    </th>
+
+                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                      Người lao động đóng 10.5%
+                    </th>
+
+                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                      Thực nhận
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Lương đóng BH
+                      Giảm trừ gia cảnh
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Số người giảm trừ
+                      Lương chịu thuế TNCN
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Ghi chú
+                      Thuế TNCN
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      Nghỉ do việc bất khả kháng
+                      Tổng lương thực nhận
                     </th>
                     <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
-                      STK
+                      Đã tạm ứng lương
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                      Còn lại
                     </th>
                   </tr>
                 </thead>
@@ -912,48 +860,82 @@ function PayrollStaff4(props) {
                             : 'Chưa xác định'}
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {rowData?.CONG_THUC_TE}
+                          {rowData?.LICH_NGHI_CO_DINH}
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.PHAT_DI_TRE_VE_SOM)}
+                          {rowData?.NGAY_CONG_THANG}
                         </td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.LUONG_NGAY_CONG)}
+                        </td>
 
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.LUONG_CB)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.PHU_CAP_THANG)}
+                        </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
-                            rowData?.TONG_TANG_CA_THEM_GIO
-                          )}
+                          <OverlayLT rowData={rowData} filters={filters} />
                         </td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          <OverlayTHUONGPHAT
+                            Title="Thưởng doanh số"
+                            Value={rowData?.THUONG_DOANH_SO}
+                            rowData={rowData}
+                            Key="THUONG_DOANH_SO_DS"
+                          />
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          <OverlayTHUONGPHAT
+                            Title="Thưởng khác"
+                            Value={rowData?.THUONG_KHAC}
+                            rowData={rowData}
+                            Key="THUONG_KHAC_DS"
+                          />
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          <OverlayTHUONGPHAT
+                            Title="Phạt khác"
+                            Value={rowData?.PHAT_KHAC}
+                            rowData={rowData}
+                            Key="PHAT_KHAC_DS"
+                          />
+                        </td>
+
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.TONG_THU_NHAP)}
+                        </td>
+
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.LUONG_BHXH)}
+                        </td>
+
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.TIEN_TRA_BHXH)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.THUC_NHAN)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {rowData?.GIAM_TRU_GIA_CANH}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.LUONG_CHIU_THUE_TNCN)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.THUE_TNCN)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.TONG_LUONG_THUC_NHAN)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.TAM_UNG)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.CON_LAI)}
+                        </td>
                       </tr>
                     ))}
                 </tbody>

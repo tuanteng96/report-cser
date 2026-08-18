@@ -238,6 +238,11 @@ function NavBar(props) {
           Title: 'Bảng lương Queen',
           Href: hasRouter() + '/nhan-vien/bang-luong-3',
           hidden: !GlobalConfig?.Admin?.queen_chinhsachluongchitiet
+        },
+        {
+          Title: 'Bảng lương Nola',
+          Href: hasRouter() + '/nhan-vien/bang-luong-4',
+          hidden: !GlobalConfig?.Admin?.Nola_chinhsachluongchitiet
         }
       ]
     },
