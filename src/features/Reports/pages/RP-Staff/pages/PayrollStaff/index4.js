@@ -12,6 +12,7 @@ import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
 import { DatetimeHelpers } from 'src/helpers/DatetimeHelpers'
+import PickerPay from './PickerPay'
 
 moment.locale('vi')
 
@@ -493,6 +494,43 @@ function PayrollStaff4(props) {
         StocksRoles: filters.StocksRoles
       })
 
+      let { data: workmonths } = await reportsApi.getUserWork23({
+        From: moment(filters.Mon).startOf('month').format('DD/MM/YYYY'),
+        StockID: filters.StockID,
+        To: moment(filters.Mon).endOf('month').format('DD/MM/YYYY'),
+        key: ''
+      })
+
+      let WorkOfMonth = Object.values(
+        (workmonths?.list || []).reduce((acc, item) => {
+          if (!acc[item.UserID]) {
+            acc[item.UserID] = {
+              ...item,
+              Dates: []
+            }
+          }
+
+          item.Dates?.forEach(dateItem => {
+            const index = acc[item.UserID].Dates.findIndex(
+              x => x.Date === dateItem.Date
+            )
+
+            if (index === -1) {
+              acc[item.UserID].Dates.push(dateItem)
+            } else {
+              const oldItem = acc[item.UserID].Dates[index]
+
+              // Ưu tiên item có WorkTrack
+              if (!oldItem.WorkTrack && dateItem.WorkTrack) {
+                acc[item.UserID].Dates[index] = dateItem
+              }
+            }
+          })
+
+          return acc
+        }, {})
+      )
+
       let rs = [...timekeepings?.list]
 
       if (payrolls?.result?.Items && payrolls?.result?.Items.length > 0) {
@@ -535,15 +573,39 @@ function PayrollStaff4(props) {
       }
 
       rs = rs
-        .map(item => ({
-          ...item
-        }))
+        .map(item => {
+          let newItem = { ...item }
+          let userWorks = WorkOfMonth.find(x => x.UserID === item?.User?.ID)
+          if (userWorks) {
+            let { Dates } = userWorks
+
+            let NGAY_NGHI_CO_DINH = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'NGAY_NGHI_CO_DINH',
+              Key: 'ValueText'
+            })
+
+            newItem['WorkTrackDates'] = DatetimeHelpers.splitWorkTrackDates(
+              Dates,
+              NGAY_NGHI_CO_DINH,
+              true
+            )
+          }
+          return {
+            ...newItem
+          }
+        })
         .map(item => {
           let newObj = { ...item }
 
           newObj['LUONG_CB'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
             Name: 'LUONG'
+          })
+
+          newObj['TOI_DA_UNG_LUONG'] = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'TOI_DA_UNG_LUONG'
           })
 
           newObj['PHU_CAP_THANG'] = getValueByName({
@@ -566,6 +628,11 @@ function PayrollStaff4(props) {
             moment(newObj.From, 'YYYY-MM-DD').format('MM/YYYY'),
             newObj['NGAY_NGHI_CO_DINH']
           )
+
+          newObj['NGAY_KY_HOP_DONG'] = getValueByName({
+            Items: item?.SETTINGS?.Settings,
+            Name: 'NGAY_KY_HOP_DONG'
+          })
 
           newObj['NGAY_CONG_THANG'] =
             moment(newObj.From, 'YYYY-MM-DD').daysInMonth() -
@@ -600,7 +667,7 @@ function PayrollStaff4(props) {
 
           newObj['LUONG_BHXH'] = getValueByName({
             Items: item?.SETTINGS?.Settings,
-            Name: 'LUONG_DONG_BH'
+            Name: 'LUONG_NOP_BHXH'
           })
 
           newObj['TIEN_TRA_BHXH'] = Math.floor(
@@ -612,16 +679,79 @@ function PayrollStaff4(props) {
             Name: 'GIAM_TRU_GIA_CANH'
           })
 
-          newObj['X2'] = 6000000
+          newObj['DI_MUON_VE_SOM'] = Math.round(
+            item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
+          )
+
+          newObj['DI_SOM_VE_MUON'] = Math.round(
+            item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
+          )
+
+          newObj['NGHI_TRU_LUONG'] = 0
+          newObj['NGHI_TRU_LUONG_NOT_PHEP'] = 0
+
+          if (item?.WorkTrackDates) {
+            newObj['NGHI_TRU_LUONG'] =
+              (item?.WorkTrackDates?.weekdayLeave?.length || 0) *
+                newObj['LUONG_NGAY_CONG'] +
+              (item?.WorkTrackDates?.weekendLeave?.length || 0) *
+                newObj['LUONG_NGAY_CONG'] *
+                2
+
+            newObj['NGHI_TRU_LUONG_NOT_PHEP'] =
+              (item?.WorkTrackDates?.weekdayNoLeave?.length || 0) *
+                newObj['LUONG_NGAY_CONG'] *
+                2 +
+              (item?.WorkTrackDates?.weekendNoLeave?.length || 0) *
+                newObj['LUONG_NGAY_CONG'] *
+                4
+          }
+
+          let TOTAL_TIME_CTV =
+            DatetimeHelpers.getTotalWorkingMinutes(
+              newObj?.BANGLUONGBC?.TrackValue?.CTV || []
+            ) * 2
+
+          newObj['TANG_CA_OFF'] = 0
+          if (item?.User?.WorkTimeSetting) {
+            let WorkTimeSetting = JSON.parse(item?.User?.WorkTimeSetting)
+            if (Number(WorkTimeSetting?.SalaryHours) > 0) {
+              newObj['TANG_CA_OFF'] =
+                (TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours
+            }
+          }
+
+          let NGAY_CONG_LE =
+            item?.TrackValue?.WorkQtyRatio - item?.TrackValue?.WorkQtyAllowance
+          if (NGAY_CONG_LE < 0) NGAY_CONG_LE = 0
+          newObj['NGAY_CONG_LE'] = NGAY_CONG_LE
+
+          newObj['TANG_CA_LE'] =
+            newObj['NGAY_CONG_LE'] * newObj['LUONG_NGAY_CONG']
+
+          newObj['X2'] =
+            newObj['LUONG_CB'] +
+            newObj['PHU_CAP_THANG'] -
+            ((newObj['DI_MUON_VE_SOM'] || 0) +
+              (newObj['NGHI_TRU_LUONG_NOT_PHEP'] || 0) +
+              (newObj['NGHI_TRU_LUONG'] || 0)) +
+            ((newObj['DI_SOM_VE_MUON'] || 0) +
+              (newObj['TANG_CA_OFF'] || 0) +
+              (newObj['TANG_CA_LE'] || 0)) +
+            newObj['LUONG_TOUR'] +
+            newObj['THUONG_DOANH_SO'] +
+            newObj['THUONG_KHAC'] -
+            newObj['PHAT_KHAC']
 
           newObj['TONG_THU_NHAP'] = newObj['X2']
 
-          newObj['THUC_NHAN'] = newObj['X2'] - newObj['LUONG_BHXH']
+          newObj['THUC_NHAN'] = newObj['X2'] - newObj['TIEN_TRA_BHXH']
 
           newObj['LUONG_CHIU_THUE_TNCN'] =
             newObj['TONG_THU_NHAP'] -
             newObj['TIEN_TRA_BHXH'] -
-            newObj['GIAM_TRU_GIA_CANH']
+            newObj['GIAM_TRU_GIA_CANH'] -
+            15500000
 
           newObj['LUONG_CHIU_THUE_TNCN'] =
             newObj['LUONG_CHIU_THUE_TNCN'] > 0
@@ -635,6 +765,7 @@ function PayrollStaff4(props) {
               newObj['LUONG_CHIU_THUE_TNCN'] > item.Min &&
               (item.Max ? newObj['LUONG_CHIU_THUE_TNCN'] <= item.Max : true)
           )
+
           if (NGUONG_TNCN_CURRENT) {
             THUE_TNCN =
               NGUONG_TNCN_CURRENT.Value +
@@ -645,7 +776,7 @@ function PayrollStaff4(props) {
           newObj['THUE_TNCN'] = THUE_TNCN
 
           newObj['TONG_LUONG_THUC_NHAN'] =
-            newObj['THUC_NHAN'] - newObj['TIEN_TRA_BHXH'] - newObj['THUE_TNCN']
+            newObj['THUC_NHAN'] - newObj['THUE_TNCN']
 
           newObj['TAM_UNG'] = item?.BANGLUONGBC?.DA_TRA || 0
 
@@ -748,6 +879,23 @@ function PayrollStaff4(props) {
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách nhân viên</div>
+          <div>
+            <PickerPay data={data} CrStockID={CrStockID} refetch={refetch}>
+              {({ open }) => (
+                <button
+                  onClick={open}
+                  className={clsx(
+                    'btn btn-primary fw-500',
+                    isLoading && 'spinner spinner-white spinner-right'
+                  )}
+                  disabled={isLoading}
+                  type="button"
+                >
+                  Trả lương
+                </button>
+              )}
+            </PickerPay>
+          </div>
         </div>
         <div className="p-20px">
           <div className="h-[500px] relative">
@@ -755,83 +903,177 @@ function PayrollStaff4(props) {
               <table className="min-w-full border-separate border-spacing-0">
                 <thead className="sticky top-0 bg-[#f8f8f8] z-[10] border-b border-b-[#eee]">
                   <tr>
-                    {/* sticky top-0 left-0 bg-[#f8f8f8] */}
-                    <th className="p-3 font-semibold text-left min-w-[60px] max-w-[60px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 font-number text-sm uppercase h-[50px] sticky top-0 left-0 bg-[#f8f8f8]">
+                    <th
+                      rowSpan={2}
+                      className="p-3 font-semibold text-left min-w-[60px] max-w-[60px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 font-number text-sm uppercase h-[50px] sticky top-0 left-0 bg-[#f8f8f8]"
+                    >
                       STT
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[140px] max-w-[140px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[60px] bg-[#f8f8f8]">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[140px] max-w-[140px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[60px] bg-[#f8f8f8]"
+                    >
                       Mã nhân viên
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[200px] bg-[#f8f8f8]">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm sticky top-0 left-[200px] bg-[#f8f8f8]"
+                    >
                       Tên nhân viên
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Chức danh
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Mã địa điểm hệ thống
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Lịch nghỉ cố định
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Ngày công tháng
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Lương ngày công
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Lương cơ bản
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Phụ cấp
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      colSpan={6}
+                      className="uppercase p-3 font-semibold text-center min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Chi tiết chấm công
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Lương Tour
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Thưởng doanh số
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Thưởng khác
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Phạt khác
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Tổng thu nhập
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Lương BHXH
                     </th>
 
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Người lao động đóng 10.5%
                     </th>
 
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Thực nhận
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Giảm trừ gia cảnh
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Lương chịu thuế TNCN
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Thuế TNCN
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Tổng lương thực nhận
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Đã tạm ứng lương
                     </th>
-                    <th className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm">
+                    <th
+                      rowSpan={2}
+                      className="uppercase p-3 font-semibold text-left min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0 h-[50px] font-number text-sm"
+                    >
                       Còn lại
+                    </th>
+                  </tr>
+                  <tr>
+                    <th className="uppercase p-3 font-semibold text-center min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] min-h-[50px] font-number text-sm">
+                      <div>Đi muộn, về sớm</div>
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-center min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] min-h-[50px] font-number text-sm">
+                      <div>Đi sớm, về muộn</div>
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-center min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] min-h-[50px] font-number text-sm">
+                      <div>Tăng ca Off</div>
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-center min-w-[180px] max-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] min-h-[50px] font-number text-sm">
+                      <div>Tăng ca lễ</div>
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-center min-w-[200px] max-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] min-h-[50px] font-number text-sm">
+                      <div>Nghỉ trừ lương có phép</div>
+                    </th>
+                    <th className="uppercase p-3 font-semibold text-center min-w-[220px] max-w-[220px] border-b border-b-[#eee] border-r border-r-[#eee] min-h-[50px] font-number text-sm">
+                      <div>Nghỉ trừ lương không phép</div>
                     </th>
                   </tr>
                 </thead>
@@ -861,6 +1103,13 @@ function PayrollStaff4(props) {
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.LICH_NGHI_CO_DINH}
+                          {rowData?.NGAY_NGHI_CO_DINH ? (
+                            <span className="pl-1">
+                              ({rowData?.NGAY_NGHI_CO_DINH})
+                            </span>
+                          ) : (
+                            <></>
+                          )}
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.NGAY_CONG_THANG}
@@ -875,7 +1124,33 @@ function PayrollStaff4(props) {
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.PHU_CAP_THANG)}
                         </td>
-                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0"></td>
+
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.DI_MUON_VE_SOM)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.DI_SOM_VE_MUON)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.TANG_CA_OFF)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.TANG_CA_LE)}
+                          {rowData?.NGAY_CONG_LE > 0 && (
+                            <span className="pl-1">
+                              ({rowData?.NGAY_CONG_LE})
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(rowData?.NGHI_TRU_LUONG)}
+                        </td>
+                        <td className="p-3 bg-white max-w-[220px] min-w-[220px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
+                          {PriceHelper.formatVND(
+                            rowData?.NGHI_TRU_LUONG_NOT_PHEP
+                          )}
+                        </td>
+
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           <OverlayLT rowData={rowData} filters={filters} />
                         </td>
@@ -919,7 +1194,7 @@ function PayrollStaff4(props) {
                           {PriceHelper.formatVND(rowData?.THUC_NHAN)}
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {rowData?.GIAM_TRU_GIA_CANH}
+                          {PriceHelper.formatVND(rowData?.GIAM_TRU_GIA_CANH)}
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.LUONG_CHIU_THUE_TNCN)}

@@ -300,12 +300,19 @@ const reportsApi = {
     http.post(`/api/v4/UserAllow@get`, JSON.stringify(data)),
   getMonSalary: data =>
     http.post(`/api/v3/UserSalary24@get`, JSON.stringify(data)),
+  userSalary: params => {
+    return http.get('/api/v3/usersalary', {
+      params: params
+    })
+  },
   getRootsMinutes: data =>
     http.post(`/api/v5/Auth@Roots`, JSON.stringify(data)),
   getBaselineSales: data =>
     http.post(
       `/api/v3/r23/hang-ngay/tien-vi-datlich-dichvu`,
       JSON.stringify(data)
-    )
+    ),
+  getUserWork23: data =>
+    http.post(`/api/v3/userwork23@workList`, JSON.stringify(data))
 }
 export default reportsApi

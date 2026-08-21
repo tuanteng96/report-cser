@@ -38,12 +38,14 @@ export const BrowserHelpers = {
     let params = { ...filters }
     if (config) {
       const { auth } = store.getState()
+
       const { AmountExport } = {
         AmountExport: auth?.GlobalConfig?.Admin?.AmountExport
       }
       if (AmountExport && Number(AmountExport) > 0) {
         params.Ps = Number(AmountExport)
       }
+
       if (!AmountExport && config.Total < 1500) {
         params.Ps = 1500
       }
