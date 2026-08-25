@@ -181,6 +181,14 @@ const splitWorkTrackDates = (Dates = [], dayoffs = '', onlyPassed = false) => {
     return item.WorkOffs?.some(x => x.Type === 0 && isApproved(x))
   }
 
+  /*
+   * Type = 2 + đã duyệt
+   * => nghỉ thường có phép
+   */
+  const hasApprovedPermittedLeave = item => {
+    return item.WorkOffs?.some(x => x.Type === 2 && isApproved(x))
+  }
+
   return {
     hasWorkTrack,
 
@@ -191,12 +199,20 @@ const splitWorkTrackDates = (Dates = [], dayoffs = '', onlyPassed = false) => {
     // Cuối tuần
     weekendLeave: weekend.filter(hasApprovedNormalLeave),
 
-    weekendNoLeave: weekend.filter(item => !hasApprovedNormalLeave(item)),
+    weekendPermittedLeave: weekend.filter(hasApprovedPermittedLeave),
+
+    weekendNoLeave: weekend.filter(
+      item => !hasApprovedNormalLeave(item) && !hasApprovedPermittedLeave(item)
+    ),
 
     // Ngày thường
     weekdayLeave: weekday.filter(hasApprovedNormalLeave),
 
-    weekdayNoLeave: weekday.filter(item => !hasApprovedNormalLeave(item))
+    weekdayPermittedLeave: weekday.filter(hasApprovedPermittedLeave),
+
+    weekdayNoLeave: weekday.filter(
+      item => !hasApprovedNormalLeave(item) && !hasApprovedPermittedLeave(item)
+    )
   }
 }
 

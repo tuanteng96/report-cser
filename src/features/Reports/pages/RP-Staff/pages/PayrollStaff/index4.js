@@ -696,7 +696,17 @@ function PayrollStaff4(props) {
                 newObj['LUONG_NGAY_CONG'] +
               (item?.WorkTrackDates?.weekendLeave?.length || 0) *
                 newObj['LUONG_NGAY_CONG'] *
-                2
+                2 +
+              (item?.WorkTrackDates?.weekdayPermittedLeave?.length || 0) *
+                newObj['LUONG_NGAY_CONG'] +
+              (item?.WorkTrackDates?.weekendPermittedLeave?.length || 0) *
+                newObj['LUONG_NGAY_CONG']
+
+            newObj['NGHI_TRU_LUONG_CO_PHEP'] =
+              (item?.WorkTrackDates?.weekdayPermittedLeave?.length || 0) *
+                newObj['LUONG_NGAY_CONG'] +
+              (item?.WorkTrackDates?.weekendPermittedLeave?.length || 0) *
+                newObj['LUONG_NGAY_CONG'] // Nghỉ thường có phép
 
             newObj['NGHI_TRU_LUONG_NOT_PHEP'] =
               (item?.WorkTrackDates?.weekdayNoLeave?.length || 0) *
@@ -1143,7 +1153,40 @@ function PayrollStaff4(props) {
                           )}
                         </td>
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.NGHI_TRU_LUONG)}
+                          <div className="flex justify-between w-full">
+                            {PriceHelper.formatVND(rowData?.NGHI_TRU_LUONG)}
+                            <OverlayTrigger
+                              rootClose
+                              trigger="click"
+                              key="top"
+                              placement="top"
+                              overlay={
+                                <Popover id={`popover-positioned-top`}>
+                                  <Popover.Body className="p-0">
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                      <span>Nghỉ thường</span>
+                                      <span>
+                                        {PriceHelper.formatVND(
+                                          rowData?.NGHI_TRU_LUONG -
+                                            rowData?.NGHI_TRU_LUONG_CO_PHEP
+                                        )}
+                                      </span>
+                                    </div>
+                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
+                                      <span>Nghỉ thường (Có phép)</span>
+                                      <span>
+                                        {PriceHelper.formatVND(
+                                          rowData?.NGHI_TRU_LUONG_CO_PHEP
+                                        )}
+                                      </span>
+                                    </div>
+                                  </Popover.Body>
+                                </Popover>
+                              }
+                            >
+                              <i className="fa-solid fa-circle-info text-warning"></i>
+                            </OverlayTrigger>
+                          </div>
                         </td>
                         <td className="p-3 bg-white max-w-[220px] min-w-[220px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(
