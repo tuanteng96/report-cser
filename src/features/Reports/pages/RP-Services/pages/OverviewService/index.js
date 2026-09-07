@@ -989,7 +989,8 @@ function OverviewService(props) {
           return reportsApi.getOverviewServices({
             StockID: filters.StockID,
             DateStart: moment(filters.DateStart).format('DD/MM/yyyy'),
-            DateEnd: moment(filters.DateEnd).format('DD/MM/yyyy')
+            DateEnd: moment(filters.DateEnd).format('DD/MM/yyyy'),
+            ShowsX: '5'
           })
         } else {
           return reportsApi.getListServices(
