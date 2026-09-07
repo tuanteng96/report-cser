@@ -428,7 +428,7 @@ function FilterListAdvancedSv({
                       />
                     </div>
                   )}
-                  {values.ShowsX !== '1' && (
+                  {values.ShowsX !== '5' && values.ShowsX !== '1' && (
                     <>
                       {'Date' in values && (
                         <div className="mb-20px form-group">

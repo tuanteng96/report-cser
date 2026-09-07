@@ -309,6 +309,33 @@ function OverviewService(props) {
             PermissionHelpers.HideErrorAccess()
           }
         })
+    } else if (filters.ShowsX === '5') {
+      const newFilters = {
+        StockID: filters.StockID,
+        DateStart: moment(filters.DateStart).format('DD/MM/yyyy'),
+        DateEnd: moment(filters.DateEnd).format('DD/MM/yyyy')
+      }
+      reportsApi.getOverviewServices(newFilters).then(({ data }) => {
+        if (data.isRight) {
+          setLoadingTable(false)
+        } else {
+          setListData(data.result?.Items || [])
+          setPageCount(data.result?.PCount || 1)
+          setLoadingTable(false)
+          setPageTotal((data.result?.Items || []).length)
+          setTotal(prevState => ({
+            ...prevState,
+            TongDichVu: (data.result?.Items || []).reduce(
+              (accumulator, currentItem) =>
+                accumulator + (currentItem?.CasesNum || 0),
+              0
+            )
+          }))
+          !loading && isFilter && setIsFilter(false)
+          callback && callback()
+          //PermissionHelpers.HideErrorAccess()
+        }
+      })
     } else {
       reportsApi
         .getListServices(BrowserHelpers.getRequestParamsList(filters))
@@ -423,6 +450,51 @@ function OverviewService(props) {
           dataKey: 'Percentage',
           cellRenderer: ({ rowData }) => <>{rowData?.Percentage} %</>,
           width: 300,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        }
+      ]
+    } else if (filters.ShowsX === '5') {
+      return [
+        {
+          key: 'ProServiceId',
+          title: 'ID dịch vụ',
+          dataKey: 'ProServiceId',
+          width: 120,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'ProServiceName',
+          title: 'Tên dịch vụ',
+          dataKey: 'ProServiceName',
+          width: 350,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'CasesNum',
+          title: 'Số lượng',
+          dataKey: 'CasesNum',
+          cellRenderer: ({ rowData }) => <>{rowData?.CasesNum}</>,
+          width: 200,
+          sortable: false,
+          mobileOptions: {
+            visible: true
+          }
+        },
+        {
+          key: 'CasesPercent',
+          title: 'Tỉ lệ',
+          dataKey: 'CasesPercent',
+          cellRenderer: ({ rowData }) => <>{rowData?.CasesPercent} %</>,
+          width: 200,
           sortable: false,
           mobileOptions: {
             visible: true
@@ -913,6 +985,12 @@ function OverviewService(props) {
             ServiceOriginalID: '',
             ShowsX: filters.ShowsX
           })
+        } else if (filters.ShowsX === '5') {
+          return reportsApi.getOverviewServices({
+            StockID: filters.StockID,
+            DateStart: moment(filters.DateStart).format('DD/MM/yyyy'),
+            DateEnd: moment(filters.DateEnd).format('DD/MM/yyyy')
+          })
         } else {
           return reportsApi.getListServices(
             BrowserHelpers.getRequestParamsList(filters, {
@@ -1021,6 +1099,10 @@ function OverviewService(props) {
           {
             label: 'Theo khung giờ',
             value: '3'
+          },
+          {
+            label: 'Theo dịch vụ',
+            value: '5'
           }
         ]}
       />
@@ -1142,108 +1224,119 @@ function OverviewService(props) {
       <div className="bg-white rounded mt-25px">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">
           <div className="fw-500 font-size-lg">Danh sách dịch vụ</div>
-          {filters.ShowsX !== '1' && filters.ShowsX !== '3' && (
-            <div className="d-flex">
-              <div className="fw-500 pr-10px">
-                Tổng dịch vụ{' '}
-                <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                  {PageTotal}
-                </span>
-                {width <= 1200 && (
-                  <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    key="top"
-                    placement="top"
-                    overlay={
-                      <Popover id={`popover-positioned-top`}>
-                        <Popover.Header
-                          className="py-10px text-uppercase fw-600"
-                          as="h3"
-                        >
-                          Chi tiết dịch vụ
-                        </Popover.Header>
-                        <Popover.Body className="p-0">
-                          <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                            <span>Tổng giá buổi</span>
-                            <span>
-                              {PriceHelper.formatVND(Total.TotalGiabuoi)}
-                            </span>
-                          </div>
-                          {filters.ShowsX !== '2' && (
-                            <>
-                              <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                                <span>KH buổi đầu thẻ</span>
-                                <span>{Total.Totalbuoidau}</span>
-                              </div>
-                              <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                                <span>KH buổi cuối thẻ</span>
-                                <span>{Total.Totalbuoicuoi}</span>
-                              </div>
-                              <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                                <span>KH buổi đầu</span>
-                                <span>{Total.Totalisfirst}</span>
-                              </div>
-                              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                                <span>KH cần thanh toán</span>
-                                <span>{Total.Totalrequest}</span>
-                              </div>
-                            </>
-                          )}
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h5"></i>
-                  </OverlayTrigger>
-                )}
-              </div>
-              {width >= 1200 && (
-                <Fragment>
-                  <div className="fw-500 pr-15px">
-                    Tổng giá buổi{' '}
-                    <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                      {PriceHelper.formatVND(Total.TotalGiabuoi)}
-                    </span>
-                  </div>
-
-                  {filters.ShowsX !== '2' && (
-                    <>
-                      <div className="fw-500 pr-15px">
-                        KH buổi đầu thẻ{' '}
-                        <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                          {Total.Totalbuoidau}
-                        </span>
-                      </div>
-                      <div className="fw-500 pr-15px">
-                        KH buổi cuối thẻ{' '}
-                        <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                          {Total.Totalbuoicuoi}
-                        </span>
-                      </div>
-                      <div className="fw-500 pr-15px">
-                        KH buổi đầu{' '}
-                        <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                          {Total.Totalisfirst}
-                        </span>
-                      </div>
-                      <div className="fw-500">
-                        KH cần thanh toán{' '}
-                        <span className="font-size-xl fw-600 text-success pl-5px font-number">
-                          {Total.Totalrequest}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </Fragment>
-              )}
+          {filters.ShowsX === '5' && (
+            <div className="fw-500">
+              Tổng dịch vụ{' '}
+              <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                {Total?.TongDichVu || 0}
+              </span>
             </div>
           )}
+          {filters.ShowsX !== '1' &&
+            filters.ShowsX !== '3' &&
+            filters.ShowsX !== '5' && (
+              <div className="d-flex">
+                <div className="fw-500 pr-10px">
+                  Tổng dịch vụ{' '}
+                  <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                    {PageTotal}
+                  </span>
+                  {width <= 1200 && (
+                    <OverlayTrigger
+                      rootClose
+                      trigger="click"
+                      key="top"
+                      placement="top"
+                      overlay={
+                        <Popover id={`popover-positioned-top`}>
+                          <Popover.Header
+                            className="py-10px text-uppercase fw-600"
+                            as="h3"
+                          >
+                            Chi tiết dịch vụ
+                          </Popover.Header>
+                          <Popover.Body className="p-0">
+                            <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                              <span>Tổng giá buổi</span>
+                              <span>
+                                {PriceHelper.formatVND(Total.TotalGiabuoi)}
+                              </span>
+                            </div>
+                            {filters.ShowsX !== '2' && (
+                              <>
+                                <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                  <span>KH buổi đầu thẻ</span>
+                                  <span>{Total.Totalbuoidau}</span>
+                                </div>
+                                <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                  <span>KH buổi cuối thẻ</span>
+                                  <span>{Total.Totalbuoicuoi}</span>
+                                </div>
+                                <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                                  <span>KH buổi đầu</span>
+                                  <span>{Total.Totalisfirst}</span>
+                                </div>
+                                <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                                  <span>KH cần thanh toán</span>
+                                  <span>{Total.Totalrequest}</span>
+                                </div>
+                              </>
+                            )}
+                          </Popover.Body>
+                        </Popover>
+                      }
+                    >
+                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px font-size-h5"></i>
+                    </OverlayTrigger>
+                  )}
+                </div>
+                {width >= 1200 && (
+                  <Fragment>
+                    <div className="fw-500 pr-15px">
+                      Tổng giá buổi{' '}
+                      <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                        {PriceHelper.formatVND(Total.TotalGiabuoi)}
+                      </span>
+                    </div>
+
+                    {filters.ShowsX !== '2' && (
+                      <>
+                        <div className="fw-500 pr-15px">
+                          KH buổi đầu thẻ{' '}
+                          <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                            {Total.Totalbuoidau}
+                          </span>
+                        </div>
+                        <div className="fw-500 pr-15px">
+                          KH buổi cuối thẻ{' '}
+                          <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                            {Total.Totalbuoicuoi}
+                          </span>
+                        </div>
+                        <div className="fw-500 pr-15px">
+                          KH buổi đầu{' '}
+                          <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                            {Total.Totalisfirst}
+                          </span>
+                        </div>
+                        <div className="fw-500">
+                          KH cần thanh toán{' '}
+                          <span className="font-size-xl fw-600 text-success pl-5px font-number">
+                            {Total.Totalrequest}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </Fragment>
+                )}
+              </div>
+            )}
         </div>
         <div className="p-20px">
           {filters.ShowsX !== '2' &&
             filters.ShowsX !== '1' &&
-            filters.ShowsX !== '3' && (
+            filters.ShowsX !== '3' &&
+            filters.ShowsX !== '5' && (
               <div className="d-flex mb-15px">
                 <div className="d-flex mr-20px">
                   <OverlayTrigger
