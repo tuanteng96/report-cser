@@ -74,9 +74,15 @@ function parseKvString(s) {
 }
 
 const CellHistory = ({ rowData }) => {
+  const { GlobalConfig } = useSelector(({ auth }) => ({
+    GlobalConfig: auth?.GlobalConfig
+  }))
+
   const [Item, setItem] = useState(null)
   const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  let isMultipleMembers = GlobalConfig?.Admin?.isMultipleMembersBook || false
 
   useEffect(() => {
     if (show) {
@@ -94,6 +100,18 @@ const CellHistory = ({ rowData }) => {
         setItem(data?.books[0])
       }
     })
+  }
+
+  const parseInfo = (string = '') => {
+    const quantityMatch = string.match(/Số lượng khách:\s*(\d+)/i)
+    const tagsMatch = string.match(/Tags:\s*([^\r\n]*)/i)
+    const noteMatch = string.match(/Ghi chú:\s*([^\r\n]*)/i)
+
+    return {
+      quantity: quantityMatch ? Number(quantityMatch[1]) : 1,
+      tags: tagsMatch?.[1]?.trim() || '',
+      note: noteMatch?.[1]?.trim() || ''
+    }
   }
 
   return (
@@ -142,15 +160,18 @@ const CellHistory = ({ rowData }) => {
                               fontWeight: 400
                             }}
                           >
-                            <div>
-                              Dịch vụ{' '}
-                              {item?.Booking?.Roots &&
-                              item?.Booking?.Roots.length > 0
-                                ? item?.Booking?.Roots.map(x => x.label).join(
-                                    ', '
-                                  )
-                                : 'Chưa chọn dịch vụ'}
-                            </div>
+                            {!isMultipleMembers && (
+                              <div>
+                                Dịch vụ{' '}
+                                {item?.Booking?.Roots &&
+                                item?.Booking?.Roots.length > 0
+                                  ? item?.Booking?.Roots.map(x => x.label).join(
+                                      ', '
+                                    )
+                                  : 'Chưa chọn dịch vụ'}
+                              </div>
+                            )}
+
                             <div>
                               Thời gian :{' '}
                               {moment(
@@ -170,24 +191,132 @@ const CellHistory = ({ rowData }) => {
                               Thực hiện{' '}
                               {item?.Booking?.AtHome ? 'tại nhà' : 'tại spa'}
                             </div>
-                            {item?.Booking?.UserServices &&
-                              item?.Booking?.UserServices.length > 0 && (
-                                <div>
-                                  Nhân viên thực hiện :{' '}
-                                  {item?.Booking?.UserServices.map(
-                                    x => x.label
-                                  ).join(', ')}
-                                </div>
-                              )}
-                            {item?.Booking?.Desc && (
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: item?.Booking?.Desc.replaceAll(
-                                    '\n',
-                                    ' | '
-                                  )
-                                }}
-                              ></div>
+                            {!isMultipleMembers ? (
+                              <>
+                                {item?.Booking?.UserServices &&
+                                  item?.Booking?.UserServices.length > 0 && (
+                                    <div>
+                                      Nhân viên thực hiện :{' '}
+                                      {item?.Booking?.UserServices.map(
+                                        x => x.label
+                                      ).join(', ')}
+                                    </div>
+                                  )}
+                              </>
+                            ) : (
+                              <>
+                                {item?.Booking?.Clients?.length > 0 && (
+                                  <>
+                                    {(() => {
+                                      const membersByIndex = new Map()
+
+                                      item?.Booking?.Clients.forEach(item => {
+                                        const index = Number(item.Index)
+
+                                        if (!membersByIndex.has(index)) {
+                                          membersByIndex.set(index, {
+                                            GroupTitle: 'Khách ' + (index + 1),
+                                            Index: index,
+                                            Items: []
+                                          })
+                                        }
+
+                                        membersByIndex
+                                          .get(index)
+                                          .Items.push({ ...item, Index: index })
+                                      })
+
+                                      let MultipleMembers = Array.from(
+                                        membersByIndex.values()
+                                      ).sort((a, b) => a.Index - b.Index)
+                                      return (
+                                        <div className="d-flex flex-column gap-1.5 my-1.5">
+                                          {MultipleMembers.map(
+                                            (member, index) => (
+                                              <div
+                                                className="p-2 border rounded"
+                                                key={index}
+                                              >
+                                                <div className="font-medium">
+                                                  {member.GroupTitle}
+                                                </div>
+                                                <div className="italic">
+                                                  {member.Items &&
+                                                    member.Items.length > 0 &&
+                                                    member.Items.map(
+                                                      (client, clientIndex) => (
+                                                        <div
+                                                          className="border-bottom pb-1 mb-1 last:mb-0 last:pb-0 last:!border-0"
+                                                          key={clientIndex}
+                                                        >
+                                                          <div>
+                                                            Dịch vụ :{' '}
+                                                            {client.RootIdS
+                                                              ?.label ||
+                                                              'Chưa chọn dich vụ'}
+                                                          </div>
+                                                          <div>
+                                                            Nhân viên :{' '}
+                                                            {client.UserServiceIDs &&
+                                                            client
+                                                              .UserServiceIDs
+                                                              .length > 0
+                                                              ? client.UserServiceIDs.map(
+                                                                  x => x.label
+                                                                ).join(', ')
+                                                              : 'Chưa chọn nhân viên'}
+                                                          </div>
+                                                          {client.Room
+                                                            ?.label && (
+                                                            <div>
+                                                              Phòng :{' '}
+                                                              {
+                                                                client.Room
+                                                                  ?.label
+                                                              }
+                                                            </div>
+                                                          )}
+                                                        </div>
+                                                      )
+                                                    )}
+                                                </div>
+                                              </div>
+                                            )
+                                          )}
+                                        </div>
+                                      )
+                                    })()}
+                                  </>
+                                )}
+                              </>
+                            )}
+                            {!isMultipleMembers ? (
+                              <div>
+                                Số lượng khách:{' '}
+                                {parseInfo(item?.Booking?.Desc).quantity}
+                              </div>
+                            ) : (
+                              <div>
+                                Số lượng khách:{' '}
+                                {item?.Booking?.Clients &&
+                                item?.Booking?.Clients.length > 0
+                                  ? new Set(
+                                      item?.Booking?.Clients?.map(x => x.Index)
+                                    ).size
+                                  : 1}
+                              </div>
+                            )}
+
+                            {parseInfo(item?.Booking?.Desc).tags && (
+                              <div>
+                                Tags: {parseInfo(item?.Booking?.Desc).tags}
+                              </div>
+                            )}
+
+                            {parseInfo(item?.Booking?.Desc).note && (
+                              <div>
+                                Ghi chú: {parseInfo(item?.Booking?.Desc).note}
+                              </div>
                             )}
 
                             <div>Thay đổi từ {item?.Staff?.FullName}</div>
@@ -889,7 +1018,7 @@ function BookService(props) {
         sortable: false
       }
     ],
-    [filters]
+    [filters, GlobalConfig]
   )
 
   const OpenModalMobile = value => {
