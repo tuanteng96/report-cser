@@ -11,6 +11,7 @@ import 'moment/locale/vi'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 moment.locale('vi')
 
@@ -385,7 +386,7 @@ function PayrollStaff3(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const { isLoading, data, refetch } = useQuery({
+  const { isLoading, isSuccess, isFetching, data, refetch, error, isError } = useQuery({
     queryKey: ['ListPayroll3', filters],
     queryFn: async () => {
       let { data: configs } = await reportsApi.getConfigSalary({
@@ -399,6 +400,10 @@ function PayrollStaff3(props) {
         Ps: configs?.lst?.length || 0,
         StocksRoles: filters.StocksRoles
       })
+
+      if (payrolls?.isRight) {
+        throw new Error(payrolls?.error || 'Có lỗi xảy ra')
+      }
 
       let { data: timekeepings } = await reportsApi.getMonSalary({
         mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
@@ -677,8 +682,21 @@ function PayrollStaff3(props) {
       return rs
     },
     keepPreviousData: true,
-    enabled: typeof filters.StocksRoles !== 'undefined'
+    enabled: typeof filters.StocksRoles !== 'undefined',
+    retry: false
   })
+
+  useEffect(() => {
+    if (isSuccess && !isFetching) {
+      isFilter && setIsFilter(false)
+    }
+  }, [isSuccess, isFetching])
+
+  useEffect(() => {
+    if (isError) {
+      PermissionHelpers.ErrorAccess(error?.message || 'Có lỗi xảy ra')
+    }
+  }, [isError, error])
 
   const RoundAmount = price => {
     return Math.round(price / 1000) * 1000

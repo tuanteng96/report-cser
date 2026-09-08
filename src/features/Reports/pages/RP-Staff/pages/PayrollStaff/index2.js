@@ -11,6 +11,7 @@ import 'moment/locale/vi'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
+import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 moment.locale('vi')
 
 let NGUONG_TNCN = [
@@ -74,7 +75,7 @@ function PayrollStaff2(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const { isLoading, data, refetch } = useQuery({
+  const { isFetching, isSuccess, data, refetch, error, isError } = useQuery({
     queryKey: ['ListPayroll2', filters],
     queryFn: async () => {
       let { data: configs } = await reportsApi.getConfigSalary({
@@ -99,6 +100,10 @@ function PayrollStaff2(props) {
         Ps: configs?.lst?.length || 0,
         StocksRoles: filters.StocksRoles
       })
+
+      if (payrolls?.isRight) {
+        throw new Error(payrolls?.error || 'Có lỗi xảy ra')
+      }
 
       let { data: timekeepings } = await reportsApi.getMonSalary({
         mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
@@ -177,7 +182,8 @@ function PayrollStaff2(props) {
           })
           let WORKING_STATUS = getValueByName({
             Items: item?.SETTINGS?.Settings,
-            Name: 'WORKING_STATUS'
+            Name: 'WORKING_STATUS',
+            initial: 1
           })
           // let NGAY_CONG_SETUP = getValueByName({
           //   Items: item?.SETTINGS?.Settings,
@@ -367,7 +373,7 @@ function PayrollStaff2(props) {
           if (
             item?.User?.Address &&
             item?.User?.Address.toUpperCase().includes('CHÍNH THỨC') &&
-            WORKING_STATUS !== '0'
+            String(WORKING_STATUS) !== '0'
           ) {
             THU_NHAP_TOI_THIEU = 15500000
           }
@@ -395,16 +401,26 @@ function PayrollStaff2(props) {
           }
 
           if (
-            (item?.User?.Address &&
-              (item?.User?.Address.toUpperCase() === 'PART TIME' ||
-                item?.User?.Address.toUpperCase() === 'THỬ VIỆC')) ||
-            WORKING_STATUS === '0'
+            item?.User?.Address &&
+            item?.User?.Address.toUpperCase().includes('CHÍNH THỨC') &&
+            String(WORKING_STATUS) === '0'
+          ) {
+            THU_NHAP_TINH_THUE =
+              newObj['TONG_LUONG_THANG'] - newObj['NLD_TRA'].total
+            THUE_TNCN =
+              THU_NHAP_TINH_THUE >= 5000000 ? THU_NHAP_TINH_THUE * 0.1 : 0
+          }
+
+          if (
+            item?.User?.Address &&
+            (item?.User?.Address.toUpperCase() === 'PART TIME' ||
+              item?.User?.Address.toUpperCase() === 'THỬ VIỆC')
           ) {
             THUE_TNCN =
               newObj['TONG_LUONG_THANG'] >= 5000000
                 ? newObj['TONG_LUONG_THANG'] * 0.1
                 : 0
-            THU_NHAP_TINH_THUE = 0
+            THU_NHAP_TINH_THUE = newObj['TONG_LUONG_THANG']
           }
 
           let LUONG_NV_THUC_NHAN = RoundAmount(
@@ -431,18 +447,31 @@ function PayrollStaff2(props) {
         })
       return rs.filter(x => x?.User?.Gender > 0)
     },
-    keepPreviousData: true,
-    enabled: typeof filters.StocksRoles !== 'undefined'
+    retry: false,
+    enabled: typeof filters.StocksRoles !== 'undefined',
+    keepPreviousData: true
   })
+
+  useEffect(() => {
+    if (isSuccess && !isFetching) {
+      isFilter && setIsFilter(false)
+    }
+  }, [isSuccess, isFetching])
+
+  useEffect(() => {
+    if (isError) {
+      PermissionHelpers.ErrorAccess(error?.message || 'Có lỗi xảy ra')
+    }
+  }, [isError, error])
 
   const RoundAmount = price => {
     return Math.round(price / 1000) * 1000
   }
 
-  const getValueByName = ({ Items, Name }) => {
-    if (!Items || Items.length === 0 || !Name) return 0
+  const getValueByName = ({ Items, Name, initial = 0 }) => {
+    if (!Items || Items.length === 0 || !Name) return initial
     let index = Items.findIndex(x => x.Name === Name)
-    return index > -1 ? Items[index].Value : 0
+    return index > -1 ? Items[index].Value : initial
   }
 
   const onOpenFilter = () => {
@@ -508,7 +537,7 @@ function PayrollStaff2(props) {
         onHide={onHideFilter}
         onSubmit={onFilter}
         onRefresh={onRefresh}
-        loading={isLoading}
+        loading={isFetching}
         loadingExport={loadingExport}
         onExport={onExport}
         updateStocksRole={val => {
@@ -1070,7 +1099,7 @@ function PayrollStaff2(props) {
               role="status"
               className={clsx(
                 'absolute left-0 top-0 flex items-center justify-center w-full transition bg-white/70 h-full',
-                !isLoading ? 'opacity-0 invisible -z-10' : 'z-10'
+                !isFetching ? 'opacity-0 invisible -z-10' : 'z-10'
               )}
             >
               <svg
