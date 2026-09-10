@@ -472,348 +472,351 @@ function PayrollStaff4(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const { isLoading, isSuccess, isFetching, data, refetch, error, isError } = useQuery({
-    queryKey: ['ListPayroll4', filters],
-    queryFn: async () => {
-      let { data: configs } = await reportsApi.getConfigSalary({
-        Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
-        StockID: filters.StockID ? [filters.StockID] : Stocks.map(x => x.ID),
-        StocksRoles: filters.StocksRoles
-      })
+  const { isLoading, isSuccess, isFetching, data, refetch, error, isError } =
+    useQuery({
+      queryKey: ['ListPayroll4', filters],
+      queryFn: async () => {
+        let { data: configs } = await reportsApi.getConfigSalary({
+          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
+          StockID: filters.StockID ? [filters.StockID] : Stocks.map(x => x.ID),
+          StocksRoles: filters.StocksRoles
+        })
 
-      let { data: payrolls } = await reportsApi.getListStaffPayroll({
-        ...BrowserHelpers.getRequestParamsList(filters),
-        Ps: configs?.lst?.length || 0,
-        StocksRoles: filters.StocksRoles
-      })
+        let { data: payrolls } = await reportsApi.getListStaffPayroll({
+          ...BrowserHelpers.getRequestParamsList(filters),
+          Ps: configs?.lst?.length || 0,
+          StocksRoles: filters.StocksRoles
+        })
 
-      if (payrolls?.isRight) {
-        throw new Error(payrolls?.error || 'Có lỗi xảy ra')
-      }
+        if (payrolls?.isRight) {
+          throw new Error(payrolls?.error || 'Có lỗi xảy ra')
+        }
 
-      let { data: timekeepings } = await reportsApi.getMonSalary({
-        mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
-        pi: 1,
-        ps: configs?.lst?.length || 0,
-        stockid: filters.StockID || '',
-        StocksRoles: filters.StocksRoles
-      })
+        let { data: timekeepings } = await reportsApi.getMonSalary({
+          mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
+          pi: 1,
+          ps: configs?.lst?.length || 0,
+          stockid: filters.StockID || '',
+          StocksRoles: filters.StocksRoles
+        })
 
-      let { data: workmonths } = await reportsApi.getUserWork23({
-        From: moment(filters.Mon).startOf('month').format('DD/MM/YYYY'),
-        StockID: filters.StockID,
-        To: moment(filters.Mon).endOf('month').format('DD/MM/YYYY'),
-        key: ''
-      })
+        let { data: workmonths } = await reportsApi.getUserWork23({
+          From: moment(filters.Mon).startOf('month').format('DD/MM/YYYY'),
+          StockID: filters.StockID,
+          To: moment(filters.Mon).endOf('month').format('DD/MM/YYYY'),
+          key: ''
+        })
 
-      let WorkOfMonth = Object.values(
-        (workmonths?.list || []).reduce((acc, item) => {
-          if (!acc[item.UserID]) {
-            acc[item.UserID] = {
-              ...item,
-              Dates: []
-            }
-          }
-
-          item.Dates?.forEach(dateItem => {
-            const index = acc[item.UserID].Dates.findIndex(
-              x => x.Date === dateItem.Date
-            )
-
-            if (index === -1) {
-              acc[item.UserID].Dates.push(dateItem)
-            } else {
-              const oldItem = acc[item.UserID].Dates[index]
-
-              // Ưu tiên item có WorkTrack
-              if (!oldItem.WorkTrack && dateItem.WorkTrack) {
-                acc[item.UserID].Dates[index] = dateItem
+        let WorkOfMonth = Object.values(
+          (workmonths?.list || []).reduce((acc, item) => {
+            if (!acc[item.UserID]) {
+              acc[item.UserID] = {
+                ...item,
+                Dates: []
               }
             }
+
+            item.Dates?.forEach(dateItem => {
+              const index = acc[item.UserID].Dates.findIndex(
+                x => x.Date === dateItem.Date
+              )
+
+              if (index === -1) {
+                acc[item.UserID].Dates.push(dateItem)
+              } else {
+                const oldItem = acc[item.UserID].Dates[index]
+
+                // Ưu tiên item có WorkTrack
+                if (!oldItem.WorkTrack && dateItem.WorkTrack) {
+                  acc[item.UserID].Dates[index] = dateItem
+                }
+              }
+            })
+
+            return acc
+          }, {})
+        )
+
+        let rs = [...timekeepings?.list]
+
+        if (payrolls?.result?.Items && payrolls?.result?.Items.length > 0) {
+          rs = rs.map(item => {
+            let newObj = {
+              ...item,
+              BANGLUONGBC: null
+            }
+            let index = payrolls?.result?.Items.findIndex(
+              x => item?.User?.ID === x?.Staff?.ID
+            )
+            if (index > -1) {
+              newObj.BANGLUONGBC = payrolls?.result?.Items[index]
+            }
+            return newObj
           })
+        }
 
-          return acc
-        }, {})
-      )
+        rs = rs.map(item => ({
+          ...item,
+          DOANH_SO_THANG_CO_SO:
+            timekeepings?.sum?.find(x => x.StockID === item?.User?.StockID)
+              ?.Total || 0
+        }))
 
-      let rs = [...timekeepings?.list]
+        if (configs?.lst && configs?.lst.length > 0) {
+          rs = rs.map(item => {
+            let newObj = {
+              ...item,
+              SETTINGS: null
+            }
+            let index = configs?.lst.findIndex(
+              x => item?.User?.ID === x?.User?.ID
+            )
+            if (index > -1) {
+              newObj.SETTINGS = configs?.lst[index]
+            }
+            return newObj
+          })
+        }
 
-      if (payrolls?.result?.Items && payrolls?.result?.Items.length > 0) {
-        rs = rs.map(item => {
-          let newObj = {
-            ...item,
-            BANGLUONGBC: null
-          }
-          let index = payrolls?.result?.Items.findIndex(
-            x => item?.User?.ID === x?.Staff?.ID
-          )
-          if (index > -1) {
-            newObj.BANGLUONGBC = payrolls?.result?.Items[index]
-          }
-          return newObj
-        })
-      }
+        rs = rs
+          .map(item => {
+            let newItem = { ...item }
+            let userWorks = WorkOfMonth.find(x => x.UserID === item?.User?.ID)
+            if (userWorks) {
+              let { Dates } = userWorks
 
-      rs = rs.map(item => ({
-        ...item,
-        DOANH_SO_THANG_CO_SO:
-          timekeepings?.sum?.find(x => x.StockID === item?.User?.StockID)
-            ?.Total || 0
-      }))
+              let NGAY_NGHI_CO_DINH = getValueByName({
+                Items: item?.SETTINGS?.Settings,
+                Name: 'NGAY_NGHI_CO_DINH',
+                Key: 'ValueText'
+              })
 
-      if (configs?.lst && configs?.lst.length > 0) {
-        rs = rs.map(item => {
-          let newObj = {
-            ...item,
-            SETTINGS: null
-          }
-          let index = configs?.lst.findIndex(
-            x => item?.User?.ID === x?.User?.ID
-          )
-          if (index > -1) {
-            newObj.SETTINGS = configs?.lst[index]
-          }
-          return newObj
-        })
-      }
+              newItem['WorkTrackDates'] = DatetimeHelpers.splitWorkTrackDates(
+                Dates,
+                NGAY_NGHI_CO_DINH,
+                true
+              )
+            }
+            return {
+              ...newItem
+            }
+          })
+          .map(item => {
+            let newObj = { ...item }
 
-      rs = rs
-        .map(item => {
-          let newItem = { ...item }
-          let userWorks = WorkOfMonth.find(x => x.UserID === item?.User?.ID)
-          if (userWorks) {
-            let { Dates } = userWorks
+            newObj['LUONG_CB'] = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'LUONG'
+            })
 
-            let NGAY_NGHI_CO_DINH = getValueByName({
+            newObj['TOI_DA_UNG_LUONG'] = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'TOI_DA_UNG_LUONG'
+            })
+
+            newObj['PHU_CAP_THANG'] = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'PHU_CAP'
+            })
+
+            newObj['NGAY_NGHI_CO_DINH'] = getValueByName({
               Items: item?.SETTINGS?.Settings,
               Name: 'NGAY_NGHI_CO_DINH',
               Key: 'ValueText'
             })
 
-            newItem['WorkTrackDates'] = DatetimeHelpers.splitWorkTrackDates(
-              Dates,
-              NGAY_NGHI_CO_DINH,
-              true
+            newObj['TI_LE_DONG_BH'] = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'TI_LE_DONG_BH'
+            })
+
+            newObj['LICH_NGHI_CO_DINH'] = DatetimeHelpers.countWeekdaysInMonth(
+              moment(newObj.From, 'YYYY-MM-DD').format('MM/YYYY'),
+              newObj['NGAY_NGHI_CO_DINH']
             )
-          }
-          return {
-            ...newItem
-          }
-        })
-        .map(item => {
-          let newObj = { ...item }
 
-          newObj['LUONG_CB'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'LUONG'
-          })
+            newObj['NGAY_KY_HOP_DONG'] = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'NGAY_KY_HOP_DONG'
+            })
 
-          newObj['TOI_DA_UNG_LUONG'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'TOI_DA_UNG_LUONG'
-          })
+            newObj['NGAY_CONG_THANG'] =
+              moment(newObj.From, 'YYYY-MM-DD').daysInMonth() -
+              newObj['LICH_NGHI_CO_DINH']
 
-          newObj['PHU_CAP_THANG'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'PHU_CAP'
-          })
+            newObj['LUONG_NGAY_CONG'] = RoundAmount(
+              newObj['LUONG_CB'] / newObj['NGAY_CONG_THANG']
+            )
 
-          newObj['NGAY_NGHI_CO_DINH'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'NGAY_NGHI_CO_DINH',
-            Key: 'ValueText'
-          })
+            newObj['LUONG_TOUR'] = newObj?.BANGLUONGBC?.LUONG_CA || 0
 
-          newObj['TI_LE_DONG_BH'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'TI_LE_DONG_BH'
-          })
+            newObj['THUONG_DOANH_SO'] =
+              item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng doanh số'] || 0
 
-          newObj['LICH_NGHI_CO_DINH'] = DatetimeHelpers.countWeekdaysInMonth(
-            moment(newObj.From, 'YYYY-MM-DD').format('MM/YYYY'),
-            newObj['NGAY_NGHI_CO_DINH']
-          )
+            newObj['THUONG_DOANH_SO_DS'] = item?.Bonus
+              ? item?.Bonus.filter(x => x?.CustomType === 'Thưởng doanh số')
+              : []
 
-          newObj['NGAY_KY_HOP_DONG'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'NGAY_KY_HOP_DONG'
-          })
+            newObj['THUONG_KHAC'] =
+              item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng khác'] || 0
 
-          newObj['NGAY_CONG_THANG'] =
-            moment(newObj.From, 'YYYY-MM-DD').daysInMonth() -
-            newObj['LICH_NGHI_CO_DINH']
+            newObj['THUONG_KHAC_DS'] = item?.Bonus
+              ? item?.Bonus.filter(x => x?.CustomType === 'Thưởng khác')
+              : []
 
-          newObj['LUONG_NGAY_CONG'] = RoundAmount(
-            newObj['LUONG_CB'] / newObj['NGAY_CONG_THANG']
-          )
+            newObj['PHAT_KHAC'] =
+              item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Phạt khác'] || 0
 
-          newObj['LUONG_TOUR'] = newObj?.BANGLUONGBC?.LUONG_CA || 0
+            newObj['PHAT_KHAC_DS'] = item?.Bonus
+              ? item?.Bonus.filter(x => x?.CustomType === 'Phạt khác')
+              : []
 
-          newObj['THUONG_DOANH_SO'] =
-            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng doanh số'] || 0
+            newObj['LUONG_BHXH'] = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'LUONG_NOP_BHXH'
+            })
 
-          newObj['THUONG_DOANH_SO_DS'] = item?.Bonus
-            ? item?.Bonus.filter(x => x?.CustomType === 'Thưởng doanh số')
-            : []
+            newObj['TIEN_TRA_BHXH'] = Math.floor(
+              (Number(newObj['LUONG_BHXH'] || 0) * 10.5) / 100
+            )
 
-          newObj['THUONG_KHAC'] =
-            item?.BANGLUONGBC?.THUONG_CustomType?.['Thưởng khác'] || 0
+            newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'GIAM_TRU_GIA_CANH'
+            })
 
-          newObj['THUONG_KHAC_DS'] = item?.Bonus
-            ? item?.Bonus.filter(x => x?.CustomType === 'Thưởng khác')
-            : []
+            newObj['DI_MUON_VE_SOM'] = Math.round(
+              item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
+            )
 
-          newObj['PHAT_KHAC'] =
-            item?.BANGLUONGBC?.TRU_PHAT_CustomType?.['Phạt khác'] || 0
+            newObj['DI_SOM_VE_MUON'] = Math.round(
+              item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
+            )
 
-          newObj['PHAT_KHAC_DS'] = item?.Bonus
-            ? item?.Bonus.filter(x => x?.CustomType === 'Phạt khác')
-            : []
+            newObj['NGHI_TRU_LUONG'] = 0
+            newObj['NGHI_TRU_LUONG_NOT_PHEP'] = 0
 
-          newObj['LUONG_BHXH'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'LUONG_NOP_BHXH'
-          })
+            if (item?.WorkTrackDates) {
+              newObj['NGHI_TRU_LUONG'] =
+                (item?.WorkTrackDates?.weekdayLeave?.length || 0) *
+                  newObj['LUONG_NGAY_CONG'] +
+                (item?.WorkTrackDates?.weekendLeave?.length || 0) *
+                  newObj['LUONG_NGAY_CONG'] *
+                  2 +
+                (item?.WorkTrackDates?.weekdayPermittedLeave?.length || 0) *
+                  newObj['LUONG_NGAY_CONG'] +
+                (item?.WorkTrackDates?.weekendPermittedLeave?.length || 0) *
+                  newObj['LUONG_NGAY_CONG']
 
-          newObj['TIEN_TRA_BHXH'] = Math.floor(
-            (Number(newObj['LUONG_BHXH'] || 0) * 10.5) / 100
-          )
+              newObj['NGHI_TRU_LUONG_CO_PHEP'] =
+                (item?.WorkTrackDates?.weekdayPermittedLeave?.length || 0) *
+                  newObj['LUONG_NGAY_CONG'] +
+                (item?.WorkTrackDates?.weekendPermittedLeave?.length || 0) *
+                  newObj['LUONG_NGAY_CONG'] // Nghỉ thường có phép
 
-          newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
-            Items: item?.SETTINGS?.Settings,
-            Name: 'GIAM_TRU_GIA_CANH'
-          })
-
-          newObj['DI_MUON_VE_SOM'] = Math.round(
-            item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
-          )
-
-          newObj['DI_SOM_VE_MUON'] = Math.round(
-            item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
-          )
-
-          newObj['NGHI_TRU_LUONG'] = 0
-          newObj['NGHI_TRU_LUONG_NOT_PHEP'] = 0
-
-          if (item?.WorkTrackDates) {
-            newObj['NGHI_TRU_LUONG'] =
-              (item?.WorkTrackDates?.weekdayLeave?.length || 0) *
-                newObj['LUONG_NGAY_CONG'] +
-              (item?.WorkTrackDates?.weekendLeave?.length || 0) *
-                newObj['LUONG_NGAY_CONG'] *
-                2 +
-              (item?.WorkTrackDates?.weekdayPermittedLeave?.length || 0) *
-                newObj['LUONG_NGAY_CONG'] +
-              (item?.WorkTrackDates?.weekendPermittedLeave?.length || 0) *
-                newObj['LUONG_NGAY_CONG']
-
-            newObj['NGHI_TRU_LUONG_CO_PHEP'] =
-              (item?.WorkTrackDates?.weekdayPermittedLeave?.length || 0) *
-                newObj['LUONG_NGAY_CONG'] +
-              (item?.WorkTrackDates?.weekendPermittedLeave?.length || 0) *
-                newObj['LUONG_NGAY_CONG'] // Nghỉ thường có phép
-
-            newObj['NGHI_TRU_LUONG_NOT_PHEP'] =
-              (item?.WorkTrackDates?.weekdayNoLeave?.length || 0) *
-                newObj['LUONG_NGAY_CONG'] *
-                2 +
-              (item?.WorkTrackDates?.weekendNoLeave?.length || 0) *
-                newObj['LUONG_NGAY_CONG'] *
-                4
-          }
-
-          let TOTAL_TIME_CTV =
-            DatetimeHelpers.getTotalWorkingMinutes(
-              newObj?.BANGLUONGBC?.TrackValue?.CTV || []
-            ) * 2
-
-          newObj['TANG_CA_OFF'] = 0
-          if (item?.User?.WorkTimeSetting) {
-            let WorkTimeSetting = JSON.parse(item?.User?.WorkTimeSetting)
-            if (Number(WorkTimeSetting?.SalaryHours) > 0) {
-              newObj['TANG_CA_OFF'] =
-                (TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours
+              newObj['NGHI_TRU_LUONG_NOT_PHEP'] =
+                (item?.WorkTrackDates?.weekdayNoLeave?.length || 0) *
+                  newObj['LUONG_NGAY_CONG'] *
+                  2 +
+                (item?.WorkTrackDates?.weekendNoLeave?.length || 0) *
+                  newObj['LUONG_NGAY_CONG'] *
+                  4
             }
-          }
 
-          let NGAY_CONG_LE =
-            item?.TrackValue?.WorkQtyRatio - item?.TrackValue?.WorkQtyAllowance
-          if (NGAY_CONG_LE < 0) NGAY_CONG_LE = 0
-          newObj['NGAY_CONG_LE'] = NGAY_CONG_LE
+            let TOTAL_TIME_CTV =
+              DatetimeHelpers.getTotalWorkingMinutes(
+                newObj?.BANGLUONGBC?.TrackValue?.CTV || []
+              ) * 2
 
-          newObj['TANG_CA_LE'] =
-            newObj['NGAY_CONG_LE'] * newObj['LUONG_NGAY_CONG']
+            newObj['TANG_CA_OFF'] = 0
+            if (item?.User?.WorkTimeSetting) {
+              let WorkTimeSetting = JSON.parse(item?.User?.WorkTimeSetting)
+              if (Number(WorkTimeSetting?.SalaryHours) > 0) {
+                newObj['TANG_CA_OFF'] =
+                  (TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours
+              }
+            }
 
-          newObj['X2'] =
-            newObj['LUONG_CB'] +
-            newObj['PHU_CAP_THANG'] -
-            ((newObj['DI_MUON_VE_SOM'] || 0) +
-              (newObj['NGHI_TRU_LUONG_NOT_PHEP'] || 0) +
-              (newObj['NGHI_TRU_LUONG'] || 0)) +
-            ((newObj['DI_SOM_VE_MUON'] || 0) +
-              (newObj['TANG_CA_OFF'] || 0) +
-              (newObj['TANG_CA_LE'] || 0)) +
-            newObj['LUONG_TOUR'] +
-            newObj['THUONG_DOANH_SO'] +
-            newObj['THUONG_KHAC'] -
-            newObj['PHAT_KHAC']
+            let NGAY_CONG_LE =
+              item?.TrackValue?.WorkQtyRatio -
+              item?.TrackValue?.WorkQtyAllowance
+            if (NGAY_CONG_LE < 0) NGAY_CONG_LE = 0
+            newObj['NGAY_CONG_LE'] = NGAY_CONG_LE
 
-          newObj['TONG_THU_NHAP'] = newObj['X2']
+            newObj['TANG_CA_LE'] =
+              newObj['NGAY_CONG_LE'] * newObj['LUONG_NGAY_CONG']
 
-          newObj['THUC_NHAN'] = newObj['X2'] - newObj['TIEN_TRA_BHXH']
+            newObj['X2'] =
+              newObj['LUONG_CB'] +
+              newObj['PHU_CAP_THANG'] -
+              ((newObj['DI_MUON_VE_SOM'] || 0) +
+                (newObj['NGHI_TRU_LUONG_NOT_PHEP'] || 0) +
+                (newObj['NGHI_TRU_LUONG'] || 0)) +
+              ((newObj['DI_SOM_VE_MUON'] || 0) +
+                (newObj['TANG_CA_OFF'] || 0) +
+                (newObj['TANG_CA_LE'] || 0)) +
+              newObj['LUONG_TOUR'] +
+              newObj['THUONG_DOANH_SO'] +
+              newObj['THUONG_KHAC'] -
+              newObj['PHAT_KHAC']
 
-          newObj['LUONG_CHIU_THUE_TNCN'] =
-            newObj['TONG_THU_NHAP'] -
-            newObj['TIEN_TRA_BHXH'] -
-            newObj['GIAM_TRU_GIA_CANH'] -
-            15500000
+            newObj['TONG_THU_NHAP'] = newObj['X2']
 
-          newObj['LUONG_CHIU_THUE_TNCN'] =
-            newObj['LUONG_CHIU_THUE_TNCN'] > 0
-              ? newObj['LUONG_CHIU_THUE_TNCN']
-              : 0
+            newObj['THUC_NHAN'] = newObj['X2'] - newObj['TIEN_TRA_BHXH']
 
-          let THUE_TNCN = 0
+            newObj['LUONG_CHIU_THUE_TNCN'] =
+              newObj['TONG_THU_NHAP'] -
+              newObj['TIEN_TRA_BHXH'] -
+              newObj['GIAM_TRU_GIA_CANH'] -
+              15500000
 
-          const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
-            item =>
-              newObj['LUONG_CHIU_THUE_TNCN'] > item.Min &&
-              (item.Max ? newObj['LUONG_CHIU_THUE_TNCN'] <= item.Max : true)
-          )
+            newObj['LUONG_CHIU_THUE_TNCN'] =
+              newObj['LUONG_CHIU_THUE_TNCN'] > 0
+                ? newObj['LUONG_CHIU_THUE_TNCN']
+                : 0
 
-          if (NGUONG_TNCN_CURRENT) {
-            THUE_TNCN =
-              NGUONG_TNCN_CURRENT.Value +
-              (newObj['LUONG_CHIU_THUE_TNCN'] - NGUONG_TNCN_CURRENT.Min) *
-                (NGUONG_TNCN_CURRENT.PercentDifference / 100)
-          }
+            let THUE_TNCN = 0
 
-          newObj['THUE_TNCN'] = THUE_TNCN
+            const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
+              item =>
+                newObj['LUONG_CHIU_THUE_TNCN'] > item.Min &&
+                (item.Max ? newObj['LUONG_CHIU_THUE_TNCN'] <= item.Max : true)
+            )
 
-          newObj['TONG_LUONG_THUC_NHAN'] =
-            newObj['THUC_NHAN'] - newObj['THUE_TNCN']
+            if (NGUONG_TNCN_CURRENT) {
+              THUE_TNCN =
+                NGUONG_TNCN_CURRENT.Value +
+                (newObj['LUONG_CHIU_THUE_TNCN'] - NGUONG_TNCN_CURRENT.Min) *
+                  (NGUONG_TNCN_CURRENT.PercentDifference / 100)
+            }
 
-          newObj['TAM_UNG'] = item?.BANGLUONGBC?.DA_TRA || 0
+            newObj['THUE_TNCN'] = THUE_TNCN
 
-          newObj['CON_LAI'] = newObj['TONG_LUONG_THUC_NHAN'] - newObj['TAM_UNG']
+            newObj['TONG_LUONG_THUC_NHAN'] =
+              newObj['THUC_NHAN'] - newObj['THUE_TNCN']
 
-          return {
-            ...newObj
-          }
-        })
+            newObj['TAM_UNG'] = item?.BANGLUONGBC?.DA_TRA || 0
 
-      return rs
-    },
-    keepPreviousData: true,
-    enabled: typeof filters.StocksRoles !== 'undefined',
-    retry: false
-  })
+            newObj['CON_LAI'] =
+              newObj['TONG_LUONG_THUC_NHAN'] - newObj['TAM_UNG']
+
+            return {
+              ...newObj
+            }
+          })
+
+        return rs
+      },
+      keepPreviousData: true,
+      enabled: typeof filters.StocksRoles !== 'undefined',
+      retry: false
+    })
 
   useEffect(() => {
-      if (isSuccess && !isFetching) {
-        isFilter && setIsFilter(false)
-      }
-    }, [isSuccess, isFetching])
+    if (isSuccess && !isFetching) {
+      isFilter && setIsFilter(false)
+    }
+  }, [isSuccess, isFetching])
 
   useEffect(() => {
     if (isError) {
