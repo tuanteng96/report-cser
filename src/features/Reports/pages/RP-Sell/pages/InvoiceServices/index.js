@@ -272,8 +272,7 @@ function InvoiceServices(props) {
         key: 'So_buoi_chuyen_lieu_trinh',
         title: 'Số buổi chuyển liệu trình',
         dataKey: 'So_buoi_chuyen_lieu_trinh',
-        cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.DaThToan_ThTien),
+        cellRenderer: ({ rowData }) => rowData.So_buoi_chuyen_lieu_trinh,
         width: 220,
         sortable: false
       },
