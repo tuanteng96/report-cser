@@ -141,6 +141,12 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getListInvoiceServices: data => {
+    return http.post(
+      `/api/v3/r23/cong-no/cong-no-dich-vu`,
+      JSON.stringify(data)
+    )
+  },
   getListPriceSell: data => {
     return http.post(
       `${SubApi}/ban-hang/gia-ban-san-pham-dich-vu`,

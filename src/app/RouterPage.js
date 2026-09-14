@@ -27,6 +27,9 @@ const SaleDetails = lazy(() =>
 const DebtPayment = lazy(() =>
   import('src/features/Reports/pages/RP-Sell/pages/DebtPayment')
 )
+const InvoiceServices = lazy(() =>
+  import('src/features/Reports/pages/RP-Sell/pages/InvoiceServices')
+)
 const RPMore = lazy(() => import('src/features/Reports/pages/RP-More'))
 const TopProducts = lazy(() =>
   import('src/features/Reports/pages/RP-More/pages/TopProducts')
@@ -273,6 +276,7 @@ function RouterPage(props) {
         <Route path="ds-bc-2" element={<Sales2 />} />
         <Route path="sp-dv-ban-ra" element={<SaleDetails />} />
         <Route path="thanh-toan-tra-no" element={<DebtPayment />} />
+        <Route path="dich-vu-xuat-hoa-don" element={<InvoiceServices />} />
         <Route path="tra-hang" element={<Returns />} />
         <Route path="top-ban-hang-doanh-so" element={<TopProducts />} />
         <Route path="bang-gia" element={<PriceList />} />

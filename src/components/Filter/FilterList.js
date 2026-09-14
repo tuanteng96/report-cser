@@ -33,7 +33,6 @@ import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { SelectJobs } from '../Selects/SelectJobs'
 import { SelectTagsOrder } from '../Selects/SelectTagsOrder'
 import AsyncSelectConfigureKPIs from '../Selects/AsyncSelectConfigureKPIs'
-import Swal from 'sweetalert2'
 import moment from 'moment'
 
 registerLocale('vi', vi) // register it with the name you want
@@ -303,6 +302,14 @@ function FilterList({
           }
 
           if (pathname === '/ban-hang/tien-hang') {
+            index = newListItems.findIndex(
+              o =>
+                o.url === '/ban-hang/doanh-so' ||
+                o.paths.includes('/ban-hang/doanh-so')
+            )
+          }
+
+          if (pathname === '/ban-hang/dich-vu-xuat-hoa-don') {
             index = newListItems.findIndex(
               o =>
                 o.url === '/ban-hang/doanh-so' ||
