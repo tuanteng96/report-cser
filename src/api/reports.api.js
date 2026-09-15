@@ -51,6 +51,9 @@ const reportsApi = {
   getListOddService: data => {
     return http.post(`${SubApi}/khach-hang/chinh-sua-the`, JSON.stringify(data))
   },
+  getListServiceNoImage: data => {
+    return http.post(`/api/v3/OrderService25@get`, JSON.stringify(data))
+  },
   getListSaleReduced: data => {
     return http.post(
       `${SubApi}/ban-hang/doanh-so-giam-tru`,

@@ -119,6 +119,9 @@ const PriceList = lazy(() =>
 const OverviewService = lazy(() =>
   import('src/features/Reports/pages/RP-Services/pages/OverviewService')
 )
+const ServiceNoImage = lazy(() =>
+  import('src/features/Reports/pages/RP-Services/pages/ServiceNoImage')
+)
 const RPServices = lazy(() => import('src/features/Reports/pages/RP-Services'))
 const OddCardService = lazy(() =>
   import('src/features/Reports/pages/RP-Services/pages/OddCardService')
@@ -254,6 +257,7 @@ function RouterPage(props) {
       >
         <Route index element={<Navigate to="tong-quan" replace />} />
         <Route path="tong-quan" element={<OverviewService />} />
+        <Route path="dich-vu-chua-upload-anh" element={<ServiceNoImage />} />
         <Route path="bao-cao-nghiep-vu" element={<OddCardService />} />
         <Route path="dv-diem-sd-diem-khac" element={<UsedElsewhere />} />
         <Route path="ton-dich-vu" element={<InventoryService />} />
