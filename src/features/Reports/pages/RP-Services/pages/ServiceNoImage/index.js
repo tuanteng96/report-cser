@@ -117,7 +117,8 @@ function ServiceNoImage(props) {
             Total: PageTotal
           })
         ),
-      UrlName: '/dich-vu/dich-vu-chua-upload-anh'
+      UrlName: '/dich-vu/dich-vu-chua-upload-anh',
+      params: filters
     })
   }
 
