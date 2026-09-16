@@ -638,12 +638,12 @@ function SaleDetails(props) {
   })
 
   useEffect(() => {
-    if ((isFilter || isLoading) && !useSalesProduct?.isLoading) {
+    if ((isFilter || isLoading) && !useSalesProduct?.isFetching) {
       setLoading(false)
       setIsFilter(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useSalesProduct?.isLoading])
+  }, [useSalesProduct?.isFetching])
 
   const getSalesDetail = (isLoading = true, callback) => {
     isLoading && setLoading(true)
@@ -717,10 +717,14 @@ function SaleDetails(props) {
 
   const onFilter = values => {
     if (View === 0) {
-      if (_.isEqual(values, filters)) {
-        getSalesDetail()
+      if (filters.ShowsType === '4') {
+        setFilters({ ...values, Pi: 1, timeStamp: new Date().valueOf() })
       } else {
-        setFilters({ ...values, Pi: 1 })
+        if (_.isEqual(values, filters)) {
+          getSalesDetail()
+        } else {
+          setFilters({ ...values, Pi: 1 })
+        }
       }
     } else {
       if (_.isEqual(values, filters2)) {
@@ -851,6 +855,8 @@ function SaleDetails(props) {
       refetch()
       ChartSales2.refetch()
       return
+    } else if (filters.ShowsType === '4') {
+      useSalesProduct.refetch()
     } else {
       getSalesDetail()
     }
@@ -1050,7 +1056,7 @@ function SaleDetails(props) {
       },
       {
         key: 'Price',
-        title: 'Giá gốc',
+        title: 'Nguyên giá',
         dataKey: 'Price',
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Price),
         width: 150,
@@ -1066,17 +1072,28 @@ function SaleDetails(props) {
         sortable: false
       },
       {
+        key: 'GIAM_TANG_GIA',
+        title: 'Giảm / tăng giá',
+        dataKey: 'GIAM_TANG_GIA',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(
+            rowData.Price * rowData.Qty - rowData.PriceOrder * rowData.Qty
+          ),
+        width: 150,
+        sortable: false
+      },
+      {
         key: 'PriceOrder',
-        title: 'Giá giảm',
+        title: 'Sau giảm giá',
         dataKey: 'PriceOrder',
         cellRenderer: ({ rowData }) =>
-          PriceHelper.formatVND(rowData.PriceOrder),
+          PriceHelper.formatVND(rowData.PriceOrder * rowData.Qty),
         width: 150,
         sortable: false
       },
       {
         key: 'VoucherValue',
-        title: 'Voucher',
+        title: 'Mã giảm giá',
         dataKey: 'VoucherValue',
         cellRenderer: ({ rowData }) =>
           PriceHelper.formatVND(rowData.VoucherValue),
