@@ -285,6 +285,8 @@ const reportsApi = {
     http.post(`${SubApi}/khac/bao-cao-khoa-hoc`, JSON.stringify(data)),
   getDetailPayroll: (data, params) =>
     http.post(`/api/v3/r23detail@${params}`, JSON.stringify(data)),
+  getSalarySettings2: body =>
+    http.post(`/api/v3/common?cmd=UserSalaryConfigLst`, JSON.stringify(body)),
   getViewSaleDetail: data => {
     return http.post(
       `/api/v3/r23/ban-hang/doanh-so-chi-tiet-2`,

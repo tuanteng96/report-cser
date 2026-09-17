@@ -1132,7 +1132,8 @@ function SaleDetails(props) {
         key: 'CPayedReal',
         title: 'TM/CK/QT',
         dataKey: 'CPayedReal',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.CPayedReal),
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.CPayedReal),
         width: 150,
         sortable: false
       },

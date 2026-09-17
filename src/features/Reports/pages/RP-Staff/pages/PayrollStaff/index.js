@@ -17,6 +17,38 @@ import clsx from 'clsx'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 moment.locale('vi')
 
+let NGUONG_TNCN = [
+  {
+    Min: 0,
+    Max: 10000000,
+    Value: 0,
+    PercentDifference: 5
+  },
+  {
+    Min: 10000000,
+    Max: 30000000,
+    Value: 500000,
+    PercentDifference: 10
+  },
+  {
+    Min: 30000000,
+    Max: 60000000,
+    Value: 2500000,
+    PercentDifference: 20
+  },
+  {
+    Min: 60000000,
+    Max: 100000000,
+    Value: 8500000,
+    PercentDifference: 30
+  },
+  {
+    Min: 100000000,
+    Value: 20500000,
+    PercentDifference: 35
+  }
+]
+
 const OverlayHH = ({ rowData, filters }) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
@@ -338,7 +370,7 @@ const OverlayKPI = ({ rowData, filters }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show])
 
-  const getDetail = () => {
+  const getDetail = async () => {
     setLoading(true)
     reportsApi
       .getDetailPayroll(
@@ -492,8 +524,14 @@ function PayrollStaff(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
-  const getListPayroll = (isLoading = true, callback) => {
+  const getListPayroll = async (isLoading = true, callback) => {
     isLoading && setLoading(true)
+
+    // let { data: configs } = await reportsApi.getSalarySettings2({
+    //   userStockID: filters.StockID || '',
+    //   mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : '',
+    //   UserID: ''
+    // })
     reportsApi
       .getListStaffPayroll(BrowserHelpers.getRequestParamsList(filters))
       .then(({ data }) => {
@@ -503,7 +541,94 @@ function PayrollStaff(props) {
         } else {
           const { Items, Total, PCount, SumTotal } = {
             Items: data.result?.Items
-              ? data.result?.Items.map(x => ({ ...x, IDs: x?.Staff?.ID }))
+              ? data.result?.Items.map(x => {
+                  let newItem = { ...x, IDs: x?.Staff?.ID }
+                  if (GlobalConfig?.Admin?.bang_luong_nang_cao) {
+                    newItem['DONG_BHXH'] = 0
+
+                    newItem['GIAM_TRU_GIA_CANH'] = 0
+
+                    newItem['NGUONG_THUE'] = 0
+
+                    if (
+                      x?.Staff?.Address &&
+                      x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
+                    ) {
+                      newItem['DONG_BHXH'] =
+                        ((x?.TrackValue?.Config?.Values?.LUONG_NOP_BHXH || 0) *
+                          10.5) /
+                        100
+                    }
+
+                    if (
+                      x?.TrackValue?.Config?.Values?.WORKING_STATUS !== 0 &&
+                      x?.Staff?.Address &&
+                      x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
+                    ) {
+                      newItem['GIAM_TRU_GIA_CANH'] =
+                        x?.TrackValue?.Config?.Values?.GIAM_TRU_GIA_CANH || 0
+
+                      newItem['NGUONG_THUE'] = 15500000
+                    }
+
+                    newItem['THU_NHAP_CHIU_THUE'] =
+                      x.LUONG_DU_KIEN -
+                      newItem['NGUONG_THUE'] -
+                      newItem['DONG_BHXH'] -
+                      newItem['GIAM_TRU_GIA_CANH']
+
+                    if (newItem['THU_NHAP_CHIU_THUE'] < 0) {
+                      newItem['THU_NHAP_CHIU_THUE'] = 0
+                    }
+
+                    newItem['THUE_THU_NHAP_CA_NHAN'] = 0
+
+                    if (
+                      x?.TrackValue?.Config?.Values?.WORKING_STATUS !== 0 &&
+                      x?.Staff?.Address &&
+                      x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
+                    ) {
+                      const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
+                        item =>
+                          newItem['THU_NHAP_CHIU_THUE'] > item.Min &&
+                          (item.Max
+                            ? newItem['THU_NHAP_CHIU_THUE'] <= item.Max
+                            : true)
+                      )
+                      if (NGUONG_TNCN_CURRENT) {
+                        newItem['THUE_THU_NHAP_CA_NHAN'] =
+                          NGUONG_TNCN_CURRENT.Value +
+                          (newItem['THU_NHAP_CHIU_THUE'] -
+                            NGUONG_TNCN_CURRENT.Min) *
+                            (NGUONG_TNCN_CURRENT.PercentDifference / 100)
+                      }
+                    } else {
+                      if (newItem['THU_NHAP_CHIU_THUE'] < 5000000) {
+                        newItem['THUE_THU_NHAP_CA_NHAN'] = 0
+                      } else {
+                        newItem['THUE_THU_NHAP_CA_NHAN'] =
+                          (newItem['THU_NHAP_CHIU_THUE'] * 10) / 100
+                      }
+                    }
+                    newItem['LUONG_THUC_NHAN'] =
+                      x?.LUONG_DU_KIEN -
+                      newItem['DONG_BHXH'] -
+                      newItem['THUE_THU_NHAP_CA_NHAN']
+
+                    newItem['GIU_LUONG'] =
+                      x?.TrackValue?.Config?.Values?.GIU_LUONG || 0
+
+                    if (newItem['GIU_LUONG'] <= 100) {
+                      newItem['GIU_LUONG'] =
+                        (newItem['LUONG_THUC_NHAN'] * newItem['GIU_LUONG']) /
+                        100
+                    }
+
+                    newItem['THUC_TRA_DU_KIEN'] =
+                      newItem['LUONG_THUC_NHAN'] - newItem['GIU_LUONG']
+                  }
+                  return newItem
+                })
               : [],
             Total: data.result?.Total || 0,
             PCount: data?.result?.PCount || 0,
@@ -608,6 +733,28 @@ function PayrollStaff(props) {
         sortable: false
       },
       {
+        key: 'Staff.Address',
+        title: 'Loại hợp đồng',
+        dataKey: 'Staff.Address',
+        width: 180,
+        sortable: false,
+        hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
+      },
+      {
+        key: 'TINH_TRANG',
+        title: 'Tình trạng',
+        dataKey: 'TINH_TRANG',
+        cellRenderer: ({ rowData }) => {
+          if (rowData?.TrackValue?.Config?.Values?.WORKING_STATUS === 0) {
+            return <>Đã nghỉ</>
+          }
+          return <>Hoạt động</>
+        },
+        width: 180,
+        sortable: false,
+        hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
+      },
+      {
         key: 'LUONG_CHAM_CONG',
         title: 'Lương chấm công',
         dataKey: 'LUONG_CHAM_CONG',
@@ -633,9 +780,9 @@ function PayrollStaff(props) {
         sortable: false
       },
       {
-        key: 'DI_SOM_VE_MUON',
+        key: 'DI_MUON_VE_SOM',
         title: 'Đi muộn, Về sớm',
-        dataKey: 'DI_SOM_VE_MUON',
+        dataKey: 'DI_MUON_VE_SOM',
         cellRenderer: ({ rowData }) =>
           rowData?.TrackValue?.DI_MUON + rowData?.TrackValue?.VE_SOM > 0
             ? PriceHelper.formatVND(
@@ -885,17 +1032,80 @@ function PayrollStaff(props) {
         )
       },
       {
+        key: 'DONG_BHXH',
+        title: 'BHXH (10.5%)',
+        dataKey: 'DONG_BHXH',
+        cellRenderer: ({ rowData }) => {
+          return PriceHelper.formatVND(rowData?.DONG_BHXH)
+        },
+        width: 150,
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number"></span>
+        ),
+        hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
+      },
+      {
+        key: 'GIAM_TRU_GIA_CANH',
+        title: 'Giảm trừ gia cảnh',
+        dataKey: 'GIAM_TRU_GIA_CANH',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.GIAM_TRU_GIA_CANH || 0),
+        width: 150,
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number"></span>
+        ),
+        hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
+      },
+      {
+        key: 'THU_NHAP_CHIU_THUE',
+        title: 'Thu nhập chịu thuế',
+        dataKey: 'THU_NHAP_CHIU_THUE',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData?.THU_NHAP_CHIU_THUE),
+        width: 200,
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number"></span>
+        ),
+        hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
+      },
+      {
+        key: 'THUE_THU_NHAP_CA_NHAN',
+        title: 'Thuế thu nhập cá nhân',
+        dataKey: 'THUE_THU_NHAP_CA_NHAN',
+        cellRenderer: ({ rowData }) => {
+          return PriceHelper.formatVND(rowData?.THUE_THU_NHAP_CA_NHAN)
+        },
+        width: 200,
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number"></span>
+        ),
+        hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
+      },
+      {
+        key: 'LUONG',
+        title: 'Lương',
+        dataKey: 'LUONG',
+        cellRenderer: ({ rowData }) =>
+          PriceHelper.formatVND(rowData.LUONG_THUC_NHAN),
+        width: 150,
+        sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number"></span>
+        ),
+        hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
+      },
+      {
         key: 'GIU_LUONG',
         title: 'Giữ lương',
         dataKey: 'GIU_LUONG',
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.GIU_LUONG),
         width: 150,
         sortable: false,
-        footerRenderer: () => (
-          <span className="font-size-md font-number">
-            {PriceHelper.formatVND(Total?.GIU_LUONG)}
-          </span>
-        )
+        footerRenderer: () => <span className="font-size-md font-number"></span>
       },
       {
         key: 'THUC_TRA_DU_KIEN',
@@ -905,11 +1115,7 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.THUC_TRA_DU_KIEN),
         width: 150,
         sortable: false,
-        footerRenderer: () => (
-          <span className="font-size-md font-number">
-            {PriceHelper.formatVND(Total?.THUC_TRA_DU_KIEN)}
-          </span>
-        )
+        footerRenderer: () => <span className="font-size-md font-number"></span>
       },
       {
         key: 'TAM_UNG',
@@ -936,11 +1142,7 @@ function PayrollStaff(props) {
         width: 200,
         sortable: false,
         footerRenderer: () => (
-          <span className="font-size-md font-number text-success">
-            {PriceHelper.formatVND(
-              Total?.THUC_TRA_DU_KIEN - (Total?.TAM_UNG - Total?.HOAN_UNG)
-            )}
-          </span>
+          <span className="font-size-md font-number text-success"></span>
         )
       },
       {
@@ -971,7 +1173,7 @@ function PayrollStaff(props) {
         )
       }
     ], // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filters, Total]
+    [filters, Total, GlobalConfig]
   )
 
   const onPagesChange = ({ Pi, Ps }) => {
