@@ -1105,7 +1105,13 @@ function PayrollStaff(props) {
         cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.GIU_LUONG),
         width: 150,
         sortable: false,
-        footerRenderer: () => <span className="font-size-md font-number"></span>
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {GlobalConfig?.Admin?.bang_luong_nang_cao
+              ? ''
+              : PriceHelper.formatVND(Total?.GIU_LUONG)}
+          </span>
+        )
       },
       {
         key: 'THUC_TRA_DU_KIEN',
@@ -1115,7 +1121,13 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.THUC_TRA_DU_KIEN),
         width: 150,
         sortable: false,
-        footerRenderer: () => <span className="font-size-md font-number"></span>
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {GlobalConfig?.Admin?.bang_luong_nang_cao
+              ? ''
+              : PriceHelper.formatVND(Total?.THUC_TRA_DU_KIEN)}
+          </span>
+        )
       },
       {
         key: 'TAM_UNG',
