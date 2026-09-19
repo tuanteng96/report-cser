@@ -6,6 +6,7 @@ import { PriceHelper } from 'src/helpers/PriceHelper'
 
 import moment from 'moment'
 import 'moment/locale/vi'
+import { useSelector } from 'react-redux'
 moment.locale('vi')
 
 const perfectScrollbarOptions = {
@@ -14,6 +15,10 @@ const perfectScrollbarOptions = {
 }
 
 function ModalViewMobile({ show, onHide, data, filters }) {
+  const { GlobalConfig } = useSelector(({ auth }) => ({
+    GlobalConfig: auth?.GlobalConfig
+  }))
+
   return (
     <Modal
       className="modal-view-mobile"
@@ -58,6 +63,28 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                     : 'Chưa xác định'}
                 </div>
               </div>
+              {GlobalConfig?.Admin?.bang_luong_nang_cao && (
+                <>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Loại hợp đồng
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {data?.Staff?.Address}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Tình trạng
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {data?.TrackValue?.Config?.Values?.WORKING_STATUS === 0
+                        ? 'Đã nghỉ'
+                        : 'Hoạt động'}
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương chính sách
@@ -159,6 +186,42 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                   {PriceHelper.formatVND(data?.LUONG_DU_KIEN)}
                 </div>
               </div>
+              {GlobalConfig?.Admin?.bang_luong_nang_cao && (
+                <>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      BHXH (10.5%)
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.DONG_BHXH)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Giảm trừ gia cảnh
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.GIAM_TRU_GIA_CANH)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Thu nhập chịu thuế
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.THU_NHAP_CHIU_THUE)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Thuế thu nhập cá nhân
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.THUE_THU_NHAP_CA_NHAN)}
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Giữ lương
@@ -250,6 +313,28 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                     : 'Chưa xác định'}
                 </div>
               </div>
+              {GlobalConfig?.Admin?.bang_luong_nang_cao && (
+                <>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Loại hợp đồng
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {data?.Staff?.Address}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Tình trạng
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {data?.TrackValue?.Config?.Values?.WORKING_STATUS === 0
+                        ? 'Đã nghỉ'
+                        : 'Hoạt động'}
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương chính sách
@@ -386,6 +471,42 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                   {PriceHelper.formatVND(data?.LUONG_DU_KIEN)}
                 </div>
               </div>
+              {GlobalConfig?.Admin?.bang_luong_nang_cao && (
+                <>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      BHXH (10.5%)
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.DONG_BHXH)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Giảm trừ gia cảnh
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.GIAM_TRU_GIA_CANH)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Thu nhập chịu thuế
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.THU_NHAP_CHIU_THUE)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Thuế thu nhập cá nhân
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.THUE_THU_NHAP_CA_NHAN)}
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Giữ lương
