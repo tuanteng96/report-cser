@@ -507,6 +507,26 @@ function PayrollStaff4(props) {
           key: ''
         })
 
+        let { data: rsRoster } = await reportsApi.getRosters({
+          pi: 1,
+          filter: {
+            Mon: moment(filters.Mon).startOf('month').format('YYYY-MM'),
+            Status: '',
+            StockID: filters.StockID
+          }
+        })
+
+        let UsersRoster = null
+
+        if (rsRoster?.items && rsRoster?.items.length > 0) {
+          if (
+            rsRoster?.items[0]?.Status &&
+            rsRoster?.items[0]?.Data?.Users?.length > 0
+          ) {
+            UsersRoster = rsRoster?.items[0]?.Data?.Users
+          }
+        }
+
         let WorkOfMonth = Object.values(
           (workmonths?.list || []).reduce((acc, item) => {
             if (!acc[item.UserID]) {
@@ -548,6 +568,10 @@ function PayrollStaff4(props) {
             let index = payrolls?.result?.Items.findIndex(
               x => item?.User?.ID === x?.Staff?.ID
             )
+
+            newObj['Rosters'] =
+              UsersRoster?.find(k => k.UserID === item?.User?.ID)?.Dates || null
+
             if (index > -1) {
               newObj.BANGLUONGBC = payrolls?.result?.Items[index]
             }
@@ -595,6 +619,10 @@ function PayrollStaff4(props) {
                 Dates,
                 NGAY_NGHI_CO_DINH,
                 true
+                // item.Rosters &&
+                //   item.Rosters.filter(
+                //     x => !x?.WorkShiftType || x?.WorkShiftType.length === 0
+                //   )
               )
             }
             return {

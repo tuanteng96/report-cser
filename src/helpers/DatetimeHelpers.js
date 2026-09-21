@@ -103,7 +103,12 @@ const getTotalWorkingMinutes = list => {
   }, 0)
 }
 
-const splitWorkTrackDates = (Dates = [], dayoffs = '', onlyPassed = false) => {
+const splitWorkTrackDates = (
+  Dates = [],
+  dayoffs = '',
+  onlyPassed = false,
+  Rosters = []
+) => {
   const weekMap = {
     CN: 0,
     T2: 1,
@@ -118,6 +123,15 @@ const splitWorkTrackDates = (Dates = [], dayoffs = '', onlyPassed = false) => {
     .split('.')
     .map(x => weekMap[x.trim().toUpperCase()])
     .filter(x => x !== undefined)
+
+  // Nếu Rosters có dữ liệu thì ưu tiên ngày nghỉ theo Rosters
+  const hasRosters = Array.isArray(Rosters) && Rosters.length > 0
+
+  const rosterDateSet = new Set(
+    hasRosters
+      ? Rosters.map(item => moment(item.Date).format('YYYY-MM-DD'))
+      : []
+  )
 
   const isApproved = workOff => {
     return (
@@ -140,8 +154,18 @@ const splitWorkTrackDates = (Dates = [], dayoffs = '', onlyPassed = false) => {
     noWorkTrack = noWorkTrack.filter(item => moment(item.Date).isBefore(today))
   }
 
-  // Không WorkTrack + bỏ ngày nghỉ cố định
+  /*
+   * Không WorkTrack + bỏ ngày nghỉ:
+   * - Có Rosters: bỏ những ngày nằm trong Rosters
+   * - Không có Rosters: bỏ ngày nghỉ cố định theo dayoffs
+   */
   const noWorkTrackExcludeDayoffs = noWorkTrack.filter(item => {
+    const date = moment(item.Date).format('YYYY-MM-DD')
+
+    if (hasRosters) {
+      return !rosterDateSet.has(date)
+    }
+
     const day = moment(item.Date).day()
 
     return !dayoffNumbers.includes(day)

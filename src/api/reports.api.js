@@ -324,6 +324,7 @@ const reportsApi = {
       JSON.stringify(data)
     ),
   getUserWork23: data =>
-    http.post(`/api/v3/userwork23@workList`, JSON.stringify(data))
+    http.post(`/api/v3/userwork23@workList`, JSON.stringify(data)),
+  getRosters: data => http.post(`/api/v4/roster@get`, data)
 }
 export default reportsApi

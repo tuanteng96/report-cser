@@ -32,11 +32,11 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser HCM'
       },
       {
-        ID: 12735,
+        ID: 12731,
         Title: 'CS tổng hợp'
       }
     ],
-    CrStockID: 12735,
+    CrStockID: 12731,
     rightsSum: {
       report: {
         IsAllStock: true,
@@ -51,7 +51,7 @@ if (DevHelpers.isDevelopment()) {
             Title: 'Cser HCM'
           },
           {
-            ID: 12735,
+            ID: 12731,
             Title: 'CS tổng hợp'
           }
         ],
@@ -466,7 +466,7 @@ if (DevHelpers.isDevelopment()) {
                   Title: 'Cser HCM'
                 },
                 {
-                  ID: 12735,
+                  ID: 12731,
                   Title: 'CS tổng hợp'
                 }
               ],
@@ -505,7 +505,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/doanh-so'
                         },
-                        stocks: '12731,12735'
+                        stocks: '12731,12731'
                       },
                       {
                         text: 'Sản phẩm - dịch vụ bán ra',
@@ -516,7 +516,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/sp-dv-ban-ra'
                         },
-                        stocks: '12731,12735'
+                        stocks: '12731,12731'
                       }
                     ]
                   }
@@ -535,7 +535,7 @@ if (DevHelpers.isDevelopment()) {
                   name: 'adminTools_byStock',
                   IsAllStock: false,
                   hasRight: true,
-                  stocksList: [{ ID: 12731 }, { ID: 12735 }]
+                  stocksList: [{ ID: 12731 }, { ID: 12731 }]
                 }
               ]
             }
@@ -561,7 +561,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEyMjU4MDk0NzU4MDA4ODkiLCJuYmYiOjE3ODk0NDIwNDIsImV4cCI6MTg3NTg0MjA0MiwiaWF0IjoxNzg5NDQyMDQyfQ.AkAfrA1oWpJ75ay4PjLLJN6_lXyDzRShmuh5Bh2f6Y4'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEyMjU4MDk0NzU4MDA4ODkiLCJuYmYiOjE3ODk5NjAzNjAsImV4cCI6MTg3NjM2MDM2MCwiaWF0IjoxNzg5OTYwMzYwfQ.ozalibD4sIktp6vVFVEs-FMeyPg9JzNZZ9GHP3I2xss'
 }
 const Auth = createSlice({
   name: 'auth',
