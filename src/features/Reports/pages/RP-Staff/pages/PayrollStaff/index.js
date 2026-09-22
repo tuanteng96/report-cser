@@ -49,7 +49,11 @@ let NGUONG_TNCN = [
   }
 ]
 
-const OverlayHH = ({ rowData, filters }) => {
+const OverlayHH = ({
+  rowData,
+  filters,
+  wrapClass = 'cursor-pointer d-flex justify-content-between w-100 align-items-center'
+}) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -117,7 +121,7 @@ const OverlayHH = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+      <div className={wrapClass}>
         <div>{PriceHelper.formatVND(rowData.HOA_HONG)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -127,7 +131,11 @@ const OverlayHH = ({ rowData, filters }) => {
   )
 }
 
-const OverlayLCS = ({ rowData, filters }) => {
+const OverlayLCS = ({
+  rowData,
+  filters,
+  wrapClass = 'cursor-pointer d-flex justify-content-between w-100 align-items-center'
+}) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -195,7 +203,7 @@ const OverlayLCS = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+      <div className={wrapClass}>
         <div>{PriceHelper.formatVND(rowData.LUONG_CHAM_CONG)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -205,7 +213,11 @@ const OverlayLCS = ({ rowData, filters }) => {
   )
 }
 
-const OverlayLT = ({ rowData, filters }) => {
+const OverlayLT = ({
+  rowData,
+  filters,
+  wrapClass = 'cursor-pointer d-flex justify-content-between w-100 align-items-center'
+}) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -273,7 +285,7 @@ const OverlayLT = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+      <div className={wrapClass}>
         <div>{PriceHelper.formatVND(rowData.LUONG_CA)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -283,7 +295,11 @@ const OverlayLT = ({ rowData, filters }) => {
   )
 }
 
-const OverlayDS = ({ rowData, filters }) => {
+const OverlayDS = ({
+  rowData,
+  filters,
+  wrapClass = 'cursor-pointer d-flex justify-content-between w-100 align-items-center'
+}) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -351,7 +367,7 @@ const OverlayDS = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+      <div className={wrapClass}>
         <div>{PriceHelper.formatVND(rowData.DOANH_SO_THANG)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -361,7 +377,11 @@ const OverlayDS = ({ rowData, filters }) => {
   )
 }
 
-const OverlayKPI = ({ rowData, filters }) => {
+const OverlayKPI = ({
+  rowData,
+  filters,
+  wrapClass = 'cursor-pointer d-flex justify-content-between w-100 align-items-center'
+}) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -473,7 +493,7 @@ const OverlayKPI = ({ rowData, filters }) => {
       onEntered={() => setShow(true)}
       onExited={() => setShow(false)}
     >
-      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
+      <div className={wrapClass}>
         <div>{PriceHelper.formatVND(rowData.KPI_Hoa_hong)}</div>
         <div>
           <i className="fa-solid fa-circle-info text-warning"></i>
@@ -1283,6 +1303,11 @@ function PayrollStaff(props) {
           onHide={HideModalMobile}
           data={initialValuesMobile}
           filters={filters}
+          OverlayLCS={OverlayLCS}
+          OverlayLT={OverlayLT}
+          OverlayDS={OverlayDS}
+          OverlayHH={OverlayHH}
+          OverlayKPI={OverlayKPI}
         />
       </div>
     </div>

@@ -14,7 +14,17 @@ const perfectScrollbarOptions = {
   wheelPropagation: false
 }
 
-function ModalViewMobile({ show, onHide, data, filters }) {
+function ModalViewMobile({
+  show,
+  onHide,
+  data,
+  filters,
+  OverlayLCS,
+  OverlayLT,
+  OverlayDS,
+  OverlayHH,
+  OverlayKPI
+}) {
   const { GlobalConfig } = useSelector(({ auth }) => ({
     GlobalConfig: auth?.GlobalConfig
   }))
@@ -87,10 +97,76 @@ function ModalViewMobile({ show, onHide, data, filters }) {
               )}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                  Lương chấm công
+                </div>
+                <div className="fw-600 font-size-mdd w-60 text-end">
+                  {PriceHelper.formatVND(
+                    data?.TrackValue?.WorkQty ===
+                      data?.TrackValue?.Config?.Values?.NGAY_CONG
+                      ? data?.TrackValue?.Config?.Values?.LUONG
+                      : data?.TrackValue?.WorkQty * data?.NGAY_LUONG_CO_BAN
+                  )}
+                </div>
+              </div>
+              <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                  Đi sớm, Về muộn
+                </div>
+                <div className="fw-600 font-size-mdd w-60 text-end">
+                  {PriceHelper.formatVND(
+                    data?.TrackValue?.DI_SOM + data?.TrackValue?.VE_MUON
+                  )}
+                </div>
+              </div>
+              <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                  Đi muộn, Về sớm
+                </div>
+                <div className="fw-600 font-size-mdd w-60 text-end">
+                  {data?.TrackValue?.DI_MUON + data?.TrackValue?.VE_SOM > 0
+                    ? PriceHelper.formatVND(
+                        (data?.TrackValue?.DI_MUON + data?.TrackValue?.VE_SOM) *
+                          -1
+                      )
+                    : PriceHelper.formatVND(
+                        data?.TrackValue?.DI_MUON + data?.TrackValue?.VE_SOM
+                      )}
+                </div>
+              </div>
+              <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                  Phụ cấp ngày
+                </div>
+                <div className="fw-600 font-size-mdd w-60 text-end">
+                  {GlobalConfig?.Admin?.phu_cap_ngay_cong2 ? (
+                    <>
+                      {PriceHelper.formatVND(
+                        (data?.TrackValue?.WorkQtyAllowance || 0) *
+                          (data?.TRO_CAP_NGAY || 0) +
+                          (data?.TrackValue?.WorkQtyAllowance2 || 0) *
+                            ((data?.TRO_CAP_NGAY || 0) / 2)
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {PriceHelper.formatVND(
+                        (data?.TrackValue?.WorkQtyAllowance || 0) *
+                          data?.TRO_CAP_NGAY
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương chính sách
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
-                  {PriceHelper.formatVND(data?.LUONG_CHAM_CONG)}
+                  <OverlayLCS
+                    wrapClass="cursor-pointer d-flex justify-content-end w-100 align-items-center gap-2"
+                    rowData={data}
+                    filters={filters}
+                  />
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -101,14 +177,6 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                   {PriceHelper.formatVND(data?.PHU_CAP)}
                 </div>
               </div>
-              {/* <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
-                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
-                  Ngày nghỉ
-                </div>
-                <div className="fw-600 font-size-mdd w-60 text-end">
-                  {PriceHelper.formatVND(data?.TRU_NGAY_NGHI)}
-                </div>
-              </div> */}
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Thưởng
@@ -125,49 +193,106 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                   {PriceHelper.formatVND(data?.TRU_PHAT)}
                 </div>
               </div>
+              {Number(filters.Shows) !== 0 && (
+                <>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Lương cài đặt
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.LUONG_CA_CAI_DAT)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Thưởng KH chọn
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.LUONG_CA_EXTRA)}
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
                   Lương ca
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
-                  {PriceHelper.formatVND(data?.LUONG_CA)}
-                  {/* <OverlayTrigger
-                    rootClose
-                    trigger="click"
-                    key="bottom"
-                    placement="top"
-                    overlay={
-                      <Popover id={`popover-positioned-top`}>
-                        <Popover.Body className="p-0">
-                          <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                            <span>Lương ca cài đặt</span>
-                            <span>
-                              {PriceHelper.formatVND(data?.LUONG_CA_CAI_DAT)}
-                            </span>
-                          </div>
-                          <div className="py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                            <span>Thưởng khách hàng chọn</span>
-                            <span>
-                              {PriceHelper.formatVND(data?.LUONG_CA_EXTRA)}
-                            </span>
-                          </div>
-                        </Popover.Body>
-                      </Popover>
-                    }
-                  >
-                    <div>
-                      <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning ml-5px"></i>
+                  <OverlayLT
+                    wrapClass="cursor-pointer d-flex justify-content-end w-100 align-items-center gap-2"
+                    rowData={data}
+                    filters={filters}
+                  />
+                </div>
+              </div>
+              {Number(filters.Shows) !== 0 && (
+                <>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Hoa hồng sản phẩm
                     </div>
-                  </OverlayTrigger> */}
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_Sanpham)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Hoa hồng dịch vụ
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_Dichvu)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      Hoa hồng thẻ tiền
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_Thetien)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      HH NVL
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_NVL)}
+                    </div>
+                  </div>
+                  <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                    <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                      HH Phụ phí
+                    </div>
+                    <div className="fw-600 font-size-mdd w-60 text-end">
+                      {PriceHelper.formatVND(data?.HOA_HONG_Phuphi)}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
+                <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
+                  Hoa Hồng
+                </div>
+                <div className="fw-600 font-size-mdd w-60 text-end">
+                  <OverlayHH
+                    wrapClass="cursor-pointer d-flex justify-content-end w-100 align-items-center gap-2"
+                    rowData={data}
+                    filters={filters}
+                  />
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
                 <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
-                  Hoa hồng
+                  Doanh số
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
-                  {PriceHelper.formatVND(data?.HOA_HONG)}
+                  <OverlayDS
+                    wrapClass="cursor-pointer d-flex justify-content-end w-100 align-items-center gap-2"
+                    rowData={data}
+                    filters={filters}
+                  />
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
@@ -175,7 +300,15 @@ function ModalViewMobile({ show, onHide, data, filters }) {
                   KPI
                 </div>
                 <div className="fw-600 font-size-mdd w-60 text-end">
-                  {PriceHelper.formatVND(data?.KPI_Hoa_hong)}
+                  {GlobalConfig?.Admin?.chi_tiet_cong ? (
+                    <OverlayKPI
+                      wrapClass="cursor-pointer d-flex justify-content-end w-100 align-items-center gap-2"
+                      rowData={data}
+                      filters={filters}
+                    />
+                  ) : (
+                    PriceHelper.formatVND(data?.KPI_Hoa_hong)
+                  )}
                 </div>
               </div>
               <div className="px-15px d-flex justify-content-between py-10px border-bottom-dashed line-height-sm">
