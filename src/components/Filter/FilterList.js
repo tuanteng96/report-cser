@@ -82,6 +82,8 @@ const CustomOption = ({ children, data, ...props }) => {
   )
 }
 
+let NO_HAS_RIGHT = ['/dich-vu/dich-vu-chua-upload-anh']
+
 function FilterList({
   ImportType,
   onImport,
@@ -342,7 +344,9 @@ function FilterList({
               }
             }
           } else {
-            newStocks = []
+            if (!NO_HAS_RIGHT.includes(pathname)) {
+              newStocks = []
+            }
           }
         }
       }
