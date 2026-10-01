@@ -466,6 +466,11 @@ function PayrollStaff3(props) {
               Name: 'LUONG_DONG_BH'
             })
 
+            let LUONG_NOP_BHXH = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'LUONG_NOP_BHXH'
+            })
+
             newObj['GIAM_TRU_GIA_CANH'] = getValueByName({
               Items: item?.SETTINGS?.Settings,
               Name: 'GIAM_TRU_GIA_CANH'
@@ -661,7 +666,7 @@ function PayrollStaff3(props) {
               newObj['TIEN_BANG']
 
             newObj['TIEN_TRA_BHXH'] = Math.floor(
-              ((LUONG_BHXH || 0) * (newObj['TI_LE_DONG_BH'] || 0)) / 100
+              ((LUONG_NOP_BHXH || 0) * (newObj['TI_LE_DONG_BH'] || 0)) / 100
             )
 
             newObj['THUE_TNCN'] =
