@@ -91,6 +91,7 @@ function PickerPay({ children, data, CrStockID, refetch }) {
           mon: moment(x.From).format('MM/YYYY'),
           pay_salary: '1',
           methodid: '1',
+          IsSalaryEndPay: 0,
           desc: '',
           SUM_ALL_PENDING_OR_NOPENDING: 1,
           HOAN_UNG_NGAY: 0,
