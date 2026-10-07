@@ -240,21 +240,21 @@ function NavBar(props) {
             GlobalConfig?.Admin?.queen_chinhsachluongchitiet
         },
         {
-          Title: 'Bảng lương 2',
+          Title: 'Bảng lương',
           Href: hasRouter() + '/nhan-vien/bang-luong-2',
           hidden:
             GlobalConfig?.Admin?.Nola_chinhsachluongchitiet ||
             !GlobalConfig?.Admin?.chinhsachluongchitiet
         },
         {
-          Title: 'Bảng lương Queen',
+          Title: 'Bảng lương',
           Href: hasRouter() + '/nhan-vien/bang-luong-3',
           hidden:
             GlobalConfig?.Admin?.Nola_chinhsachluongchitiet ||
             !GlobalConfig?.Admin?.queen_chinhsachluongchitiet
         },
         {
-          Title: 'Bảng lương Nola',
+          Title: 'Bảng lương',
           Href: hasRouter() + '/nhan-vien/bang-luong-4',
           hidden: !GlobalConfig?.Admin?.Nola_chinhsachluongchitiet
         }

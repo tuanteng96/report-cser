@@ -35,7 +35,15 @@
             data
         }) {
             if (typeof data === "string") {
-                const IfameBody = JSON.parse(data || '');
+                let IfameBody;
+                try {
+                    IfameBody = JSON.parse(data);
+                } catch {
+                    return;
+                }
+                if (!IfameBody || typeof IfameBody !== "object" || Array.isArray(IfameBody)) {
+                    return;
+                }
                 window.Info = IfameBody.Info;
                 window.token = IfameBody.token;
                 window.isApp = IfameBody.isApp || false;

@@ -84,6 +84,14 @@ function PayrollStaff2(props) {
         StocksRoles: filters.StocksRoles
       })
 
+      let { data: WorksMonth } = await reportsApi.getUserWork23({
+        From: moment(filters.Mon).startOf('month').format('DD/MM/YYYY'),
+        StockID: filters.StockID,
+        To: moment(filters.Mon).endOf('month').format('DD/MM/YYYY'),
+        UserID: '',
+        key: ''
+      })
+
       let { data: others } = await reportsApi.getConfigSalaryOther({
         pi: 1,
         ps: configs?.lst?.length || 0,
@@ -230,9 +238,51 @@ function PayrollStaff2(props) {
           //   ? JSON.parse(item?.User?.WorkTimeSetting)
           //   : null
 
-          newObj['NGAY_CONG_THUC_TE'] = item?.TrackValue?.WorkQtyRatio || 0
+          newObj['NGAY_CONG_THUC_TE'] = 0
 
-          newObj['CONG_THUC_TE'] = item?.TrackValue?.WorkQty || 0
+          newObj['CONG_THUC_TE'] = 0
+
+          if (WorksMonth?.list && WorksMonth?.list.length > 0) {
+            let WorksMonthUsers = WorksMonth?.list
+              .filter(x => x.UserID === newObj.User?.ID)
+              .flatMap(x => x.Dates)
+              .filter(
+                x =>
+                  x.WorkTrack && x?.WorkTrack?.CheckIn && x?.WorkTrack?.CheckOut
+              )
+
+            newObj['CONG_THUC_TE'] = WorksMonthUsers.map(x => {
+              let total = 0
+              if (x?.WorkTrack?.Info?.Ratio?.PrevWorkDays) {
+                total = Number(x?.WorkTrack?.Info?.Ratio?.PrevWorkDays)
+              } else if (
+                typeof x?.WorkTrack?.Info?.CheckOut?.WorkToday?.Value !==
+                'undefined'
+              ) {
+                total = Number(
+                  x?.WorkTrack?.Info?.CheckOut?.WorkToday?.Value || 0
+                )
+              } else {
+                total = Number(x?.WorkTrack?.Info?.WorkToday?.Value || 0)
+              }
+              return total
+            }).reduce((partialSum, a) => partialSum + a, 0)
+
+            newObj['NGAY_CONG_THUC_TE'] = WorksMonthUsers.map(x => {
+              let total = 0
+              if (
+                typeof x?.WorkTrack?.Info?.CheckOut?.WorkToday?.Value !==
+                'undefined'
+              ) {
+                total = Number(
+                  x?.WorkTrack?.Info?.CheckOut?.WorkToday?.Value || 0
+                )
+              } else {
+                total = Number(x?.WorkTrack?.Info?.WorkToday?.Value || 0)
+              }
+              return total
+            }).reduce((partialSum, a) => partialSum + a, 0)
+          }
 
           newObj['CONG_NGAY_NGHI'] = newObj['CONG_THUC_TE']
             ? newObj['NGAY_CONG_THUC_TE'] - newObj['CONG_THUC_TE']

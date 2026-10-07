@@ -780,7 +780,7 @@ function PayrollStaff3(props) {
         onHide={onHideFilter}
         onSubmit={onFilter}
         onRefresh={onRefresh}
-        loading={isLoading}
+        loading={isFetching}
         loadingExport={loadingExport}
         onExport={onExport}
         updateStocksRole={val => {

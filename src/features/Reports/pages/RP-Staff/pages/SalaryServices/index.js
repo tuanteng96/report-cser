@@ -399,89 +399,94 @@ function SalaryServices(props) {
           key: 'LuongCa_PPhi',
           title: 'Lương ca và phụ phí',
           dataKey: 'LuongCa_PPhi',
-          cellRenderer: ({ rowData }) => (
-            <OverlayTrigger
-              rootClose
-              trigger="click"
-              key="top"
-              placement="top"
-              overlay={
-                <Popover
-                  id={`popover-positioned-top`}
-                  style={{ minWidth: '320px' }}
-                >
-                  <Popover.Header
-                    className="py-10px text-uppercase fw-600"
-                    as="h3"
+          cellRenderer: ({ rowData }) =>
+            rowData?.ID ? (
+              <OverlayTrigger
+                rootClose
+                trigger="click"
+                key="top"
+                placement="top"
+                overlay={
+                  <Popover
+                    id={`popover-positioned-top`}
+                    style={{ minWidth: '320px' }}
                   >
-                    Chi tiết lương ca & phụ phí
-                  </Popover.Header>
-                  <Popover.Body className="p-0">
-                    {(rowData.LuongCa_PPhi?.DS_DV &&
-                      rowData.LuongCa_PPhi?.DS_DV.length > 0) ||
-                    (rowData.LuongCa_PPhi?.DS_PP &&
-                      rowData.LuongCa_PPhi?.DS_PP.length > 0) ||
-                    (wrapSalaryUser(rowData?.Salary?.salaryList) &&
-                      wrapSalaryUser(rowData?.Salary?.salaryList).length >
-                        0) ? (
-                      <Fragment>
-                        {rowData.LuongCa_PPhi?.DS_DV.map((item, index) => (
-                          <div
-                            className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between"
-                            key={index}
-                          >
-                            <span>{item.Title}</span>
-                            <span>
-                              {PriceHelper.formatVND(
-                                rowData?.LuongCa_PPhi?.Tong_DV ||
-                                  rowData?.LuongCa_PPhi?.Tong_DV_Extra
-                              )}
-                            </span>
-                          </div>
-                        ))}
-                        {rowData.LuongCa_PPhi?.DS_PP.map((item, index) => (
-                          <div
-                            className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
-                            key={index}
-                          >
-                            <span>{item.Title}</span>
-                            <span>{PriceHelper.formatVND(item.ToPay)}</span>
-                          </div>
-                        ))}
-                        {wrapSalaryUser(rowData?.Salary?.salaryList) &&
-                          wrapSalaryUser(rowData?.Salary?.salaryList).length >
-                            1 &&
-                          wrapSalaryUser(rowData?.Salary?.salaryList).map(
-                            (item, index) => (
-                              <div
-                                className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
-                                key={index}
-                              >
-                                <span>{item.StaffName}</span>
-                                <span>
-                                  {PriceHelper.formatVND(
-                                    sumTotal(item.Items, 'Value')
-                                  )}
-                                </span>
-                              </div>
-                            )
-                          )}
-                      </Fragment>
-                    ) : (
-                      <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                        <span>Không có dữ liệu</span>
-                      </div>
-                    )}
-                  </Popover.Body>
-                </Popover>
-              }
-            >
+                    <Popover.Header
+                      className="py-10px text-uppercase fw-600"
+                      as="h3"
+                    >
+                      Chi tiết lương ca & phụ phí
+                    </Popover.Header>
+                    <Popover.Body className="p-0">
+                      {(rowData.LuongCa_PPhi?.DS_DV &&
+                        rowData.LuongCa_PPhi?.DS_DV.length > 0) ||
+                      (rowData.LuongCa_PPhi?.DS_PP &&
+                        rowData.LuongCa_PPhi?.DS_PP.length > 0) ||
+                      (wrapSalaryUser(rowData?.Salary?.salaryList) &&
+                        wrapSalaryUser(rowData?.Salary?.salaryList).length >
+                          0) ? (
+                        <Fragment>
+                          {rowData.LuongCa_PPhi?.DS_DV.map((item, index) => (
+                            <div
+                              className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between"
+                              key={index}
+                            >
+                              <span>{item.Title}</span>
+                              <span>
+                                {PriceHelper.formatVND(
+                                  rowData?.LuongCa_PPhi?.Tong_DV ||
+                                    rowData?.LuongCa_PPhi?.Tong_DV_Extra
+                                )}
+                              </span>
+                            </div>
+                          ))}
+                          {rowData.LuongCa_PPhi?.DS_PP.map((item, index) => (
+                            <div
+                              className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
+                              key={index}
+                            >
+                              <span>{item.Title}</span>
+                              <span>{PriceHelper.formatVND(item.ToPay)}</span>
+                            </div>
+                          ))}
+                          {wrapSalaryUser(rowData?.Salary?.salaryList) &&
+                            wrapSalaryUser(rowData?.Salary?.salaryList).length >
+                              1 &&
+                            wrapSalaryUser(rowData?.Salary?.salaryList).map(
+                              (item, index) => (
+                                <div
+                                  className="border-gray-200 py-10px px-15px fw-600 font-size-md border-top d-flex justify-content-between w-100"
+                                  key={index}
+                                >
+                                  <span>{item.StaffName}</span>
+                                  <span>
+                                    {PriceHelper.formatVND(
+                                      sumTotal(item.Items, 'Value')
+                                    )}
+                                  </span>
+                                </div>
+                              )
+                            )}
+                        </Fragment>
+                      ) : (
+                        <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                          <span>Không có dữ liệu</span>
+                        </div>
+                      )}
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <div className="d-flex justify-content-end justify-content-md-between align-items-center w-100">
+                  {PriceHelper.formatVND(rowData?.LuongCa_PPhi?.Tong_Luong)}
+                  <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning pl-5px"></i>
+                </div>
+              </OverlayTrigger>
+            ) : (
               <div className="d-flex justify-content-end justify-content-md-between align-items-center w-100">
                 {PriceHelper.formatVND(rowData?.LuongCa_PPhi?.Tong_Luong)}
-                <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning pl-5px"></i>
               </div>
-            </OverlayTrigger>
-          ),
+            ),
           width: 220,
           sortable: false,
           mobileOptions: {
@@ -527,6 +532,12 @@ function SalaryServices(props) {
           key: 'The_DV.CardTitle',
           title: 'Thẻ dịch vụ',
           dataKey: 'The_DV.CardTitle',
+          cellRenderer: ({ rowData }) => {
+            if (rowData?.ID) {
+              return rowData?.The_DV?.CardTitle
+            }
+            return rowData?.MethodTitle
+          },
           width: 250,
           sortable: false
         },
@@ -547,16 +558,21 @@ function SalaryServices(props) {
         },
         {
           key: 'ID_Buoi_Dv',
-          title: 'ID Buổi dịch vụ',
+          title: 'ID Buổi dịch vụ / Lớp',
+          cellRenderer: ({ rowData }) => {
+            if (rowData?.ID) return rowData?.ID_Buoi_Dv
+            return `Lớp (${rowData?.ClassID})`
+          },
           dataKey: 'ID_Buoi_Dv',
-          width: 150,
+          width: 180,
           sortable: false
         },
         {
           key: 'giabuoi',
           title: 'Giá buổi',
           dataKey: 'giabuoi',
-          cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.giabuoi),
+          cellRenderer: ({ rowData }) =>
+            rowData?.ID ? PriceHelper.formatVND(rowData.giabuoi) : '',
           width: 180,
           sortable: false
         },
@@ -600,8 +616,12 @@ function SalaryServices(props) {
         },
         {
           key: 'OrderServiceID',
-          title: 'ID Dịch vụ',
+          title: 'ID Dịch vụ / Lớp',
           dataKey: 'OrderServiceID',
+          cellRenderer: ({ rowData }) => {
+            if (rowData?.OrderServiceID) return rowData?.OrderServiceID
+            return `Lớp (${rowData?.ClassID})`
+          },
           width: 150,
           sortable: false,
           mobileOptions: {
@@ -652,7 +672,9 @@ function SalaryServices(props) {
           title: 'Theo Setup',
           dataKey: 'ValueSetup',
           cellRenderer: ({ rowData }) =>
-            PriceHelper.formatVND(rowData.ValueSetup),
+            rowData?.OrderServiceID
+              ? PriceHelper.formatVND(rowData.ValueSetup)
+              : '',
           width: 180,
           sortable: false
         },
@@ -661,7 +683,9 @@ function SalaryServices(props) {
           title: 'Extra',
           dataKey: 'Extra',
           cellRenderer: ({ rowData }) =>
-            PriceHelper.formatVND(rowData.ValueExtra),
+            rowData?.OrderServiceID
+              ? PriceHelper.formatVND(rowData.ValueExtra)
+              : '',
           width: 180,
           sortable: false
         },
@@ -676,6 +700,10 @@ function SalaryServices(props) {
           key: 'Prod.Title',
           title: 'Thẻ dịch vụ',
           dataKey: 'Prod.Title',
+          cellRenderer: ({ rowData }) =>
+            rowData?.OrderServiceID
+              ? rowData?.Prod?.Title || ''
+              : rowData?.MethodTitle || '',
           width: 250,
           sortable: false
         },
