@@ -13,6 +13,9 @@ import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
 import { DatetimeHelpers } from 'src/helpers/DatetimeHelpers'
 import PickerPay from './PickerPay'
+import PayrollDetailTooltip from './components/PayrollDetailTooltip'
+import AttendanceDetails from './components/AttendanceDetails'
+import { calculateAttendanceSalary } from './helpers/calculateAttendanceSalary'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 moment.locale('vi')
@@ -48,77 +51,6 @@ let NGUONG_TNCN = [
     PercentDifference: 35
   }
 ]
-
-const PayrollDetailTooltip = ({
-  id,
-  title,
-  groups = [],
-  dailySalary,
-  total,
-  totalLabel = 'Tổng trừ',
-  children
-}) => {
-  const [pinned, setPinned] = useState(false)
-
-  return Number(total) > 0 ? (
-    <OverlayTrigger
-      rootClose
-      trigger={[]}
-      show={pinned}
-      onToggle={() => setPinned(false)}
-      placement="left"
-      overlay={
-        <Popover
-          id={id}
-          className="shadow-lg"
-          style={{ width: 320, maxWidth: 'calc(100vw - 32px)' }}
-        >
-          <Popover.Body
-            className="text-left"
-            style={{ maxHeight: 300, overflowY: 'auto' }}
-          >
-            <div className="mb-3 fw-600">{title}</div>
-            {children ||
-              groups.map(({ title, dates, multiplier }) => (
-                <div key={title} className="pb-3 mb-3 border-bottom">
-                  <div className="fw-500">
-                    {title}: {dates.length} ngày
-                  </div>
-                  <div className="mt-1 text-break">
-                    {dates.length
-                      ? dates
-                          .map(item => moment(item.Date).format('DD/MM/YYYY'))
-                          .join(', ')
-                      : 'Không có ngày nghỉ'}
-                  </div>
-                  <div className="mt-1">
-                    {dates.length} × {PriceHelper.formatVND(dailySalary || 0)} ×{' '}
-                    {multiplier} ={' '}
-                    {PriceHelper.formatVND(
-                      dates.length * (dailySalary || 0) * multiplier
-                    )}
-                  </div>
-                </div>
-              ))}
-            <div className="gap-2 d-flex justify-content-between fw-600">
-              <span>{totalLabel}</span>
-              <span>{PriceHelper.formatVND(total || 0)}</span>
-            </div>
-          </Popover.Body>
-        </Popover>
-      }
-    >
-      <button
-        type="button"
-        onClick={() => setPinned(value => !value)}
-        aria-label={`Chi tiết ${title.toLowerCase()}`}
-        className="inline-flex items-center justify-center p-0 bg-transparent border-0 rounded cursor-pointer w-7 h-7 text-warning"
-      >
-        <i className="fa-solid fa-circle-info" aria-hidden="true"></i>
-      </button>
-    </OverlayTrigger>
-  ) : null
-}
 
 const OverlayHH = ({ rowData, filters }) => {
   const [show, setShow] = useState(false)
@@ -628,7 +560,33 @@ function PayrollStaff4(props) {
           }, {})
         )
 
-        let rs = [...timekeepings?.list]
+        let rs = await Promise.all(
+          (timekeepings?.list || []).map(async item => {
+            if (Array.isArray(item?.TrackValue?.List)) return item
+
+            const { data: salary } = await reportsApi.userSalary({
+              cmd: 'salary',
+              userid: item?.User?.ID,
+              mon: moment(filters.Mon).format('MM/YYYY')
+            })
+
+            if (!salary?.data) {
+              throw new Error('Không tải được chi tiết chấm công nhân viên')
+            }
+
+            return {
+              ...item,
+              User: { ...item.User, ...salary.data.User },
+              TrackValue: salary.data.TrackValue
+            }
+          })
+        )
+
+        rs = rs.map(item => ({
+          ...item,
+          Rosters:
+            UsersRoster?.find(x => x.UserID === item?.User?.ID)?.Dates || []
+        }))
 
         if (payrolls?.result?.Items && payrolls?.result?.Items.length > 0) {
           rs = rs.map(item => {
@@ -639,9 +597,6 @@ function PayrollStaff4(props) {
             let index = payrolls?.result?.Items.findIndex(
               x => item?.User?.ID === x?.Staff?.ID
             )
-
-            newObj['Rosters'] =
-              UsersRoster?.find(k => k.UserID === item?.User?.ID)?.Dates || null
 
             if (index > -1) {
               newObj.BANGLUONGBC = payrolls?.result?.Items[index]
@@ -679,12 +634,6 @@ function PayrollStaff4(props) {
             let userWorks = WorkOfMonth.find(x => x.UserID === item?.User?.ID)
             if (userWorks) {
               let { Dates } = userWorks
-
-              let NGAY_NGHI_CO_DINH = getValueByName({
-                Items: item?.SETTINGS?.Settings,
-                Name: 'NGAY_NGHI_CO_DINH',
-                Key: 'ValueText'
-              })
 
               newItem['WorkTrackDates'] = DatetimeHelpers.splitWorkTrackDates(
                 Dates,
@@ -784,74 +733,7 @@ function PayrollStaff4(props) {
               Name: 'GIAM_TRU_GIA_CANH'
             })
 
-            newObj['DI_MUON_VE_SOM'] = Math.round(
-              item?.TrackValue.DI_MUON + item?.TrackValue.VE_SOM
-            )
-
-            newObj['DI_SOM_VE_MUON'] = Math.round(
-              item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
-            )
-
-            let TOTAL_TIME_CTV =
-              DatetimeHelpers.getTotalWorkingMinutes(
-                newObj?.BANGLUONGBC?.TrackValue?.CTV || []
-              ) * 2
-
-            newObj['TANG_CA_OFF'] = 0
-            newObj['LUONG_GIO_TANG_CA_OFF'] = 0
-            if (item?.User?.WorkTimeSetting) {
-              let WorkTimeSetting = JSON.parse(item?.User?.WorkTimeSetting)
-              if (Number(WorkTimeSetting?.SalaryHours) > 0) {
-                newObj['LUONG_GIO_TANG_CA_OFF'] = Number(
-                  WorkTimeSetting.SalaryHours
-                )
-                newObj['TANG_CA_OFF'] =
-                  (TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours
-
-                newObj['DI_SOM_VE_MUON'] =
-                  newObj['DI_SOM_VE_MUON'] -
-                  (TOTAL_TIME_CTV / 2 / 60) * WorkTimeSetting?.SalaryHours
-              }
-            }
-
-            newObj['NGHI_TRU_LUONG'] = 0
-            newObj['NGHI_TRU_LUONG_NOT_PHEP'] = 0
-
-            if (item?.WorkTrackDates) {
-              newObj['NGHI_TRU_LUONG'] =
-                (item?.WorkTrackDates?.weekdayLeave?.length || 0) *
-                  newObj['LUONG_NGAY_CONG'] +
-                (item?.WorkTrackDates?.weekendLeave?.length || 0) *
-                  newObj['LUONG_NGAY_CONG'] *
-                  2 +
-                (item?.WorkTrackDates?.weekdayPermittedLeave?.length || 0) *
-                  newObj['LUONG_NGAY_CONG'] +
-                (item?.WorkTrackDates?.weekendPermittedLeave?.length || 0) *
-                  newObj['LUONG_NGAY_CONG']
-
-              newObj['NGHI_TRU_LUONG_CO_PHEP'] =
-                (item?.WorkTrackDates?.weekdayPermittedLeave?.length || 0) *
-                  newObj['LUONG_NGAY_CONG'] +
-                (item?.WorkTrackDates?.weekendPermittedLeave?.length || 0) *
-                  newObj['LUONG_NGAY_CONG'] // Nghỉ thường có phép
-
-              newObj['NGHI_TRU_LUONG_NOT_PHEP'] =
-                (item?.WorkTrackDates?.weekdayNoLeave?.length || 0) *
-                  newObj['LUONG_NGAY_CONG'] *
-                  2 +
-                (item?.WorkTrackDates?.weekendNoLeave?.length || 0) *
-                  newObj['LUONG_NGAY_CONG'] *
-                  4
-            }
-
-            let NGAY_CONG_LE =
-              item?.TrackValue?.WorkQtyRatio -
-              item?.TrackValue?.WorkQtyAllowance
-            if (NGAY_CONG_LE < 0) NGAY_CONG_LE = 0
-            newObj['NGAY_CONG_LE'] = NGAY_CONG_LE
-
-            newObj['TANG_CA_LE'] =
-              newObj['NGAY_CONG_LE'] * newObj['LUONG_NGAY_CONG']
+            newObj = calculateAttendanceSalary(newObj)
 
             newObj['X2'] =
               newObj['LUONG_CB'] +
@@ -1264,10 +1146,36 @@ function PayrollStaff4(props) {
                         </td>
 
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.DI_MUON_VE_SOM)}
+                          <div className="flex items-center justify-between w-full gap-1">
+                            {PriceHelper.formatVND(rowData?.DI_MUON_VE_SOM)}
+                            <AttendanceDetails
+                              id={`attendance-DI_MUON_VE_SOM-${rowData?.User?.ID}`}
+                              title="Đi muộn, về sớm"
+                              totalLabel="Tổng trừ"
+                              total={rowData?.DI_MUON_VE_SOM}
+                              trackValue={rowData?.TrackValue}
+                              groups={[
+                                { key: 'DI_MUON', title: 'Đi muộn' },
+                                { key: 'VE_SOM', title: 'Về sớm' }
+                              ]}
+                            />
+                          </div>
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.DI_SOM_VE_MUON)}
+                          <div className="flex items-center justify-between w-full gap-1">
+                            {PriceHelper.formatVND(rowData?.DI_SOM_VE_MUON)}
+                            <AttendanceDetails
+                              id={`attendance-DI_SOM_VE_MUON-${rowData?.User?.ID}`}
+                              title="Đi sớm, về muộn"
+                              totalLabel="Tổng cộng"
+                              total={rowData?.DI_SOM_VE_MUON}
+                              trackValue={rowData?.TrackValue}
+                              groups={[
+                                { key: 'DI_SOM', title: 'Đi sớm' },
+                                { key: 'VE_MUON', title: 'Về muộn' }
+                              ]}
+                            />
+                          </div>
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           <div className="flex items-center justify-between w-full gap-1">
@@ -1290,63 +1198,74 @@ function PayrollStaff4(props) {
                                   Số phút ÷ 60 × lương giờ × 2
                                 </div>
                               </div>
-                              {(
-                                rowData?.BANGLUONGBC?.TrackValue?.CTV || []
-                              ).map((item, index) => {
-                                const minutes =
-                                  DatetimeHelpers.getTotalWorkingMinutes([item])
-                                return (
-                                  <div
-                                    key={index}
-                                    className="pb-3 mb-3 border-bottom"
-                                  >
-                                    <div className="fw-500">
-                                      {item.CheckIn &&
-                                      moment(item.CheckIn).isValid()
-                                        ? moment(item.CheckIn).format(
-                                            'DD/MM/YYYY'
-                                          )
-                                        : 'Chưa có ngày check-in'}
+                              {(rowData?.TrackValue?.CTV || []).map(
+                                (item, index) => {
+                                  const minutes =
+                                    DatetimeHelpers.getTotalWorkingMinutes([
+                                      item
+                                    ])
+                                  return (
+                                    <div
+                                      key={index}
+                                      className="pb-3 mb-3 border-bottom"
+                                    >
+                                      <div className="fw-500">
+                                        {item.CheckIn &&
+                                        moment(item.CheckIn).isValid()
+                                          ? moment(item.CheckIn).format(
+                                              'DD/MM/YYYY'
+                                            )
+                                          : 'Chưa có ngày check-in'}
+                                      </div>
+                                      <div className="mt-1">
+                                        IN:{' '}
+                                        {item.CheckIn &&
+                                        moment(item.CheckIn).isValid()
+                                          ? moment(item.CheckIn).format('HH:mm')
+                                          : '--:--'}{' '}
+                                        - OUT:{' '}
+                                        {item.CheckOut &&
+                                        moment(item.CheckOut).isValid()
+                                          ? moment(item.CheckOut).format(
+                                              'HH:mm'
+                                            )
+                                          : '--:--'}
+                                      </div>
+                                      <div className="mt-1">
+                                        {minutes} phút ÷ 60 ×{' '}
+                                        {PriceHelper.formatVND(
+                                          rowData?.LUONG_GIO_TANG_CA_OFF
+                                        )}{' '}
+                                        × 2 ={' '}
+                                        {PriceHelper.formatVND(
+                                          (minutes / 60) *
+                                            (rowData?.LUONG_GIO_TANG_CA_OFF ||
+                                              0) *
+                                            2
+                                        )}{' '}
+                                        đ
+                                      </div>
                                     </div>
-                                    <div className="mt-1">
-                                      IN:{' '}
-                                      {item.CheckIn &&
-                                      moment(item.CheckIn).isValid()
-                                        ? moment(item.CheckIn).format('HH:mm')
-                                        : '--:--'}{' '}
-                                      - OUT:{' '}
-                                      {item.CheckOut &&
-                                      moment(item.CheckOut).isValid()
-                                        ? moment(item.CheckOut).format('HH:mm')
-                                        : '--:--'}
-                                    </div>
-                                    <div className="mt-1">
-                                      {minutes} phút ÷ 60 ×{' '}
-                                      {PriceHelper.formatVND(
-                                        rowData?.LUONG_GIO_TANG_CA_OFF
-                                      )}{' '}
-                                      × 2 ={' '}
-                                      {PriceHelper.formatVND(
-                                        (minutes / 60) *
-                                          (rowData?.LUONG_GIO_TANG_CA_OFF ||
-                                            0) *
-                                          2
-                                      )}{' '}
-                                      đ
-                                    </div>
-                                  </div>
-                                )
-                              })}
+                                  )
+                                }
+                              )}
                             </PayrollDetailTooltip>
                           </div>
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.TANG_CA_LE)}
-                          {rowData?.NGAY_CONG_LE > 0 && (
-                            <span className="pl-1">
-                              ({rowData?.NGAY_CONG_LE})
-                            </span>
-                          )}
+                          <div className="flex items-center justify-between w-full gap-1">
+                            {PriceHelper.formatVND(rowData?.TANG_CA_LE)}
+                            <AttendanceDetails
+                              id={`attendance-TANG_CA_LE-${rowData?.User?.ID}`}
+                              title="Tăng ca lễ"
+                              totalLabel="Tổng cộng"
+                              total={rowData?.TANG_CA_LE}
+                              trackValue={rowData}
+                              groups={[
+                                { key: 'TANG_CA_LE', title: 'Tăng ca lễ' }
+                              ]}
+                            />
+                          </div>
                         </td>
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           <div className="flex items-center justify-between w-full gap-1">

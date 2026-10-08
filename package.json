@@ -67,7 +67,7 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test",
+        "test": "react-scripts test --roots src tests --testMatch \"**/__tests__/**/*.{js,jsx,ts,tsx}\" \"**/*.{spec,test}.{js,jsx,ts,tsx}\"",
         "eject": "react-scripts eject",
         "lint": "eslint --ext js,jsx src/",
         "lint:fix": "eslint --fix --ext js,jsx src/",
