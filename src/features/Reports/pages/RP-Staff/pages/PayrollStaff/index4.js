@@ -49,6 +49,77 @@ let NGUONG_TNCN = [
   }
 ]
 
+const PayrollDetailTooltip = ({
+  id,
+  title,
+  groups = [],
+  dailySalary,
+  total,
+  totalLabel = 'Tổng trừ',
+  children
+}) => {
+  const [pinned, setPinned] = useState(false)
+
+  return Number(total) > 0 ? (
+    <OverlayTrigger
+      rootClose
+      trigger={[]}
+      show={pinned}
+      onToggle={() => setPinned(false)}
+      placement="left"
+      overlay={
+        <Popover
+          id={id}
+          className="shadow-lg"
+          style={{ width: 320, maxWidth: 'calc(100vw - 32px)' }}
+        >
+          <Popover.Body
+            className="text-left"
+            style={{ maxHeight: 300, overflowY: 'auto' }}
+          >
+            <div className="mb-3 fw-600">{title}</div>
+            {children ||
+              groups.map(({ title, dates, multiplier }) => (
+                <div key={title} className="pb-3 mb-3 border-bottom">
+                  <div className="fw-500">
+                    {title}: {dates.length} ngày
+                  </div>
+                  <div className="mt-1 text-break">
+                    {dates.length
+                      ? dates
+                          .map(item => moment(item.Date).format('DD/MM/YYYY'))
+                          .join(', ')
+                      : 'Không có ngày nghỉ'}
+                  </div>
+                  <div className="mt-1">
+                    {dates.length} × {PriceHelper.formatVND(dailySalary || 0)} ×{' '}
+                    {multiplier} ={' '}
+                    {PriceHelper.formatVND(
+                      dates.length * (dailySalary || 0) * multiplier
+                    )}
+                  </div>
+                </div>
+              ))}
+            <div className="gap-2 d-flex justify-content-between fw-600">
+              <span>{totalLabel}</span>
+              <span>{PriceHelper.formatVND(total || 0)}</span>
+            </div>
+          </Popover.Body>
+        </Popover>
+      }
+    >
+      <button
+        type="button"
+        onClick={() => setPinned(value => !value)}
+        aria-label={`Chi tiết ${title.toLowerCase()}`}
+        className="inline-flex items-center justify-center p-0 bg-transparent border-0 rounded cursor-pointer w-7 h-7 text-warning"
+      >
+        <i className="fa-solid fa-circle-info" aria-hidden="true"></i>
+      </button>
+    </OverlayTrigger>
+  ) : null
+}
+
 const OverlayHH = ({ rowData, filters }) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
@@ -617,12 +688,12 @@ function PayrollStaff4(props) {
 
               newItem['WorkTrackDates'] = DatetimeHelpers.splitWorkTrackDates(
                 Dates,
-                NGAY_NGHI_CO_DINH,
-                true
-                // item.Rosters &&
-                //   item.Rosters.filter(
-                //     x => !x?.WorkShiftType || x?.WorkShiftType.length === 0
-                //   )
+                null, //dayoff
+                true,
+                item.Rosters &&
+                  item.Rosters.filter(
+                    x => !x?.WorkShiftType || x?.WorkShiftType.length === 0
+                  )
               )
             }
             return {
@@ -721,6 +792,28 @@ function PayrollStaff4(props) {
               item?.TrackValue.DI_SOM + item?.TrackValue.VE_MUON
             )
 
+            let TOTAL_TIME_CTV =
+              DatetimeHelpers.getTotalWorkingMinutes(
+                newObj?.BANGLUONGBC?.TrackValue?.CTV || []
+              ) * 2
+
+            newObj['TANG_CA_OFF'] = 0
+            newObj['LUONG_GIO_TANG_CA_OFF'] = 0
+            if (item?.User?.WorkTimeSetting) {
+              let WorkTimeSetting = JSON.parse(item?.User?.WorkTimeSetting)
+              if (Number(WorkTimeSetting?.SalaryHours) > 0) {
+                newObj['LUONG_GIO_TANG_CA_OFF'] = Number(
+                  WorkTimeSetting.SalaryHours
+                )
+                newObj['TANG_CA_OFF'] =
+                  (TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours
+
+                newObj['DI_SOM_VE_MUON'] =
+                  newObj['DI_SOM_VE_MUON'] -
+                  (TOTAL_TIME_CTV / 2 / 60) * WorkTimeSetting?.SalaryHours
+              }
+            }
+
             newObj['NGHI_TRU_LUONG'] = 0
             newObj['NGHI_TRU_LUONG_NOT_PHEP'] = 0
 
@@ -749,20 +842,6 @@ function PayrollStaff4(props) {
                 (item?.WorkTrackDates?.weekendNoLeave?.length || 0) *
                   newObj['LUONG_NGAY_CONG'] *
                   4
-            }
-
-            let TOTAL_TIME_CTV =
-              DatetimeHelpers.getTotalWorkingMinutes(
-                newObj?.BANGLUONGBC?.TrackValue?.CTV || []
-              ) * 2
-
-            newObj['TANG_CA_OFF'] = 0
-            if (item?.User?.WorkTimeSetting) {
-              let WorkTimeSetting = JSON.parse(item?.User?.WorkTimeSetting)
-              if (Number(WorkTimeSetting?.SalaryHours) > 0) {
-                newObj['TANG_CA_OFF'] =
-                  (TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours
-              }
             }
 
             let NGAY_CONG_LE =
@@ -1191,7 +1270,75 @@ function PayrollStaff4(props) {
                           {PriceHelper.formatVND(rowData?.DI_SOM_VE_MUON)}
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(rowData?.TANG_CA_OFF)}
+                          <div className="flex items-center justify-between w-full gap-1">
+                            {PriceHelper.formatVND(rowData?.TANG_CA_OFF)}
+                            <PayrollDetailTooltip
+                              id={`overtime-off-${rowData?.User?.ID}`}
+                              title="Tăng ca OFF"
+                              total={rowData?.TANG_CA_OFF}
+                              totalLabel="Tổng tăng ca OFF"
+                            >
+                              <div className="mb-3">
+                                <div>
+                                  Lương giờ:{' '}
+                                  {PriceHelper.formatVND(
+                                    rowData?.LUONG_GIO_TANG_CA_OFF
+                                  )}{' '}
+                                  đ/giờ
+                                </div>
+                                <div className="mt-1">
+                                  Số phút ÷ 60 × lương giờ × 2
+                                </div>
+                              </div>
+                              {(
+                                rowData?.BANGLUONGBC?.TrackValue?.CTV || []
+                              ).map((item, index) => {
+                                const minutes =
+                                  DatetimeHelpers.getTotalWorkingMinutes([item])
+                                return (
+                                  <div
+                                    key={index}
+                                    className="pb-3 mb-3 border-bottom"
+                                  >
+                                    <div className="fw-500">
+                                      {item.CheckIn &&
+                                      moment(item.CheckIn).isValid()
+                                        ? moment(item.CheckIn).format(
+                                            'DD/MM/YYYY'
+                                          )
+                                        : 'Chưa có ngày check-in'}
+                                    </div>
+                                    <div className="mt-1">
+                                      IN:{' '}
+                                      {item.CheckIn &&
+                                      moment(item.CheckIn).isValid()
+                                        ? moment(item.CheckIn).format('HH:mm')
+                                        : '--:--'}{' '}
+                                      - OUT:{' '}
+                                      {item.CheckOut &&
+                                      moment(item.CheckOut).isValid()
+                                        ? moment(item.CheckOut).format('HH:mm')
+                                        : '--:--'}
+                                    </div>
+                                    <div className="mt-1">
+                                      {minutes} phút ÷ 60 ×{' '}
+                                      {PriceHelper.formatVND(
+                                        rowData?.LUONG_GIO_TANG_CA_OFF
+                                      )}{' '}
+                                      × 2 ={' '}
+                                      {PriceHelper.formatVND(
+                                        (minutes / 60) *
+                                          (rowData?.LUONG_GIO_TANG_CA_OFF ||
+                                            0) *
+                                          2
+                                      )}{' '}
+                                      đ
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </PayrollDetailTooltip>
+                          </div>
                         </td>
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {PriceHelper.formatVND(rowData?.TANG_CA_LE)}
@@ -1202,45 +1349,72 @@ function PayrollStaff4(props) {
                           )}
                         </td>
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          <div className="flex justify-between w-full">
+                          <div className="flex items-center justify-between w-full gap-1">
                             {PriceHelper.formatVND(rowData?.NGHI_TRU_LUONG)}
-                            <OverlayTrigger
-                              rootClose
-                              trigger="click"
-                              key="top"
-                              placement="top"
-                              overlay={
-                                <Popover id={`popover-positioned-top`}>
-                                  <Popover.Body className="p-0">
-                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                                      <span>Nghỉ thường</span>
-                                      <span>
-                                        {PriceHelper.formatVND(
-                                          rowData?.NGHI_TRU_LUONG -
-                                            rowData?.NGHI_TRU_LUONG_CO_PHEP
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md d-flex justify-content-between">
-                                      <span>Nghỉ thường (Có phép)</span>
-                                      <span>
-                                        {PriceHelper.formatVND(
-                                          rowData?.NGHI_TRU_LUONG_CO_PHEP
-                                        )}
-                                      </span>
-                                    </div>
-                                  </Popover.Body>
-                                </Popover>
-                              }
-                            >
-                              <i className="fa-solid fa-circle-info text-warning"></i>
-                            </OverlayTrigger>
+                            <PayrollDetailTooltip
+                              id={`leave-deduction-permitted-${rowData?.User?.ID}`}
+                              title="Nghỉ trừ lương có phép"
+                              dailySalary={rowData?.LUONG_NGAY_CONG}
+                              total={rowData?.NGHI_TRU_LUONG}
+                              groups={[
+                                {
+                                  title: 'Nghỉ thường — ngày thường (T2–T6)',
+                                  dates:
+                                    rowData?.WorkTrackDates?.weekdayLeave || [],
+                                  multiplier: 1
+                                },
+                                {
+                                  title: 'Nghỉ thường — cuối tuần (T7, CN)',
+                                  dates:
+                                    rowData?.WorkTrackDates?.weekendLeave || [],
+                                  multiplier: 2
+                                },
+                                {
+                                  title: 'Nghỉ có phép — ngày thường (T2–T6)',
+                                  dates:
+                                    rowData?.WorkTrackDates
+                                      ?.weekdayPermittedLeave || [],
+                                  multiplier: 1
+                                },
+                                {
+                                  title: 'Nghỉ có phép — cuối tuần (T7, CN)',
+                                  dates:
+                                    rowData?.WorkTrackDates
+                                      ?.weekendPermittedLeave || [],
+                                  multiplier: 1
+                                }
+                              ]}
+                            />
                           </div>
                         </td>
                         <td className="p-3 bg-white max-w-[220px] min-w-[220px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
-                          {PriceHelper.formatVND(
-                            rowData?.NGHI_TRU_LUONG_NOT_PHEP
-                          )}
+                          <div className="flex items-center justify-between w-full gap-1">
+                            {PriceHelper.formatVND(
+                              rowData?.NGHI_TRU_LUONG_NOT_PHEP
+                            )}
+                            <PayrollDetailTooltip
+                              id={`leave-deduction-unpermitted-${rowData?.User?.ID}`}
+                              title="Nghỉ trừ lương không phép"
+                              dailySalary={rowData?.LUONG_NGAY_CONG}
+                              total={rowData?.NGHI_TRU_LUONG_NOT_PHEP}
+                              groups={[
+                                {
+                                  title: 'Ngày thường (T2–T6)',
+                                  dates:
+                                    rowData?.WorkTrackDates?.weekdayNoLeave ||
+                                    [],
+                                  multiplier: 2
+                                },
+                                {
+                                  title: 'Cuối tuần (T7, CN)',
+                                  dates:
+                                    rowData?.WorkTrackDates?.weekendNoLeave ||
+                                    [],
+                                  multiplier: 4
+                                }
+                              ]}
+                            />
+                          </div>
                         </td>
 
                         <td className="p-3 bg-white max-w-[180px] min-w-[180px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">

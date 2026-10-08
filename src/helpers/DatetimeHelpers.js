@@ -124,11 +124,11 @@ const splitWorkTrackDates = (
     .map(x => weekMap[x.trim().toUpperCase()])
     .filter(x => x !== undefined)
 
-  // Nếu Rosters có dữ liệu thì ưu tiên ngày nghỉ theo Rosters
-  const hasRosters = Array.isArray(Rosters) && Rosters.length > 0
+  // Chỉ dùng ngày nghỉ theo Rosters khi dayoffs là null
+  const useRosters = dayoffs === null
 
   const rosterDateSet = new Set(
-    hasRosters
+    useRosters && Array.isArray(Rosters)
       ? Rosters.map(item => moment(item.Date).format('YYYY-MM-DD'))
       : []
   )
@@ -156,13 +156,13 @@ const splitWorkTrackDates = (
 
   /*
    * Không WorkTrack + bỏ ngày nghỉ:
-   * - Có Rosters: bỏ những ngày nằm trong Rosters
-   * - Không có Rosters: bỏ ngày nghỉ cố định theo dayoffs
+   * - dayoffs là null: bỏ những ngày nằm trong Rosters
+   * - dayoffs khác null: bỏ ngày nghỉ cố định theo dayoffs
    */
   const noWorkTrackExcludeDayoffs = noWorkTrack.filter(item => {
     const date = moment(item.Date).format('YYYY-MM-DD')
 
-    if (hasRosters) {
+    if (useRosters) {
       return !rosterDateSet.has(date)
     }
 

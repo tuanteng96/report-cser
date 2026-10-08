@@ -9,7 +9,7 @@ if (DevHelpers.isDevelopment()) {
     },
     Groups: [
       {
-        Title: '12731.order'
+        Title: '11342.order'
       },
       {
         Title: 'Administrator'
@@ -24,7 +24,7 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Quản lý cơ sở'
       },
       {
-        ID: 12731,
+        ID: 11342,
         Title: 'Cser Hà Nội'
       },
       {
@@ -32,18 +32,18 @@ if (DevHelpers.isDevelopment()) {
         Title: 'Cser HCM'
       },
       {
-        ID: 12731,
+        ID: 11342,
         Title: 'CS tổng hợp'
       }
     ],
-    CrStockID: 12731,
+    CrStockID: 11342,
     rightsSum: {
       report: {
         IsAllStock: true,
         hasRight: true,
         stocks: [
           {
-            ID: 12731,
+            ID: 11342,
             Title: 'Cser Hà Nội'
           },
           {
@@ -51,7 +51,7 @@ if (DevHelpers.isDevelopment()) {
             Title: 'Cser HCM'
           },
           {
-            ID: 12731,
+            ID: 11342,
             Title: 'CS tổng hợp'
           }
         ],
@@ -458,7 +458,7 @@ if (DevHelpers.isDevelopment()) {
               text: 'Báo cáo',
               stocksList: [
                 {
-                  ID: 12731,
+                  ID: 11342,
                   Title: 'Cser Hà Nội'
                 },
                 {
@@ -466,7 +466,7 @@ if (DevHelpers.isDevelopment()) {
                   Title: 'Cser HCM'
                 },
                 {
-                  ID: 12731,
+                  ID: 11342,
                   Title: 'CS tổng hợp'
                 }
               ],
@@ -477,7 +477,7 @@ if (DevHelpers.isDevelopment()) {
                     items: [
                       {
                         text: 'Tổng quan',
-                        stocks: '12731',
+                        stocks: '11342',
                         jdata: {
                           paths: ['/bao-cao-ngay/danh-sach'],
                           url: '/bao-cao-ngay/tong-quan'
@@ -485,7 +485,7 @@ if (DevHelpers.isDevelopment()) {
                       },
                       {
                         text: 'Khách hàng',
-                        stocks: '12731',
+                        stocks: '11342',
                         jdata: {
                           paths: ['/khach-hang/chi-tiet-ngay'],
                           url: '/bao-cao-ngay/khach-hang'
@@ -505,7 +505,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/doanh-so'
                         },
-                        stocks: '12731,12731'
+                        stocks: '11342,11342'
                       },
                       {
                         text: 'Sản phẩm - dịch vụ bán ra',
@@ -516,7 +516,7 @@ if (DevHelpers.isDevelopment()) {
                           ],
                           url: '/ban-hang/sp-dv-ban-ra'
                         },
-                        stocks: '12731,12731'
+                        stocks: '11342,11342'
                       }
                     ]
                   }
@@ -535,7 +535,7 @@ if (DevHelpers.isDevelopment()) {
                   name: 'adminTools_byStock',
                   IsAllStock: false,
                   hasRight: true,
-                  stocksList: [{ ID: 12731 }, { ID: 12731 }]
+                  stocksList: [{ ID: 11342 }, { ID: 11342 }]
                 }
               ]
             }
@@ -551,7 +551,7 @@ if (DevHelpers.isDevelopment()) {
                   name: 'xuat_nhap_diem',
                   IsAllStock: true,
                   hasRight: true,
-                  stocksList: [{ ID: 12731 }, { ID: 12709 }]
+                  stocksList: [{ ID: 11342 }, { ID: 12709 }]
                 }
               ]
             }
@@ -561,7 +561,7 @@ if (DevHelpers.isDevelopment()) {
     }
   }
   window.token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxIiwiVG9rZW5JZCI6IjEyMjU4MDk0NzU4MDA4ODkiLCJuYmYiOjE3OTAyNjMxODUsImV4cCI6MTg3NjY2MzE4NSwiaWF0IjoxNzkwMjYzMTg1fQ.XBXHobyZVmdI_a2MhA-e9mAkapdjxkXeyGZ4PF14YcA'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBdXRoMlR5cGUiOiJVc2VyRW50IiwiSUQiOiIxMDgwOCIsIlRva2VuSWQiOiIxMTI2MjAzMzYwNTAwMjQxIiwibmJmIjoxNzkxMDQ1NzEyLCJleHAiOjE4Nzc0NDU3MTIsImlhdCI6MTc5MTA0NTcxMn0.6QW7AYyxLhRHhmFc8oyqixsEIxUhJn8ECUG5kOQwuaM'
 }
 const Auth = createSlice({
   name: 'auth',
