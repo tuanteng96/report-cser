@@ -810,25 +810,26 @@ function FilterList({
                           />
                         </div>
                       )}
-                      {Number(values?.ShowsType) !== 2 && 'TypeCN' in values && (
-                        <div className="form-group mb-20px">
-                          <label>Loại</label>
-                          <Select
-                            isMulti
-                            menuPosition="fixed"
-                            isClearable={true}
-                            name="TypeCN"
-                            placeholder="Chọn loại"
-                            classNamePrefix="select"
-                            options={TypeCNList}
-                            className="select-control"
-                            value={values.TypeCN}
-                            onChange={otp => {
-                              setFieldValue('TypeCN', otp)
-                            }}
-                          />
-                        </div>
-                      )}
+                      {Number(values?.ShowsType) !== 2 &&
+                        'TypeCN' in values && (
+                          <div className="form-group mb-20px">
+                            <label>Loại</label>
+                            <Select
+                              isMulti
+                              menuPosition="fixed"
+                              isClearable={true}
+                              name="TypeCN"
+                              placeholder="Chọn loại"
+                              classNamePrefix="select"
+                              options={TypeCNList}
+                              className="select-control"
+                              value={values.TypeCN}
+                              onChange={otp => {
+                                setFieldValue('TypeCN', otp)
+                              }}
+                            />
+                          </div>
+                        )}
                       {'Loai' in values && (
                         <div className="form-group mb-20px">
                           <label>Loại</label>

@@ -637,7 +637,7 @@ function Home(props) {
     //       <div className="spinner spinner-primary w-40px"></div> Đang tải ...
     //     </div>
     //   )
-    const indexList = [0, 1, 2, 3, 4, 5, 6] // cột rowSpan
+    const indexList = [0, 1, 2, 3, 4, 5, 6, 7] // cột rowSpan
     if (rowData._debtIndex > 0) {
       indexList.forEach(index => {
         const cell = cells[index]

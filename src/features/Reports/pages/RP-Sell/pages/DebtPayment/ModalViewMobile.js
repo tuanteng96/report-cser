@@ -24,12 +24,13 @@ function ModalViewMobile({ show, onHide, data }) {
       scrollable={true}
     >
       <div className="modal-view-head align-items-baseline px-15px py-8px">
-        <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
+        <div className="flex-1 modal-view-title text-uppercase font-size-lg fw-500 pr-15px">
           Ngày{' '}
-          {data?.CreateDate && moment(data?.CreateDate).format('DD-MM-YYYY')}
+          {data?.CreateDate &&
+            moment(data?.CreateDate).format('HH:mm DD/MM/YYYY')}
         </div>
         <div
-          className="modal-view-close font-size-h3 w-20px text-center"
+          className="text-center modal-view-close font-size-h3 w-20px"
           onClick={onHide}
         >
           <i className="fa-light fa-xmark"></i>
@@ -42,7 +43,7 @@ function ModalViewMobile({ show, onHide, data }) {
       >
         <div className="py-5px">
           <div className="px-15px d-flex justify-content-between py-12px line-height-sm">
-            <div className="fw-600 text-uppercase text-muted font-size-smm pr-10px flex-1 text-truncate">
+            <div className="flex-1 fw-600 text-uppercase text-muted font-size-smm pr-10px text-truncate">
               Tổng thanh toán nợ
             </div>
             <div className="fw-600 font-size-mdd w-60 text-end">
@@ -55,24 +56,24 @@ function ModalViewMobile({ show, onHide, data }) {
             data.ListCustomer &&
             data.ListCustomer.map((item, index) => (
               <div
-                className="border mb-15px shadows border-gray-200 rounded"
+                className="border border-gray-200 rounded mb-15px shadows"
                 key={index}
               >
-                <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
                   <div>Tên khách hàng</div>
                   <div className="fw-600">{item.MemberName}</div>
                 </div>
-                <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
                   <div>Số điện thoại</div>
                   <div className="fw-600">{item.MemberPhone}</div>
                 </div>
-                <div className="d-flex justify-content-between border-bottom border-gray-200 p-12px">
+                <div className="border-gray-200 d-flex justify-content-between border-bottom p-12px">
                   <div>Thanh toán nợ</div>
                   <div className="fw-600">
                     {PriceHelper.formatVND(item.TTToanNo)}
                   </div>
                 </div>
-                <div className="border-bottom border-gray-200 p-12px">
+                <div className="border-gray-200 border-bottom p-12px">
                   <div>Đơn hàng</div>
                   <div>
                     {item.ListOrders &&
@@ -88,6 +89,10 @@ function ModalViewMobile({ show, onHide, data }) {
                             <div className="fw-600">#{order.Id}</div>
                           </div>
                           <div className="d-flex py-3px">
+                            <div className="pr-5px">Cơ sở</div>
+                            <div className="fw-600">{order.StockTitle}</div>
+                          </div>
+                          <div className="d-flex py-3px">
                             <div className="pr-5px">Thanh toán nợ</div>
                             <div className="fw-600">
                               {PriceHelper.formatVND(order.TTToanNo)}
@@ -97,7 +102,7 @@ function ModalViewMobile({ show, onHide, data }) {
                             order.OrderItems.map(
                               (orderItem, orderItemIndex) => (
                                 <div
-                                  className="border-top border-gray-200 pt-8px mt-8px"
+                                  className="border-gray-200 border-top pt-8px mt-8px"
                                   key={orderItemIndex}
                                 >
                                   <div className="d-flex py-3px">
@@ -126,7 +131,7 @@ function ModalViewMobile({ show, onHide, data }) {
                                               {orderItem.Id}
                                             </Popover.Header>
                                             <Popover.Body className="p-0">
-                                              <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                              <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                                 <span>Tiền mặt</span>
                                                 <span>
                                                   {PriceHelper.formatVND(
@@ -134,7 +139,7 @@ function ModalViewMobile({ show, onHide, data }) {
                                                   )}
                                                 </span>
                                               </div>
-                                              <div className="py-10px px-15px fw-600 font-size-md border-bottom border-gray-200 d-flex justify-content-between">
+                                              <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
                                                 <span>Chuyển khoản</span>
                                                 <span>
                                                   {PriceHelper.formatVND(
@@ -158,7 +163,7 @@ function ModalViewMobile({ show, onHide, data }) {
                                           {PriceHelper.formatVND(
                                             orderItem.DaThToan
                                           )}
-                                          <i className="fa-solid fa-circle-exclamation cursor-pointer text-warning pl-5px"></i>
+                                          <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning pl-5px"></i>
                                         </div>
                                       </OverlayTrigger>
                                     </div>

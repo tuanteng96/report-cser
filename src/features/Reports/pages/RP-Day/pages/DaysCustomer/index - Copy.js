@@ -62,7 +62,7 @@ const DetailRenderer = ({ filters, ...props }) => {
     }
 
     const newArray = []
-    for (let [index, obj] of result.entries()) {
+    for (let obj of result) {
       for (let [o, child] of obj.children.entries()) {
         let newObj = {
           ...child,

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { createPortal } from 'react-dom'
@@ -22,25 +22,22 @@ function PickerPay({ children, data, CrStockID, refetch }) {
     Users: []
   })
 
-  useEffect(() => {
-    if (visible) {
-      setInitialValues({
-        Users: data
-          ? data.map(x => ({
-              ...x,
-              Payment:
-                x?.CON_LAI > 0
-                  ? x?.CON_LAI > x.TOI_DA_UNG_LUONG
-                    ? x.TOI_DA_UNG_LUONG
-                    : x?.CON_LAI
-                  : 0
-            }))
-          : null
-      })
-    }
-  }, [visible])
-
-  const open = () => setVisible(true)
+  const open = () => {
+    setInitialValues({
+      Users: data
+        ? data.map(x => ({
+            ...x,
+            Payment:
+              x?.CON_LAI > 0
+                ? x?.CON_LAI > x.TOI_DA_UNG_LUONG
+                  ? x.TOI_DA_UNG_LUONG
+                  : x?.CON_LAI
+                : 0
+          }))
+        : null
+    })
+    setVisible(true)
+  }
   const onHide = () => setVisible(false)
 
   let elRef = useRef(null)

@@ -764,6 +764,8 @@ function OverviewCustomer() {
             show={isModalMobile}
             onHide={HideModalMobile}
             data={initialValuesMobile}
+            columns={columns}
+            title={initialValuesMobile?.FullName}
           />
         </div>
       </div>

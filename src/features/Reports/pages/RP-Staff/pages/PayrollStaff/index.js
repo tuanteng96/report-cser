@@ -1302,6 +1302,8 @@ function PayrollStaff(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={initialValuesMobile?.Staff?.FullName}
           filters={filters}
           OverlayLCS={OverlayLCS}
           OverlayLT={OverlayLT}

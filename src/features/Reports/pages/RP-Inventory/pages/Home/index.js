@@ -378,6 +378,8 @@ function Home(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={initialValuesMobile?.ProdTitle}
         />
       </div>
     </div>

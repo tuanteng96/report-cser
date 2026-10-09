@@ -1443,6 +1443,12 @@ function OverviewService(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={
+            filters.ShowsX === '1'
+              ? initialValuesMobile?.User?.FullName
+              : initialValuesMobile?.MemberName
+          }
           checkFCostCost={checkFCostCost}
           checkPriceCost={checkPriceCost}
           filters={filters}

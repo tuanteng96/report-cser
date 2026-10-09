@@ -122,6 +122,79 @@ function BirthdayCustomer(props) {
     return styles
   }
 
+  const columns = [
+    {
+      dataField: '',
+      text: 'STT',
+      formatter: (cell, row, rowIndex) => (
+        <span className="font-number">
+          {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
+        </span>
+      ),
+      headerStyle: () => {
+        return { width: '60px' }
+      },
+      headerAlign: 'center',
+      style: { textAlign: 'center' },
+      attrs: { 'data-title': 'STT' }
+    },
+    {
+      dataField: 'Id',
+      text: 'ID',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => <div>#{row.Id}</div>,
+      attrs: { 'data-title': 'ID' },
+      headerStyle: () => {
+        return { minWidth: '150px', width: '150px' }
+      }
+    },
+    {
+      dataField: 'FullName',
+      text: 'Tên khách hàng',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => row.FullName || 'Chưa có',
+      attrs: { 'data-title': 'Tên khách hàng' },
+      headerStyle: () => {
+        return { minWidth: '250px', width: '250px' }
+      }
+    },
+    {
+      dataField: 'Phone',
+      text: 'Số điện thoại',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => row.Phone || 'Chưa có',
+      attrs: { 'data-title': 'Số điện thoại' },
+      headerStyle: () => {
+        return { minWidth: '250px', width: '250px' }
+      }
+    },
+    {
+      dataField: 'Birthday',
+      text: 'Ngày sinh',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => moment(row.Birthday).format('HH:mm DD/MM/YYYY'),
+      attrs: { 'data-title': 'Ngày sinh' },
+      headerStyle: () => {
+        return { minWidth: '250px', width: '250px' }
+      }
+    },
+    {
+      dataField: 'Gender',
+      text: 'Giới tính',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => (row?.Gender === 0 ? 'Nam' : 'Nữ'),
+      attrs: { 'data-title': 'Giới tính' },
+      headerStyle: () => {
+        return { minWidth: '200px', width: '200px' }
+      }
+    }
+  ]
+
   return (
     <div className="py-main">
       <div className="subheader d-flex justify-content-between align-items-center">
@@ -206,79 +279,7 @@ function BirthdayCustomer(props) {
                 setFilters({ ...filters, Pi: Pi })
               }
             }}
-            columns={[
-              {
-                dataField: '',
-                text: 'STT',
-                formatter: (cell, row, rowIndex) => (
-                  <span className="font-number">
-                    {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                  </span>
-                ),
-                headerStyle: () => {
-                  return { width: '60px' }
-                },
-                headerAlign: 'center',
-                style: { textAlign: 'center' },
-                attrs: { 'data-title': 'STT' }
-              },
-              {
-                dataField: 'Id',
-                text: 'ID',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => <div>#{row.Id}</div>,
-                attrs: { 'data-title': 'ID' },
-                headerStyle: () => {
-                  return { minWidth: '150px', width: '150px' }
-                }
-              },
-              {
-                dataField: 'FullName',
-                text: 'Tên khách hàng',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.FullName || 'Chưa có',
-                attrs: { 'data-title': 'Tên khách hàng' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'Phone',
-                text: 'Số điện thoại',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => row.Phone || 'Chưa có',
-                attrs: { 'data-title': 'Số điện thoại' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'Birthday',
-                text: 'Ngày sinh',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) =>
-                  moment(row.Birthday).format('HH:mm DD/MM/YYYY'),
-                attrs: { 'data-title': 'Ngày sinh' },
-                headerStyle: () => {
-                  return { minWidth: '250px', width: '250px' }
-                }
-              },
-              {
-                dataField: 'Gender',
-                text: 'Giới tính',
-                //headerAlign: "center",
-                //style: { textAlign: "center" },
-                formatter: (cell, row) => (row?.Gender === 0 ? 'Nam' : 'Nữ'),
-                attrs: { 'data-title': 'Giới tính' },
-                headerStyle: () => {
-                  return { minWidth: '200px', width: '200px' }
-                }
-              }
-            ]}
+            columns={columns}
             loading={loading}
             keyField="Id"
             className="table-responsive-attr"
@@ -290,6 +291,8 @@ function BirthdayCustomer(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={initialValuesMobile?.FullName}
         />
       </div>
     </div>

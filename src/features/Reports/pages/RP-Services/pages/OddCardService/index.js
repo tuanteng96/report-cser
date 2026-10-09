@@ -502,6 +502,8 @@ function OddCardService(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={initialValuesMobile?.Title}
           transformDetail={transformDetail}
         />
       </div>

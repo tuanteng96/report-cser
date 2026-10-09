@@ -471,6 +471,7 @@ function ExpenseCustomer(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
         />
       </div>
     </div>

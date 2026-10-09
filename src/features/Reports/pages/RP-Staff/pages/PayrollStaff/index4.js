@@ -52,84 +52,6 @@ let NGUONG_TNCN = [
   }
 ]
 
-const OverlayHH = ({ rowData, filters }) => {
-  const [show, setShow] = useState(false)
-  const [values, setValues] = useState(null)
-  const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    show && getDetail()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show])
-
-  const getDetail = () => {
-    setLoading(true)
-    reportsApi
-      .getDetailPayroll(
-        {
-          UserID: rowData.User.ID,
-          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
-        },
-        'HOA_HONG'
-      )
-      .then(({ data }) => {
-        setValues(data ? data.filter(x => x.Value > 0) : null)
-        setLoading(false)
-      })
-  }
-
-  return (
-    <OverlayTrigger
-      rootClose
-      trigger="click"
-      key="bottom"
-      placement="bottom"
-      overlay={
-        <Popover id={`popover-positioned-top` + rowData?.User.ID}>
-          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
-            Hoa hồng - {rowData?.User.FullName}
-          </Popover.Header>
-          <Popover.Body
-            className="p-0"
-            style={{
-              maxHeight: '250px',
-              overflow: 'auto'
-            }}
-          >
-            {loading && (
-              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                <span>Đang tải ...</span>
-              </div>
-            )}
-            {!loading && (
-              <>
-                {values &&
-                  values.map((item, index) => (
-                    <div
-                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
-                      key={index}
-                    >
-                      <span>{item.StockTitle}</span>
-                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
-                    </div>
-                  ))}
-              </>
-            )}
-          </Popover.Body>
-        </Popover>
-      }
-      onEntered={() => setShow(true)}
-      onExited={() => setShow(false)}
-    >
-      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
-        <div>{PriceHelper.formatVND(rowData?.BANGLUONGBC?.HOA_HONG)}</div>
-        <div>
-          <i className="fa-solid fa-circle-info text-warning"></i>
-        </div>
-      </div>
-    </OverlayTrigger>
-  )
-}
-
 const OverlayLT = ({ rowData, filters }) => {
   const [show, setShow] = useState(false)
   const [values, setValues] = useState(null)
@@ -208,167 +130,6 @@ const OverlayLT = ({ rowData, filters }) => {
   )
 }
 
-const OverlayDS = ({ rowData, filters }) => {
-  const [show, setShow] = useState(false)
-  const [values, setValues] = useState(null)
-  const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    show && getDetail()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show])
-
-  const getDetail = () => {
-    setLoading(true)
-    reportsApi
-      .getDetailPayroll(
-        {
-          UserID: rowData.User.ID,
-          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
-        },
-        'DOANH_SO'
-      )
-      .then(({ data }) => {
-        setValues(data ? data.filter(x => x.Value > 0) : null)
-        setLoading(false)
-      })
-  }
-
-  return (
-    <OverlayTrigger
-      rootClose
-      trigger="click"
-      key="bottom"
-      placement="bottom"
-      overlay={
-        <Popover id={`popover-positioned-top` + rowData?.User.ID}>
-          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
-            Doanh số - {rowData?.User.FullName}
-          </Popover.Header>
-          <Popover.Body
-            className="p-0"
-            style={{
-              maxHeight: '250px',
-              overflow: 'auto'
-            }}
-          >
-            {loading && (
-              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                <span>Đang tải ...</span>
-              </div>
-            )}
-            {!loading && (
-              <>
-                {values &&
-                  values.map((item, index) => (
-                    <div
-                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
-                      key={index}
-                    >
-                      <span>{item.StockTitle}</span>
-                      <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
-                    </div>
-                  ))}
-              </>
-            )}
-          </Popover.Body>
-        </Popover>
-      }
-      onEntered={() => setShow(true)}
-      onExited={() => setShow(false)}
-    >
-      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
-        <div>{PriceHelper.formatVND(rowData?.BANGLUONGBC?.DOANH_SO_THANG)}</div>
-        <div>
-          <i className="fa-solid fa-circle-info text-warning"></i>
-        </div>
-      </div>
-    </OverlayTrigger>
-  )
-}
-
-const OverlayLCS = ({ rowData, filters }) => {
-  const [show, setShow] = useState(false)
-  const [values, setValues] = useState(null)
-  const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    show && getDetail()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show])
-
-  const getDetail = () => {
-    setLoading(true)
-    reportsApi
-      .getDetailPayroll(
-        {
-          UserID: rowData.User.ID,
-          Mon: filters.Mon ? moment(filters.Mon).format('MM/YYYY') : ''
-        },
-        'LUONG_CHINH_SACH'
-      )
-      .then(({ data }) => {
-        setValues(data ? data.filter(x => x.Value > 0) : null)
-        setLoading(false)
-      })
-  }
-
-  return (
-    <OverlayTrigger
-      rootClose
-      trigger="click"
-      key="bottom"
-      placement="bottom"
-      overlay={
-        <Popover id={`popover-positioned-top` + rowData?.User?.ID}>
-          <Popover.Header className="py-10px text-uppercase fw-600" as="h3">
-            Tổng lương chấm công - {rowData?.User.FullName}
-          </Popover.Header>
-          <Popover.Body
-            className="p-0"
-            style={{
-              maxHeight: '250px',
-              overflow: 'auto'
-            }}
-          >
-            {loading && (
-              <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                <span>Đang tải ...</span>
-              </div>
-            )}
-            {!loading && (
-              <>
-                {values &&
-                  values.map((item, index) => (
-                    <div
-                      className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
-                      key={index}
-                    >
-                      <span>{item.StockTitle}</span>
-                      <span>
-                        {PriceHelper.formatVNDPositive(
-                          (item?.Qty / (item?.Qty + 1)) *
-                            rowData?.TONG_LUONG_CHAM_CONG
-                        )}
-                      </span>
-                    </div>
-                  ))}
-              </>
-            )}
-          </Popover.Body>
-        </Popover>
-      }
-      onEntered={() => setShow(true)}
-      onExited={() => setShow(false)}
-    >
-      <div className="cursor-pointer d-flex justify-content-between w-100 align-items-center">
-        <div>{PriceHelper.formatVND(rowData?.TONG_LUONG_CHAM_CONG)}</div>
-        <div>
-          <i className="fa-solid fa-circle-info text-warning"></i>
-        </div>
-      </div>
-    </OverlayTrigger>
-  )
-}
-
 const OverlayTHUONGPHAT = ({ rowData, Key, Title = '', Value }) => {
   return (
     <OverlayTrigger
@@ -421,36 +182,10 @@ const OverlayTHUONGPHAT = ({ rowData, Key, Title = '', Value }) => {
   )
 }
 
-function getPercentValue(ranges, value) {
-  const item = ranges.find(([from, to]) => {
-    if (from === null) return value >= to
-    if (to === null) return value >= from
-
-    return value >= from && value < to
-  })
-  if (!item)
-    return {
-      from: 0,
-      to: 0,
-      percent: 0,
-      amount: 0
-    }
-
-  const [from, to, percent] = item
-
-  return {
-    from,
-    to,
-    percent,
-    amount: Math.floor((value * percent) / 100)
-  }
-}
-
 function PayrollStaff4(props) {
-  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || [],
-    GlobalConfig: auth?.GlobalConfig
+    Stocks: auth?.Info?.Stocks || []
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -803,7 +538,7 @@ function PayrollStaff4(props) {
 
   useEffect(() => {
     if (isSuccess && !isFetching) {
-      isFilter && setIsFilter(false)
+      setIsFilter(false)
     }
   }, [isSuccess, isFetching])
 

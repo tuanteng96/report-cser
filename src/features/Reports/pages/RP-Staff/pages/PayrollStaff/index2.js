@@ -504,7 +504,7 @@ function PayrollStaff2(props) {
 
   useEffect(() => {
     if (isSuccess && !isFetching) {
-      isFilter && setIsFilter(false)
+      setIsFilter(false)
     }
   }, [isSuccess, isFetching])
 

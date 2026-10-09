@@ -29,7 +29,6 @@ import SelectCustomType from '../Selects/SelectCustomType'
 import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
-import moment from 'moment'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { SelectJobs } from '../Selects/SelectJobs'
 
@@ -332,7 +331,7 @@ function FilterListSales({
     if (StocksList && StocksList.length > 0) {
       updateStocksRole && updateStocksRole(StocksList)
     }
-  }, [StocksList])
+  }, [StocksList, updateStocksRole])
 
   const filterTypeTC = (inputValue, optionFilter) => {
     if (optionFilter !== '') {

@@ -194,7 +194,7 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
                   <div>Ngày bán</div>
                   <div className="fw-600">
                     {item?.CreateDate
-                      ? moment(item.CreateDate).format('HH:mm DD/MM/YYYY')
+                      ? moment(item.CreateDate).format('DD/MM/YYYY')
                       : 'Không có'}
                   </div>
                 </div>

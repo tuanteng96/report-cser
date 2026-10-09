@@ -358,10 +358,9 @@ function getPercentValue(ranges, value) {
 }
 
 function PayrollStaff3(props) {
-  const { CrStockID, Stocks, GlobalConfig } = useSelector(({ auth }) => ({
+  const { CrStockID, Stocks } = useSelector(({ auth }) => ({
     CrStockID: auth?.Info?.CrStockID || '',
-    Stocks: auth?.Info?.Stocks || [],
-    GlobalConfig: auth?.GlobalConfig
+    Stocks: auth?.Info?.Stocks || []
   }))
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
@@ -461,11 +460,6 @@ function PayrollStaff3(props) {
           }))
           .map(item => {
             let newObj = { ...item }
-            let LUONG_BHXH = getValueByName({
-              Items: item?.SETTINGS?.Settings,
-              Name: 'LUONG_DONG_BH'
-            })
-
             let LUONG_NOP_BHXH = getValueByName({
               Items: item?.SETTINGS?.Settings,
               Name: 'LUONG_NOP_BHXH'
@@ -697,7 +691,7 @@ function PayrollStaff3(props) {
 
   useEffect(() => {
     if (isSuccess && !isFetching) {
-      isFilter && setIsFilter(false)
+      setIsFilter(false)
     }
   }, [isSuccess, isFetching])
 
@@ -706,10 +700,6 @@ function PayrollStaff3(props) {
       PermissionHelpers.ErrorAccess(error?.message || 'Có lỗi xảy ra')
     }
   }, [isError, error])
-
-  const RoundAmount = price => {
-    return Math.round(price / 1000) * 1000
-  }
 
   const getValueByName = ({ Items, Name }) => {
     if (!Items || Items.length === 0 || !Name) return 0

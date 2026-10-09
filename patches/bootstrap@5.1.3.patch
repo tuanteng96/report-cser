@@ -1,0 +1,13 @@
+diff --git a/scss/forms/_form-check.scss b/scss/forms/_form-check.scss
+index 6321b4100272dfbb516d494d32014270ea938823..f87912ec5e1ac0eb5b81a7db28f4e354f3024f55 100644
+--- a/scss/forms/_form-check.scss
++++ b/scss/forms/_form-check.scss
+@@ -25,7 +25,7 @@
+   background-size: contain;
+   border: $form-check-input-border;
+   appearance: none;
+-  color-adjust: exact; // Keep themed appearance for print
++  print-color-adjust: exact; // Keep themed appearance for print
+   @include transition($form-check-transition);
+ 
+   &[type="checkbox"] {

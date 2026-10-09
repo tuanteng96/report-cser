@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import FilterList from 'src/components/Filter/FilterList'
-import { useSelector } from 'react-redux'
 import _ from 'lodash'
 import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import reportsApi from 'src/api/reports.api'
@@ -14,32 +13,15 @@ import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 moment.locale('vi')
 
 function SalesStocks(props) {
-  const { Stocks } = useSelector(({ auth }) => ({
-    GlobalConfig: auth?.GlobalConfig,
-    Stocks: auth?.Info?.Stocks || []
-  }))
   const [filters, setFilters] = useState({
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
     Thu_khac: ''
   })
-  const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [ListData, setListData] = useState([])
   const [loading, setLoading] = useState(false)
   const [loadingExport, setLoadingExport] = useState(false)
-
-  useEffect(() => {
-    const index = Stocks.findIndex(
-      item => Number(item.ID) === Number(filters.StockID)
-    )
-    if (index > -1) {
-      setStockName(Stocks[index].Title)
-    } else {
-      setStockName('Tất cả cơ sở')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
 
   useEffect(() => {
     getList()

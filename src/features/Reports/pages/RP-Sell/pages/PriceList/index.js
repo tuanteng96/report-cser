@@ -590,6 +590,8 @@ function PriceList(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={initialValuesMobile?.Ten}
         />
       </div>
     </div>

@@ -167,7 +167,7 @@ const convertArray3 = (arrays, configs) => {
     return newArray
   }
 
-  for (let [index, obj] of arrays.entries()) {
+  for (let obj of arrays) {
     let newObj = { ...obj }
     let Threshold = null
     if (configs) {
@@ -369,7 +369,7 @@ function SalesStaff(props) {
         .sort((a, b) => new Date(a.CreateDate) - new Date(b.CreateDate))
 
       setListData(newRs)
-      setListDataMobile(convertArray2(rs, configs, filters))
+      setListDataMobile(newRs)
       setTotalSales({
         TongThuong: newRs.reduce((acc, curr) => acc + curr.ThresholdRewards, 0)
       })
@@ -566,7 +566,6 @@ function SalesStaff(props) {
 
       let rs = []
       let index = 0
-      const ps = 1500
 
       Swal.update({
         title: `Đang tải dữ liệu ${index}/${list.length} cơ sở...`,
@@ -1448,6 +1447,7 @@ function SalesStaff(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
           GlobalConfig={GlobalConfig}
           filters={filters}
         />

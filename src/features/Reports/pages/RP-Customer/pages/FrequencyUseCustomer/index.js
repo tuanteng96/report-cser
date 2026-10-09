@@ -710,6 +710,8 @@ function FrequencyUseCustomer(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={View === 0 ? columns : columns2}
+          View={View}
         />
       </div>
     </div>

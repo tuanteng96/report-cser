@@ -352,7 +352,7 @@ const convertArray = arrays => {
     return newArray
   }
 
-  for (let [index, obj] of arrays.entries()) {
+  for (let obj of arrays) {
     if (obj?.OrderInDateInfo && obj?.OrderInDateInfo.length > 0) {
       for (let [i, order] of (obj?.OrderInDateInfo || []).entries()) {
         const newObj = {
@@ -1206,6 +1206,12 @@ function BookService(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={
+            initialValuesMobile?.Member?.MobilePhone !== '0000000000'
+              ? initialValuesMobile?.Member?.FullName
+              : initialValuesMobile?.FullName
+          }
         />
       </div>
     </div>

@@ -261,6 +261,8 @@ function ConvertCustomer(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={initialValuesMobile?.UserName}
         />
       </div>
     </div>

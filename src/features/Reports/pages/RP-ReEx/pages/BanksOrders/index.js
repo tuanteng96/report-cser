@@ -344,6 +344,8 @@ function BanksOrders(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={initialValuesMobile?.KhachHang}
         />
       </div>
     </div>

@@ -92,6 +92,131 @@ function ListReEx({
     return value
   }
 
+  const columns = [
+    {
+      dataField: '',
+      text: 'STT',
+      formatter: (cell, row, rowIndex) => (
+        <span className="font-number">
+          {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
+        </span>
+      ),
+      headerStyle: () => {
+        return { width: '60px' }
+      },
+      headerAlign: 'center',
+      style: { textAlign: 'center' },
+      attrs: { 'data-title': 'STT' },
+      classes: 'id-custom-cell'
+    },
+    {
+      dataField: 'CreateDate',
+      text: 'Ngày',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) =>
+        moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
+      attrs: { 'data-title': 'Ngày' },
+      headerStyle: () => {
+        return { minWidth: '150px', width: '150px' }
+      }
+    },
+    {
+      dataField: 'TM',
+      text: 'Tiền mặt',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => PriceHelper.formatVNDPositive(row.TM),
+      attrs: { 'data-title': 'Tiền mặt' },
+      headerStyle: () => {
+        return { minWidth: '180px', width: '180px' }
+      }
+    },
+    {
+      dataField: 'CK',
+      text: 'Chuyển khoản',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => PriceHelper.formatVND(row.CK),
+      attrs: { 'data-title': 'Chuyển khoản' },
+      headerStyle: () => {
+        return { minWidth: '180px', width: '180px' }
+      }
+    },
+    {
+      dataField: 'QT',
+      text: 'Quẹt thẻ',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => PriceHelper.formatVND(row.QT),
+      attrs: { 'data-title': 'Quẹt thẻ' },
+      headerStyle: () => {
+        return { minWidth: '180px', width: '180px' }
+      }
+    },
+    {
+      dataField: 'Tag',
+      text: 'Tag',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => `${TransferTags(row.Tag)}`,
+      attrs: { 'data-title': 'Tag' },
+      headerStyle: () => {
+        return { minWidth: '180px', width: '180px' }
+      }
+    },
+    {
+      dataField: 'Content',
+      text: 'Nội dung',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => row.Content || 'Không có nội dung',
+      attrs: { 'data-title': 'Nội dung' },
+      headerStyle: () => {
+        return { minWidth: '200px', width: '200px' }
+      }
+    },
+    {
+      dataField: 'StockName',
+      text: 'Cơ sở',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) => row.StockName || 'Tất cả cơ sở',
+      attrs: { 'data-title': 'Cơ sở' },
+      headerStyle: () => {
+        return { minWidth: '200px', width: '200px' }
+      }
+    },
+    {
+      dataField: 'Member',
+      text: 'Khách hàng',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) =>
+        row.Member
+          ? `${row.Member.FullName} (#${row.Member.ID})`
+          : 'Chưa xác định',
+      attrs: { 'data-title': 'Khách hàng' },
+      headerStyle: () => {
+        return { minWidth: '220px', width: '220px' }
+      }
+    },
+    {
+      dataField: 'Staff',
+      text: 'Nhân viên tạo',
+      //headerAlign: "center",
+      //style: { textAlign: "center" },
+      formatter: (cell, row) =>
+        row.Staff
+          ? `${row.Staff.FullName} (#${row.Staff.ID})`
+          : 'Chưa xác định',
+      attrs: { 'data-title': 'Nhân viên tạo' },
+      headerStyle: () => {
+        return { minWidth: '220px', width: '220px' }
+      }
+    }
+  ]
+
   return (
     <div className="bg-white rounded mt-25px">
       <div className="px-20px py-15px border-bottom border-gray-200 d-flex align-items-center justify-content-between flex-column flex-md-row">
@@ -206,130 +331,7 @@ function ListReEx({
               //setFilters({ ...filters, Pi: Pi })
             }
           }}
-          columns={[
-            {
-              dataField: '',
-              text: 'STT',
-              formatter: (cell, row, rowIndex) => (
-                <span className="font-number">
-                  {filters.Ps * (filters.Pi - 1) + (rowIndex + 1)}
-                </span>
-              ),
-              headerStyle: () => {
-                return { width: '60px' }
-              },
-              headerAlign: 'center',
-              style: { textAlign: 'center' },
-              attrs: { 'data-title': 'STT' },
-              classes: 'id-custom-cell'
-            },
-            {
-              dataField: 'CreateDate',
-              text: 'Ngày',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) =>
-                moment(row.CreateDate).format('HH:mm DD/MM/YYYY'),
-              attrs: { 'data-title': 'Ngày' },
-              headerStyle: () => {
-                return { minWidth: '150px', width: '150px' }
-              }
-            },
-            {
-              dataField: 'TM',
-              text: 'Tiền mặt',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVNDPositive(row.TM),
-              attrs: { 'data-title': 'Tiền mặt' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'CK',
-              text: 'Chuyển khoản',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.CK),
-              attrs: { 'data-title': 'Chuyển khoản' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'QT',
-              text: 'Quẹt thẻ',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => PriceHelper.formatVND(row.QT),
-              attrs: { 'data-title': 'Quẹt thẻ' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'Tag',
-              text: 'Tag',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => `${TransferTags(row.Tag)}`,
-              attrs: { 'data-title': 'Tag' },
-              headerStyle: () => {
-                return { minWidth: '180px', width: '180px' }
-              }
-            },
-            {
-              dataField: 'Content',
-              text: 'Nội dung',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.Content || 'Không có nội dung',
-              attrs: { 'data-title': 'Nội dung' },
-              headerStyle: () => {
-                return { minWidth: '200px', width: '200px' }
-              }
-            },
-            {
-              dataField: 'StockName',
-              text: 'Cơ sở',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) => row.StockName || 'Tất cả cơ sở',
-              attrs: { 'data-title': 'Cơ sở' },
-              headerStyle: () => {
-                return { minWidth: '200px', width: '200px' }
-              }
-            },
-            {
-              dataField: 'Member',
-              text: 'Khách hàng',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) =>
-                row.Member
-                  ? `${row.Member.FullName} (#${row.Member.ID})`
-                  : 'Chưa xác định',
-              attrs: { 'data-title': 'Khách hàng' },
-              headerStyle: () => {
-                return { minWidth: '220px', width: '220px' }
-              }
-            },
-            {
-              dataField: 'Staff',
-              text: 'Nhân viên tạo',
-              //headerAlign: "center",
-              //style: { textAlign: "center" },
-              formatter: (cell, row) =>
-                row.Staff
-                  ? `${row.Staff.FullName} (#${row.Staff.ID})`
-                  : 'Chưa xác định',
-              attrs: { 'data-title': 'Nhân viên tạo' },
-              headerStyle: () => {
-                return { minWidth: '220px', width: '220px' }
-              }
-            }
-          ]}
+          columns={columns}
           loading={loading}
           keyField="Id"
           className="table-responsive-attr"
@@ -351,6 +353,8 @@ function ListReEx({
         show={isModalMobile}
         onHide={HideModalMobile}
         data={initialValuesMobile}
+        columns={columns}
+        title={initialValuesMobile?.Content}
         TransferTags={TransferTags}
       />
     </div>

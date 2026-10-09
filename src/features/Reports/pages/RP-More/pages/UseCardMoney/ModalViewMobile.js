@@ -24,7 +24,7 @@ function ModalViewMobile({ show, onHide, data, translateType }) {
       <Fragment>
         <div className="modal-view-head align-items-baseline px-15px py-8px">
           <div className="modal-view-title text-uppercase font-size-lg fw-500 flex-1 pr-15px">
-            {moment(data?.CreateDate).format('DD-MM-YYYY HH:mm')}
+            {moment(data?.CreateDate).format('DD/MM/YYYY')}
           </div>
           <div
             className="modal-view-close font-size-h3 w-20px text-center"

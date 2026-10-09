@@ -2,3 +2,5 @@ allowBuilds:
   core-js: set this to true or false
   core-js-pure: set this to true or false
   node: set this to true or false
+patchedDependencies:
+  bootstrap@5.1.3: patches/bootstrap@5.1.3.patch

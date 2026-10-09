@@ -825,6 +825,8 @@ function ReExs(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          title={initialValuesMobile?.Content}
           TransferTags={TransferTags}
         />
       </div>

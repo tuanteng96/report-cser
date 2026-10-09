@@ -75,7 +75,10 @@ export default function PayrollDetailTooltip({
         }}
         className="inline-flex items-center justify-center p-0 bg-transparent border-0 rounded cursor-pointer w-7 h-7 shrink-0 text-warning"
       >
-        <i className="fa-solid fa-circle-info text-warning" aria-hidden="true"></i>
+        <i
+          className="fa-solid fa-circle-info text-warning"
+          aria-hidden="true"
+        ></i>
       </button>
     </OverlayTrigger>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { createPortal } from 'react-dom'
@@ -19,7 +19,7 @@ let CellEdit = ({ rowData, id, setId, onRefetch, hasRight }) => {
   const didMount = useRef(false) // chặn submit lần đầu
   const userChange = useRef(false) // chỉ submit khi user gõ
 
-  const addMutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async body => {
       let data = await reportsApi.updateGuestsCount(body)
       await onRefetch()
@@ -27,22 +27,26 @@ let CellEdit = ({ rowData, id, setId, onRefetch, hasRight }) => {
     }
   })
 
-  const onSubmit = newValue => {
-    setId(rowData?.ID)
-    addMutation.mutate(
-      {
-        CheckInID: rowData?.ID,
-        Count: newValue
-      },
-      {
-        onSuccess: data => {
-          setId(null)
+  const onSubmit = useCallback(
+    newValue => {
+      setId(rowData?.ID)
+      mutate(
+        {
+          CheckInID: rowData?.ID,
+          Count: newValue
+        },
+        {
+          onSuccess: data => {
+            setId(null)
+          }
         }
-      }
-    )
-  }
+      )
+    },
+    [mutate, rowData?.ID, setId]
+  )
 
-  const handleValueChange = val => {
+  const handleValueChange = (val, sourceInfo) => {
+    if (sourceInfo.source !== 'event') return
     userChange.current = true
     setValue(
       typeof val?.floatValue !== 'undefined' ? val.floatValue : val.value
@@ -60,11 +64,12 @@ let CellEdit = ({ rowData, id, setId, onRefetch, hasRight }) => {
     if (!userChange.current) return
 
     const timeout = setTimeout(() => {
+      userChange.current = false
       onSubmit(value)
     }, 500)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [value, onSubmit])
   if (hasRight) {
     return (
       <div className="position-relative">
@@ -238,7 +243,6 @@ function PickerView({ children, refetch, filters }) {
         cellRenderer: props => (
           <CellEdit
             {...props}
-            refetch={refetch}
             id={id}
             setId={setId}
             onRefetch={onRefetch}
@@ -252,7 +256,7 @@ function PickerView({ children, refetch, filters }) {
         }
       }
     ],
-    [params, id, hasRight]
+    [params, id, hasRight, onRefetch]
   )
 
   return (

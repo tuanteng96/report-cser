@@ -928,6 +928,8 @@ function RoseStaff(props) {
           show={isModalMobile}
           onHide={HideModalMobile}
           data={initialValuesMobile}
+          columns={columns}
+          filters={filters}
         />
       </div>
       {filters.ShowsX === '3' && (
