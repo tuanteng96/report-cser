@@ -24,7 +24,7 @@ export function TableRowDetails({ columns, data }) {
           {column.title || column.text}
         </div>
         <div
-          className="fw-600 font-size-mdd text-end"
+          className="modal-view-value fw-600 font-size-mdd text-end"
           style={{ flex: '1 1 60%', minWidth: 0, overflowWrap: 'anywhere' }}
         >
           {typeof column.cellRenderer === 'function'

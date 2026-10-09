@@ -159,7 +159,7 @@ function ModalViewMobile({ show, onHide, data }) {
                                           </Popover>
                                         }
                                       >
-                                        <div className="d-flex justify-content-between align-items-center">
+                                        <div className="d-flex justify-content-end align-items-center">
                                           {PriceHelper.formatVND(
                                             orderItem.DaThToan
                                           )}

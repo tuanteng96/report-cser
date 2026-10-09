@@ -3953,9 +3953,14 @@ window.EzsExportExcel = function ({ Url, Data, hideLoading }) {
                   .getActiveSheet()
                   .addSpan(3, 6, e, 1, GC.Spread.Sheets.SheetArea.viewport)
 
+                workbook
+                  .getActiveSheet()
+                  .addSpan(3, 7, e, 1, GC.Spread.Sheets.SheetArea.viewport)
+
                 formatCenter(3, 4)
                 formatCenter(3, 5)
                 formatCenter(3, 6)
+                formatCenter(3, 7)
               } else {
                 workbook
                   .getActiveSheet()
@@ -3984,17 +3989,28 @@ window.EzsExportExcel = function ({ Url, Data, hideLoading }) {
                     1,
                     GC.Spread.Sheets.SheetArea.viewport
                   )
+                workbook
+                  .getActiveSheet()
+                  .addSpan(
+                    e - arr1[i] + 3,
+                    7,
+                    arr1[i],
+                    1,
+                    GC.Spread.Sheets.SheetArea.viewport
+                  )
                 formatCenter(e - arr1[i] + 3, 4)
                 formatCenter(e - arr1[i] + 3, 5)
                 formatCenter(e - arr1[i] + 3, 6)
+                formatCenter(e - arr1[i] + 3, 7)
               }
             }
             //format number
             for (let i = 0; i <= arrListLength; i++) {
               workbook.getActiveSheet().setFormatter(i + 3, 3, '#,#')
-              workbook.getActiveSheet().setFormatter(i + 3, 6, '#,#')
+              workbook.getActiveSheet().setFormatter(i + 3, 7, '#,#')
               workbook.getActiveSheet().setFormatter(i + 3, 9, '#,#')
               workbook.getActiveSheet().setFormatter(i + 3, 10, '#,#')
+              workbook.getActiveSheet().setFormatter(i + 3, 11, '#,#')
             }
             for (let i = 1; i < columns; i++) {
               workbook.getActiveSheet().autoFitColumn(i)
@@ -4553,19 +4569,27 @@ window.EzsExportExcel = function ({ Url, Data, hideLoading }) {
             .getRange(2, 0, arrListLength, column)
             .borderTop(border)
           //filter
-          var cellrange = new GC.Spread.Sheets.Range(3, 0, Math.max(arrListLength - 1, 1), column)
+          var cellrange = new GC.Spread.Sheets.Range(
+            3,
+            0,
+            Math.max(arrListLength - 1, 1),
+            column
+          )
           var hideRowFilter = new GC.Spread.Sheets.Filter.HideRowFilter(
             cellrange
           )
           workbook.getActiveSheet().rowFilter(hideRowFilter)
 
           // Format only numeric columns; keep dates and phone numbers as text.
-          const numericColumns = Data.param.Body.ShowsX === '3' ? [5, 6, 7] : [2, 10]
+          const numericColumns =
+            Data.param.Body.ShowsX === '3' ? [5, 6, 7] : [2, 10]
           for (let i = 0; i < arrListLength - 1; i++) {
             for (const c of numericColumns) {
               workbook.getActiveSheet().setFormatter(i + 3, c, '#,##0')
             }
-            workbook.getActiveSheet().getCell(i + 3, 0)
+            workbook
+              .getActiveSheet()
+              .getCell(i + 3, 0)
               .hAlign(GC.Spread.Sheets.HorizontalAlign.center)
           }
           workbook
@@ -4591,11 +4615,23 @@ window.EzsExportExcel = function ({ Url, Data, hideLoading }) {
 
           if (Data.param.Body.ShowsX === '3') {
             let Sums = []
-            Sums.push(['STT', 'ID NHÂN VIÊN', 'TÊN NHÂN VIÊN', 'HỆ SỐ DỊCH VỤ', 'TỔNG LƯƠNG'])
+            Sums.push([
+              'STT',
+              'ID NHÂN VIÊN',
+              'TÊN NHÂN VIÊN',
+              'HỆ SỐ DỊCH VỤ',
+              'TỔNG LƯƠNG'
+            ])
 
             if (Data.result.sum && Data.result.sum.length > 0) {
               for (let [i, item] of Data.result.sum.entries()) {
-                Sums.push([i + 1, item.UserID, item.UserFullName, item.TourSalaryRatio, item.Value])
+                Sums.push([
+                  i + 1,
+                  item.UserID,
+                  item.UserFullName,
+                  item.TourSalaryRatio,
+                  item.Value
+                ])
               }
             }
 
@@ -7038,7 +7074,12 @@ window.EzsExportNoFechExcel = function ({
             .borderBottom(border)
 
           // Filter
-          var cellrange = new GC.Spread.Sheets.Range(3, 0, Math.max(Data.length, 1), TotalColumn)
+          var cellrange = new GC.Spread.Sheets.Range(
+            3,
+            0,
+            Math.max(Data.length, 1),
+            TotalColumn
+          )
           active.rowFilter(new GC.Spread.Sheets.Filter.HideRowFilter(cellrange))
 
           // Format thưởng
@@ -10244,14 +10285,6 @@ function exportDebt(member, ShowsType) {
       var create = window.top.moment(e.CreateDate).format('DD/MM/YYYY')
       var id = e.Id
       arr1.push(e.ListDebt.length)
-      var conNo = 0
-      if (e.ListDebt.length == 1) {
-        conNo = e.ListDebt[0].ConNo
-      } else {
-        for (let i = 0; i < e.ListDebt.length; i++) {
-          conNo += e.ListDebt[i].ConNo
-        }
-      }
       e.ListDebt.map((el, i) => {
         let newArr = [
           stt + 1,
@@ -10261,7 +10294,7 @@ function exportDebt(member, ShowsType) {
           '#' + id,
           e.StockName,
           create,
-          i == 0 ? conNo : 0,
+          i == 0 ? e.TongNo : 0,
           el.ProdTitle,
           el.Qty,
           el.ToPay,

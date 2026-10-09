@@ -35,5 +35,9 @@
       position: relative;
       flex: 1 1 auto;
     }
+    .modal-view-value > .d-flex.justify-content-between {
+      justify-content: flex-end !important;
+      gap: 5px;
+    }
   }
 }

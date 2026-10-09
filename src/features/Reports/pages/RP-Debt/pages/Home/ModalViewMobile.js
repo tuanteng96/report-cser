@@ -105,7 +105,7 @@ function ModalViewMobile({ show, onHide, data, filters, formatText }) {
                               </Popover>
                             }
                           >
-                            <div className="d-flex justify-content-between align-items-center w-100">
+                            <div className="d-flex justify-content-end align-items-center w-100">
                               <span className="pl-5px font-number">
                                 {PriceHelper.formatVNDPositive(data[property])}
                               </span>
