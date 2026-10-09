@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { DatetimeHelpers } from 'src/helpers/DatetimeHelpers'
 
 // Công thức tính các khoản chấm công trên phiếu lương cá nhân.
@@ -118,36 +119,35 @@ export const calculateAttendanceSalary = salary => {
   newObj['TANG_CA_LE'] = 0
 
   for (let item of newObj['TANG_CA_LE_DS']) {
-    if (item?.Info?.Ratio?.ratio) {
-      let Ratio = Number(item?.Info?.WorkToday?.Value || 0)
-      if (!Number.isFinite(Ratio) || Ratio <= 0) continue
+    const Ratio = Number(item?.Info?.Ratio?.ratio)
+    if (Number.isFinite(Ratio) && Ratio > 0) {
+      let WorkTodayValue = Number(item?.Info?.WorkToday?.Value || 0)
       if (
         item?.Info?.WorkToday?.Title?.includes('CTV:') ||
         item?.Info?.WorkToday?.value?.includes('CTV-THEO-GIO') ||
         item?.Info?.WorkToday?.SubTitle?.includes('CTV:') ||
         item?.Info?.WorkToday?.label?.includes('CTV:')
       ) {
-        item.HolidayOvertimeValue +=
-          (DatetimeHelpers.getTotalWorkingMinutes([item]) / 60) *
+        const checkIn = moment(item.CheckIn)
+        const checkOut = moment(item.CheckOut)
+
+        newObj['TANG_CA_LE'] +=
+          (checkOut.diff(checkIn, 'minutes') / 60) *
           (newObj['LUONG_GIO_TANG_CA_OFF'] || 0) *
           Ratio
       } else {
-        item.HolidayOvertimeValue +=
-          (Ratio - Number(item?.Info?.WorkToday?.Value || 0) / Ratio) *
-          newObj['LUONG_NGAY_CONG']
+        newObj['TANG_CA_LE'] +=
+          (WorkTodayValue - WorkTodayValue / Ratio) * newObj['LUONG_NGAY_CONG']
 
         if (item?.Info?.['DI_SOM']?.Value) {
-          item.HolidayOvertimeValue += Number(
-            item?.Info?.['DI_SOM']?.Value / Ratio
-          )
+          const value = Number(item.Info['DI_SOM'].Value)
+          newObj['TANG_CA_LE'] += value - value / Ratio
         }
         if (item?.Info?.CheckOut?.['VE_MUON']?.Value) {
-          item.HolidayOvertimeValue += Number(
-            item?.Info?.CheckOut?.['VE_MUON']?.Value / Ratio
-          )
+          const value = Number(item.Info.CheckOut['VE_MUON'].Value)
+          newObj['TANG_CA_LE'] += value - value / Ratio
         }
       }
-      newObj['TANG_CA_LE'] += item.HolidayOvertimeValue
     }
   }
 
