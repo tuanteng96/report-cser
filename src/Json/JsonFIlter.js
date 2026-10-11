@@ -506,12 +506,20 @@ export const JsonFilter = {
   ],
   TypeInventory: [
     {
-      label: 'Sử dụng hết',
+      label: 'Dịch vụ hết buổi',
       value: 'Het'
     },
     {
-      label: 'Còn',
+      label: 'Dịch vụ còn buổi',
       value: 'Con'
+    },
+    {
+      label: 'Dịch vụ còn buổi hết hạn',
+      value: 'Conbuoihethan'
+    },
+    {
+      label: 'Dịch vụ bảo hành',
+      value: 'Baohanh'
     }
   ],
   ServiceStatusBook: [

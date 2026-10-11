@@ -197,10 +197,14 @@ function TotalCard(props) {
         key: 'MoneyEndDate',
         title: 'Hạn sử dụng',
         dataKey: 'MoneyEndDate',
-        cellRenderer: ({ rowData }) =>
-          rowData.MoneyEndDate
+        cellRenderer: ({ rowData }) => {
+          if (rowData.MoneyEndDate === null) {
+            return 'Không giới hạn'
+          }
+          return rowData.MoneyEndDate
             ? moment(rowData.MoneyEndDate).format('DD/MM/YYYY')
-            : '',
+            : ''
+        },
         width: 180,
         sortable: false,
         mobileOptions: {
