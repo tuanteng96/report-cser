@@ -105,7 +105,7 @@ export const calculateAttendanceSalary = salary => {
     if (Number(WorkTimeSetting?.SalaryHours) > 0) {
       newObj['LUONG_GIO_TANG_CA_OFF'] = Number(WorkTimeSetting.SalaryHours)
       newObj['TANG_CA_OFF'] =
-        (TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours
+        ((TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours) / 1.5
     }
   }
 
