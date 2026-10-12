@@ -78,7 +78,12 @@ function InventoryService(props) {
             delete rs.Items
           }
           const { Items, Total, PCount } = {
-            Items: data.result?.Items || [],
+            Items: data.result?.Items
+              ? data.result?.Items.map(x => ({
+                  ...x,
+                  MemberInfo: x?.MemberInfo ? JSON.parse(x?.MemberInfo) : null
+                }))
+              : [],
             Total: data.result?.Total || 0,
             PCount: data?.result?.PCount || 0
           }
@@ -150,9 +155,9 @@ function InventoryService(props) {
         }
       },
       {
-        key: 'SenderID',
+        key: 'MemberInfo.ID',
         title: 'Mã KH',
-        dataKey: 'SenderID',
+        dataKey: 'MemberInfo.ID',
         width: 150,
         sortable: false,
         mobileOptions: {
@@ -160,16 +165,16 @@ function InventoryService(props) {
         }
       },
       {
-        key: 'SenderName',
+        key: 'MemberInfo.FullName',
         title: 'Họ tên',
-        dataKey: 'SenderName',
+        dataKey: 'MemberInfo.FullName',
         width: 200,
         sortable: false
       },
       {
-        key: 'SenderPhone',
+        key: 'MemberInfo.MobilePhone',
         title: 'Số điện thoại',
-        dataKey: 'SenderPhone',
+        dataKey: 'MemberInfo.MobilePhone',
         width: 200,
         sortable: false
       },
@@ -245,18 +250,30 @@ function InventoryService(props) {
         }
       },
       {
-        key: 'SoLuong',
-        title: 'Số lượng',
-        dataKey: 'SoLuong',
+        key: 'Tong_buoi',
+        title: 'Tổng số buổi',
+        dataKey: 'Tong_buoi',
         width: 120,
         sortable: false,
-        mobileOptions: {
-          visible: true
-        },
         footerRenderer: () => (
-          <span className="font-size-md font-number">{TotalObj?.so_luong}</span>
+          <span className="font-size-md font-number">
+            {TotalObj?.tong_so_buoi}
+          </span>
         )
       },
+      // {
+      //   key: 'SoLuong',
+      //   title: 'Số lượng',
+      //   dataKey: 'SoLuong',
+      //   width: 120,
+      //   sortable: false,
+      //   mobileOptions: {
+      //     visible: true
+      //   },
+      //   footerRenderer: () => (
+      //     <span className="font-size-md font-number">{TotalObj?.so_luong}</span>
+      //   )
+      // },
       {
         key: 'Da_su_dung',
         title: 'Đã sử dụng',
@@ -284,23 +301,15 @@ function InventoryService(props) {
           </span>
         )
       },
-      {
-        key: 'Tong_buoi',
-        title: 'Tổng số buổi',
-        dataKey: 'Tong_buoi',
-        width: 120,
-        sortable: false,
-        footerRenderer: () => (
-          <span className="font-size-md font-number">
-            {TotalObj?.tong_so_buoi}
-          </span>
-        )
-      },
+
       {
         key: 'Tong_tien',
         title: 'Tổng số tiền',
         dataKey: 'Tong_tien',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Tong_tien),
+        cellRenderer: ({ rowData }) =>
+          rowData?.MemberInfo?.ID === rowData?.SenderID
+            ? PriceHelper.formatVND(rowData.Tong_tien)
+            : '',
         width: 180,
         sortable: false,
         footerRenderer: () => (
@@ -322,37 +331,40 @@ function InventoryService(props) {
         key: 'Da_Thanh_toan',
         title: 'Đã thanh toán',
         dataKey: 'Da_Thanh_toan',
-        cellRenderer: ({ rowData }) => (
-          <OverlayTrigger
-            rootClose
-            trigger="click"
-            key="top"
-            placement="top"
-            overlay={
-              <Popover id={`popover-positioned-top`}>
-                <Popover.Body className="p-0">
-                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                    <span>Tiền mặt</span>
-                    <span>{PriceHelper.formatVND(rowData?.tien_mat)}</span>
-                  </div>
-                  <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
-                    <span>Chuyển khoản</span>
-                    <span>{PriceHelper.formatVND(rowData?.ck)}</span>
-                  </div>
-                  <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
-                    <span>Quẹt thẻ</span>
-                    <span>{PriceHelper.formatVND(rowData?.qt)}</span>
-                  </div>
-                </Popover.Body>
-              </Popover>
-            }
-          >
-            <div className="d-flex justify-content-between align-items-center w-100">
-              {PriceHelper.formatVND(rowData.Da_Thanh_toan)}
-              <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning"></i>
-            </div>
-          </OverlayTrigger>
-        ),
+        cellRenderer: ({ rowData }) =>
+          rowData?.MemberInfo?.ID === rowData?.SenderID ? (
+            <OverlayTrigger
+              rootClose
+              trigger="click"
+              key="top"
+              placement="top"
+              overlay={
+                <Popover id={`popover-positioned-top`}>
+                  <Popover.Body className="p-0">
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                      <span>Tiền mặt</span>
+                      <span>{PriceHelper.formatVND(rowData?.tien_mat)}</span>
+                    </div>
+                    <div className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between">
+                      <span>Chuyển khoản</span>
+                      <span>{PriceHelper.formatVND(rowData?.ck)}</span>
+                    </div>
+                    <div className="py-10px px-15px fw-500 font-size-md d-flex justify-content-between">
+                      <span>Quẹt thẻ</span>
+                      <span>{PriceHelper.formatVND(rowData?.qt)}</span>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <div className="d-flex justify-content-between align-items-center w-100">
+                {PriceHelper.formatVND(rowData.Da_Thanh_toan)}
+                <i className="cursor-pointer fa-solid fa-circle-exclamation text-warning"></i>
+              </div>
+            </OverlayTrigger>
+          ) : (
+            ''
+          ),
         width: 180,
         sortable: false
       },
@@ -360,7 +372,10 @@ function InventoryService(props) {
         key: 'Vi',
         title: 'Ví',
         dataKey: 'Vi',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Vi),
+        cellRenderer: ({ rowData }) =>
+          rowData?.MemberInfo?.ID === rowData?.SenderID
+            ? PriceHelper.formatVND(rowData.Vi)
+            : '',
         width: 180,
         sortable: false
       },
@@ -368,7 +383,10 @@ function InventoryService(props) {
         key: 'The_tien',
         title: 'Thẻ tiền',
         dataKey: 'The_tien',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.The_tien),
+        cellRenderer: ({ rowData }) =>
+          rowData?.MemberInfo?.ID === rowData?.SenderID
+            ? PriceHelper.formatVND(rowData.The_tien)
+            : '',
         width: 180,
         sortable: false
       },
@@ -376,7 +394,10 @@ function InventoryService(props) {
         key: 'Cong_no',
         title: 'Công nợ',
         dataKey: 'Cong_no',
-        cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Cong_no),
+        cellRenderer: ({ rowData }) =>
+          rowData?.MemberInfo?.ID === rowData?.SenderID
+            ? PriceHelper.formatVND(rowData.Cong_no)
+            : '',
         width: 180,
         sortable: false
       }

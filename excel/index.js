@@ -705,9 +705,9 @@ window.EzsExportExcel = function ({ Url, Data, hideLoading }) {
             .getActiveSheet()
             .getCell(2, 0)
             .hAlign(GC.Spread.Sheets.HorizontalAlign.center)
-          for (let i = 0; i <= TotalRow; i++) {
+          for (let i = 0; i < TotalRow - 1; i++) {
             for (let j = 1; j < TotalColumn; j++) {
-              if (j > 6) {
+              if (j >= 11) {
                 workbook.getActiveSheet().setFormatter(i + 3, j, '#,#')
               }
             }
@@ -8308,7 +8308,6 @@ const CHI_TIET_SP_DV_BAN_RA = ({ Items }) => {
 
 const TON_DICH_VU = ({
   Items,
-  so_luong,
   da_su_dung,
   so_buoi_con,
   tong_so_buoi,
@@ -8326,10 +8325,9 @@ const TON_DICH_VU = ({
     'MÃ DỊCH VỤ',
     'TÊN DỊCH VỤ',
     'DỊCH VỤ GỐC',
-    'SỐ LƯỢNG',
+    'TỔNG SỐ BUỔI',
     'ĐÃ SỬ DỤNG',
     'SỐ BUỔI CÒN',
-    'TỔNG SỐ BUỔI',
     'TỔNG SỐ TIỀN',
     'GIÁ TRỊ CHƯA DÙNG',
     'ĐÃ THANH TOÁN',
@@ -8343,36 +8341,40 @@ const TON_DICH_VU = ({
   var newExport = [HeadTable]
   Items.map((item, index) => {
     let StockName = ''
-    if (window.top && window.top.Info.Stocks) {
-      let Stock = window.top.Info.Stocks.find(x => x.ID === item.StockID)
+    if (window.top?.Info?.Stocks) {
+      let Stock = window.top.Info.Stocks.find(x => Number(x.ID) === Number(item.StockID))
       if (Stock) StockName = Stock.Title
     }
 
+    const MemberInfo = typeof item.MemberInfo === 'string'
+      ? JSON.parse(item.MemberInfo)
+      : item.MemberInfo
+    const isSender = MemberInfo?.ID === item.SenderID
+
     const newArr = [
       index + 1,
-      item.SenderID,
-      item.SenderName,
-      item.SenderPhone,
+      MemberInfo?.ID || '',
+      MemberInfo?.FullName || '',
+      MemberInfo?.MobilePhone || '',
       StockName,
-      window.top.moment(item.NgayMua).format('DD/MM/YYYY'),
-      window.top.moment(item.NgayHetHan).format('DD/MM/YYYY'),
+      window.top.moment(item.NgayMua).format('DD-MM-YYYY'),
+      window.top.moment(item.NgayHetHan).format('DD-MM-YYYY'),
       item.MaDonHang,
       item.MaDichVu,
       item.Ten_dich_vu,
       item.Ton_dich_vu_goc,
-      item.SoLuong,
-      item.Da_su_dung,
-      (item.Tong_buoi || 0) - (item.Da_su_dung || 0),
       item.Tong_buoi,
-      item.Tong_tien,
-      item.CostTotal,
-      item.Da_Thanh_toan,
-      item.tien_mat,
-      item.ck,
-      item.qt,
-      item.Vi,
-      item.The_tien,
-      item.Cong_no
+      item.Da_su_dung || 0,
+      (item.Tong_buoi || 0) - (item.Da_su_dung || 0),
+      isSender ? item.Tong_tien || 0 : '',
+      item.CostTotal || 0,
+      isSender ? item.Da_Thanh_toan || 0 : '',
+      isSender ? item.tien_mat || 0 : '',
+      isSender ? item.ck || 0 : '',
+      isSender ? item.qt || 0 : '',
+      isSender ? item.Vi || 0 : '',
+      isSender ? item.The_tien || 0 : '',
+      isSender ? item.Cong_no || 0 : ''
     ]
     newExport.push(newArr)
   })
@@ -8389,10 +8391,9 @@ const TON_DICH_VU = ({
     '',
     '',
     '',
-    so_luong,
+    tong_so_buoi,
     da_su_dung,
     so_buoi_con,
-    tong_so_buoi,
     tong_so_tien,
     '',
     '',
@@ -12021,8 +12022,8 @@ function exportCardList(member) {
       '#' + item.Id,
       `${item.TenTheTien}${item.IsLock ? ` - Đã khóa` : ''}`,
       window.top.moment(item.CreateDate).format('HH:mm DD/MM/YYYY'),
-      item.MoneyEndDate
-        ? window.top.moment(item.MoneyEndDate).format('DD/MM/YYYY')
+      item.MoneyEndDate === null ? "Không giới hạn" :
+        item.MoneyEndDate ? window.top.moment(item.MoneyEndDate).format('DD/MM/YYYY')
         : '',
       item.GiaBan,
       item.TongGiaTri,
