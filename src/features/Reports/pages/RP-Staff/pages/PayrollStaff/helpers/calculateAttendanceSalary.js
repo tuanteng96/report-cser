@@ -94,8 +94,9 @@ export const calculateAttendanceSalary = salary => {
         4
   }
 
-  let TOTAL_TIME_CTV =
-    DatetimeHelpers.getTotalWorkingMinutes(newObj?.TrackValue?.CTV || []) * 2
+  let TOTAL_TIME_CTV = DatetimeHelpers.getTotalWorkingMinutes(
+    newObj?.TrackValue?.CTV || []
+  )
 
   newObj['TANG_CA_OFF'] = 0
   newObj['LUONG_GIO_TANG_CA_OFF'] = 0
@@ -105,7 +106,7 @@ export const calculateAttendanceSalary = salary => {
     if (Number(WorkTimeSetting?.SalaryHours) > 0) {
       newObj['LUONG_GIO_TANG_CA_OFF'] = Number(WorkTimeSetting.SalaryHours)
       newObj['TANG_CA_OFF'] =
-        ((TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours) / 1.5
+        (((TOTAL_TIME_CTV / 60) * WorkTimeSetting?.SalaryHours) / 1.5) * 2
     }
   }
 
