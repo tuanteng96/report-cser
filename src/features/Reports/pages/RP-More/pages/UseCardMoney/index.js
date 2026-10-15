@@ -223,11 +223,23 @@ function UseCardMoney(props) {
         width: 150,
         sortable: false
       },
+
       {
         key: 'Title',
         title: 'Tên thẻ tiền',
         dataKey: 'Title',
         width: 180,
+        sortable: false
+      },
+      {
+        key: 'Orderid',
+        title: 'ID đơn hàng',
+        dataKey: 'Orderid',
+        cellRenderer: ({ rowData }) => {
+          if (!rowData?.Orderid) return <></>
+          return rowData?.Orderid
+        },
+        width: 150,
         sortable: false
       },
       {

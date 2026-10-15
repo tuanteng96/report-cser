@@ -11940,6 +11940,7 @@ function exportUseCardList(member) {
     'SỬ DỤNG / HOÀN',
     'MÃ THẺ TIỀN',
     'TÊN THẺ TIỀN',
+    'ID ĐƠN HÀNG',
     'SỐ TIỀN',
     'SẢN PHẨM / DỊCH VỤ'
   ]
@@ -11978,6 +11979,7 @@ function exportUseCardList(member) {
           type,
           e.Code,
           e.Title,
+          e.Orderid ? e.Orderid : '',
           e.Value,
           useList
         ]

@@ -126,6 +126,17 @@ function ModalViewDetail({ show, onHide, Member }) {
         dataKey: 'Content',
         width: 200,
         sortable: false
+      },
+      {
+        key: 'Orderid',
+        title: 'Mã đơn hàng',
+        dataKey: 'Orderid',
+        cellRenderer: ({ rowData }) => {
+          if (!rowData?.Orderid) return <></>
+          return rowData?.Orderid
+        },
+        width: 150,
+        sortable: false
       }
     ],
     [filters]
