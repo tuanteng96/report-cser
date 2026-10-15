@@ -520,6 +520,10 @@ export const JsonFilter = {
     {
       label: 'Dịch vụ bảo hành',
       value: 'Baohanh'
+    },
+    {
+      label: 'Tồn phụ phí',
+      value: 'PHU_PHI_CON'
     }
   ],
   ServiceStatusBook: [
