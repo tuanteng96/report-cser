@@ -499,20 +499,23 @@ function PayrollStaff4(props) {
                 ? newObj['LUONG_CHIU_THUE_TNCN']
                 : 0
 
-            let THUE_TNCN = 0
+            let THUE_TNCN = getValueByName({
+              Items: item?.SETTINGS?.Settings,
+              Name: 'THUE_TNCN'
+            })
 
-            const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
-              item =>
-                newObj['LUONG_CHIU_THUE_TNCN'] > item.Min &&
-                (item.Max ? newObj['LUONG_CHIU_THUE_TNCN'] <= item.Max : true)
-            )
+            // const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
+            //   item =>
+            //     newObj['LUONG_CHIU_THUE_TNCN'] > item.Min &&
+            //     (item.Max ? newObj['LUONG_CHIU_THUE_TNCN'] <= item.Max : true)
+            // )
 
-            if (NGUONG_TNCN_CURRENT) {
-              THUE_TNCN =
-                NGUONG_TNCN_CURRENT.Value +
-                (newObj['LUONG_CHIU_THUE_TNCN'] - NGUONG_TNCN_CURRENT.Min) *
-                  (NGUONG_TNCN_CURRENT.PercentDifference / 100)
-            }
+            // if (NGUONG_TNCN_CURRENT) {
+            //   THUE_TNCN =
+            //     NGUONG_TNCN_CURRENT.Value +
+            //     (newObj['LUONG_CHIU_THUE_TNCN'] - NGUONG_TNCN_CURRENT.Min) *
+            //       (NGUONG_TNCN_CURRENT.PercentDifference / 100)
+            // }
 
             newObj['THUE_TNCN'] = THUE_TNCN
 
