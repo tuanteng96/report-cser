@@ -210,6 +210,19 @@ function InventoryService(props) {
         sortable: false
       },
       {
+        key: 'Ngaydungcuoi',
+        title: 'Ngày dùng cuối',
+        dataKey: 'Ngaydungcuoi',
+        cellRenderer: ({ rowData }) =>
+          rowData.Ngaydungcuoi ? (
+            moment(rowData.Ngaydungcuoi).format('DD-MM-YYYY')
+          ) : (
+            <></>
+          ),
+        width: 200,
+        sortable: false
+      },
+      {
         key: 'MaDonHang',
         title: 'Mã đơn hàng',
         dataKey: 'MaDonHang',
