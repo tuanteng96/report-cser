@@ -594,27 +594,27 @@ function SaleDetails(props) {
     }
   }
 
+  const salesProductParams = {
+    StockID: filters.StockID,
+    ProdOrService:
+      filters.ProdOrService?.value === '' ? '' : filters.ProdOrService?.value,
+    ProdIDs: filters.ProductIds
+      ? filters.ProductIds.map(x => x.value).toString()
+      : '',
+    BlockTime: [
+      moment(filters.DateStart).format('YYYY-MM-DD'),
+      moment(filters.DateEnd).format('YYYY-MM-DD')
+    ],
+    TagsOrder: filters?.TagsOrder?.value || '',
+    IsMember: filters?.IsMember !== '' ? filters?.IsMember : '',
+    Pi: filters.Pi,
+    Ps: filters.Ps || 20
+  }
+
   const useSalesProduct = useQuery({
     queryKey: ['SalesProductService3', filters],
     queryFn: async () => {
-      let rs = await reportsApi.getListSalesDetail2({
-        StockID: filters.StockID,
-        ProdOrService:
-          filters.ProdOrService?.value === ''
-            ? ''
-            : filters.ProdOrService?.value,
-        ProdIDs: filters.ProductIds
-          ? filters.ProductIds.map(x => x.value).toString()
-          : '',
-        BlockTime: [
-          moment(filters.DateStart).format('YYYY-MM-DD'),
-          moment(filters.DateEnd).format('YYYY-MM-DD')
-        ],
-        TagsOrder: filters?.TagsOrder?.value || '',
-        IsMember: filters?.IsMember !== '' ? filters?.IsMember : '',
-        Pi: filters.Pi,
-        Ps: filters.Ps || 20
-      })
+      let rs = await reportsApi.getListSalesDetail2(salesProductParams)
       return {
         ...rs?.data,
         Items: rs?.data?.Items.map(item => {
@@ -744,6 +744,7 @@ function SaleDetails(props) {
       if (filters.ShowsType === '2' || filters.ShowsType === '3') {
         reportsApi
           .getListSalesOnStock({
+            ...newFilters,
             From: moment(filters.DateStart).format('YYYY-MM-DD'),
             To: moment(filters.DateEnd).format('YYYY-MM-DD'),
             StockID: filters.StockID ? [filters.StockID] : [],
@@ -768,18 +769,7 @@ function SaleDetails(props) {
       } else if (filters.ShowsType === '4') {
         reportsApi
           .getListSalesDetail2({
-            StockID: filters.StockID,
-            ProdOrService:
-              filters.ProdOrService?.value === ''
-                ? ''
-                : filters.ProdOrService?.value,
-            ProdIDs: filters.ProductId?.value || '',
-            BlockTime: [
-              moment(filters.DateStart).format('YYYY-MM-DD'),
-              moment(filters.DateEnd).format('YYYY-MM-DD')
-            ],
-            TagsOrder: filters?.TagsOrder?.value || '',
-            IsMember: filters?.IsMember !== '' ? filters?.IsMember : '',
+            ...salesProductParams,
             Pi: 1,
             Ps: useSalesProduct?.data?.Total,
             ShowsType: filters.ShowsType
@@ -840,7 +830,7 @@ function SaleDetails(props) {
         ).format('DD/MM/YYYY')} - ${moment(filters2.DateEnd).format(
           'DD/MM/YYYY'
         )}`,
-        filters,
+        filters: filters2,
         Url: '/ban-hang/sp-dv-ban-ra-2',
         Data: data || null,
         hideLoading: () => {
