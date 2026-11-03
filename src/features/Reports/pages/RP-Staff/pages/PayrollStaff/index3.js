@@ -71,7 +71,11 @@ const OverlayHH = ({ rowData, filters }) => {
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
                     </div>
                   ))}
@@ -149,7 +153,11 @@ const OverlayLT = ({ rowData, filters }) => {
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
                     </div>
                   ))}
@@ -227,7 +235,11 @@ const OverlayDS = ({ rowData, filters }) => {
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
                     </div>
                   ))}
@@ -305,7 +317,11 @@ const OverlayLCS = ({ rowData, filters }) => {
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>
                         {PriceHelper.formatVNDPositive(
                           (item?.Qty / (item?.Qty + 1)) *
@@ -942,8 +958,10 @@ function PayrollStaff3(props) {
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.BANGLUONGBC?.DiemQL &&
                           rowData?.BANGLUONGBC?.DiemQL.length > 0
-                            ? rowData?.BANGLUONGBC?.DiemQL.map(
-                                stock => stock.StockTitle
+                            ? rowData?.BANGLUONGBC?.DiemQL.map(stock =>
+                                stock?.StockTitle === 'Quản lý cơ sở'
+                                  ? 'Cơ sở tổng (Công ty)'
+                                  : stock?.StockTitle
                               ).join(', ')
                             : 'Chưa xác định'}
                         </td>

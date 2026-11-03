@@ -109,7 +109,11 @@ const OverlayHH = ({
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
                     </div>
                   ))}
@@ -191,7 +195,11 @@ const OverlayLCS = ({
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
                     </div>
                   ))}
@@ -273,7 +281,11 @@ const OverlayLT = ({
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
                     </div>
                   ))}
@@ -355,7 +367,11 @@ const OverlayDS = ({
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>{PriceHelper.formatVNDPositive(item.Value)}</span>
                     </div>
                   ))}
@@ -477,7 +493,11 @@ const OverlayKPI = ({
                       className="border-gray-200 py-10px px-15px fw-600 font-size-md border-bottom d-flex justify-content-between"
                       key={index}
                     >
-                      <span>{item.StockTitle}</span>
+                      <span>
+                        {item.StockTitle === 'Quản lý cơ sở'
+                          ? 'Cơ sở tổng (Công ty)'
+                          : item.StockTitle}
+                      </span>
                       <span>
                         {PriceHelper.formatVNDPositive(
                           (item.Value * item.x) / 100
@@ -749,7 +769,13 @@ function PayrollStaff(props) {
         cellRenderer: ({ rowData }) => (
           <Text tooltipMaxWidth={300}>
             {rowData?.DiemQL && rowData?.DiemQL.length > 0
-              ? rowData?.DiemQL.map(stock => stock.StockTitle).join(', ')
+              ? rowData?.DiemQL.map(stock =>
+                  stock?.StockTitle === 'Quản lý cơ sở'
+                    ? 'Cơ sở tổng (Công ty)'
+                    : stock?.StockTitle
+                )
+                  .filter(Boolean)
+                  .join(', ')
               : 'Chưa xác định'}
           </Text>
         ),

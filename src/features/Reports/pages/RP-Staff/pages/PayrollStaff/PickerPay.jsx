@@ -230,7 +230,11 @@ function PickerPay({ children, data, CrStockID, refetch }) {
                                             rowData?.BANGLUONGBC?.DiemQL
                                               .length > 0
                                               ? rowData?.BANGLUONGBC?.DiemQL.map(
-                                                  stock => stock.StockTitle
+                                                  stock =>
+                                                    stock?.StockTitle ===
+                                                    'Quản lý cơ sở'
+                                                      ? 'Cơ sở tổng (Công ty)'
+                                                      : stock?.StockTitle
                                                 ).join(', ')
                                               : 'Chưa xác định'}
                                           </td>

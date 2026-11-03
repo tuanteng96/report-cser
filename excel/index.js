@@ -1,4 +1,4 @@
-﻿var sv = '/admin/SpreadJSExcelIO/13/'
+var sv = '/admin/SpreadJSExcelIO/13/'
 
 function parseKvString(s) {
   // 1) chuẩn hoá | thành newline
@@ -6990,7 +6990,10 @@ window.EzsExportNoFechExcel = function ({
               rowData?.BANGLUONGBC?.DiemQL &&
               rowData?.BANGLUONGBC?.DiemQL.length > 0
                 ? rowData?.BANGLUONGBC?.DiemQL.map(
-                    stock => stock.StockTitle
+                    stock =>
+                      stock?.StockTitle === 'Quản lý cơ sở'
+                        ? 'Cơ sở tổng (Công ty)'
+                        : stock?.StockTitle
                   ).join(', ')
                 : 'Chưa xác định',
               `${rowData?.LICH_NGHI_CO_DINH ?? 0}${
@@ -7170,7 +7173,10 @@ window.EzsExportNoFechExcel = function ({
               rowData?.BANGLUONGBC?.DiemQL &&
               rowData?.BANGLUONGBC?.DiemQL.length > 0
                 ? rowData?.BANGLUONGBC?.DiemQL.map(
-                    stock => stock.StockTitle
+                    stock =>
+                      stock?.StockTitle === 'Quản lý cơ sở'
+                        ? 'Cơ sở tổng (Công ty)'
+                        : stock?.StockTitle
                   ).join(', ')
                 : 'Chưa xác định',
               rowData?.User?.Address,
@@ -7352,7 +7358,9 @@ window.EzsExportNoFechExcel = function ({
             return arr && arr.length > 0
               ? arr
                   .map(function (d) {
-                    return d.StockTitle
+                    return d?.StockTitle === 'Quản lý cơ sở'
+                      ? 'Cơ sở tổng (Công ty)'
+                      : d?.StockTitle
                   })
                   .join(', ')
               : 'Chưa xác định'
@@ -8321,6 +8329,7 @@ const TON_DICH_VU = ({
     'CƠ SỞ',
     'NGÀY MUA',
     'NGÀY HẾT HẠN',
+    'NGÀY DÙNG CUỐI',
     'MÃ ĐƠN HÀNG',
     'MÃ DỊCH VỤ',
     'TÊN DỊCH VỤ',
@@ -8359,6 +8368,7 @@ const TON_DICH_VU = ({
       StockName,
       window.top.moment(item.NgayMua).format('DD-MM-YYYY'),
       window.top.moment(item.NgayHetHan).format('DD-MM-YYYY'),
+      item.Ngaydungcuoi ? window.top.moment(item.Ngaydungcuoi).format('DD-MM-YYYY') : "",
       item.MaDonHang,
       item.MaDichVu,
       item.Ten_dich_vu,
@@ -8380,6 +8390,7 @@ const TON_DICH_VU = ({
   })
 
   newExport.push([
+    '',
     '',
     '',
     '',
@@ -11019,7 +11030,10 @@ function exportemployeeList(member, Shows) {
 
       var stock = ''
       item.DiemQL.map(e => {
-        stock += e.StockTitle + ', '
+        stock +=
+          (e?.StockTitle === 'Quản lý cơ sở'
+            ? 'Cơ sở tổng (Công ty)'
+            : e?.StockTitle) + ', '
       })
       var idStaff = item.Staff['ID']
       var nameStaff = item.Staff['FullName']
@@ -11306,7 +11320,10 @@ function exportemployeeList(member, Shows) {
 
       var stock = ''
       item.DiemQL.map(e => {
-        stock += e.StockTitle + ', '
+        stock +=
+          (e?.StockTitle === 'Quản lý cơ sở'
+            ? 'Cơ sở tổng (Công ty)'
+            : e?.StockTitle) + ', '
       })
       var idStaff = item.Staff['ID']
       var nameStaff = item.Staff['FullName']

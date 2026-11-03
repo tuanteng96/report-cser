@@ -952,8 +952,10 @@ function PayrollStaff2(props) {
                         <td className="p-3 bg-white max-w-[200px] min-w-[200px] border-b border-b-[#eee] border-r border-r-[#eee] last:border-r-0">
                           {rowData?.BANGLUONGBC?.DiemQL &&
                           rowData?.BANGLUONGBC?.DiemQL.length > 0
-                            ? rowData?.BANGLUONGBC?.DiemQL.map(
-                                stock => stock.StockTitle
+                            ? rowData?.BANGLUONGBC?.DiemQL.map(stock =>
+                                stock?.StockTitle === 'Quản lý cơ sở'
+                                  ? 'Cơ sở tổng (Công ty)'
+                                  : stock?.StockTitle
                               ).join(', ')
                             : 'Chưa xác định'}
                         </td>
