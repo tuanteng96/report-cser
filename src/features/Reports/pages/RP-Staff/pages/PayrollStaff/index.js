@@ -532,7 +532,11 @@ function PayrollStaff(props) {
       item => Number(item.ID) === Number(filters.StockID)
     )
     if (index > -1) {
-      setStockName(Stocks[index].Title)
+      setStockName(
+        Stocks[index].Title === 'Quản lý cơ sở'
+          ? 'Cơ sở tổng (Công ty)'
+          : Stocks[index].Title
+      )
     } else {
       setStockName('Tất cả cơ sở')
     }
@@ -1277,6 +1281,8 @@ function PayrollStaff(props) {
         loadingExport={loadingExport}
         onExport={onExport}
         limitDateType="THEO_THANG"
+        isWarehouse={true}
+        WarehouseName="Cơ sở tổng (Công ty)"
       />
       <div className="bg-white rounded">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between">

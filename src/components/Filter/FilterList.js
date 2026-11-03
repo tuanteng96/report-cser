@@ -98,6 +98,7 @@ function FilterList({
   onRefresh,
   onExport,
   isWarehouse = false,
+  WarehouseName = 'Kho tổng',
   isAllStock = true,
   optionsAdd = [],
   updateStocksRole,
@@ -176,7 +177,7 @@ function FilterList({
                     if (isWarehouse) {
                       newStocks = [
                         { value: '', label: 'Tất cả cơ sở' },
-                        { value: 778, label: 'Kho tổng' },
+                        { value: 778, label: WarehouseName },
                         ...Stocks
                       ]
                     } else {
@@ -234,7 +235,7 @@ function FilterList({
                                 if (isWarehouse) {
                                   newStocks = [
                                     { value: '', label: 'Tất cả cơ sở' },
-                                    { value: 778, label: 'Kho tổng' },
+                                    { value: 778, label: WarehouseName},
                                     ...Stocks
                                   ]
                                 } else {
@@ -266,7 +267,7 @@ function FilterList({
           if (isWarehouse) {
             newStocks = [
               { value: '', label: 'Tất cả cơ sở' },
-              { value: 778, label: 'Kho tổng' },
+              { value: 778, label: WarehouseName },
               ...Stocks
             ]
           } else {
@@ -336,7 +337,7 @@ function FilterList({
               if (isWarehouse) {
                 newStocks = [
                   { value: '', label: 'Tất cả cơ sở' },
-                  { value: 778, label: 'Kho tổng' },
+                  { value: 778, label: WarehouseName },
                   ...Stocks
                 ]
               } else {
@@ -354,7 +355,7 @@ function FilterList({
 
     setStocksList(newStocks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [PermissionReport, pathname, isWarehouse])
+  }, [PermissionReport, pathname, isWarehouse, WarehouseName])
 
   useEffect(() => {
     if (StocksList && StocksList.length > 0) {
