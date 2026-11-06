@@ -533,7 +533,7 @@ function PayrollStaff(props) {
     StockID: CrStockID || '', // ID Stock
     Mon: new Date(), // Ngày bắt đầu
     Pi: 1, // Trang hiện tại
-    Ps: 15, // Số lượng item
+    Ps: 1000, // Số lượng item
     Shows: '0'
   })
   const [StockName, setStockName] = useState('')
@@ -815,6 +815,19 @@ function PayrollStaff(props) {
               ? rowData?.TrackValue?.Config?.Values?.LUONG
               : rowData?.TrackValue?.WorkQty * rowData?.NGAY_LUONG_CO_BAN
           ),
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(ListData, rowData =>
+                rowData?.TrackValue?.WorkQty ===
+                rowData?.TrackValue?.Config?.Values?.NGAY_CONG
+                  ? Number(rowData?.TrackValue?.Config?.Values?.LUONG) || 0
+                  : (rowData?.TrackValue?.WorkQty || 0) *
+                    (rowData?.NGAY_LUONG_CO_BAN || 0)
+              )
+            )}
+          </span>
+        ),
         width: 180,
         sortable: false
       },
@@ -826,6 +839,18 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(
             rowData?.TrackValue?.DI_SOM + rowData?.TrackValue?.VE_MUON
           ),
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData =>
+                  (Number(rowData?.TrackValue?.DI_SOM) || 0) +
+                  (Number(rowData?.TrackValue?.VE_MUON) || 0)
+              )
+            )}
+          </span>
+        ),
         width: 180,
         sortable: false
       },
@@ -842,6 +867,20 @@ function PayrollStaff(props) {
             : PriceHelper.formatVND(
                 rowData?.TrackValue?.DI_MUON + rowData?.TrackValue?.VE_SOM
               ),
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData =>
+                  -Math.abs(
+                    (Number(rowData?.TrackValue?.DI_MUON) || 0) +
+                      (Number(rowData?.TrackValue?.VE_SOM) || 0)
+                  )
+              )
+            )}
+          </span>
+        ),
         width: 180,
         sortable: false
       },
@@ -862,6 +901,22 @@ function PayrollStaff(props) {
             (rowData?.TrackValue?.WorkQtyAllowance || 0) * rowData?.TRO_CAP_NGAY
           )
         },
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData =>
+                  (rowData?.TrackValue?.WorkQtyAllowance || 0) *
+                    (rowData?.TRO_CAP_NGAY || 0) +
+                  (GlobalConfig?.Admin?.phu_cap_ngay_cong2
+                    ? (rowData?.TrackValue?.WorkQtyAllowance2 || 0) *
+                      ((rowData?.TRO_CAP_NGAY || 0) / 2)
+                    : 0)
+              )
+            )}
+          </span>
+        ),
         width: 180,
         sortable: false
       },
@@ -941,6 +996,16 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.LUONG_CA_CAI_DAT),
         width: 150,
         sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.LUONG_CA_CAI_DAT) || 0
+              )
+            )}
+          </span>
+        ),
         hidden: Number(filters.Shows) === 0
       },
       {
@@ -951,6 +1016,13 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.LUONG_CA_EXTRA),
         width: 150,
         sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(ListData, rowData => Number(rowData?.LUONG_CA_EXTRA) || 0)
+            )}
+          </span>
+        ),
         hidden: Number(filters.Shows) === 0
       },
       {
@@ -976,6 +1048,16 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.HOA_HONG_Sanpham),
         width: 150,
         sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.HOA_HONG_Sanpham) || 0
+              )
+            )}
+          </span>
+        ),
         hidden: Number(filters.Shows) === 0
       },
       {
@@ -986,6 +1068,16 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.HOA_HONG_Dichvu),
         width: 150,
         sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.HOA_HONG_Dichvu) || 0
+              )
+            )}
+          </span>
+        ),
         hidden: Number(filters.Shows) === 0
       },
       {
@@ -996,6 +1088,16 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.HOA_HONG_Thetien),
         width: 150,
         sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.HOA_HONG_Thetien) || 0
+              )
+            )}
+          </span>
+        ),
         hidden: Number(filters.Shows) === 0
       },
       {
@@ -1006,6 +1108,13 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.HOA_HONG_NVL),
         width: 150,
         sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(ListData, rowData => Number(rowData?.HOA_HONG_NVL) || 0)
+            )}
+          </span>
+        ),
         hidden: Number(filters.Shows) === 0
       },
       {
@@ -1016,6 +1125,16 @@ function PayrollStaff(props) {
           PriceHelper.formatVND(rowData.HOA_HONG_Phuphi),
         width: 150,
         sortable: false,
+        footerRenderer: () => (
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.HOA_HONG_Phuphi) || 0
+              )
+            )}
+          </span>
+        ),
         hidden: Number(filters.Shows) === 0
       },
       {
@@ -1091,7 +1210,11 @@ function PayrollStaff(props) {
         width: 150,
         sortable: false,
         footerRenderer: () => (
-          <span className="font-size-md font-number"></span>
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(ListData, rowData => Number(rowData?.DONG_BHXH) || 0)
+            )}
+          </span>
         ),
         hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
       },
@@ -1104,7 +1227,14 @@ function PayrollStaff(props) {
         width: 150,
         sortable: false,
         footerRenderer: () => (
-          <span className="font-size-md font-number"></span>
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.GIAM_TRU_GIA_CANH) || 0
+              )
+            )}
+          </span>
         ),
         hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
       },
@@ -1117,7 +1247,14 @@ function PayrollStaff(props) {
         width: 200,
         sortable: false,
         footerRenderer: () => (
-          <span className="font-size-md font-number"></span>
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.THU_NHAP_CHIU_THUE) || 0
+              )
+            )}
+          </span>
         ),
         hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
       },
@@ -1131,7 +1268,14 @@ function PayrollStaff(props) {
         width: 200,
         sortable: false,
         footerRenderer: () => (
-          <span className="font-size-md font-number"></span>
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.THUE_THU_NHAP_CA_NHAN) || 0
+              )
+            )}
+          </span>
         ),
         hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
       },
@@ -1144,7 +1288,14 @@ function PayrollStaff(props) {
         width: 150,
         sortable: false,
         footerRenderer: () => (
-          <span className="font-size-md font-number"></span>
+          <span className="font-size-md font-number">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.LUONG_THUC_NHAN) || 0
+              )
+            )}
+          </span>
         ),
         hidden: !GlobalConfig?.Admin?.bang_luong_nang_cao
       },
@@ -1157,9 +1308,9 @@ function PayrollStaff(props) {
         sortable: false,
         footerRenderer: () => (
           <span className="font-size-md font-number">
-            {GlobalConfig?.Admin?.bang_luong_nang_cao
-              ? ''
-              : PriceHelper.formatVND(Total?.GIU_LUONG)}
+            {PriceHelper.formatVND(
+              _.sumBy(ListData, rowData => Number(rowData?.GIU_LUONG) || 0)
+            )}
           </span>
         )
       },
@@ -1173,9 +1324,12 @@ function PayrollStaff(props) {
         sortable: false,
         footerRenderer: () => (
           <span className="font-size-md font-number">
-            {GlobalConfig?.Admin?.bang_luong_nang_cao
-              ? ''
-              : PriceHelper.formatVND(Total?.THUC_TRA_DU_KIEN)}
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData => Number(rowData?.THUC_TRA_DU_KIEN) || 0
+              )
+            )}
           </span>
         )
       },
@@ -1204,7 +1358,17 @@ function PayrollStaff(props) {
         width: 200,
         sortable: false,
         footerRenderer: () => (
-          <span className="font-size-md font-number text-success"></span>
+          <span className="font-size-md font-number text-success">
+            {PriceHelper.formatVND(
+              _.sumBy(
+                ListData,
+                rowData =>
+                  (Number(rowData?.THUC_TRA_DU_KIEN) || 0) -
+                  ((Number(rowData?.TAM_UNG) || 0) -
+                    (Number(rowData?.HOAN_UNG) || 0))
+              )
+            )}
+          </span>
         )
       },
       {
@@ -1235,7 +1399,7 @@ function PayrollStaff(props) {
         )
       }
     ], // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filters, Total, GlobalConfig]
+    [filters, Total, GlobalConfig, ListData]
   )
 
   const onPagesChange = ({ Pi, Ps }) => {
@@ -1317,7 +1481,7 @@ function PayrollStaff(props) {
         <div className="p-20px">
           <ReactTableV7
             rowKey="IDs"
-            filters={filters}
+            //filters={filters}
             columns={columns}
             data={ListData}
             loading={loading}

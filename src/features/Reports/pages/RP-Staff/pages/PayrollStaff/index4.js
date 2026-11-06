@@ -20,37 +20,37 @@ import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 
 moment.locale('vi')
 
-let NGUONG_TNCN = [
-  {
-    Min: 0,
-    Max: 10000000,
-    Value: 0,
-    PercentDifference: 5
-  },
-  {
-    Min: 10000000,
-    Max: 30000000,
-    Value: 500000,
-    PercentDifference: 10
-  },
-  {
-    Min: 30000000,
-    Max: 60000000,
-    Value: 2500000,
-    PercentDifference: 20
-  },
-  {
-    Min: 60000000,
-    Max: 100000000,
-    Value: 8500000,
-    PercentDifference: 30
-  },
-  {
-    Min: 100000000,
-    Value: 20500000,
-    PercentDifference: 35
-  }
-]
+// let NGUONG_TNCN = [
+//   {
+//     Min: 0,
+//     Max: 10000000,
+//     Value: 0,
+//     PercentDifference: 5
+//   },
+//   {
+//     Min: 10000000,
+//     Max: 30000000,
+//     Value: 500000,
+//     PercentDifference: 10
+//   },
+//   {
+//     Min: 30000000,
+//     Max: 60000000,
+//     Value: 2500000,
+//     PercentDifference: 20
+//   },
+//   {
+//     Min: 60000000,
+//     Max: 100000000,
+//     Value: 8500000,
+//     PercentDifference: 30
+//   },
+//   {
+//     Min: 100000000,
+//     Value: 20500000,
+//     PercentDifference: 35
+//   }
+// ]
 
 const OverlayLT = ({ rowData, filters }) => {
   const [show, setShow] = useState(false)

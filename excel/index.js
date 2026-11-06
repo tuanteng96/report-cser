@@ -7392,6 +7392,10 @@ window.EzsExportNoFechExcel = function ({
             }
           )
 
+          addCol('thuong_hieu_suat', 'THƯỞNG HIỆU SUẤT', true, function (row) {
+            return row.THUONG_HIEU_SUAT || 0
+          })
+
           if (hasPhiKhac) {
             addCol(
               'phi_khac',
@@ -7403,9 +7407,6 @@ window.EzsExportNoFechExcel = function ({
             )
           }
 
-          addCol('thuong_hieu_suat', 'THƯỞNG HIỆU SUẤT', true, function (row) {
-            return row.THUONG_HIEU_SUAT || 0
-          })
           addCol(
             'phu_cap_chuyen_can',
             'PHỤ CẤP CHUYÊN CẦN',
@@ -10857,7 +10858,7 @@ function exportStaffSalesList(member, configs) {
 }
 
 function exportemployeeList(member, Shows) {
-  const { Items, Sum } = member
+  const { Items = [], Sum = {} } = member
 
   let NGUONG_TNCN = [
     {
@@ -10891,342 +10892,134 @@ function exportemployeeList(member, Shows) {
     }
   ]
 
-  if (Shows === '0') {
-    let HeadTable = [
-      'STT',
-      'ID',
-      'TÊN NHÂN VIÊN',
-      'CƠ SỞ',
-      'LOẠI HỢP ĐỒNG',
-      'TÌNH TRẠNG',
-      'LƯƠNG CHẤM CÔNG',
-      'ĐI SỚM, VỀ MUỘN',
-      'ĐI MUỘN, VỀ SỚM',
-      'PHỤ CẤP NGÀY',
-      'LƯƠNG CHÍNH SÁCH',
-      'PHỤ CẤP',
-      /*"NGÀY NGHỈ",*/
-      'THƯỞNG',
-      'PHẠT',
-      // "LƯƠNG CÀI ĐẶT",
-      // "THƯỞNG KH CHỌN",
-      'LƯƠNG CA',
-      'HH SẢN PHẨM',
-      'HH DỊCH VỤ',
-      'HH THẺ TIỀN',
-      'HH NVL',
-      'HH PHỤ PHÍ',
-      'HOA HỒNG',
-      'DOANH SỐ',
-      'KPI',
-      'THU NHẬP DỰ KIẾN',
-      'BHXH (10.5%)',
-      'GIẢM TRỪ GIA CẢNH',
-      'THU NHẬP CHỊU THUẾ',
-      'THUẾ THU NHẬP CÁ NHÂN',
-      'LƯƠNG',
-      'GIỮ LƯƠNG',
-      'THỰC TRẢ DỰ KIẾN',
-      'TẠM ỨNG',
-      'PHẢI TRẢ NHÂN VIÊN',
-      'ĐÃ TRẢ',
-      'TỒN GIỮ LƯƠNG'
-    ]
-    var luongCauHinh = 0
-    var phuCap = 0
-    var ngayNghi = 0
-    var thuong = 0
-    var phat = 0
-    var luongCa = 0
-    var hoaHong = 0
-    var KPI = 0
-    var thuNhapDuKien = 0
-    var giuLuong = 0
-    var thucTraDuKien = 0
-    var tamUng = 0
-    var phaiTraNhanVien = 0
-    var daTra = 0
-    var tonGiuLuong = 0
-    var tongDsMonth = 0
-    let newExport = [HeadTable]
+  let HeadTable = [
+    'STT',
+    'ID',
+    'TÊN NHÂN VIÊN',
+    'CƠ SỞ',
+    'LOẠI HỢP ĐỒNG',
+    'TÌNH TRẠNG',
+    'LƯƠNG CHẤM CÔNG',
+    'ĐI SỚM, VỀ MUỘN',
+    'ĐI MUỘN, VỀ SỚM',
+    'PHỤ CẤP NGÀY',
+    'LƯƠNG CHÍNH SÁCH',
+    'PHỤ CẤP',
+    /*"NGÀY NGHỈ",*/
+    'THƯỞNG',
+    'PHẠT',
+    'LƯƠNG CA CÀI ĐẶT',
+    'THƯỞNG KH CHỌN',
+    'LƯƠNG TOUR',
+    'HH SẢN PHẨM',
+    'HH DỊCH VỤ',
+    'HH THẺ TIỀN',
+    'HH NVL',
+    'HH PHỤ PHÍ',
+    'HOA HỒNG',
+    'DOANH SỐ',
+    'KPI',
+    'THU NHẬP DỰ KIẾN',
+    'BHXH (10.5%)',
+    'GIẢM TRỪ GIA CẢNH',
+    'THU NHẬP CHỊU THUẾ',
+    'THUẾ THU NHẬP CÁ NHÂN',
+    'LƯƠNG',
+    'GIỮ LƯƠNG',
+    'THỰC TRẢ DỰ KIẾN',
+    'TẠM ỨNG',
+    'PHẢI TRẢ NHÂN VIÊN',
+    'ĐÃ TRẢ',
+    'TỒN GIỮ LƯƠNG'
+  ]
+  let newExport = [HeadTable]
 
-    Items.map((x, index) => {
-      let item = { ...x }
+  Items.forEach((x, index) => {
+    let item = { ...x }
 
-      if (window.top?.GlobalConfig?.Admin?.bang_luong_nang_cao) {
-        item['DONG_BHXH'] = 0
+    if (window.top?.GlobalConfig?.Admin?.bang_luong_nang_cao) {
+      item['DONG_BHXH'] = 0
 
-        item['GIAM_TRU_GIA_CANH'] = 0
+      item['GIAM_TRU_GIA_CANH'] = 0
 
-        item['NGUONG_THUE'] = 0
+      item['NGUONG_THUE'] = 0
 
-        if (
-          x?.Staff?.Address &&
-          x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
-        ) {
-          item['DONG_BHXH'] =
-            ((x?.TrackValue?.Config?.Values?.LUONG_NOP_BHXH || 0) * 10.5) / 100
+      if (
+        x?.Staff?.Address &&
+        x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
+      ) {
+        item['DONG_BHXH'] =
+          ((x?.TrackValue?.Config?.Values?.LUONG_NOP_BHXH || 0) * 10.5) / 100
+      }
+
+      if (
+        x?.TrackValue?.Config?.Values?.WORKING_STATUS !== 0 &&
+        x?.Staff?.Address &&
+        x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
+      ) {
+        item['GIAM_TRU_GIA_CANH'] =
+          x?.TrackValue?.Config?.Values?.GIAM_TRU_GIA_CANH || 0
+
+        item['NGUONG_THUE'] = 15500000
+      }
+
+      item['THU_NHAP_CHIU_THUE'] =
+        x.LUONG_DU_KIEN -
+        item['NGUONG_THUE'] -
+        item['DONG_BHXH'] -
+        item['GIAM_TRU_GIA_CANH']
+
+      if (item['THU_NHAP_CHIU_THUE'] < 0) {
+        item['THU_NHAP_CHIU_THUE'] = 0
+      }
+
+      item['THUE_THU_NHAP_CA_NHAN'] = 0
+
+      if (
+        x?.TrackValue?.Config?.Values?.WORKING_STATUS !== 0 &&
+        x?.Staff?.Address &&
+        x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
+      ) {
+        const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
+          k =>
+            item['THU_NHAP_CHIU_THUE'] > k.Min &&
+            (k.Max ? item['THU_NHAP_CHIU_THUE'] <= k.Max : true)
+        )
+        if (NGUONG_TNCN_CURRENT) {
+          item['THUE_THU_NHAP_CA_NHAN'] =
+            NGUONG_TNCN_CURRENT.Value +
+            (item['THU_NHAP_CHIU_THUE'] - NGUONG_TNCN_CURRENT.Min) *
+              (NGUONG_TNCN_CURRENT.PercentDifference / 100)
         }
-
-        if (
-          x?.TrackValue?.Config?.Values?.WORKING_STATUS !== 0 &&
-          x?.Staff?.Address &&
-          x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
-        ) {
-          item['GIAM_TRU_GIA_CANH'] =
-            x?.TrackValue?.Config?.Values?.GIAM_TRU_GIA_CANH || 0
-
-          item['NGUONG_THUE'] = 15500000
-        }
-
-        item['THU_NHAP_CHIU_THUE'] =
-          x.LUONG_DU_KIEN -
-          item['NGUONG_THUE'] -
-          item['DONG_BHXH'] -
-          item['GIAM_TRU_GIA_CANH']
-
-        if (item['THU_NHAP_CHIU_THUE'] < 0) {
-          item['THU_NHAP_CHIU_THUE'] = 0
-        }
-
-        item['THUE_THU_NHAP_CA_NHAN'] = 0
-
-        if (
-          x?.TrackValue?.Config?.Values?.WORKING_STATUS !== 0 &&
-          x?.Staff?.Address &&
-          x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
-        ) {
-          const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
-            k =>
-              item['THU_NHAP_CHIU_THUE'] > k.Min &&
-              (k.Max ? item['THU_NHAP_CHIU_THUE'] <= k.Max : true)
-          )
-          if (NGUONG_TNCN_CURRENT) {
-            item['THUE_THU_NHAP_CA_NHAN'] =
-              NGUONG_TNCN_CURRENT.Value +
-              (item['THU_NHAP_CHIU_THUE'] - NGUONG_TNCN_CURRENT.Min) *
-                (NGUONG_TNCN_CURRENT.PercentDifference / 100)
-          }
+      } else {
+        if (item['THU_NHAP_CHIU_THUE'] < 5000000) {
+          item['THUE_THU_NHAP_CA_NHAN'] = 0
         } else {
-          if (item['THU_NHAP_CHIU_THUE'] < 5000000) {
-            item['THUE_THU_NHAP_CA_NHAN'] = 0
-          } else {
-            item['THUE_THU_NHAP_CA_NHAN'] =
-              (item['THU_NHAP_CHIU_THUE'] * 10) / 100
-          }
+          item['THUE_THU_NHAP_CA_NHAN'] =
+            (item['THU_NHAP_CHIU_THUE'] * 10) / 100
         }
-        item['LUONG_THUC_NHAN'] =
-          x?.LUONG_DU_KIEN - item['DONG_BHXH'] - item['THUE_THU_NHAP_CA_NHAN']
+      }
+      item['LUONG_THUC_NHAN'] =
+        x?.LUONG_DU_KIEN - item['DONG_BHXH'] - item['THUE_THU_NHAP_CA_NHAN']
 
-        item['GIU_LUONG'] = x?.TrackValue?.Config?.Values?.GIU_LUONG || 0
+      item['GIU_LUONG'] = x?.TrackValue?.Config?.Values?.GIU_LUONG || 0
 
-        if (item['GIU_LUONG'] <= 100) {
-          item['GIU_LUONG'] =
-            (item['LUONG_THUC_NHAN'] * item['GIU_LUONG']) / 100
-        }
-
-        item['THUC_TRA_DU_KIEN'] = item['LUONG_THUC_NHAN'] - item['GIU_LUONG']
+      if (item['GIU_LUONG'] <= 100) {
+        item['GIU_LUONG'] = (item['LUONG_THUC_NHAN'] * item['GIU_LUONG']) / 100
       }
 
-      var stock = ''
-      item.DiemQL.map(e => {
-        stock +=
-          (e?.StockTitle === 'Quản lý cơ sở'
-            ? 'Cơ sở tổng (Công ty)'
-            : e?.StockTitle) + ', '
-      })
-      var idStaff = item.Staff['ID']
-      var nameStaff = item.Staff['FullName']
-      luongCauHinh += parseInt(item.LUONG_CAU_HINH)
-      phuCap += parseInt(item.PHU_CAP)
-      ngayNghi += parseInt(item.TRU_NGAY_NGHI)
-      thuong += parseInt(item.THUONG)
-      phat += parseInt(item.TRU_PHAT)
-      luongCa += parseInt(item.LUONG_CA)
-      hoaHong += parseInt(item.HOA_HONG)
-      KPI += parseInt(item.KPI_Hoa_hong)
-      thuNhapDuKien += parseInt(item.LUONG_DU_KIEN)
-      giuLuong += parseInt(item.GIU_LUONG)
-      thucTraDuKien += parseInt(item.THUC_TRA_DU_KIEN)
-      tamUng += parseInt(item.TAM_UNG) - parseInt(item.HOAN_UNG)
-      phaiTraNhanVien +=
-        parseInt(item.THUC_TRA_DU_KIEN) - parseInt(item.TAM_UNG)
-      daTra += parseInt(item.DA_TRA)
-      tonGiuLuong += parseInt(item.TON_GIU_LUONG)
-      tongDsMonth += parseInt(item.DOANH_SO_THANG)
-
-      let PHU_CAP_NGAY =
-        safeGet(item, 'TrackValue.WorkQtyAllowance', 0) *
-        safeGet(item, 'TRO_CAP_NGAY', 0)
-
-      if (window.top?.GlobalConfig?.Admin?.phu_cap_ngay_cong2) {
-        PHU_CAP_NGAY =
-          safeGet(item, 'TrackValue.WorkQtyAllowance', 0) *
-            safeGet(item, 'TRO_CAP_NGAY', 0) +
-          safeGet(item, 'TrackValue.WorkQtyAllowance2', 0) *
-            (safeGet(item, 'TRO_CAP_NGAY', 0) / 2)
-      }
-
-      const newArr = [
-        index + 1,
-        '#' + idStaff,
-        nameStaff,
-        stock.substring(0, stock.lastIndexOf(',')),
-        item.Staff['Address'] || '',
-        item?.TrackValue?.Config?.Values?.WORKING_STATUS === 0
-          ? 'Đã nghỉ'
-          : 'Hoạt động',
-        safeGet(item, 'TrackValue.WorkQty', 0) *
-          safeGet(item, 'NGAY_LUONG_CO_BAN', 0),
-        safeGet(item, 'TrackValue.DI_SOM', 0) +
-          safeGet(item, 'TrackValue.VE_MUON', 0),
-        safeGet(item, 'TrackValue.DI_MUON', 0) +
-          safeGet(item, 'TrackValue.VE_SOM', 0) >
-        0
-          ? (safeGet(item, 'TrackValue.DI_MUON', 0) +
-              safeGet(item, 'TrackValue.VE_SOM', 0)) *
-            1
-          : safeGet(item, 'TrackValue.DI_MUON', 0) +
-            safeGet(item, 'TrackValue.VE_SOM', 0),
-        PHU_CAP_NGAY,
-        item.LUONG_CHAM_CONG,
-        item.PHU_CAP,
-        /*item.TRU_NGAY_NGHI,*/
-        item.THUONG,
-        item.TRU_PHAT,
-        // item.LUONG_CA_CAI_DAT,
-        // item.LUONG_CA_EXTRA,
-        item.LUONG_CA,
-        item.HOA_HONG_Sanpham,
-        item.HOA_HONG_Dichvu,
-        item.HOA_HONG_Thetien,
-        item.HOA_HONG_NVL,
-        item.HOA_HONG_Phuphi,
-        item.HOA_HONG,
-        item.DOANH_SO_THANG,
-        item.KPI_Hoa_hong,
-        item.LUONG_DU_KIEN,
-        item?.DONG_BHXH,
-        item?.GIAM_TRU_GIA_CANH,
-        item?.THU_NHAP_CHIU_THUE,
-        item?.THUE_THU_NHAP_CA_NHAN,
-        item?.LUONG_THUC_NHAN,
-        item.GIU_LUONG,
-        item.THUC_TRA_DU_KIEN,
-        item.TAM_UNG - item.HOAN_UNG,
-        item.THUC_TRA_DU_KIEN - (item.TAM_UNG - item.HOAN_UNG),
-        item.DA_TRA,
-        item.TON_GIU_LUONG
-      ]
-      newExport.push(newArr)
-    })
-    const FooterTable = [
-      'Tổng',
-      '',
-      '',
-      '',
-      '',
-      '',
-      Sum.LUONG_CHAM_CONG,
-      '',
-      '',
-      '',
-      '',
-      Sum.PHU_CAP,
-      /*ngayNghi,*/
-      Sum.THUONG,
-      Sum.TRU_PHAT,
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      Sum.HOA_HONG,
-      Sum.DOANH_SO_THANG,
-      Sum.KPI_Hoa_hong,
-      Sum.LUONG_DU_KIEN,
-      '',
-      '',
-      '',
-      '',
-      '',
-      Sum.GIU_LUONG,
-      Sum.THUC_TRA_DU_KIEN,
-      Sum.TAM_UNG - Sum.HOAN_UNG,
-      Sum.THUC_TRA_DU_KIEN - (Sum.TAM_UNG - Sum.HOAN_UNG),
-      Sum.DA_TRA,
-      Sum.TON_GIU_LUONG
-    ]
-    newExport.push(FooterTable)
-
-    if (!window.top?.GlobalConfig?.Admin?.bang_luong_nang_cao) {
-      const listIndex = [4, 5, 19, 24, 25, 26, 27, 28]
-
-      newExport = newExport.map(row =>
-        row.filter((_, index) => !listIndex.includes(index))
-      )
+      item['THUC_TRA_DU_KIEN'] = item['LUONG_THUC_NHAN'] - item['GIU_LUONG']
     }
 
-    return newExport
-  } else {
-    let HeadTable = [
-      'STT',
-      'ID',
-      'TÊN NHÂN VIÊN',
-      'CƠ SỞ',
-      'LOẠI HỢP ĐỒNG',
-      'TÌNH TRẠNG',
-      'LƯƠNG CHẤM CÔNG',
-      'ĐI SỚM, VỀ MUỘN',
-      'ĐI MUỘN, VỀ SỚM',
-      'PHỤ CẤP NGÀY',
-      'LƯƠNG CHÍNH SÁCH',
-      'PHỤ CẤP',
-      /*"NGÀY NGHỈ",*/
-      'THƯỞNG',
-      'PHẠT',
-      'LƯƠNG CÀI ĐẶT',
-      'THƯỞNG KH CHỌN',
-      'LƯƠNG CA',
-      'HH SẢN PHẨM',
-      'HH DỊCH VỤ',
-      'HH THẺ TIỀN',
-      'HH NVL',
-      'HH PHỤ PHÍ',
-      'HOA HỒNG',
-      'DOANH SỐ',
-      'KPI',
-      'THU NHẬP DỰ KIẾN',
-      'BHXH 10.5%',
-      'GIẢM TRỪ GIA CẢNH',
-      'THU NHẬP CHỊU THUẾ',
-      'THUẾ THU NHẬP CÁ NHÂN',
-      'LƯƠNG',
-      'GIỮ LƯƠNG',
-      'THỰC TRẢ DỰ KIẾN',
-      'TẠM ỨNG',
-      'PHẢI TRẢ NHÂN VIÊN',
-      'ĐÃ TRẢ',
-      'TỒN GIỮ LƯƠNG'
-    ]
-    var luongCauHinh = 0
-    var phuCap = 0
-    var ngayNghi = 0
-    var thuong = 0
-    var phat = 0
-    var luongCa = 0
-    var hoaHong = 0
-    var KPI = 0
-    var thuNhapDuKien = 0
-    var giuLuong = 0
-    var thucTraDuKien = 0
-    var tamUng = 0
-    var phaiTraNhanVien = 0
-    var daTra = 0
-    var tonGiuLuong = 0
-    var tongDsMonth = 0
-    let newExport = [HeadTable]
+    var stock = ''
+    ;(item.DiemQL || []).forEach(e => {
+      stock +=
+        (e?.StockTitle === 'Quản lý cơ sở'
+          ? 'Cơ sở tổng (Công ty)'
+          : e?.StockTitle) + ', '
+    })
+    var idStaff = item.Staff['ID']
+    var nameStaff = item.Staff['FullName']
 
     let PHU_CAP_NGAY =
       safeGet(item, 'TrackValue.WorkQtyAllowance', 0) *
@@ -11240,214 +11033,109 @@ function exportemployeeList(member, Shows) {
           (safeGet(item, 'TRO_CAP_NGAY', 0) / 2)
     }
 
-    Items.map((x, index) => {
-      let item = { ...x }
-
-      if (window.top?.GlobalConfig?.Admin?.bang_luong_nang_cao) {
-        item['DONG_BHXH'] = 0
-
-        item['GIAM_TRU_GIA_CANH'] = 0
-
-        item['NGUONG_THUE'] = 0
-
-        if (
-          x?.Staff?.Address &&
-          x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
-        ) {
-          item['DONG_BHXH'] =
-            ((x?.TrackValue?.Config?.Values?.LUONG_NOP_BHXH || 0) * 10.5) / 100
-        }
-
-        if (
-          x?.TrackValue?.Config?.Values?.WORKING_STATUS !== 0 &&
-          x?.Staff?.Address &&
-          x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
-        ) {
-          item['GIAM_TRU_GIA_CANH'] =
-            x?.TrackValue?.Config?.Values?.GIAM_TRU_GIA_CANH || 0
-
-          item['NGUONG_THUE'] = 15500000
-        }
-
-        item['THU_NHAP_CHIU_THUE'] =
-          x.LUONG_DU_KIEN -
-          item['NGUONG_THUE'] -
-          item['DONG_BHXH'] -
-          item['GIAM_TRU_GIA_CANH']
-
-        if (item['THU_NHAP_CHIU_THUE'] < 0) {
-          item['THU_NHAP_CHIU_THUE'] = 0
-        }
-
-        item['THUE_THU_NHAP_CA_NHAN'] = 0
-
-        if (
-          x?.TrackValue?.Config?.Values?.WORKING_STATUS !== 0 &&
-          x?.Staff?.Address &&
-          x?.Staff?.Address?.toUpperCase() === 'CHÍNH THỨC'
-        ) {
-          const NGUONG_TNCN_CURRENT = NGUONG_TNCN.find(
-            k =>
-              item['THU_NHAP_CHIU_THUE'] > k.Min &&
-              (k.Max ? item['THU_NHAP_CHIU_THUE'] <= k.Max : true)
-          )
-          if (NGUONG_TNCN_CURRENT) {
-            item['THUE_THU_NHAP_CA_NHAN'] =
-              NGUONG_TNCN_CURRENT.Value +
-              (item['THU_NHAP_CHIU_THUE'] - NGUONG_TNCN_CURRENT.Min) *
-                (NGUONG_TNCN_CURRENT.PercentDifference / 100)
-          }
-        } else {
-          if (item['THU_NHAP_CHIU_THUE'] < 5000000) {
-            item['THUE_THU_NHAP_CA_NHAN'] = 0
-          } else {
-            item['THUE_THU_NHAP_CA_NHAN'] =
-              (item['THU_NHAP_CHIU_THUE'] * 10) / 100
-          }
-        }
-        item['LUONG_THUC_NHAN'] =
-          x?.LUONG_DU_KIEN - item['DONG_BHXH'] - item['THUE_THU_NHAP_CA_NHAN']
-
-        item['GIU_LUONG'] = x?.TrackValue?.Config?.Values?.GIU_LUONG || 0
-
-        if (item['GIU_LUONG'] <= 100) {
-          item['GIU_LUONG'] =
-            (item['LUONG_THUC_NHAN'] * item['GIU_LUONG']) / 100
-        }
-
-        item['THUC_TRA_DU_KIEN'] = item['LUONG_THUC_NHAN'] - item['GIU_LUONG']
-      }
-
-      var stock = ''
-      item.DiemQL.map(e => {
-        stock +=
-          (e?.StockTitle === 'Quản lý cơ sở'
-            ? 'Cơ sở tổng (Công ty)'
-            : e?.StockTitle) + ', '
-      })
-      var idStaff = item.Staff['ID']
-      var nameStaff = item.Staff['FullName']
-      luongCauHinh += parseInt(item.LUONG_CAU_HINH)
-      phuCap += parseInt(item.PHU_CAP)
-      ngayNghi += parseInt(item.TRU_NGAY_NGHI)
-      thuong += parseInt(item.THUONG)
-      phat += parseInt(item.TRU_PHAT)
-      luongCa += parseInt(item.LUONG_CA)
-      hoaHong += parseInt(item.HOA_HONG)
-      KPI += parseInt(item.KPI_Hoa_hong)
-      thuNhapDuKien += parseInt(item.LUONG_DU_KIEN)
-      giuLuong += parseInt(item.GIU_LUONG)
-      thucTraDuKien += parseInt(item.THUC_TRA_DU_KIEN)
-      tamUng += parseInt(item.TAM_UNG) - parseInt(item.HOAN_UNG)
-      phaiTraNhanVien +=
-        parseInt(item.THUC_TRA_DU_KIEN) - parseInt(item.TAM_UNG)
-      daTra += parseInt(item.DA_TRA)
-      tonGiuLuong += parseInt(item.TON_GIU_LUONG)
-      tongDsMonth += parseInt(item.DOANH_SO_THANG)
-      const newArr = [
-        index + 1,
-        '#' + idStaff,
-        nameStaff,
-        stock.substring(0, stock.lastIndexOf(',')),
-        item.Staff['Address'] || '',
-        item?.TrackValue?.Config?.Values?.WORKING_STATUS === 0
-          ? 'Đã nghỉ'
-          : 'Hoạt động',
-        safeGet(item, 'TrackValue.WorkQty', 0) *
-          safeGet(item, 'NGAY_LUONG_CO_BAN', 0),
-        safeGet(item, 'TrackValue.DI_SOM', 0) +
-          safeGet(item, 'TrackValue.VE_MUON', 0),
-        safeGet(item, 'TrackValue.DI_MUON', 0) +
-          safeGet(item, 'TrackValue.VE_SOM', 0) >
-        0
-          ? (safeGet(item, 'TrackValue.DI_MUON', 0) +
-              safeGet(item, 'TrackValue.VE_SOM', 0)) *
-            1
-          : safeGet(item, 'TrackValue.DI_MUON', 0) +
-            safeGet(item, 'TrackValue.VE_SOM', 0),
-        PHU_CAP_NGAY,
-        item.LUONG_CHAM_CONG,
-        item.PHU_CAP,
-        /*item.TRU_NGAY_NGHI,*/
-        item.THUONG,
-        item.TRU_PHAT,
-        item.LUONG_CA_CAI_DAT,
-        item.LUONG_CA_EXTRA,
-        item.LUONG_CA,
-        item.HOA_HONG_Sanpham,
-        item.HOA_HONG_Dichvu,
-        item.HOA_HONG_Thetien,
-        item.HOA_HONG_NVL,
-        item.HOA_HONG_Phuphi,
-        item.HOA_HONG,
-        item.DOANH_SO_THANG,
-        item.KPI_Hoa_hong,
-        item.LUONG_DU_KIEN,
-        item?.DONG_BHXH,
-        item?.GIAM_TRU_GIA_CANH,
-        item?.THU_NHAP_CHIU_THUE,
-        item?.THUE_THU_NHAP_CA_NHAN,
-        item?.LUONG_THUC_NHAN,
-        item.GIU_LUONG,
-        item.THUC_TRA_DU_KIEN,
-        item.TAM_UNG - item.HOAN_UNG,
-        item.THUC_TRA_DU_KIEN - (item.TAM_UNG - item.HOAN_UNG),
-        item.DA_TRA,
-        item.TON_GIU_LUONG
-      ]
-      newExport.push(newArr)
-    })
-    const FooterTable = [
-      'Tổng',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      Sum.LUONG_CHAM_CONG,
-      Sum.PHU_CAP,
-      /*ngayNghi,*/
-      Sum.THUONG,
-      Sum.TRU_PHAT,
-      '',
-      '',
-      Sum.LUONG_CA_EXTRA,
-      '',
-      '',
-      '',
-      '',
-      '',
-      Sum.HOA_HONG,
-      Sum.DOANH_SO_THANG,
-      Sum.KPI_Hoa_hong,
-      Sum.LUONG_DU_KIEN,
-      '',
-      '',
-      '',
-      '',
-      Sum.GIU_LUONG,
-      Sum.THUC_TRA_DU_KIEN,
-      Sum.TAM_UNG - Sum.HOAN_UNG,
-      Sum.THUC_TRA_DU_KIEN - (Sum.TAM_UNG - Sum.HOAN_UNG),
-      Sum.DA_TRA,
-      Sum.TON_GIU_LUONG
+    const newArr = [
+      index + 1,
+      '#' + idStaff,
+      nameStaff,
+      stock.substring(0, stock.lastIndexOf(',')),
+      item.Staff['Address'] || '',
+      item?.TrackValue?.Config?.Values?.WORKING_STATUS === 0
+        ? 'Đã nghỉ'
+        : 'Hoạt động',
+      item?.TrackValue?.WorkQty === item?.TrackValue?.Config?.Values?.NGAY_CONG
+        ? Number(item?.TrackValue?.Config?.Values?.LUONG) || 0
+        : (item?.TrackValue?.WorkQty || 0) * (item?.NGAY_LUONG_CO_BAN || 0),
+      (Number(item?.TrackValue?.DI_SOM) || 0) +
+        (Number(item?.TrackValue?.VE_MUON) || 0),
+      -Math.abs(
+        (Number(item?.TrackValue?.DI_MUON) || 0) +
+          (Number(item?.TrackValue?.VE_SOM) || 0)
+      ),
+      PHU_CAP_NGAY,
+      item.LUONG_CHAM_CONG,
+      item.PHU_CAP,
+      /*item.TRU_NGAY_NGHI,*/
+      item.THUONG,
+      item.TRU_PHAT,
+      item.LUONG_CA_CAI_DAT,
+      item.LUONG_CA_EXTRA,
+      item.LUONG_CA,
+      item.HOA_HONG_Sanpham,
+      item.HOA_HONG_Dichvu,
+      item.HOA_HONG_Thetien,
+      item.HOA_HONG_NVL,
+      item.HOA_HONG_Phuphi,
+      item.HOA_HONG,
+      item.DOANH_SO_THANG,
+      item.KPI_Hoa_hong,
+      item.LUONG_DU_KIEN,
+      item?.DONG_BHXH,
+      item?.GIAM_TRU_GIA_CANH,
+      item?.THU_NHAP_CHIU_THUE,
+      item?.THUE_THU_NHAP_CA_NHAN,
+      item?.LUONG_THUC_NHAN,
+      item.GIU_LUONG,
+      item.THUC_TRA_DU_KIEN,
+      (Number(item.TAM_UNG) || 0) - (Number(item.HOAN_UNG) || 0),
+      (Number(item.THUC_TRA_DU_KIEN) || 0) -
+        ((Number(item.TAM_UNG) || 0) - (Number(item.HOAN_UNG) || 0)),
+      item.DA_TRA,
+      item.TON_GIU_LUONG
     ]
-    newExport.push(FooterTable)
-
-    if (!window.top?.GlobalConfig?.Admin?.bang_luong_nang_cao) {
-      const listIndex = [4, 5, 19, 25, 26, 27, 28, 29]
-
-      newExport = newExport.map(row =>
-        row.filter((_, index) => !listIndex.includes(index))
-      )
+    newExport.push(newArr)
+  })
+  const apiTotals = {
+    'LƯƠNG CHÍNH SÁCH': Sum.LUONG_CHAM_CONG,
+    'PHỤ CẤP': Sum.PHU_CAP,
+    THƯỞNG: Sum.THUONG,
+    PHẠT: Sum.TRU_PHAT,
+    'LƯƠNG TOUR': Sum.LUONG_CA,
+    'HOA HỒNG': Sum.HOA_HONG,
+    'DOANH SỐ': Sum.DOANH_SO_THANG,
+    KPI: Sum.KPI_Hoa_hong,
+    'THU NHẬP DỰ KIẾN': Sum.LUONG_DU_KIEN,
+    'TẠM ỨNG': (Number(Sum.TAM_UNG) || 0) - (Number(Sum.HOAN_UNG) || 0),
+    'ĐÃ TRẢ': Sum.DA_TRA,
+    'TỒN GIỮ LƯƠNG': Sum.TON_GIU_LUONG
+  }
+  const FooterTable = HeadTable.map((title, columnIndex) => {
+    if (columnIndex === 0) return 'Tổng'
+    if (columnIndex < 6) return ''
+    if (Object.prototype.hasOwnProperty.call(apiTotals, title)) {
+      return Number(apiTotals[title]) || 0
     }
     return newExport
+      .slice(1)
+      .reduce((total, row) => total + (Number(row[columnIndex]) || 0), 0)
+  })
+  newExport.push(FooterTable)
+
+  const hiddenTitles = []
+  if (Number(Shows) === 0) {
+    hiddenTitles.push(
+      'LƯƠNG CA CÀI ĐẶT',
+      'THƯỞNG KH CHỌN',
+      'HH SẢN PHẨM',
+      'HH DỊCH VỤ',
+      'HH THẺ TIỀN',
+      'HH NVL',
+      'HH PHỤ PHÍ'
+    )
   }
+  if (!window.top?.GlobalConfig?.Admin?.bang_luong_nang_cao) {
+    hiddenTitles.push(
+      'LOẠI HỢP ĐỒNG',
+      'TÌNH TRẠNG',
+      'BHXH (10.5%)',
+      'GIẢM TRỪ GIA CẢNH',
+      'THU NHẬP CHỊU THUẾ',
+      'THUẾ THU NHẬP CÁ NHÂN',
+      'LƯƠNG'
+    )
+  }
+  return newExport.map(row =>
+    row.filter((_, index) => !hiddenTitles.includes(HeadTable[index]))
+  )
 }
 
 function exportInventoryList(member) {

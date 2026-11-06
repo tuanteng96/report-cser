@@ -235,7 +235,7 @@ function FilterList({
                                 if (isWarehouse) {
                                   newStocks = [
                                     { value: '', label: 'Tất cả cơ sở' },
-                                    { value: 778, label: WarehouseName},
+                                    { value: 778, label: WarehouseName },
                                     ...Stocks
                                   ]
                                 } else {
