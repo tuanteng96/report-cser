@@ -5274,8 +5274,8 @@ window.EzsExportExcel = function ({ Url, Data, hideLoading }) {
           sheet.setColumnWidth(0, 240)
           workbook.resumePaint()
           workbook.resumeEvent()
-        },
-        hideLoading
+          hideLoading()
+        }
       )
       break
     case '/nhan-vien/doanh-so':

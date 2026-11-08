@@ -22,7 +22,7 @@ import Swal from 'sweetalert2'
 moment.locale('vi')
 
 const advancedFilterDefaults = {
-  TypeCN: [],
+  ProdOrService: '',
   ProductIds: [],
   MemberID: '',
   KpiType: '',
@@ -333,6 +333,9 @@ function SalesStaff(props) {
       _.pick(filters, Object.keys(advancedFilterDefaults)),
       config
     )
+    if (config && !GlobalConfig?.Admin?.AmountExport) {
+      params.Ps = Math.max(1500, config.Total || 0)
+    }
     return {
       from: filters.DateStart
         ? moment(filters.DateStart).format('YYYY-MM-DD')
@@ -341,7 +344,7 @@ function SalesStaff(props) {
         ? moment(filters.DateEnd).endOf('day').format('YYYY-MM-DD HH:mm:ss')
         : null,
       stockid: params.StockID,
-      prodType: params.TypeCN,
+      prodType: params.ProdOrService,
       kpiType: params.KpiType,
       prodids: params.ProductIds?.map(item => item.value).join(',') || '',
       mids: params.MemberID,
@@ -360,7 +363,6 @@ function SalesStaff(props) {
       return reportsApi
         .getAdvancedSales(getAdvancedSalesParams())
         .then(({ data }) => {
-          console.log('SalesStaff advanced result:', data)
           if (data.isRight) {
             PermissionHelpers.ErrorAccess(data.error)
             return

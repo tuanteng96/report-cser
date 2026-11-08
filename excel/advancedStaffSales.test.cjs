@@ -50,7 +50,8 @@ Object.assign(context, {
   GC: { Spread: { Sheets: { LineBorder: function () {}, LineStyle: { thin: 1 }, HorizontalAlign: { left: 0 } } } },
   dataToExcel: (name, render, done) => {
     render(sheet, { suspendPaint() {}, suspendEvent() {}, resumePaint() {}, resumeEvent() {} })
-    done()
+    assert.equal(hidden, true, 'Loading must end after rendering, before the save callback')
+    done?.()
   }
 })
 const exportCase = source.slice(source.indexOf("    case '/nhan-vien/doanh-so-nang-cao':"),
@@ -61,10 +62,76 @@ assert.ok(writes[1].row > writes[0].row + writes[0].rows.length)
 assert.ok(numericFormats.every(([, alignment]) => alignment === 0))
 assert.equal(hidden, true)
 
-let exportOptions, apiParams, loading
+// Exercise the real helper while Excel IO has not called back yet.
+let saveCallbacks
 Object.assign(context, {
-  filters: { ShowsType: '5' }, PageTotal: 40,
-  getAdvancedSalesParams: config => { assert.equal(config.Total, 40); return { Pi: 1, Ps: 1500, prodids: '11,12' } },
+  document: { getElementById: () => ({}), querySelector: () => ({}) }
+})
+Object.assign(sheet, { setRowCount() {}, setColumnCount() {} })
+context.GC.Spread.Excel = { IO: function () {
+  this.save = (json, success, failure) => { saveCallbacks = { success, failure } }
+} }
+context.GC.Spread.Sheets.Workbook = function () {
+  return {
+    getActiveSheet: () => sheet, toJSON: () => ({}),
+    suspendPaint() {}, suspendEvent() {}, resumePaint() {}, resumeEvent() {}
+  }
+}
+vm.runInContext(source.slice(source.indexOf('function dataToExcel('),
+  source.indexOf('loadResource().then(')), context)
+hidden = false
+vm.runInContext(`switch ('/nhan-vien/doanh-so-nang-cao') {${exportCase}}`, context)
+assert.ok(saveCallbacks, 'The workbook must still be submitted for export')
+assert.equal(hidden, true, 'A pending Excel IO save must not keep loading active')
+saveCallbacks.success({})
+
+let exportOptions, apiParams, loading
+let amountExport
+const requestSource = fs.readFileSync(`${__dirname}/../src/helpers/BrowserHelpers.js`, 'utf8')
+Object.assign(context, {
+  moment: require('moment'), _: require('lodash'),
+  store: { getState: () => ({ auth: { GlobalConfig: { Admin: { AmountExport: amountExport } } } }) },
+  filters: {
+    ShowsType: '5', DateStart: new Date(2026, 10, 1), DateEnd: new Date(2026, 10, 8),
+    StockID: 7, ProdOrService: { value: 0 }, KpiType: { value: 2 },
+    ProductIds: [{ value: 11 }, { value: 12 }], MemberID: { value: 99 }, Pi: 3, Ps: 15
+  },
+  GlobalConfig: { Admin: {} }
+})
+vm.runInContext(requestSource.slice(requestSource.indexOf('export const BrowserHelpers'))
+  .replace('export const', 'const'), context)
+vm.runInContext(ui.slice(ui.indexOf('const advancedFilterDefaults ='),
+  ui.indexOf('const advancedSummaryColumns =')), context)
+vm.runInContext(ui.slice(ui.indexOf('  const getAdvancedSalesParams ='),
+  ui.indexOf('  const getListSalarys =')), context)
+const getParams = config => vm.runInContext(`getAdvancedSalesParams(${JSON.stringify(config)})`, context)
+for (const total of [0, 40, 1499, 1500, 2300]) {
+  const params = getParams({ Total: total })
+  assert.equal(params.Pi, 1)
+  assert.equal(params.Ps, Math.max(1500, total))
+  assert.equal(params.prodType, 0)
+  assert.equal(params.kpiType, 2)
+  assert.equal(params.prodids, '11,12')
+  assert.equal(params.mids, 99)
+  assert.equal(params.stockid, 7)
+  assert.equal(params.from, '2026-11-01')
+  assert.equal(params.to, '2026-11-08 23:59:59')
+}
+amountExport = 500
+context.GlobalConfig.Admin.AmountExport = 500
+assert.equal(getParams({ Total: 2300 }).Ps, 500)
+for (const value of [0, 1, 2, 3, 4]) {
+  context.filters.ProdOrService = { value }
+  assert.equal(getParams().prodType, value)
+}
+context.filters.ProdOrService = null
+assert.equal(getParams().prodType, '')
+assert.equal(getParams().Pi, 3)
+assert.equal(getParams().Ps, 15)
+amountExport = undefined
+delete context.GlobalConfig.Admin.AmountExport
+Object.assign(context, {
+  PageTotal: 40,
   PermissionHelpers: { ExportExcel: options => { exportOptions = options } },
   reportsApi: { getAdvancedSales: async params => { apiParams = params; return { data: { result: input } } } },
   setLoadingExport: value => { loading = value }
