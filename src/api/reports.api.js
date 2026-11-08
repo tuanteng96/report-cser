@@ -111,6 +111,12 @@ const reportsApi = {
       JSON.stringify(data)
     )
   },
+  getAdvancedSales: data => {
+    return http.post(
+      `${SubApi}/nhan-vien/bang-luong-nang-cao-1`,
+      JSON.stringify(data)
+    )
+  },
   getListSalesDetail: data => {
     return http.post(
       `${SubApi}/ban-hang/doanh-so-chi-tiet`,

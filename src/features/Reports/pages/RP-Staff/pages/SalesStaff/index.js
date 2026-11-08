@@ -11,6 +11,7 @@ import { PermissionHelpers } from 'src/helpers/PermissionHelpers'
 import { BrowserHelpers } from 'src/helpers/BrowserHelpers'
 import { uuidv4 } from '@nikitababko/id-generator'
 import Text from 'react-texty'
+import { JsonFilter } from 'src/Json/JsonFilter'
 import ReactTableV7 from 'src/components/Tables/ReactTableV7'
 
 import moment from 'moment'
@@ -19,6 +20,39 @@ import moreApi from 'src/api/more.api'
 import Swal from 'sweetalert2'
 
 moment.locale('vi')
+
+const advancedFilterDefaults = {
+  TypeCN: [],
+  ProductIds: [],
+  MemberID: '',
+  KpiType: '',
+  StockID: '',
+  DateStart: null,
+  DateEnd: null,
+  Pi: 1,
+  Ps: 15
+}
+
+const advancedSummaryColumns = [
+  {
+    key: 'Nhanvien',
+    dataKey: 'Nhanvien',
+    title: 'Tên nhân viên',
+    width: 300,
+    sortable: false,
+    mobileOptions: { visible: true }
+  },
+  {
+    key: 'Gia_tri',
+    dataKey: 'Gia_tri',
+    title: 'Giá trị',
+    width: 200,
+    align: 'left',
+    sortable: false,
+    mobileOptions: { visible: true },
+    cellRenderer: ({ rowData }) => PriceHelper.formatVND(rowData.Gia_tri)
+  }
+]
 
 const convertArray = (arrays, configs, filters) => {
   const newArray = []
@@ -232,7 +266,7 @@ function SalesStaff(props) {
       AuthID: auth?.Info?.User?.ID
     })
   )
-  const [filters, setFilters] = useState({
+  const initialFilters = {
     StockID: CrStockID || '', // ID Stock
     DateStart: new Date(), // Ngày bắt đầu
     DateEnd: new Date(), // Ngày kết thúc
@@ -248,7 +282,17 @@ function SalesStaff(props) {
     ProdOrService: '',
     ShowsType: '1',
     OptionKPI: null
-  })
+  }
+  const [filters, setFilters] = useState(initialFilters)
+  const getRegimeFilters = values => {
+    const defaults =
+      values.ShowsType === '5' ? advancedFilterDefaults : initialFilters
+    return {
+      ...defaults,
+      ..._.pick(values, Object.keys(defaults)),
+      ShowsType: values.ShowsType
+    }
+  }
   const [StockName, setStockName] = useState('')
   const [isFilter, setIsFilter] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -262,6 +306,8 @@ function SalesStaff(props) {
   })
   const [PageTotal, setPageTotal] = useState(0)
   const [pageCount, setPageCount] = useState(0)
+  const [advancedTotal, setAdvancedTotal] = useState(0)
+  const [advancedStaffTotals, setAdvancedStaffTotals] = useState([])
   const [initialValuesMobile, setInitialValuesMobile] = useState(null)
   const [isModalMobile, setIsModalMobile] = useState(false)
 
@@ -282,7 +328,61 @@ function SalesStaff(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters])
 
+  const getAdvancedSalesParams = config => {
+    const params = BrowserHelpers.getRequestParamsList(
+      _.pick(filters, Object.keys(advancedFilterDefaults)),
+      config
+    )
+    return {
+      from: filters.DateStart
+        ? moment(filters.DateStart).format('YYYY-MM-DD')
+        : null,
+      to: filters.DateEnd
+        ? moment(filters.DateEnd).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+        : null,
+      stockid: params.StockID,
+      prodType: params.TypeCN,
+      kpiType: params.KpiType,
+      prodids: params.ProductIds?.map(item => item.value).join(',') || '',
+      mids: params.MemberID,
+      Pi: params.Pi,
+      Ps: params.Ps,
+      Sum: {
+        Tong: 'Gia_tri,sum',
+        TongNhanvien: 'Gia_tri,sum_group,Nhanvien_ID,Nhanvien'
+      }
+    }
+  }
+
   const getListSalarys = async (isLoading = true, callback) => {
+    if (filters.ShowsType === '5') {
+      isLoading && setLoading(true)
+      return reportsApi
+        .getAdvancedSales(getAdvancedSalesParams())
+        .then(({ data }) => {
+          console.log('SalesStaff advanced result:', data)
+          if (data.isRight) {
+            PermissionHelpers.ErrorAccess(data.error)
+            return
+          }
+          const result = data.result
+          setListData(result?.data || [])
+          setListDataMobile(result?.data || [])
+          setPageTotal(result?.Total || 0)
+          setPageCount(result?.PCount || 0)
+          setAdvancedTotal(result?.Sum?.Tong || 0)
+          setAdvancedStaffTotals(
+            Object.entries(result?.Sum?.TongNhanvien || {}).map(
+              ([Nhanvien, Gia_tri]) => ({ Nhanvien, Gia_tri })
+            )
+          )
+          PermissionHelpers.HideErrorAccess()
+          setIsFilter(false)
+          callback && callback()
+        })
+        .catch(error => console.log(error))
+        .finally(() => setLoading(false))
+    }
     isLoading && setLoading(true)
 
     let configs = null
@@ -743,6 +843,7 @@ function SalesStaff(props) {
   }
 
   const onFilter = values => {
+    if (values.ShowsType === '5') values = getRegimeFilters(values)
     if (_.isEqual(values, filters)) {
       getListSalarys()
     } else {
@@ -755,6 +856,26 @@ function SalesStaff(props) {
   }
 
   const onExport = async () => {
+    if (filters.ShowsType === '5') {
+      const params = getAdvancedSalesParams({ Total: PageTotal })
+      return PermissionHelpers.ExportExcel({
+        FuncStart: () => setLoadingExport(true),
+        FuncEnd: () => setLoadingExport(false),
+        FuncApi: () =>
+          reportsApi.getAdvancedSales(params).then(
+            response => {
+              if (response.data?.error) setLoadingExport(false)
+              return response
+            },
+            error => {
+              setLoadingExport(false)
+              return { data: { error: error.message } }
+            }
+          ),
+        UrlName: '/nhan-vien/doanh-so-nang-cao',
+        params
+      })
+    }
     if (filters.ShowsType === '2') {
       setLoadingExport(true)
 
@@ -835,6 +956,61 @@ function SalesStaff(props) {
 
   const columns = useMemo(
     () => {
+      if (filters.ShowsType === '5') {
+        return [
+          { dataKey: 'Id', title: 'ID', width: 100 },
+          {
+            dataKey: 'Ngay',
+            title: 'Ngày',
+            width: 180,
+            cellRenderer: ({ rowData }) =>
+              rowData.Ngay ? moment(rowData.Ngay).format('DD/MM/YYYY') : ''
+          },
+          { dataKey: 'Co_so', title: 'Cơ sở', width: 200 },
+          {
+            dataKey: 'Gia_tri',
+            title: 'Giá trị',
+            width: 180,
+            align: 'left',
+            cellRenderer: ({ rowData }) =>
+              PriceHelper.formatVND(rowData.Gia_tri)
+          },
+          { dataKey: 'Don_hang', title: 'Đơn hàng', width: 130 },
+          { dataKey: 'ProdTitle', title: 'Mặt hàng', width: 280 },
+          {
+            dataKey: 'LoaiKpi',
+            title: 'Loại KPI',
+            width: 120,
+            cellRenderer: ({ rowData }) =>
+              rowData.LoaiKpi != null && Number(rowData.LoaiKpi) !== 0
+                ? `Loại ${rowData.LoaiKpi}`
+                : ''
+          },
+          {
+            dataKey: 'LoaiSpDv',
+            title: 'Loại',
+            width: 160,
+            cellRenderer: ({ rowData }) =>
+              JsonFilter.TypeCNListNum.find(
+                item => item.value === Number(rowData.LoaiSpDv)
+              )?.label || rowData.LoaiSpDv
+          },
+          {
+            dataKey: 'Nhanvien_ID',
+            title: 'ID nhân viên được hưởng',
+            width: 280,
+            cellRenderer: ({ rowData }) =>
+              [rowData.Nhanvien_ID, rowData.Nhanvien]
+                .filter(value => value != null && value !== '')
+                .join(' - ')
+          }
+        ].map(column => ({
+          ...column,
+          key: column.dataKey,
+          sortable: false,
+          mobileOptions: { visible: true }
+        }))
+      }
       if (filters.ShowsType === '2') {
         return [
           {
@@ -1117,7 +1293,8 @@ function SalesStaff(props) {
     if (
       filters.ShowsType === '2' ||
       filters.ShowsType === '3' ||
-      filters.ShowsType === '4'
+      filters.ShowsType === '4' ||
+      filters.ShowsType === '5'
     ) {
       return cells
     }
@@ -1345,6 +1522,7 @@ function SalesStaff(props) {
         onImport={GlobalConfig?.Admin?.chinhsachluongchitiet && onImport}
         show={isFilter}
         filters={filters}
+        getRegimeFilters={getRegimeFilters}
         onHide={onHideFilter}
         onSubmit={onFilter}
         onRefresh={onRefresh}
@@ -1352,6 +1530,12 @@ function SalesStaff(props) {
         loadingExport={loadingExport}
         onExport={onExport}
         textAdvanced="KPI doanh số ngày"
+        optionsAfterBasic={[
+          {
+            label: 'Nâng cao',
+            value: '5'
+          }
+        ]}
         optionsAdd={[
           {
             label: 'Kpi DS tháng / hoa hồng',
@@ -1370,7 +1554,15 @@ function SalesStaff(props) {
           <div className="fw-500 font-size-lg">
             Danh sách doanh số nhân viên
           </div>
-          {filters.ShowsType !== '3' && (
+          {filters.ShowsType === '5' && (
+            <div className="fw-500 font-size-lg ml-25px">
+              Tổng giá trị:{' '}
+              <span className="text-success font-number">
+                {PriceHelper.formatVND(advancedTotal)}
+              </span>
+            </div>
+          )}
+          {filters.ShowsType !== '3' && filters.ShowsType !== '5' && (
             <div className="fw-500 d-flex align-items-center ml-25px">
               {filters.ShowsType === '2' ? 'Tổng thưởng' : 'Tổng doanh số'}
               {filters.ShowsType === '2' ? (
@@ -1427,7 +1619,7 @@ function SalesStaff(props) {
         </div>
         <div className="p-20px">
           <ReactTableV7
-            rowKey="Ids"
+            rowKey={filters.ShowsType === '5' ? 'Id' : 'Ids'}
             overscanRowCount={50}
             useIsScrolling
             filters={filters.ShowsType === '2' ? null : filters}
@@ -1452,6 +1644,21 @@ function SalesStaff(props) {
           filters={filters}
         />
       </div>
+      {filters.ShowsType === '5' && (
+        <div className="bg-white rounded mt-20px">
+          <div className="border-gray-200 px-20px py-15px border-bottom fw-500 font-size-lg">
+            Tổng doanh số nhân viên
+          </div>
+          <div className="p-20px">
+            <ReactTableV7
+              rowKey="Nhanvien"
+              columns={advancedSummaryColumns}
+              data={advancedStaffTotals}
+              loading={loading}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

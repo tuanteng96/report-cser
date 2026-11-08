@@ -101,6 +101,7 @@ function FilterList({
   WarehouseName = 'Kho tổng',
   isAllStock = true,
   optionsAdd = [],
+  optionsAfterBasic = [],
   updateStocksRole,
   limitDateType = 'THEO_NGAY',
   noMaximum = false,
@@ -121,7 +122,8 @@ function FilterList({
   ],
   textAdvanced,
   onlyDate,
-  disabledOtp = null
+  disabledOtp = null,
+  getRegimeFilters
 }) {
   const {
     Stocks,
@@ -420,6 +422,7 @@ function FilterList({
           // errors, touched, handleChange, handleBlur
           const {
             values,
+            setValues,
             setFieldValue,
             handleChange,
             handleBlur,
@@ -462,6 +465,7 @@ function FilterList({
                             label: 'Cơ bản',
                             value: '1'
                           },
+                          ...optionsAfterBasic,
                           {
                             label: textAdvanced || 'Nâng cao',
                             value: '2'
@@ -474,6 +478,7 @@ function FilterList({
                             label: 'Cơ bản',
                             value: '1'
                           },
+                          ...optionsAfterBasic,
                           {
                             label: textAdvanced || 'Nâng cao',
                             value: '2'
@@ -484,7 +489,14 @@ function FilterList({
                             Number(item.value) === Number(values?.ShowsType)
                         )}
                         onChange={otp => {
-                          setFieldValue('ShowsType', otp ? otp.value : '')
+                          const ShowsType = otp ? otp.value : ''
+                          if (getRegimeFilters) {
+                            setValues(
+                              getRegimeFilters({ ...values, ShowsType })
+                            )
+                          } else {
+                            setFieldValue('ShowsType', ShowsType)
+                          }
                         }}
                         noOptionsMessage={() => 'Không có dữ liệu'}
                         menuPortalTarget={document.body}

@@ -10,14 +10,14 @@ export default function ModalViewMobile({
   columns,
   filters
 }) {
-  if (['2', '3', '4'].includes(filters.ShowsType)) {
+  if (['2', '3', '4', '5'].includes(filters.ShowsType)) {
     return (
       <TableRowModal
         show={show}
         onHide={onHide}
         data={data}
         columns={columns}
-        title={data?.nhan_vien || data?.Staff?.FullName}
+        title={data?.Nhanvien || data?.nhan_vien || data?.Staff?.FullName}
       />
     )
   }

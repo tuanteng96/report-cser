@@ -5238,6 +5238,46 @@ window.EzsExportExcel = function ({ Url, Data, hideLoading }) {
         )
       }
       break
+    case '/nhan-vien/doanh-so-nang-cao':
+      dataToExcel(
+        `doanh-so-nhan-vien-nang-cao-${Data.param.Body.from || ''}-${(Data.param.Body.to || '').slice(0, 10)}-${getStockName(Data.param.Body.stockid)}`,
+        (sheet, workbook) => {
+          workbook.suspendPaint()
+          workbook.suspendEvent()
+          const tables = exportAdvancedStaffSales(Data.result)
+          const border = new GC.Spread.Sheets.LineBorder()
+          border.color = '#000'
+          border.style = GC.Spread.Sheets.LineStyle.thin
+          let startRow = 0
+          for (const table of tables) {
+            sheet.getCell(startRow, 0).value(table.title)
+              .font('18pt Calibri, Arial, sans-serif')
+            const headerRow = startRow + 2
+            sheet.setArray(headerRow, 0, table.rows)
+            sheet.getRange(headerRow, 0, 1, table.rows[0].length)
+              .font('12pt Calibri, Arial, sans-serif').backColor('#E7E9EB')
+            sheet.getRange(headerRow, 0, table.rows.length, table.rows[0].length)
+              .borderLeft(border).borderRight(border)
+              .borderTop(border).borderBottom(border)
+            sheet.getRange(headerRow + 1, table.valueColumn, table.rows.length - 1, 1)
+              .formatter('#,##0').hAlign(GC.Spread.Sheets.HorizontalAlign.left)
+            sheet.getRange(headerRow + table.rows.length - 1, 0, 1, table.rows[0].length)
+              .font('bold 12pt Calibri, Arial, sans-serif')
+            for (let row = startRow; row < headerRow + table.rows.length; row++) {
+              sheet.autoFitRow(row)
+            }
+            startRow = headerRow + table.rows.length + 2
+          }
+          for (let col = 0; col < tables[0].rows[0].length; col++) {
+            sheet.autoFitColumn(col)
+          }
+          sheet.setColumnWidth(0, 240)
+          workbook.resumePaint()
+          workbook.resumeEvent()
+        },
+        hideLoading
+      )
+      break
     case '/nhan-vien/doanh-so':
       dataToExcel(
         `danh-sach-doanh-so-nhan-vien-` +
@@ -10735,6 +10775,41 @@ function exportCommissionStaffList(member) {
     arr1,
     arr2
   }
+}
+
+function exportAdvancedStaffSales(result) {
+  const types = ['Sản phẩm', 'Dịch vụ', 'Phụ phí', 'Nguyên vật liệu', 'Thẻ tiền']
+  const detail = [[
+    'ID', 'NGÀY', 'CƠ SỞ', 'GIÁ TRỊ', 'ĐƠN HÀNG', 'MẶT HÀNG', 'LOẠI KPI', 'LOẠI',
+    'ID NHÂN VIÊN ĐƯỢC HƯỞNG'
+  ]]
+  for (const item of result?.data || []) {
+    detail.push([
+      item.Id,
+      item.Ngay ? window.top.moment(item.Ngay).format('DD/MM/YYYY') : '',
+      item.Co_so,
+      item.Gia_tri ?? 0,
+      item.Don_hang,
+      item.ProdTitle || '',
+      item.LoaiKpi != null && Number(item.LoaiKpi) !== 0
+        ? `Loại ${item.LoaiKpi}`
+        : '',
+      types[item.LoaiSpDv] ?? item.LoaiSpDv ?? '',
+      [item.Nhanvien_ID, item.Nhanvien]
+        .filter(value => value != null && value !== '')
+        .join(' - ')
+    ])
+  }
+  detail.push(['TỔNG', '', '', result?.Sum?.Tong ?? 0, '', '', '', '', ''])
+  const summary = [
+    ['TÊN NHÂN VIÊN', 'GIÁ TRỊ'],
+    ...Object.entries(result?.Sum?.TongNhanvien || {})
+  ]
+  summary.push(['TỔNG', result?.Sum?.Tong ?? 0])
+  return [
+    { title: 'Danh sách doanh số nhân viên', rows: detail, valueColumn: 3 },
+    { title: 'Tổng doanh số nhân viên', rows: summary, valueColumn: 1 }
+  ]
 }
 
 function exportStaffSalesList(member, configs) {
