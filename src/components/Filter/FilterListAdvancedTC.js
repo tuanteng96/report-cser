@@ -31,6 +31,7 @@ import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import AsyncSelectBanksConfig from '../Selects/AsyncSelectBrands'
+import { useRoles } from 'src/hooks/useRoles'
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -97,7 +98,8 @@ function FilterListAdvancedTC({
     GlobalConfig,
     AuthID,
     Auth,
-    rightTree
+    rightTree,
+    CrStockID
   } = useSelector(({ auth }) => ({
     Stocks: auth.Info?.Stocks
       ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
@@ -111,8 +113,12 @@ function FilterListAdvancedTC({
     KPT_Max_Type: auth?.GlobalConfig?.Admin?.KPT_Max_Type || 0,
     GlobalConfig: auth?.GlobalConfig,
     AuthID: auth?.Info?.User?.ID,
-    Auth: auth
+    Auth: auth,
+    CrStockID: auth?.Info?.CrStockID || ''
   }))
+
+  let { tong_hop_cash } = useRoles(['tong_hop_cash'], { ID: CrStockID })
+
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
   const { pathname } = useLocation()
@@ -264,15 +270,11 @@ function FilterListAdvancedTC({
   }, [PermissionReport, pathname, isWarehouse])
 
   const filterTypeTC = (inputValue, optionFilter) => {
-    if (optionFilter !== '') {
-      return TagsTCList.filter(
-        i =>
-          i.type === optionFilter &&
-          i.label.toLowerCase().includes(inputValue.toLowerCase())
-      )
-    }
-    return TagsTCList.filter(i =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
+    return TagsTCList.filter(
+      i =>
+        (!i.advanced || tong_hop_cash?.hasRight === true) &&
+        (optionFilter === '' || i.type === optionFilter) &&
+        i.label.toLowerCase().includes(inputValue.toLowerCase())
     )
   }
 
@@ -731,7 +733,7 @@ function FilterListAdvancedTC({
                     <div className="form-group mb-20px">
                       <label>Tags</label>
                       <AsyncSelect
-                        key={values?.TypeTC}
+                        key={`${values?.TypeTC}-${tong_hop_cash?.hasRight}`}
                         cacheOptions
                         defaultOptions
                         isMulti

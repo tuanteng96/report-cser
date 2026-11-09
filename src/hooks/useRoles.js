@@ -10,32 +10,28 @@ const formatArray = {
     return newPages
   },
   findNodeByName: (data, name) => {
-    let response = null
-    let findNameItem = tree => {
+    let findNameItem = (tree, key) => {
       let result = null
-      if (
-        (tree?.name_and_group === name || tree?.name === name) &&
-        !tree?.subs
-      ) {
+      if (tree?.[key] === name && !tree?.subs) {
         return tree
       }
 
       if (Array.isArray(tree.children) && tree.children.length > 0) {
         tree.children.some(node => {
-          result = findNameItem(node)
+          result = findNameItem(node, key)
           return result
         })
       }
       return result
     }
     if (!data) return null
-    for (let item of data) {
-      if (findNameItem(item)) {
-        response = findNameItem(item)
-        break
+    for (let key of ['name_and_group', 'name']) {
+      for (let item of data) {
+        const result = findNameItem(item, key)
+        if (result) return result
       }
     }
-    return response
+    return null
   },
   arrayMove: (array, oldIndex, newIndex) => {
     if (newIndex >= array.length) {

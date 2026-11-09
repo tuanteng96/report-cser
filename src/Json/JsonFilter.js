@@ -86,7 +86,8 @@ export const JsonFilter = {
     {
       value: 'THU_GIU_LUONG',
       label: 'Thu giữ lương',
-      type: 0
+      type: 0,
+      advanced: true
     },
     {
       value: 'THU_HOAN_UNG',
@@ -101,7 +102,8 @@ export const JsonFilter = {
     {
       value: 'THU_XUAT_KHO',
       label: 'Thu xuất kho',
-      type: 0
+      type: 0,
+      advanced: true
     },
     {
       value: 'CHI',
@@ -121,17 +123,20 @@ export const JsonFilter = {
     {
       value: 'CHI_NHAP_KHO',
       label: 'Chi nhập kho',
-      type: 1
+      type: 1,
+      advanced: true
     },
     {
       value: 'CHI_GIU_LUONG',
       label: 'Trả tiền giữ lương',
-      type: 1
+      type: 1,
+      advanced: true
     },
     {
       value: 'CHI_LUONG',
       label: 'Trả lương',
-      type: 1
+      type: 1,
+      advanced: true
     }
   ],
   TypeCNList: [

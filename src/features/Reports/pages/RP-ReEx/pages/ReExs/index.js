@@ -18,6 +18,7 @@ import 'moment/locale/vi'
 import IconMenuMobile from 'src/features/Reports/components/IconMenuMobile'
 import Chart2Column from 'src/features/Reports/components/Chart2Column'
 import FilterListAdvancedTC from 'src/components/Filter/FilterListAdvancedTC'
+import { useRoles } from 'src/hooks/useRoles'
 
 moment.locale('vi')
 
@@ -56,6 +57,12 @@ function ReExs(props) {
     CrStockID: auth?.Info?.CrStockID || '',
     Stocks: auth?.Info?.Stocks || []
   }))
+
+  let { thu_chi_cash, tong_hop_cash } = useRoles(
+    ['thu_chi_cash', 'tong_hop_cash'],
+    { ID: CrStockID }
+  )
+
   const [filters, setFilters] = useState({
     StockID: CrStockID || '', // ID Stock
     DateStart: new Date(), // Ngày bắt đầu
@@ -525,189 +532,206 @@ function ReExs(props) {
         loadingExport={loadingExport}
         onExport={onExport}
       />
-      <div className="row">
-        <div className="col-lg-5 col-xl-6">
-          {loading && <LoadingSkeleton />}
-          {!loading && (
-            <div className="d-flex flex-column h-100">
-              <div
-                className="text-center bg-white rounded px-20px py-30px flex-grow-1 d-flex flex-column justify-content-center align-items-center"
-                style={{
-                  backgroundPosition: 'right top',
-                  backgroundSize: '30% auto',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundImage: `url(${AssetsHelpers.toAbsoluteUrl(
-                    '/assets/media/svg/shapes/abstract-4.svg'
-                  )})`
-                }}
-              >
-                <div className="font-number font-size-35 fw-600 line-height-xxl text-primary d-inline-block">
-                  {PriceHelper.formatVND(OverviewData?.TonTienDauKy)}
+      {thu_chi_cash?.hasRight && tong_hop_cash?.hasRight && (
+        <div className="row">
+          <div className="col-lg-5 col-xl-6">
+            {loading && <LoadingSkeleton />}
+            {!loading && (
+              <div className="d-flex flex-column h-100">
+                <div
+                  className="text-center bg-white rounded px-20px py-30px flex-grow-1 d-flex flex-column justify-content-center align-items-center"
+                  style={{
+                    backgroundPosition: 'right top',
+                    backgroundSize: '30% auto',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundImage: `url(${AssetsHelpers.toAbsoluteUrl(
+                      '/assets/media/svg/shapes/abstract-4.svg'
+                    )})`
+                  }}
+                >
+                  <div className="font-number font-size-35 fw-600 line-height-xxl text-primary d-inline-block">
+                    {PriceHelper.formatVND(OverviewData?.TonTienDauKy)}
+                  </div>
+                  <div className="mt-2 d-flex fw-600">
+                    <div>
+                      <span className="text-muted pr-5px">TM:</span>
+                      {PriceHelper.formatVND(OverviewData?.TonTienDauKy_TM)}
+                    </div>
+                    <div className="mx-3">-</div>
+                    <div>
+                      <span className="text-muted pr-5px">CK:</span>
+                      {PriceHelper.formatVND(OverviewData?.TonTienDauKy_CK)}
+                    </div>
+                    <div className="mx-3">-</div>
+                    <div>
+                      <span className="text-muted pr-5px">QT:</span>
+                      {PriceHelper.formatVND(OverviewData?.TonTienDauKy_QT)}
+                    </div>
+                  </div>
+                  <div className="fw-600 text-uppercase text-muted font-size-smm mt-10px">
+                    Tồn tiền đầu kỳ
+                  </div>
                 </div>
-                <div className="mt-2 d-flex fw-600">
-                  <div>
-                    <span className="text-muted pr-5px">TM:</span>
-                    {PriceHelper.formatVND(OverviewData?.TonTienDauKy_TM)}
+                <div className="bg-white rounded px-20px py-30px d-flex my-20px flex-column flex-xl-row flex-grow-1">
+                  <div className="flex-1 text-center d-flex flex-column justify-content-center align-items-center">
+                    <OverlayTrigger
+                      overlay={
+                        <Tooltip className="w-auto">
+                          <div className="d-flex fw-600">
+                            <div>
+                              <span className="text-muted pr-5px">TM:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ThuTrongKy_TM
+                              )}
+                            </div>
+                            <div className="mx-3">-</div>
+                            <div>
+                              <span className="text-muted pr-5px">CK:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ThuTrongKy_CK
+                              )}
+                            </div>
+                            <div className="mx-3">-</div>
+                            <div>
+                              <span className="text-muted pr-5px">QT:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ThuTrongKy_QT
+                              )}
+                            </div>
+                          </div>
+                        </Tooltip>
+                      }
+                    >
+                      <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl">
+                        {PriceHelper.formatVND(OverviewData?.ThuTrongKy)}
+                      </div>
+                    </OverlayTrigger>
+                    <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
+                      Thu trong kỳ
+                    </div>
                   </div>
-                  <div className="mx-3">-</div>
-                  <div>
-                    <span className="text-muted pr-5px">CK:</span>
-                    {PriceHelper.formatVND(OverviewData?.TonTienDauKy_CK)}
+                  <div className="flex-1 text-center border-gray-200 d-flex flex-column justify-content-center border-left border-left-0 border-xl-left-1 border-right border-right-0 border-xl-right-1 border-bottom border-xl-bottom-0 border-top border-xl-top-0 py-20px my-20px py-xl-0 my-xl-0 align-items-center">
+                    <OverlayTrigger
+                      overlay={
+                        <Tooltip className="w-auto">
+                          <div className="d-flex fw-600">
+                            <div>
+                              <span className="text-muted pr-5px">TM:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ChiTrongKy_TM
+                              )}
+                            </div>
+                            <div className="mx-3">-</div>
+                            <div>
+                              <span className="text-muted pr-5px">CK:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ChiTrongKy_CK
+                              )}
+                            </div>
+                            <div className="mx-3">-</div>
+                            <div>
+                              <span className="text-muted pr-5px">QT:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ChiTrongKy_QT
+                              )}
+                            </div>
+                          </div>
+                        </Tooltip>
+                      }
+                    >
+                      <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl text-danger">
+                        {PriceHelper.formatVNDPositive(
+                          OverviewData?.ChiTrongKy
+                        )}
+                      </div>
+                    </OverlayTrigger>
+                    <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
+                      Chi trong kỳ
+                    </div>
                   </div>
-                  <div className="mx-3">-</div>
-                  <div>
-                    <span className="text-muted pr-5px">QT:</span>
-                    {PriceHelper.formatVND(OverviewData?.TonTienDauKy_QT)}
+                  <div className="flex-1 text-center d-flex flex-column justify-content-center align-items-center">
+                    <OverlayTrigger
+                      overlay={
+                        <Tooltip className="w-auto">
+                          <div className="d-flex fw-600">
+                            <div>
+                              <span className="text-muted pr-5px">TM:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ThuChiTrongKy_TM
+                              )}
+                            </div>
+                            <div className="mx-3">-</div>
+                            <div>
+                              <span className="text-muted pr-5px">CK:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ThuChiTrongKy_CK
+                              )}
+                            </div>
+                            <div className="mx-3">-</div>
+                            <div>
+                              <span className="text-muted pr-5px">QT:</span>
+                              {PriceHelper.formatVND(
+                                OverviewData?.ThuChiTrongKy_QT
+                              )}
+                            </div>
+                          </div>
+                        </Tooltip>
+                      }
+                    >
+                      <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl">
+                        {PriceHelper.formatVND(OverviewData?.ThuChiTrongKy)}
+                      </div>
+                    </OverlayTrigger>
+                    <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
+                      Tồn kỳ
+                    </div>
                   </div>
                 </div>
-                <div className="fw-600 text-uppercase text-muted font-size-smm mt-10px">
-                  Tồn tiền đầu kỳ
+                <div
+                  className="text-center bg-white rounded px-20px py-30px mb-20px mb-md-0 flex-grow-1 d-flex flex-column justify-content-center align-items-center"
+                  style={{
+                    backgroundPosition: 'right top',
+                    backgroundSize: '30% auto',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundImage: `url(${AssetsHelpers.toAbsoluteUrl(
+                      '/assets/media/svg/shapes/abstract-4.svg'
+                    )})`
+                  }}
+                >
+                  <div className="font-number font-size-35 fw-600 line-height-xxl text-success">
+                    {PriceHelper.formatVND(OverviewData?.ThuChiHienTai)}
+                  </div>
+                  <div className="mt-2 d-flex fw-600">
+                    <div>
+                      <span className="text-muted pr-5px">TM:</span>
+                      {PriceHelper.formatVND(OverviewData?.ThuChiHienTai_TM)}
+                    </div>
+                    <div className="mx-3">-</div>
+                    <div>
+                      <span className="text-muted pr-5px">CK:</span>
+                      {PriceHelper.formatVND(OverviewData?.ThuChiHienTai_CK)}
+                    </div>
+                    <div className="mx-3">-</div>
+                    <div>
+                      <span className="text-muted pr-5px">QT:</span>
+                      {PriceHelper.formatVND(OverviewData?.ThuChiHienTai_QT)}
+                    </div>
+                  </div>
+                  <div className="fw-600 text-uppercase text-muted font-size-smm mt-10px">
+                    Tồn tiền hiện tại
+                  </div>
                 </div>
               </div>
-              <div className="bg-white rounded px-20px py-30px d-flex my-20px flex-column flex-xl-row flex-grow-1">
-                <div className="flex-1 text-center d-flex flex-column justify-content-center align-items-center">
-                  <OverlayTrigger
-                    overlay={
-                      <Tooltip className="w-auto">
-                        <div className="d-flex fw-600">
-                          <div>
-                            <span className="text-muted pr-5px">TM:</span>
-                            {PriceHelper.formatVND(OverviewData?.ThuTrongKy_TM)}
-                          </div>
-                          <div className="mx-3">-</div>
-                          <div>
-                            <span className="text-muted pr-5px">CK:</span>
-                            {PriceHelper.formatVND(OverviewData?.ThuTrongKy_CK)}
-                          </div>
-                          <div className="mx-3">-</div>
-                          <div>
-                            <span className="text-muted pr-5px">QT:</span>
-                            {PriceHelper.formatVND(OverviewData?.ThuTrongKy_QT)}
-                          </div>
-                        </div>
-                      </Tooltip>
-                    }
-                  >
-                    <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl">
-                      {PriceHelper.formatVND(OverviewData?.ThuTrongKy)}
-                    </div>
-                  </OverlayTrigger>
-                  <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
-                    Thu trong kỳ
-                  </div>
-                </div>
-                <div className="flex-1 text-center border-gray-200 d-flex flex-column justify-content-center border-left border-left-0 border-xl-left-1 border-right border-right-0 border-xl-right-1 border-bottom border-xl-bottom-0 border-top border-xl-top-0 py-20px my-20px py-xl-0 my-xl-0 align-items-center">
-                  <OverlayTrigger
-                    overlay={
-                      <Tooltip className="w-auto">
-                        <div className="d-flex fw-600">
-                          <div>
-                            <span className="text-muted pr-5px">TM:</span>
-                            {PriceHelper.formatVND(OverviewData?.ChiTrongKy_TM)}
-                          </div>
-                          <div className="mx-3">-</div>
-                          <div>
-                            <span className="text-muted pr-5px">CK:</span>
-                            {PriceHelper.formatVND(OverviewData?.ChiTrongKy_CK)}
-                          </div>
-                          <div className="mx-3">-</div>
-                          <div>
-                            <span className="text-muted pr-5px">QT:</span>
-                            {PriceHelper.formatVND(OverviewData?.ChiTrongKy_QT)}
-                          </div>
-                        </div>
-                      </Tooltip>
-                    }
-                  >
-                    <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl text-danger">
-                      {PriceHelper.formatVNDPositive(OverviewData?.ChiTrongKy)}
-                    </div>
-                  </OverlayTrigger>
-                  <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
-                    Chi trong kỳ
-                  </div>
-                </div>
-                <div className="flex-1 text-center d-flex flex-column justify-content-center align-items-center">
-                  <OverlayTrigger
-                    overlay={
-                      <Tooltip className="w-auto">
-                        <div className="d-flex fw-600">
-                          <div>
-                            <span className="text-muted pr-5px">TM:</span>
-                            {PriceHelper.formatVND(
-                              OverviewData?.ThuChiTrongKy_TM
-                            )}
-                          </div>
-                          <div className="mx-3">-</div>
-                          <div>
-                            <span className="text-muted pr-5px">CK:</span>
-                            {PriceHelper.formatVND(
-                              OverviewData?.ThuChiTrongKy_CK
-                            )}
-                          </div>
-                          <div className="mx-3">-</div>
-                          <div>
-                            <span className="text-muted pr-5px">QT:</span>
-                            {PriceHelper.formatVND(
-                              OverviewData?.ThuChiTrongKy_QT
-                            )}
-                          </div>
-                        </div>
-                      </Tooltip>
-                    }
-                  >
-                    <div className="font-number font-size-30 font-md-size-25 font-xxl-size-30 fw-600 line-height-xxl">
-                      {PriceHelper.formatVND(OverviewData?.ThuChiTrongKy)}
-                    </div>
-                  </OverlayTrigger>
-                  <div className="fw-600 text-uppercase text-muted font-size-smm mt-5px">
-                    Tồn kỳ
-                  </div>
-                </div>
-              </div>
-              <div
-                className="text-center bg-white rounded px-20px py-30px mb-20px mb-md-0 flex-grow-1 d-flex flex-column justify-content-center align-items-center"
-                style={{
-                  backgroundPosition: 'right top',
-                  backgroundSize: '30% auto',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundImage: `url(${AssetsHelpers.toAbsoluteUrl(
-                    '/assets/media/svg/shapes/abstract-4.svg'
-                  )})`
-                }}
-              >
-                <div className="font-number font-size-35 fw-600 line-height-xxl text-success">
-                  {PriceHelper.formatVND(OverviewData?.ThuChiHienTai)}
-                </div>
-                <div className="mt-2 d-flex fw-600">
-                  <div>
-                    <span className="text-muted pr-5px">TM:</span>
-                    {PriceHelper.formatVND(OverviewData?.ThuChiHienTai_TM)}
-                  </div>
-                  <div className="mx-3">-</div>
-                  <div>
-                    <span className="text-muted pr-5px">CK:</span>
-                    {PriceHelper.formatVND(OverviewData?.ThuChiHienTai_CK)}
-                  </div>
-                  <div className="mx-3">-</div>
-                  <div>
-                    <span className="text-muted pr-5px">QT:</span>
-                    {PriceHelper.formatVND(OverviewData?.ThuChiHienTai_QT)}
-                  </div>
-                </div>
-                <div className="fw-600 text-uppercase text-muted font-size-smm mt-10px">
-                  Tồn tiền hiện tại
-                </div>
-              </div>
+            )}
+          </div>
+          <div className="col-lg-7 col-xl-6">
+            <div className="bg-white rounded p-20px h-100 d-flex align-items-center justify-content-center">
+              <Chart2Column options={optionsObj} data={dataChart} />
             </div>
-          )}
-        </div>
-        <div className="col-lg-7 col-xl-6">
-          <div className="bg-white rounded p-20px h-100 d-flex align-items-center justify-content-center">
-            <Chart2Column options={optionsObj} data={dataChart} />
           </div>
         </div>
-      </div>
+      )}
+
       <div className="bg-white rounded mt-25px">
         <div className="border-gray-200 px-20px py-15px border-bottom d-flex align-items-center justify-content-between flex-column flex-md-row">
           <div className="fw-500 font-size-lg">Danh sách thu chi & sổ quỹ</div>

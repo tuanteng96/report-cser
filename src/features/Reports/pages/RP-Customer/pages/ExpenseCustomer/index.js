@@ -24,18 +24,29 @@ const convertArray = arrays => {
     return newArray
   }
   for (let [index, obj] of arrays.entries()) {
-    if (index === 0) console.log(obj)
-    for (let [x, order] of obj.OrdersList.entries()) {
+    if (obj.OrdersList && obj.OrdersList.length > 0) {
+      for (let [x, order] of obj.OrdersList.entries()) {
+        const newObj = {
+          ...order,
+          ...obj,
+          CoSoMuaHang: order.StockName,
+          NgayMuaHang: order.CreateDate,
+          rowIndex: index,
+          Id: uuidv4(),
+          rowSpanIndex: x
+        }
+        if (x !== 0) delete newObj.OrdersList
+        newArray.push(newObj)
+      }
+    } else {
       const newObj = {
-        ...order,
         ...obj,
-        CoSoMuaHang: order.StockName,
-        NgayMuaHang: order.CreateDate,
+        CoSoMuaHang: obj.StockName,
+        NgayMuaHang: obj.CreateDate,
         rowIndex: index,
         Id: uuidv4(),
-        rowSpanIndex: x
+        rowSpanIndex: 0
       }
-      if (x !== 0) delete newObj.OrdersList
       newArray.push(newObj)
     }
   }
