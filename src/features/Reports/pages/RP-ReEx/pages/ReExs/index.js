@@ -71,7 +71,7 @@ function ReExs(props) {
     Ps: 15, // Số lượng item
     PaymentMethods: '', // TM, CK, QT
     TypeTC: '', // Thu hay chi
-    TagsTC: '', // ID nhân viên
+    TagsTC: '', // Tags thu chi
     CustomType: '',
     ShowsX: '2',
     Banknumber: ''
@@ -171,8 +171,17 @@ function ReExs(props) {
 
   const getListReEx = (isLoading = true, callback) => {
     isLoading && setLoadingList(true)
+    let newFilters = {
+      ...filters,
+      TagsTC: filters.TagsTC || ''
+    }
+
+    if (!tong_hop_cash?.hasRight && !newFilters.TagsTC) {
+      newFilters.TagsTC = JsonFilter.TagsTCList.filter(item => !item.advanced)
+    }
+
     reportsApi
-      .getListReEx(BrowserHelpers.getRequestParamsList(filters))
+      .getListReEx(BrowserHelpers.getRequestParamsList(newFilters))
       .then(({ data }) => {
         if (data.isRight) {
           PermissionHelpers.ErrorAccess(data.error)
@@ -247,12 +256,20 @@ function ReExs(props) {
   }
 
   const onExport = () => {
+    let newFilters = {
+      ...filters,
+      TagsTC: filters.TagsTC || ''
+    }
+
+    if (!tong_hop_cash?.hasRight && !newFilters.TagsTC) {
+      newFilters.TagsTC = JsonFilter.TagsTCList.filter(item => !item.advanced)
+    }
     PermissionHelpers.ExportExcel({
       FuncStart: () => setLoadingExport(true),
       FuncEnd: () => setLoadingExport(false),
       FuncApi: () =>
         reportsApi.getListReEx(
-          BrowserHelpers.getRequestParamsList(filters, {
+          BrowserHelpers.getRequestParamsList(newFilters, {
             Total: PageTotal
           })
         ),
