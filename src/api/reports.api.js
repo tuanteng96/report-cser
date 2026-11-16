@@ -6,6 +6,34 @@ const reportsApi = {
   getAllDay: data => {
     return http.post(`${SubApi}/bao-cao-ngay/danh-sach`, JSON.stringify(data))
   },
+  // data: { StockIDs, From, To, PayType, PageIndex, PageSize } — xem buildSalesPaymentParams
+  getSalesPayment: data => {
+    return http.post(
+      `/api/v6/dQuery@BaoCaoThanhToanDonHang`,
+      JSON.stringify(data)
+    )
+  },
+  // Tổng quan ngày theo nhóm (giống trang act20=daily). type: khach-hang | ban-hang | dich-vu | thu-chi | nhan-vien
+  // data: { Type, StockID: [ids], DateStart: 'DD/MM/YYYY', DateEnd: 'DD/MM/YYYY' }
+  getDailyGroups: (type, data) => {
+    return http.post(`${SubApi}/hang-ngay/tong#${type}`, JSON.stringify(data))
+  },
+  // Danh sách chi tiết của một nhóm (vd. đơn hàng mới trong ngày): result.List = [[row, ...]]
+  getDailyList: (type, data) => {
+    return http.post(
+      `${SubApi}/hang-ngay/danh-sach#${type}`,
+      JSON.stringify(data)
+    )
+  },
+  // Biểu đồ dịch vụ theo nhóm KH / giới tính / KH cũ-mới / phương thức TT (như trang mẫu)
+  // body: { From: 'YYYY-MM-DD', To, StockIDs: 'id,id', Status: 'done' }
+  getServiceGroups: data => {
+    return http.post(`/api/v3/OrderService25@groups`, JSON.stringify(data))
+  },
+  // Gọi dịch vụ ngoài qua server (dùng cho đọc báo cáo bằng giọng nói — Google / Zalo TTS)
+  urlAction: body => {
+    return http.post(`/api/v3/UrlAction@invoke`, JSON.stringify(body))
+  },
   getMemberDay: data => {
     return http.post(`${SubApi}/khach-hang/chi-tiet-ngay`, JSON.stringify(data))
   },

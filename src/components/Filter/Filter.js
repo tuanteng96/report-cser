@@ -7,16 +7,37 @@ import { Formik, Form, Field } from 'formik'
 import { useSelector } from 'react-redux'
 import { JsonFilter } from 'src/Json/JsonFilter'
 import { useLocation } from 'react-router-dom'
+import { getPermissionPath } from 'src/helpers/PermissionPathAlias'
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
   wheelPropagation: false
 }
 
-function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
+/* Menu chọn cơ sở hiện ra ngoài khung cuộn (PerfectScrollbar chặn lăn chuột của menu).
+   z-index cao hơn khung bộ lọc (1010). */
+const selectPortalProps = {
+  menuPortalTarget: typeof document !== 'undefined' ? document.body : null,
+  menuPosition: 'fixed',
+  styles: { menuPortal: base => ({ ...base, zIndex: 1100 }) }
+}
+
+function Filter({
+  show,
+  onHide,
+  filters,
+  onSubmit,
+  loading,
+  onRefresh,
+  onStocksListChange // báo danh sách cơ sở được xem (đã lọc theo quyền) cho trang
+}) {
   const { Stocks, PermissionReport, rightTree } = useSelector(({ auth }) => ({
+    // bỏ cơ sở quản lý (778) và cơ sở trùng ID — trùng ID làm chọn 1 hiện 2
     Stocks: auth.Info?.Stocks
-      ? auth.Info.Stocks.filter(item => item.ID !== 778).map(item => ({
+      ? auth.Info.Stocks.filter(
+          (item, i, arr) =>
+            item.ID !== 778 && arr.findIndex(o => o.ID === item.ID) === i
+        ).map(item => ({
           ...item,
           label: item.Title || item.label,
           value: item.ID || item.value
@@ -26,7 +47,8 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
     rightTree: auth?.Info?.rightTree
   }))
   const [StocksList, setStocksList] = useState([])
-  const { pathname } = useLocation()
+  const { pathname: locationPathname } = useLocation()
+  const pathname = getPermissionPath(locationPathname)
 
   useEffect(() => {
     let newStocks = []
@@ -132,6 +154,7 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
     }
 
     setStocksList(newStocks)
+    onStocksListChange && onStocksListChange(newStocks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, PermissionReport])
 
@@ -170,6 +193,7 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                       <div className="form-group mb-20px">
                         <label>Cơ sở của bạn</label>
                         <Select
+                          {...selectPortalProps}
                           name="StockID"
                           placeholder="Chọn cơ cở"
                           classNamePrefix="select"
@@ -227,6 +251,35 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                         />
                       </div>
                     )}
+                    {/* Chọn nhiều cơ sở (Tổng quan cơ sở); để trống = mọi cơ sở được xem */}
+                    {'StockIDs' in values && (
+                      <div className="form-group mb-20px">
+                        <label>Cơ sở</label>
+                        <Select
+                          {...selectPortalProps}
+                          isMulti
+                          isClearable
+                          closeMenuOnSelect={false}
+                          name="StockIDs"
+                          placeholder="Chọn cơ sở"
+                          classNamePrefix="select"
+                          className="select-control"
+                          options={StocksList.filter(o => o.value !== '')}
+                          value={StocksList.filter(
+                            o =>
+                              o.value !== '' &&
+                              (values.StockIDs || []).includes(Number(o.value))
+                          )}
+                          onChange={opts =>
+                            setFieldValue(
+                              'StockIDs',
+                              opts ? opts.map(o => Number(o.value)) : []
+                            )
+                          }
+                          noOptionsMessage={() => 'Không có cơ sở'}
+                        />
+                      </div>
+                    )}
                     {'ViewType' in values && (
                       <div>
                         {JsonFilter.ViewTypeList.map((item, index) => (
@@ -258,9 +311,14 @@ function Filter({ show, onHide, filters, onSubmit, loading, onRefresh }) {
                     )}
                     disabled={loading}
                     onClick={onRefresh}
+                    aria-label="Làm mới"
+                    title="Làm mới"
                   >
-                    <i className="fa-regular fa-arrows-rotate pr-5px"></i>
-                    Làm mới
+                    {/* chỉ biểu tượng, đồng nhất với FilterList ở các màn khác */}
+                    <i
+                      className="fa-regular fa-arrows-rotate"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                   <button
                     type="submit"

@@ -1,0 +1,279 @@
+import React from 'react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
+import CustomerTimeline from '../CustomerTimeline'
+
+// Dữ liệu mẫu lấy từ bao-cao-ngay.html (cùng cấu trúc API /khach-hang/chi-tiet-ngay)
+const DATA = [
+  {
+    MemberID: 45949,
+    CreateDate: '2026-11-14T00:25:34',
+    FullName: 'Nguyễn Hùng Huy',
+    Phone: '0977629598',
+    TongThanhToan: 10530000,
+    No: 6900000,
+    CheckIn: null,
+    CheckOut: null,
+    children: [
+      {
+        MajorList: [
+          {
+            Order: null,
+            PayDebt: {
+              ID: 65412,
+              Prods: [{ Title: 'triệt lông chân bh 1 năm', Qty: 1 }],
+              ThanhToan: 1500000,
+              ThanhToan_TienMat: 0,
+              ThanhToan_CK: 1500000,
+              ThanhToan_QT: 0,
+              Vi: 0,
+              TheTien: 0,
+              No: 0,
+              HoaHong: [{ FullName: 'Nguyễn Thu Hương', Bonus: 150000 }],
+              DoanhSo: [{ FullName: 'Nguyễn Thu Hương', Bonus: 1500000 }]
+            },
+            Returns: null,
+            Services: null
+          },
+          {
+            Order: null,
+            PayDebt: null,
+            Returns: {
+              Prods: [{ Title: 'Workshop vẽ cốc', Qty: 1 }],
+              ID: 65410,
+              GiaTriDonTra: 4000000,
+              HoanTienMat: 1000000,
+              HoanVi: 3000000,
+              HoanTheTien: 0,
+              HoaHongGiam: [
+                { FullName: 'Nguyễn Thục Phương', Bonus: -976000 },
+                { FullName: 'Phạm Quang Hùng', Bonus: -1704000 }
+              ],
+              DoanhSoGiam: [
+                { FullName: 'Nguyễn Thục Phương', Bonus: -1600000 },
+                { FullName: 'Phạm Quang Hùng', Bonus: -2400000 }
+              ]
+            },
+            Services: null
+          },
+          {
+            Order: null,
+            PayDebt: null,
+            Returns: null,
+            Services: [
+              {
+                Type: 'Thực hiện dịch vụ',
+                Title: 'Lớp tập tô',
+                PhuPhi: [{ Title: 'Phụ phí xăng xe - dưới 5km(Gốc)' }],
+                HoaHong: [
+                  { FullName: 'Hà Minh Ánh', Bonus: 51500 },
+                  { FullName: 'Nguyễn Thục Phương', Bonus: 51500 }
+                ]
+              }
+            ]
+          },
+          {
+            Order: {
+              Prods: [
+                { Title: 'Toner Pro', Qty: 2 },
+                { Title: 'Lớp tập tô 10b', Qty: 1 },
+                { Title: 'Phụ phí xăng xe - dưới 5km', Qty: 1 }
+              ],
+              ID: 65408,
+              GiaBanDonHang: 14030000,
+              ThanhToan: 4030000,
+              ThanhToan_TienMat: 1030000,
+              ThanhToan_CK: 3000000,
+              ThanhToan_QT: 0,
+              Vi: -100000,
+              TheTien: -3000000,
+              No: 6900000,
+              HoaHong: [
+                { FullName: 'Trần Mai Linh', Bonus: 120000 },
+                { FullName: 'Lý Hồng Chuyên', Bonus: 90000 }
+              ],
+              DoanhSo: [
+                { FullName: 'Trần Mai Linh', Bonus: 1200000 },
+                { FullName: 'Lý Hồng Chuyên', Bonus: 900000 }
+              ]
+            },
+            PayDebt: null,
+            Returns: null,
+            Services: null
+          },
+          {
+            Order: {
+              Prods: [{ Title: 'Thẻ ưu đãi mua 5 triệu tặng 2 triệu', Qty: 1 }],
+              ID: 65407,
+              GiaBanDonHang: 5000000,
+              ThanhToan: 5000000,
+              ThanhToan_TienMat: 5000000,
+              ThanhToan_CK: 0,
+              ThanhToan_QT: 0,
+              No: 0
+            },
+            PayDebt: null,
+            Returns: null,
+            Services: null
+          }
+        ],
+        More: [
+          {
+            Title: 'Trả hàng hoàn ví',
+            Value: 3000000,
+            Desc: '(Trả hàng)Hoàn ví sản phẩm/dịch vụ:DV25',
+            KhongTinh: 1
+          },
+          {
+            Title: 'Trả hàng hoàn tiền',
+            Value: -1000000,
+            Desc: '(Trả hàng)Hoàn tiền sản phẩm/dịch vụ:Workshop vẽ cốc.'
+          },
+          { Title: 'Nạp ví', Value: 1000000, Desc: '', KhongTinh: 0 }
+        ],
+        Booking: []
+      }
+    ]
+  },
+  {
+    MemberID: 45950,
+    CreateDate: '2026-11-14T00:23:02',
+    FullName: '0000(Vãng lai)',
+    Phone: '0000045950',
+    TongThanhToan: 0,
+    No: 2300000,
+    CheckIn: '2026-11-14T00:23:02',
+    CheckOut: '2026-11-14T00:23:04',
+    children: [
+      {
+        MajorList: [
+          {
+            Order: {
+              Prods: [
+                { Title: 'Toner Pro', Qty: 1 },
+                { Title: 'Lớp tập tô (Buổi lẻ)', Qty: 1 }
+              ],
+              ID: 65411,
+              GiaBanDonHang: 2300000,
+              No: 2300000
+            },
+            PayDebt: null,
+            Returns: null,
+            Services: null
+          }
+        ],
+        More: [],
+        Booking: []
+      }
+    ]
+  }
+]
+
+const fmt = n => new Intl.NumberFormat('vi-VN').format(n)
+const getItem = name => screen.getByText(name).closest('article')
+const orderRow = id => screen.getByText(`#${id}`).closest('.bc-o')
+
+describe('CustomerTimeline', () => {
+  it('hiện thông báo khi không có dữ liệu', () => {
+    render(<CustomerTimeline data={[]} />)
+    expect(
+      screen.getByText('Không có khách nào trong bộ lọc đã chọn.')
+    ).toBeInTheDocument()
+  })
+
+  it('hiện tiêu đề từng khách: tên, SĐT, giờ check-in, tổng thanh toán', () => {
+    render(<CustomerTimeline data={DATA} />)
+    const a = getItem('Nguyễn Hùng Huy')
+    expect(within(a).getByText('0977629598')).toBeInTheDocument()
+    expect(within(a).getByText('--:--')).toBeInTheDocument()
+    expect(a.querySelector('.bc-tot').textContent).toBe(fmt(10530000))
+
+    const b = getItem('0000(Vãng lai)')
+    expect(within(b).getByText('00:23')).toBeInTheDocument()
+    // tổng = 0: ẩn trên desktop bằng class bc-zero
+    expect(b.querySelector('.bc-tot')).toHaveClass('bc-zero')
+  })
+
+  it('đơn bán mới nhiều phương thức: liệt kê từng phương thức và nợ', () => {
+    render(<CustomerTimeline data={DATA} />)
+    const row = orderRow(65408)
+    expect(within(row).getByLabelText('Bán mới')).toBeInTheDocument()
+    expect(within(row).getByText(fmt(14030000))).toBeInTheDocument()
+    expect(within(row).getByText('Thực thu')).toBeInTheDocument()
+    expect(within(row).getByText(fmt(4030000))).toBeInTheDocument()
+    const breakdown = row.querySelector('.bc-v').textContent
+    expect(breakdown).toContain(`Tiền mặt: ${fmt(1030000)}`)
+    expect(breakdown).toContain(`Chuyển khoản: ${fmt(3000000)}`)
+    expect(breakdown).toContain(`Ví: ${fmt(100000)}`)
+    expect(breakdown).toContain(`Thẻ tiền: ${fmt(3000000)}`)
+    expect(row.querySelector('.bc-nw').textContent).toBe(`Nợ: ${fmt(6900000)}`)
+    // tên nhân viên rút gọn, tên đầy đủ trong chú thích
+    const nm = within(row).getAllByText('LinhTM')[0]
+    expect(nm).toHaveAttribute('data-tip', 'Trần Mai Linh')
+  })
+
+  it('đơn một phương thức bằng đúng số tiền: ghi tên phương thức cạnh số tiền', () => {
+    render(<CustomerTimeline data={DATA} />)
+    const row = orderRow(65407)
+    expect(row.querySelector('.bc-mth').textContent).toBe('TM')
+    expect(row.querySelector('.bc-sg').textContent).toBe('Tiền mặt')
+  })
+
+  it('thanh toán nợ và trả hàng', () => {
+    render(<CustomerTimeline data={DATA} />)
+    const debt = orderRow(65412)
+    expect(within(debt).getByLabelText('Thanh toán nợ')).toBeInTheDocument()
+    expect(debt.querySelector('.bc-mth').textContent).toBe('CK')
+
+    const ret = orderRow(65410)
+    expect(within(ret).getByLabelText('Trả hàng')).toBeInTheDocument()
+    expect(within(ret).getByText('Hoàn tiền')).toHaveClass('bc-ret')
+    expect(within(ret).getByText(fmt(4000000))).toHaveClass('bc-neg')
+    expect(within(ret).getByLabelText('Khấu trừ hoa hồng')).toBeInTheDocument()
+    expect(ret.textContent).toContain(`(-${fmt(976000)})`)
+  })
+
+  it('đơn chưa thanh toán: không có số thực thu, chỉ hiện nợ', () => {
+    render(<CustomerTimeline data={DATA} />)
+    const row = orderRow(65411)
+    expect(row.querySelector('.bc-top')).toBeNull()
+    expect(row.querySelector('.bc-nw').textContent).toBe(`Nợ: ${fmt(2300000)}`)
+  })
+
+  it('cột dịch vụ và nghiệp vụ khác', () => {
+    render(<CustomerTimeline data={DATA} />)
+    const a = getItem('Nguyễn Hùng Huy')
+    expect(within(a).getByText('Lớp tập tô')).toBeInTheDocument()
+    expect(
+      within(a).getByText('Phụ phí xăng xe - dưới 5km(Gốc)')
+    ).toBeInTheDocument()
+    expect(within(a).getByText(`+${fmt(3000000)}`)).toHaveClass('bc-pos')
+    expect(within(a).getByText(`-${fmt(1000000)}`)).toHaveClass('bc-neg')
+    expect(within(a).getByText('Không tính vào doanh thu')).toBeInTheDocument()
+
+    // khách không có dịch vụ / nghiệp vụ khác: cột hiện "Không có" và có class bc-none
+    const b = getItem('0000(Vãng lai)')
+    expect(within(b).getAllByText('Không có')).toHaveLength(2)
+    expect(b.querySelectorAll('.bc-col.bc-none')).toHaveLength(2)
+  })
+
+  it('bấm tiêu đề để thu gọn / mở lại', () => {
+    render(<CustomerTimeline data={DATA} />)
+    const a = getItem('Nguyễn Hùng Huy')
+    const head = a.querySelector('.bc-head')
+    expect(head).toHaveAttribute('aria-expanded', 'true')
+    fireEvent.click(head)
+    expect(head).toHaveAttribute('aria-expanded', 'false')
+    expect(a.querySelector('.bc-cols')).toBeNull()
+    fireEvent.click(head)
+    expect(a.querySelector('.bc-cols')).not.toBeNull()
+  })
+
+  it('chạm tên nhân viên để hiện chú thích, chạm chỗ khác để ẩn', () => {
+    render(<CustomerTimeline data={DATA} />)
+    const nm = within(orderRow(65408)).getAllByText('LinhTM')[0]
+    fireEvent.click(nm)
+    expect(nm).toHaveClass('bc-show')
+    fireEvent.click(document.body)
+    expect(nm).not.toHaveClass('bc-show')
+  })
+})

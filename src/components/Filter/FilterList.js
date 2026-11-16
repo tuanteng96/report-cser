@@ -25,6 +25,7 @@ import AsyncSelectCategoriesFull from '../Selects/AsyncSelectCategoriesFull'
 import vi from 'date-fns/locale/vi' // the locale you want
 import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import { useLocation } from 'react-router-dom'
+import { getPermissionPath } from 'src/helpers/PermissionPathAlias'
 import SelectCustomType from '../Selects/SelectCustomType'
 import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
@@ -150,7 +151,8 @@ function FilterList({
   }))
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
-  const { pathname } = useLocation()
+  const { pathname: locationPathname } = useLocation()
+  const pathname = getPermissionPath(locationPathname)
 
   const { GGLoading } = useApp()
 

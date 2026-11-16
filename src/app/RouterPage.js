@@ -18,6 +18,9 @@ const SalesStocks = lazy(() =>
 const TransactionInfo = lazy(() =>
   import('src/features/Reports/pages/RP-Sell/pages/TransactionInfo')
 )
+const SalesNewDebt = lazy(() =>
+  import('src/features/ReportsAI/pages/SalesNewDebt')
+)
 const Sales2 = lazy(() =>
   import('src/features/Reports/pages/RP-Sell/pages/Sales2')
 )
@@ -141,6 +144,12 @@ const SellProfit = lazy(() =>
 const DaysCustomer = lazy(() =>
   import('src/features/Reports/pages/RP-Day/pages/DaysCustomer')
 )
+const DaysByCustomer = lazy(() =>
+  import('src/features/ReportsAI/pages/DaysByCustomer')
+)
+const DaysStockOverview = lazy(() =>
+  import('src/features/ReportsAI/pages/DaysStockOverview')
+)
 const DaysOverview = lazy(() =>
   import('src/features/Reports/pages/RP-Day/pages/DaysOverview')
 )
@@ -210,7 +219,7 @@ function RouterPage(props) {
     <Routes>
       <Route
         index
-        element={<Navigate to="/bao-cao-ngay/tong-quan" replace />}
+        element={<Navigate to="/bao-cao-ngay/tong-quan-co-so" replace />}
       />
       <Route
         path="/bao-cao-ngay"
@@ -222,9 +231,12 @@ function RouterPage(props) {
           </SuspensedView>
         }
       >
-        <Route index element={<Navigate to="tong-quan" replace />} />
+        {/* mặc định vào Tổng quan cơ sở; trang Tổng quan cũ vẫn giữ (mở bằng nút "Giao diện cũ") */}
+        <Route index element={<Navigate to="tong-quan-co-so" replace />} />
         <Route path="tong-quan" element={<DaysOverview />} />
+        <Route path="tong-quan-co-so" element={<DaysStockOverview />} />
         <Route path="khach-hang" element={<DaysCustomer />} />
+        <Route path="theo-khach-hang" element={<DaysByCustomer />} />
       </Route>
       <Route
         path="/khach-hang"
@@ -275,6 +287,7 @@ function RouterPage(props) {
       >
         <Route index element={<Navigate to="doanh-so" replace />} />
         <Route path="doanh-so" element={<Sales />} />
+        <Route path="ban-moi-thanh-toan-no" element={<SalesNewDebt />} />
         <Route path="doanh-so-co-so" element={<SalesStocks />} />
         <Route path="tien-hang" element={<TransactionInfo />} />
         <Route path="ds-bc-2" element={<Sales2 />} />

@@ -1,0 +1,617 @@
+/* Báo cáo ngày theo khách hàng — bám sát file HTML gốc (Tailwind) "Sổ giao dịch – tối giản".
+   Mỗi khách một thẻ: đơn hàng bên trái, cột phụ 320px bên phải (Dịch vụ / Nghiệp vụ khác).
+   Mọi class có tiền tố bc- và nằm trong .bc để không đụng Bootstrap (.col, .card...).
+   Màu theo bảng Tailwind: gray-50..900, blue, rose, amber, emerald. */
+.bc {
+  --g50: #f9fafb;
+  --g100: #f3f4f6;
+  --g200: #e5e7eb;
+  --g300: #d1d5db;
+  --g400: #9ca3af;
+  --g500: #6b7280;
+  --g600: #4b5563;
+  --g700: #374151;
+  --g800: #1f2937;
+  --g900: #111827;
+  --blue400: #60a5fa;
+  --blue500: #3b82f6;
+  --blue600: #2563eb;
+  --rose600: #e11d48;
+  --amber600: #d97706;
+  --emerald600: #059669;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: var(--g800);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.bc *,
+.bc *::before,
+.bc *::after {
+  box-sizing: border-box;
+}
+.bc .bc-n {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.bc .bc-neg {
+  color: var(--rose600);
+}
+.bc .bc-pos {
+  color: var(--emerald600);
+}
+.bc .bc-warn {
+  color: var(--amber600);
+}
+.bc :focus-visible {
+  outline: 2px solid var(--blue600);
+  outline-offset: 2px;
+}
+.bc-none-msg {
+  padding: 40px 0;
+  border: 1px solid var(--g200);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--g500);
+  text-align: center;
+}
+/* nhãn nhỏ viết hoa (text-[10px] font-bold uppercase tracking-widest) */
+.bc-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--g400);
+}
+
+/* ===== Danh sách thẻ (space-y-6) ===== */
+.bc-tl {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.bc-item {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--g200);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ===== Đầu thẻ (px-6 py-4) ===== */
+.bc-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 24px;
+  border: 0;
+  border-bottom: 1px solid var(--g200);
+  background: #fff;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.bc-head[aria-expanded='false'] {
+  border-bottom: 0;
+}
+.bc-walk .bc-head {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background: rgba(249, 250, 251, 0.5);
+}
+.bc-av {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--blue600);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+.bc-walk .bc-av {
+  width: 40px;
+  height: 40px;
+  background: var(--g200);
+  box-shadow: none;
+  color: var(--g500);
+}
+.bc-who {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin-left: -4px; /* gap-3 giữa avatar và tên */
+}
+.bc-l1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.bc-name {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--g900);
+}
+.bc-ph-in {
+  font-size: 14px;
+  color: var(--g400);
+}
+.bc-l2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--g500);
+}
+.bc-walk .bc-l2 {
+  font-size: 12px;
+}
+.bc-l2:empty {
+  display: none;
+}
+.bc-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bc-meta svg {
+  color: var(--g400);
+}
+.bc-tot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+}
+.bc-tot .bc-lbl {
+  margin-bottom: 4px;
+}
+.bc-tot-v {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--blue600);
+}
+.bc-cur {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--blue400);
+}
+
+/* ===== Thân thẻ: trái đơn hàng, phải cột phụ 320px ===== */
+.bc-body {
+  display: flex;
+}
+.bc-main {
+  flex: 1;
+  min-width: 0;
+}
+.bc-main > .bc-sec {
+  margin: 0;
+  padding: 12px 24px;
+  background: rgba(249, 250, 251, 0.8);
+  border-bottom: 1px solid var(--g100);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--g500);
+}
+.bc-walk .bc-main > .bc-sec {
+  background: #fff;
+}
+.bc-blank {
+  padding: 24px;
+  font-size: 14px;
+  color: var(--g400);
+}
+.bc-side {
+  flex: none;
+  width: 320px;
+  padding: 20px;
+  background: rgba(248, 250, 252, 0.6);
+  border-left: 1px solid var(--g200);
+}
+.bc-side .bc-sec {
+  margin: 0 0 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--g400);
+}
+.bc-group + .bc-group {
+  margin-top: 28px;
+}
+.bc-side:has(.bc-ghost) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+.bc-ghost {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 14px;
+  color: var(--g400);
+}
+.bc-ghost svg {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+  color: var(--g300);
+}
+
+/* ===== Dòng đơn (p-6, divide-y gray-100) ===== */
+.bc-o {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  transition: background-color 0.15s;
+}
+.bc-o:hover {
+  background: rgba(249, 250, 251, 0.5);
+}
+.bc-o + .bc-o {
+  border-top: 1px solid var(--g100);
+}
+.bc-p {
+  flex: 1;
+  min-width: 0;
+}
+.bc-hd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-bottom: 6px;
+}
+.bc-hd:has(+ .bc-list) {
+  margin-bottom: 8px;
+}
+/* nhãn loại đơn: rounded-full, nền nhạt, không viền */
+.bc-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.bc-t-new {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.bc-t-ret {
+  background: #ffe4e6;
+  color: #be123c;
+}
+.bc-t-debt {
+  background: #fef3c7;
+  color: #92400e;
+}
+.bc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.bc-id {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--g900);
+}
+.bc-gv {
+  font-size: 11px;
+  color: var(--g400);
+}
+.bc-prods {
+  font-size: 14px;
+  color: var(--g700);
+}
+/* danh sách thành phần: list-[circle], marker gray-300 */
+.bc .bc-list {
+  margin: 0;
+  padding-left: 16px;
+  list-style: circle outside;
+}
+.bc .bc-list li {
+  display: list-item;
+  list-style: inherit;
+}
+.bc-list li + li {
+  margin-top: 6px;
+}
+.bc-list li::marker {
+  color: var(--g300);
+}
+.bc-qty {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--g400);
+}
+
+/* chip nhân viên */
+.bc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.bc-list + .bc-chips {
+  margin-top: 16px;
+}
+.bc-chip {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid var(--g200);
+  border-radius: 4px;
+  background: var(--g50);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--g600);
+}
+.bc-ico {
+  position: relative;
+  margin-right: 6px;
+  font-weight: 700;
+  color: var(--g800);
+  cursor: help;
+}
+.bc-nm {
+  position: relative;
+  cursor: help;
+}
+
+/* cột tiền */
+.bc-v {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: none;
+  text-align: right;
+}
+.bc-v-wide {
+  min-width: 200px;
+}
+.bc-lab {
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--g500);
+}
+.bc-lab.bc-neg {
+  color: var(--g500);
+}
+.bc-lab .bc-mth {
+  font-weight: 700;
+  color: var(--g800);
+  cursor: help;
+}
+.bc-amt {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--g900);
+}
+.bc .bc-mths {
+  margin-top: 4px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--g400);
+  white-space: normal;
+}
+.bc .bc-mths + .bc-mths {
+  margin-top: 2px;
+}
+.bc-mths > span:not(.bc-sep) {
+  white-space: nowrap;
+}
+.bc-debt {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--g100);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--amber600);
+}
+.bc-debt .bc-n {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ===== Thẻ nhỏ ở cột phụ (p-3.5 rounded-lg shadow-sm) ===== */
+/* không dùng overflow: hidden — để chú thích tên đầy đủ khi rê chuột không bị cắt */
+.bc-card {
+  position: relative;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid var(--g200);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.bc-card + .bc-card {
+  margin-top: 12px;
+}
+/* vạch bên trái thẻ dịch vụ: mảnh, tím xanh nhạt, cách mép trên/dưới */
+.bc-svc::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #6366f1;
+}
+.bc-card-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.bc-card-h:not(:last-child) {
+  margin-bottom: 4px;
+}
+.bc-card-h:last-child {
+  align-items: center;
+}
+.bc-card-t {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--g900);
+}
+.bc-svc > .bc-card-t {
+  margin-bottom: 2px;
+}
+.bc-card-a {
+  font-size: 14px;
+  font-weight: 700;
+}
+/* nghiệp vụ khác: số dương màu đen cho bớt màu, số âm giữ đỏ */
+.bc .bc-card-a.bc-pos {
+  color: var(--g900);
+}
+.bc-card-s {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--g500);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+.bc-card .bc-k {
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.bc-svc-staff {
+  margin-top: 12px;
+}
+.bc-svc-staff .bc-lbl {
+  margin-bottom: 6px;
+}
+/* danh sách lương tour: bỏ giới hạn 2 dòng / overflow của .bc-card-s để chú thích không bị cắt */
+.bc .bc-tour {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  color: var(--g700);
+}
+.bc-tour-i {
+  white-space: nowrap;
+}
+
+/* ===== Chú thích (tên đầy đủ, HH/DS) ===== */
+.bc-ico::after,
+.bc-nm::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  z-index: 5;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--g900);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.bc-ico:hover::after,
+.bc-ico:focus-visible::after,
+.bc-nm:hover::after,
+.bc-nm:focus-visible::after,
+.bc-ico.bc-show::after,
+.bc-nm.bc-show::after {
+  opacity: 1;
+}
+@media (hover: none) {
+  .bc-ico:hover::after,
+  .bc-nm:hover::after {
+    opacity: 0;
+  }
+  .bc-ico.bc-show::after,
+  .bc-nm.bc-show::after {
+    opacity: 1;
+  }
+}
+.bc-ico,
+.bc-nm {
+  -webkit-tap-highlight-color: transparent;
+}
+/* thẻ có overflow hidden: chú thích của dòng sát mép trên vẫn có chỗ nhờ p-6 */
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-o,
+  .bc-ico::after,
+  .bc-nm::after {
+    transition: none;
+  }
+}
+
+/* ===== < lg (1024px): cột phụ xuống dưới ===== */
+@media (max-width: 1023.98px) {
+  .bc-body {
+    flex-direction: column;
+  }
+  .bc-side {
+    width: 100%;
+    border-left: 0;
+    border-top: 1px solid var(--g200);
+  }
+}
+
+/* ===== < md (768px): số tiền xuống dưới nội dung đơn ===== */
+@media (max-width: 767.98px) {
+  .bc-head {
+    padding: 14px 16px;
+  }
+  .bc-main > .bc-sec {
+    padding: 12px 16px;
+  }
+  .bc-o {
+    flex-direction: column;
+    padding: 16px;
+  }
+  .bc-v-wide {
+    min-width: 0;
+  }
+  .bc-side {
+    padding: 16px;
+  }
+  /* điện thoại: ẩn khối "không có nghiệp vụ" cho gọn */
+  .bc-side:has(.bc-ghost) {
+    display: none;
+  }
+}

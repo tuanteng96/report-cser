@@ -1,0 +1,185 @@
+/* 5 khối giống trang mẫu act20=daily (đang chưa dùng trên trang — giữ để làm giao diện sau).
+   Tiền tố so- để không đụng Bootstrap. */
+.so {
+  --g100: #f3f4f6;
+  --g200: #e5e7eb;
+  --g300: #d1d5db;
+  --g400: #9ca3af;
+  --g500: #6b7280;
+  --g700: #374151;
+  --g900: #111827;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: var(--g900);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.so *,
+.so *::before,
+.so *::after {
+  box-sizing: border-box;
+}
+.so-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.so-card {
+  padding: 20px 24px;
+  background: #fff;
+  border: 1px solid var(--g200);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.so .so-title {
+  margin: 0 0 20px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--g900);
+}
+.so-group + .so-group {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--g100);
+}
+.so-ghead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.so-ico {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 17px;
+}
+.so-gtext {
+  flex: 1;
+  min-width: 0;
+}
+.so-gtitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--g900);
+}
+.so-gsub {
+  font-size: 13px;
+  color: var(--g500);
+}
+.so-pill {
+  flex: none;
+  min-width: 40px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.so-tone-blue {
+  background: #eaf2ff;
+  color: #2563eb;
+}
+.so-tone-purple {
+  background: #f1eaff;
+  color: #7c3aed;
+}
+.so-tone-green {
+  background: #e7f8f1;
+  color: #059669;
+}
+.so .so-keys {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.so-key {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  font-size: 14px;
+  border-bottom: 1px dashed var(--g200);
+}
+.so-key:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.so-key[title] {
+  cursor: help;
+}
+.so-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--g300);
+}
+.so-kname {
+  flex: 1;
+  min-width: 0;
+  color: var(--g700);
+}
+.so-kval {
+  flex: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.so-empty,
+.so-error {
+  padding: 24px 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--g400);
+}
+.so-error {
+  color: #e11d48;
+}
+.so-skel-box {
+  background: var(--g100);
+}
+.so-skel-line {
+  height: 12px;
+  margin-top: 12px;
+  border-radius: 6px;
+  background: var(--g100);
+  animation: so-pulse 1.4s ease-in-out infinite;
+}
+.so-gtext .so-skel-line {
+  margin-top: 6px;
+}
+.so-skel-line.w-60 {
+  width: 60%;
+}
+.so-skel-line.w-30 {
+  width: 30%;
+}
+@keyframes so-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .so-skel-line {
+    animation: none;
+  }
+}
+@media (max-width: 767.98px) {
+  .so-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .so-card {
+    padding: 16px;
+  }
+}

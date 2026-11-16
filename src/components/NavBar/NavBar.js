@@ -35,13 +35,23 @@ function NavBar(props) {
       IconClass: 'fa-regular fa-chart-pie icon',
       Href: hasRouter() + '/bao-cao-ngay',
       Children: [
+        // Tạm ẩn — thay bằng "Tổng quan cơ sở" (xem lại giao diện cũ bằng nút trong trang đó)
+        // {
+        //   Title: 'Tổng quan',
+        //   Href: hasRouter() + '/bao-cao-ngay/tong-quan'
+        // },
         {
-          Title: 'Tổng quan',
-          Href: hasRouter() + '/bao-cao-ngay/tong-quan'
+          Title: 'Tổng quan cơ sở',
+          Href: hasRouter() + '/bao-cao-ngay/tong-quan-co-so'
         },
+        // Tạm ẩn — dùng "Theo khách hàng" thay thế (trang & route vẫn giữ)
+        // {
+        //   Title: 'Khách hàng',
+        //   Href: hasRouter() + '/bao-cao-ngay/khach-hang'
+        // },
         {
-          Title: 'Khách hàng',
-          Href: hasRouter() + '/bao-cao-ngay/khach-hang'
+          Title: 'Theo khách hàng',
+          Href: hasRouter() + '/bao-cao-ngay/theo-khach-hang'
         }
       ]
     },
@@ -122,6 +132,11 @@ function NavBar(props) {
         {
           Title: 'Doanh số',
           Href: hasRouter() + '/ban-hang/doanh-so'
+        },
+        {
+          Title: 'Bán hàng (Bán mới, Thanh toán nợ)',
+          Href: hasRouter() + '/ban-hang/ban-moi-thanh-toan-no',
+          hidden: true // tạm ẩn — xoá dòng này để hiện lại
         },
         {
           Title: 'Doanh số cơ sở',
@@ -450,16 +465,11 @@ function NavBar(props) {
                     key={index}
                   >
                     {item.TitleKey === 'BAO_CAO_NGAY' && !window.isApp ? (
-                      <a
-                        href="#"
-                        onClick={() =>
-                          (window.top.location.href =
-                            '/admin/?mdl20=R23&act20=daily')
-                        }
-                      >
+                      // Menu mẹ "Báo cáo ngày" vào thẳng Tổng quan cơ sở
+                      <NavLink to={hasRouter() + '/bao-cao-ngay/tong-quan-co-so'}>
                         <i className={item.IconClass}></i>
                         <span>{item.Title}</span>
-                      </a>
+                      </NavLink>
                     ) : (
                       <NavLink to={item.Href}>
                         <i className={item.IconClass}></i>
@@ -532,21 +542,20 @@ function NavBar(props) {
           MenuList.map((item, index) => (
             <li key={index}>
               {item.TitleKey === 'BAO_CAO_NGAY' && !window.isApp ? (
-                <a
+                // Menu mẹ "Báo cáo ngày" vào thẳng Tổng quan cơ sở
+                <NavLink
                   className={clsx(
                     isActive(item.Href) && 'active',
                     'cursor-pointer'
                   )}
-                  onClick={() =>
-                    (window.top.location.href = '/admin/?mdl20=R23&act20=daily')
-                  }
+                  to={hasRouter() + '/bao-cao-ngay/tong-quan-co-so'}
                 >
                   <i className={item.IconClass}></i>
                   <span>{item.Title}</span>
                   {item.Children && item.Children.length > 0 && (
                     <i className="fa-solid fa-chevron-down icon-down"></i>
                   )}
-                </a>
+                </NavLink>
               ) : (
                 <>
                   {window.AppNavigation && item.TitleKey === 'BAO_CAO_NGAY' ? (

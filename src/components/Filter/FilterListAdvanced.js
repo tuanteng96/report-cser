@@ -25,12 +25,20 @@ import AsyncSelectCategoriesFull from '../Selects/AsyncSelectCategoriesFull'
 import vi from 'date-fns/locale/vi' // the locale you want
 import AsyncSelectServices from '../Selects/AsyncSelectServices'
 import { useLocation } from 'react-router-dom'
+import { getPermissionPath } from 'src/helpers/PermissionPathAlias'
 import SelectCustomType from '../Selects/SelectCustomType'
 import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
 import { SelectTagsOrder } from '../Selects/SelectTagsOrder'
+
+// Kiểu thanh toán (chỉ hiện khi bộ lọc có trường PayTypes)
+const PAY_TYPE_OPTIONS = [
+  { value: 'MOI', label: 'Thanh toán mới' },
+  { value: 'NO', label: 'Thanh toán nợ' },
+  { value: 'KHAU_TRU', label: 'Khấu trừ' }
+]
 
 registerLocale('vi', vi) // register it with the name you want
 
@@ -89,7 +97,9 @@ function FilterListAdvanced({
   onRefresh,
   onExport,
   isWarehouse = false,
-  regimes
+  regimes,
+  onStocksListChange, // (tuỳ chọn) nhận danh sách cơ sở được phép xem
+  showDebtStatus = true // false: ẩn ô "Nợ" (Còn nợ / Hết nợ)
 }) {
   const {
     Stocks,
@@ -116,7 +126,8 @@ function FilterListAdvanced({
   }))
   const [StocksList, setStocksList] = useState([])
   const [KpiTypeList, setKpiTypeList] = useState([])
-  const { pathname } = useLocation()
+  const { pathname: locationPathname } = useLocation()
+  const pathname = getPermissionPath(locationPathname)
 
   const { GGLoading } = useApp()
 
@@ -261,6 +272,7 @@ function FilterListAdvanced({
       }
     }
     setStocksList(newStocks)
+    onStocksListChange && onStocksListChange(newStocks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PermissionReport, pathname, isWarehouse])
 
@@ -427,6 +439,30 @@ function FilterListAdvanced({
                       />
                     </div>
                   )}
+                  {'PayTypes' in values && (
+                    <div className="form-group mb-20px">
+                      <label>Kiểu thanh toán</label>
+                      <Select
+                        isMulti
+                        isClearable
+                        name="PayTypes"
+                        placeholder="Tất cả loại"
+                        classNamePrefix="select"
+                        options={PAY_TYPE_OPTIONS}
+                        className="select-control"
+                        value={PAY_TYPE_OPTIONS.filter(item =>
+                          (values?.PayTypes || []).includes(item.value)
+                        )}
+                        onChange={otps => {
+                          setFieldValue(
+                            'PayTypes',
+                            otps ? otps.map(o => o.value) : []
+                          )
+                        }}
+                        noOptionsMessage={() => 'Không có dữ liệu'}
+                      />
+                    </div>
+                  )}
                   {'DebtFrom' in values && (
                     <div className="mb-20px form-group">
                       <label>Dự kiến thu nợ từ</label>
@@ -469,48 +505,50 @@ function FilterListAdvanced({
                       />
                     </div>
                   )}
-                  <div className="form-group mb-20px">
-                    <label>Nợ</label>
-                    <Select
-                      isClearable
-                      name="no"
-                      placeholder="Chọn trạng thái"
-                      classNamePrefix="select"
-                      options={[
-                        {
-                          value: 'con',
-                          label: 'Còn nợ'
-                        },
-                        {
-                          value: 'khong',
-                          label: 'Hết nợ'
-                        }
-                      ]}
-                      className="select-control"
-                      value={[
-                        {
-                          value: 'con',
-                          label: 'Còn nợ'
-                        },
-                        {
-                          value: 'khong',
-                          label: 'Hết nợ'
-                        }
-                      ].filter(item => item.value === values?.no)}
-                      onChange={otp => {
-                        setFieldValue('no', otp ? otp.value : '')
-                      }}
-                      noOptionsMessage={() => 'Không có dữ liệu'}
-                      menuPortalTarget={document.body}
-                      menuPosition="fixed"
-                      styles={{
-                        menuPortal: base => ({
-                          ...base,
-                          zIndex: 9999
-                        })
-                      }}
-                    />
-                  </div>
+                  {showDebtStatus && (
+                    <div className="form-group mb-20px">
+                      <label>Nợ</label>
+                      <Select
+                        isClearable
+                        name="no"
+                        placeholder="Chọn trạng thái"
+                        classNamePrefix="select"
+                        options={[
+                          {
+                            value: 'con',
+                            label: 'Còn nợ'
+                          },
+                          {
+                            value: 'khong',
+                            label: 'Hết nợ'
+                          }
+                        ]}
+                        className="select-control"
+                        value={[
+                          {
+                            value: 'con',
+                            label: 'Còn nợ'
+                          },
+                          {
+                            value: 'khong',
+                            label: 'Hết nợ'
+                          }
+                        ].filter(item => item.value === values?.no)}
+                        onChange={otp => {
+                          setFieldValue('no', otp ? otp.value : '')
+                        }}
+                        noOptionsMessage={() => 'Không có dữ liệu'}
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                        styles={{
+                          menuPortal: base => ({
+                            ...base,
+                            zIndex: 9999
+                          })
+                        }}
+                      />
+                    </div>
+                  )}
                   {'AllServiceID' in values && (
                     <div className="form-group mb-20px">
                       <label>Dịch vụ</label>

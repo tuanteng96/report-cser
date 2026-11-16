@@ -18,23 +18,23 @@ if (DevHelpers.isDevelopment()) {
       //   Title: 'Báo cáo - 3'
       // }
     ],
+    // Danh sách cơ sở thật trên cserbeauty.com mà tài khoản dev được xem (cập nhật 14/11/2026)
     Stocks: [
-      {
-        ID: 778,
-        Title: 'Quản lý cơ sở'
-      },
-      {
-        ID: 12746,
-        Title: 'Cser Hà Nội'
-      },
-      {
-        ID: 12732,
-        Title: 'Cser HCM'
-      },
-      {
-        ID: 12746,
-        Title: 'CS tổng hợp'
-      }
+      { ID: 778, Title: 'Quản lý cơ sở' },
+      { ID: 12746, Title: 'Cơ sở Hà Nội' },
+      { ID: 12747, Title: 'Cơ sở Hồ chí minh' },
+      { ID: 12752, Title: 'Cơ sở Đà Nẵng' },
+      { ID: 12755, Title: 'Cơ sở Hạ Long' },
+      { ID: 12756, Title: 'Cơ sở Hải Phòng' },
+      { ID: 12757, Title: 'Cơ sở Thanh Hóa' },
+      { ID: 12758, Title: 'Cơ sở Vinh' },
+      { ID: 12759, Title: 'Cơ sở Huế' },
+      { ID: 12760, Title: 'Cơ sở Quy Nhơn' },
+      { ID: 12761, Title: 'Cơ sở Đà Lạt' },
+      { ID: 12762, Title: 'Cơ sở Buôn Ma Thuột' },
+      { ID: 12763, Title: 'Cơ sở Cần Thơ' },
+      { ID: 12764, Title: 'Cơ sở Vũng Tàu' },
+      { ID: 12768, Title: 'Báo cáo ngày' }
     ],
     CrStockID: 12746,
     rightsSum: {
@@ -42,18 +42,20 @@ if (DevHelpers.isDevelopment()) {
         IsAllStock: true,
         hasRight: true,
         stocks: [
-          {
-            ID: 12746,
-            Title: 'Cser Hà Nội'
-          },
-          {
-            ID: 12732,
-            Title: 'Cser HCM'
-          },
-          {
-            ID: 12746,
-            Title: 'CS tổng hợp'
-          }
+          { ID: 12746, Title: 'Cơ sở Hà Nội' },
+          { ID: 12747, Title: 'Cơ sở Hồ chí minh' },
+          { ID: 12752, Title: 'Cơ sở Đà Nẵng' },
+          { ID: 12755, Title: 'Cơ sở Hạ Long' },
+          { ID: 12756, Title: 'Cơ sở Hải Phòng' },
+          { ID: 12757, Title: 'Cơ sở Thanh Hóa' },
+          { ID: 12758, Title: 'Cơ sở Vinh' },
+          { ID: 12759, Title: 'Cơ sở Huế' },
+          { ID: 12760, Title: 'Cơ sở Quy Nhơn' },
+          { ID: 12761, Title: 'Cơ sở Đà Lạt' },
+          { ID: 12762, Title: 'Cơ sở Buôn Ma Thuột' },
+          { ID: 12763, Title: 'Cơ sở Cần Thơ' },
+          { ID: 12764, Title: 'Cơ sở Vũng Tàu' },
+          { ID: 12768, Title: 'Báo cáo ngày' }
         ],
         jdata: {
           groups: [
