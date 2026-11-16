@@ -30,7 +30,7 @@ import AsyncSelectSVCard from '../Selects/AsyncSelectSVCard'
 import { useApp } from 'src/app/App'
 import AsyncSelectCategoriesSPNVL from '../Selects/AsyncSelectCategoriesSPNVL'
 import { ArrayHeplers } from 'src/helpers/ArrayHeplers'
-import AsyncSelectBanksConfig from '../Selects/AsyncSelectBrands'
+import AsyncSelectBanksConfig from '../Selects/AsyncSelectBanksConfig'
 import { useRoles } from 'src/hooks/useRoles'
 
 registerLocale('vi', vi) // register it with the name you want
